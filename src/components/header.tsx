@@ -34,21 +34,21 @@ export function Header() {
             <source 
               srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
               media="(prefers-color-scheme: dark)" 
-              width={400} 
-              height={100}
+              width={500} 
+              height={125}
             />
             <source 
               srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
               media="(prefers-color-scheme: light)" 
-              width={400} 
-              height={100}
+              width={500} 
+              height={125}
             />
             <img 
-              src="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
+              src="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
               alt="Gaapio Logo" 
-              width={400} 
-              height={100} 
-              className="h-20 w-auto"
+              width={500} 
+              height={125} 
+              className="h-24 w-auto"
             />
           </picture>
         </a>
