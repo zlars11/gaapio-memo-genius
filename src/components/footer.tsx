@@ -1,4 +1,3 @@
-
 import { Github, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
@@ -10,13 +9,27 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <a href="/" className="inline-block mb-4">
-              <img
-                src="/lovable-uploads/4ddb44ca-e07c-45c3-b9e4-b2e4c7fbcd41.png"
-                alt="Gaapio Logo"
-                width={130}
-                height={32}
-                className="h-8 w-auto"
-              />
+              <picture>
+                <source 
+                  srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
+                  media="(prefers-color-scheme: dark)" 
+                  width={300} 
+                  height={75}
+                />
+                <source 
+                  srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
+                  media="(prefers-color-scheme: light)" 
+                  width={300} 
+                  height={75}
+                />
+                <img
+                  src="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png"
+                  alt="Gaapio Logo"
+                  width={300}
+                  height={75}
+                  className="h-16 w-auto"
+                />
+              </picture>
             </a>
             <p className="text-muted-foreground max-w-md">
               Gaapio helps CPAs and finance teams write high-quality accounting memos

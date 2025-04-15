@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -34,21 +33,21 @@ export function Header() {
             <source 
               srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
               media="(prefers-color-scheme: dark)" 
-              width={200} 
-              height={50}
+              width={300} 
+              height={75}
             />
             <source 
               srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
               media="(prefers-color-scheme: light)" 
-              width={200} 
-              height={50}
+              width={300} 
+              height={75}
             />
             <img 
               src="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
               alt="Gaapio Logo" 
-              width={200} 
-              height={50} 
-              className="h-12 w-auto"
+              width={300} 
+              height={75} 
+              className="h-16 w-auto"
             />
           </picture>
         </a>
@@ -117,4 +116,3 @@ export function Header() {
     </header>
   );
 }
-
