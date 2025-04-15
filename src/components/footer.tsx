@@ -13,21 +13,21 @@ export function Footer() {
                 <source 
                   srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
                   media="(prefers-color-scheme: dark)" 
-                  width={300} 
-                  height={75}
+                  width={400} 
+                  height={100}
                 />
                 <source 
                   srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
                   media="(prefers-color-scheme: light)" 
-                  width={300} 
-                  height={75}
+                  width={400} 
+                  height={100}
                 />
                 <img
                   src="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png"
                   alt="Gaapio Logo"
-                  width={300}
-                  height={75}
-                  className="h-16 w-auto"
+                  width={400}
+                  height={100}
+                  className="h-20 w-auto"
                 />
               </picture>
             </a>
