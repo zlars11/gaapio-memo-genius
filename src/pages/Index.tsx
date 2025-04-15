@@ -1,9 +1,8 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, CheckCircle2, Upload, FileCheck, Download, Clock, Shield, FileText } from "lucide-react";
+import { ArrowDownCircle, CheckCircle2, Upload, FileCheck, Download, Clock, Shield, FileText, FileSearch } from "lucide-react";
 
 export default function Index() {
   return (
@@ -14,11 +13,10 @@ export default function Index() {
       <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
         <div className="container px-4 md:px-6 flex flex-col items-center text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
-            AI Accounting Memos.<br />Done in Seconds.
+            Real AI for Accountants
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
-            Gaapio helps CPAs and finance teams write high-quality accounting memos
-            that are audit-ready and compliant with GAAP/IFRS standards.
+            Technical accounting memos in seconds
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" asChild>
@@ -48,11 +46,11 @@ export default function Index() {
             {/* Step 1 */}
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
-                <Upload className="h-8 w-8 text-primary" />
+                <FileSearch className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Upload</h3>
+              <h3 className="text-xl font-semibold mb-3">Guided Prompts</h3>
               <p className="text-muted-foreground">
-                Upload your financial data or accounting scenario that requires documentation.
+                Answer a series of targeted questions to generate accurate accounting memos.
               </p>
             </div>
             

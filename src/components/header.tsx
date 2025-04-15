@@ -30,13 +30,27 @@ export function Header() {
     >
       <div className="container flex items-center justify-between h-16 px-4 md:px-6">
         <a href="/" className="flex items-center gap-2">
-          <img
-            src="/lovable-uploads/4ddb44ca-e07c-45c3-b9e4-b2e4c7fbcd41.png"
-            alt="Gaapio Logo"
-            width={130}
-            height={32}
-            className="h-8 w-auto"
-          />
+          <picture>
+            <source 
+              srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
+              media="(prefers-color-scheme: dark)" 
+              width={200} 
+              height={50}
+            />
+            <source 
+              srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
+              media="(prefers-color-scheme: light)" 
+              width={200} 
+              height={50}
+            />
+            <img 
+              src="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
+              alt="Gaapio Logo" 
+              width={200} 
+              height={50} 
+              className="h-12 w-auto"
+            />
+          </picture>
         </a>
 
         <nav className="hidden md:flex items-center gap-6">
@@ -103,3 +117,4 @@ export function Header() {
     </header>
   );
 }
+
