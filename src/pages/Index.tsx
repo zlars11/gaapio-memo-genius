@@ -14,7 +14,7 @@ export default function Index() {
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
     
-    // Listen for changes in the color scheme
+    // Listen for changes in the color scheme and theme toggle
     const handleChange = (e: MediaQueryListEvent) => {
       setIsDark(e.matches || document.documentElement.classList.contains("dark"));
     };
@@ -31,9 +31,17 @@ export default function Index() {
       attributeFilter: ["class"],
     });
     
+    // Additional listener for theme toggle changes
+    const handleStorageEvent = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    window.addEventListener('storage', handleStorageEvent);
+    
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
       observer.disconnect();
+      window.removeEventListener('storage', handleStorageEvent);
     };
   }, []);
 
@@ -43,8 +51,8 @@ export default function Index() {
       
       {/* Hero Section with Background Memo */}
       <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
-        {/* Background Memo Image */}
-        <div className="absolute top-[20%] right-0 transform -translate-y-1/4 opacity-20 z-0 pointer-events-none">
+        {/* Background Memo Image - Shifted down as requested */}
+        <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-20 z-0 pointer-events-none">
           <img 
             src={isDark ? "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png" : "/lovable-uploads/e13abd02-7766-469a-af2d-18a152812501.png"} 
             alt="ASC 606 Memo" 

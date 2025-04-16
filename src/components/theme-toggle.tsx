@@ -18,11 +18,16 @@ export function ThemeToggle() {
   const toggleTheme = () => {
     const newDarkMode = !isDark;
     setIsDark(newDarkMode);
+    
+    // Apply theme change immediately
     if (newDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
+    
+    // Force immediate update of all components that respond to theme
+    window.dispatchEvent(new Event('storage'));
   };
 
   return (

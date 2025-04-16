@@ -32,27 +32,17 @@ export function Logo({ className = "h-28 w-auto" }: { className?: string }) {
     };
   }, []);
 
+  // Use the black logo for light mode and white for dark mode
+  const darkModeLogo = "/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png"; // White logo
+  const lightModeLogo = "/lovable-uploads/ce5a7511-e788-4d8e-9592-8f6fffc2698f.png"; // Black logo
+
   return (
-    <picture>
-      <source 
-        srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
-        media="(prefers-color-scheme: dark)" 
-        width={600} 
-        height={150}
-      />
-      <source 
-        srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
-        media="(prefers-color-scheme: light)" 
-        width={600} 
-        height={150}
-      />
-      <img 
-        src={isDark ? "/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" : "/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png"}
-        alt="Gaapio Logo" 
-        width={600} 
-        height={150} 
-        className={className}
-      />
-    </picture>
+    <img 
+      src={isDark ? darkModeLogo : lightModeLogo}
+      alt="Gaapio Logo" 
+      width={600} 
+      height={150} 
+      className={className}
+    />
   );
 }
