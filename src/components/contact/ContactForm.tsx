@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
+// Zapier webhook URL - Replace this with your actual Zapier webhook when ready
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/your-webhook-id";
+
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,12 +16,30 @@ export function ContactForm() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Send data to Zapier webhook
+      await fetch(ZAPIER_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors", // Handle CORS issues
+        body: JSON.stringify({
+          name,
+          email,
+          subject,
+          message,
+          source: "Contact Form",
+          timestamp: new Date().toISOString(),
+          destination: "zacklarsen11@gmail.com",
+        }),
+      });
+
+      // Show success message
       toast.success("Message sent successfully!", {
         description: "We'll get back to you within 1 business day."
       });
@@ -28,8 +49,14 @@ export function ContactForm() {
       setEmail("");
       setSubject("");
       setMessage("");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Something went wrong", {
+        description: "Please try again later."
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
