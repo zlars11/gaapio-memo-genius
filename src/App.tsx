@@ -16,8 +16,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-pulse text-primary">Loading...</div>
+  <div className="flex items-center justify-center min-h-screen" aria-label="Loading content">
+    <div className="animate-pulse text-primary" aria-hidden="true">Loading...</div>
   </div>
 );
 
@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 60 * 1000, // 1 minute
-      cacheTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 5 * 60 * 1000, // 5 minutes (replaces cacheTime)
       refetchOnWindowFocus: false,
       retry: 1,
     },

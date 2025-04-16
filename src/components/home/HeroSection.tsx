@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
-import { useEffect, useState, memo, lazy, Suspense } from "react";
+import { useEffect, useState, memo } from "react";
 
 export const HeroSection = memo(function HeroSection() {
   const [isDark, setIsDark] = useState(false);
@@ -42,13 +42,19 @@ export const HeroSection = memo(function HeroSection() {
     };
   }, []);
 
+  const scrollToHowItWorks = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const section = document.getElementById('how-it-works');
+    section?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
       {/* Background Memo Image - More Transparent */}
-      <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-5 z-0 pointer-events-none">
+      <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-5 z-0 pointer-events-none" aria-hidden="true">
         <img 
           src={isDark ? "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png" : "/lovable-uploads/e13abd02-7766-469a-af2d-18a152812501.png"} 
-          alt="ASC 606 Memo" 
+          alt="" 
           className="w-[800px] h-auto rotate-6"
           width={800}
           height={1000}
@@ -69,11 +75,18 @@ export const HeroSection = memo(function HeroSection() {
             <a href="#waitlist">Join the Waitlist</a>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="#how-it-works">See How It Works</a>
+            <a href="#how-it-works" onClick={scrollToHowItWorks}>See How It Works</a>
           </Button>
         </div>
         <div className="animate-fade-up" style={{ animationDelay: "300ms" }}>
-          <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow" />
+          <a 
+            href="#how-it-works" 
+            onClick={scrollToHowItWorks}
+            aria-label="Scroll down to learn more"
+            className="inline-block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full"
+          >
+            <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>

@@ -72,12 +72,21 @@ export function Header() {
           : "bg-transparent"
       }`}
     >
+      {/* Skip to content link for keyboard users */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to content
+      </a>
+      
       <div className="container flex items-center justify-between h-28 px-4 md:px-6">
-        <Link to="/" className="flex items-center gap-2">
+        <Link 
+          to="/" 
+          className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
+          aria-label="Gaapio Home"
+        >
           <Logo className="h-28 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6" aria-label="Main Navigation">
           <NavigationMenu>
             <NavigationMenuList className="space-x-6">
               <NavigationMenuItem>
@@ -87,6 +96,7 @@ export function Header() {
                     navLinkStyle,
                     location.pathname === "/" && activeNavLinkStyle
                   )}
+                  aria-current={location.pathname === "/" ? "page" : undefined}
                 >
                   Home
                 </Link>
@@ -96,11 +106,12 @@ export function Header() {
                   About
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[400px] gap-3 p-4">
+                  <div className="grid w-[400px] gap-3 p-4" role="menu">
                     <NavigationMenuLink asChild>
                       <Link
                         to="/about-us"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        role="menuitem"
                       >
                         <div className="text-sm font-medium leading-none">About Us</div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
@@ -112,6 +123,7 @@ export function Header() {
                       <Link
                         to="/faq"
                         className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        role="menuitem"
                       >
                         <div className="text-sm font-medium leading-none">FAQ</div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
@@ -129,6 +141,7 @@ export function Header() {
                     navLinkStyle,
                     location.pathname === "/blog" && activeNavLinkStyle
                   )}
+                  aria-current={location.pathname === "/blog" ? "page" : undefined}
                 >
                   Blog
                 </Link>
@@ -140,6 +153,7 @@ export function Header() {
                     navLinkStyle,
                     location.pathname === "/contact" && activeNavLinkStyle
                   )}
+                  aria-current={location.pathname === "/contact" ? "page" : undefined}
                 >
                   Contact
                 </Link>
@@ -157,18 +171,19 @@ export function Header() {
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Menu">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Menu className="h-5 w-5" aria-hidden="true" />
               </Button>
             </SheetTrigger>
             <SheetContent>
-              <nav className="flex flex-col gap-4 mt-8">
+              <nav className="flex flex-col gap-4 mt-8" aria-label="Mobile Navigation">
                 <Link
                   to="/"
                   className={cn(
                     "text-lg font-medium py-2 transition-colors hover:text-primary",
                     location.pathname === "/" && "text-primary font-semibold border-l-4 border-primary pl-2"
                   )}
+                  aria-current={location.pathname === "/" ? "page" : undefined}
                 >
                   Home
                 </Link>
@@ -178,6 +193,7 @@ export function Header() {
                     "text-lg font-medium py-2 transition-colors hover:text-primary",
                     location.pathname === "/about-us" && "text-primary font-semibold border-l-4 border-primary pl-2"
                   )}
+                  aria-current={location.pathname === "/about-us" ? "page" : undefined}
                 >
                   About Us
                 </Link>
@@ -187,6 +203,7 @@ export function Header() {
                     "text-lg font-medium py-2 transition-colors hover:text-primary",
                     location.pathname === "/faq" && "text-primary font-semibold border-l-4 border-primary pl-2"
                   )}
+                  aria-current={location.pathname === "/faq" ? "page" : undefined}
                 >
                   FAQ
                 </Link>
@@ -196,6 +213,7 @@ export function Header() {
                     "text-lg font-medium py-2 transition-colors hover:text-primary",
                     location.pathname === "/blog" && "text-primary font-semibold border-l-4 border-primary pl-2"
                   )}
+                  aria-current={location.pathname === "/blog" ? "page" : undefined}
                 >
                   Blog
                 </Link>
@@ -205,6 +223,7 @@ export function Header() {
                     "text-lg font-medium py-2 transition-colors hover:text-primary",
                     location.pathname === "/contact" && "text-primary font-semibold border-l-4 border-primary pl-2"
                   )}
+                  aria-current={location.pathname === "/contact" ? "page" : undefined}
                 >
                   Contact
                 </Link>

@@ -15,7 +15,7 @@ export function HowItWorksSection() {
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           {/* Step 1 */}
           <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
               <FileSearch className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Guided Prompts</h3>
@@ -26,7 +26,7 @@ export function HowItWorksSection() {
           
           {/* Step 2 */}
           <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
               <FileCheck className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Review</h3>
@@ -37,7 +37,7 @@ export function HowItWorksSection() {
           
           {/* Step 3 */}
           <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
               <Download className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-3">Manage</h3>
@@ -50,4 +50,3 @@ export function HowItWorksSection() {
     </section>
   );
 }
-

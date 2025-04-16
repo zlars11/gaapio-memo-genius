@@ -36,13 +36,14 @@ export function ThemeToggle() {
       size="icon"
       onClick={toggleTheme}
       className="rounded-full"
-      aria-label="Toggle theme"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDark ? (
-        <Moon className="h-5 w-5 transition-all" />
+        <Moon className="h-5 w-5 transition-all" aria-hidden="true" />
       ) : (
-        <Sun className="h-5 w-5 transition-all" />
+        <Sun className="h-5 w-5 transition-all" aria-hidden="true" />
       )}
+      <span className="sr-only">{isDark ? "Switch to light mode" : "Switch to dark mode"}</span>
     </Button>
   );
 }
