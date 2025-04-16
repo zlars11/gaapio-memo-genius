@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { WaitlistForm } from "@/components/waitlist-form";
@@ -62,10 +61,10 @@ export default function Index() {
         
         <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
-            Real AI for Accountants
+            Technical accounting memos in seconds
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
-            Technical accounting memos in seconds
+            AI-Powered. CPA-Approved.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" asChild>
