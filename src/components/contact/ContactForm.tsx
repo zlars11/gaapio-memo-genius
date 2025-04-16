@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,8 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-// Zapier webhook URL - Replace this with your actual Zapier webhook when ready
-const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/your-webhook-id";
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
 export function ContactForm() {
   const [name, setName] = useState("");
@@ -21,7 +19,6 @@ export function ContactForm() {
     setIsSubmitting(true);
     
     try {
-      // Send data to Zapier webhook
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: {
@@ -39,7 +36,6 @@ export function ContactForm() {
         }),
       });
 
-      // Show success message
       toast.success("Message sent successfully!", {
         description: "We'll get back to you within 1 business day."
       });

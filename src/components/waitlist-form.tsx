@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
-// Zapier webhook URL - Replace this with your actual Zapier webhook when ready
-const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/your-webhook-id";
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
 export function WaitlistForm() {
   const [email, setEmail] = useState("");
@@ -17,7 +15,6 @@ export function WaitlistForm() {
     setIsLoading(true);
     
     try {
-      // Send data to Zapier webhook
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: {
@@ -32,7 +29,6 @@ export function WaitlistForm() {
         }),
       });
 
-      // Show success message
       toast({
         title: "You're on the list!",
         description: "Thanks for joining our waitlist. We'll be in touch soon.",
