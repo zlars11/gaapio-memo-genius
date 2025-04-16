@@ -3,14 +3,13 @@ import React from "react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export function SocialProofSection() {
-  // Array of company placeholder data
+  // Updated companies with more descriptive placeholder logos
   const companies = [
-    { id: 1, name: "TechCorp", logo: "tech-placeholder" },
-    { id: 2, name: "Finance Plus", logo: "finance-placeholder" },
-    { id: 3, name: "Global Enterprises", logo: "global-placeholder" },
-    { id: 4, name: "Innovate Inc", logo: "innovate-placeholder" },
-    { id: 5, name: "Momentum Partners", logo: "momentum-placeholder" },
-    { id: 6, name: "Strategic Solutions", logo: "strategic-placeholder" },
+    { id: 1, name: "QuickBooks", logo: "quickbooks" },
+    { id: 2, name: "Xero", logo: "xero" },
+    { id: 3, name: "NetSuite", logo: "netsuite" },
+    { id: 4, name: "Sage", logo: "sage" },
+    { id: 5, name: "Intacct", logo: "intacct" },
   ];
 
   return (
@@ -32,14 +31,13 @@ export function SocialProofSection() {
           </p>
         </div>
         
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 max-w-5xl mx-auto">
+        <div className="flex justify-center items-center space-x-8 md:space-x-12">
           {companies.map((company) => (
             <div 
               key={company.id}
-              className="w-28 h-12 md:w-32 md:h-16 flex items-center justify-center grayscale opacity-70 hover:opacity-100 transition-opacity"
+              className="w-20 h-12 md:w-28 md:h-16 flex items-center justify-center grayscale opacity-70 hover:opacity-100 transition-opacity"
               aria-label={`${company.name} logo`}
             >
-              {/* Placeholder for company logo */}
               <div className="w-full h-full bg-muted/50 rounded flex items-center justify-center">
                 <span className="text-muted-foreground font-medium text-sm">
                   {company.name}
@@ -52,3 +50,4 @@ export function SocialProofSection() {
     </section>
   );
 }
+

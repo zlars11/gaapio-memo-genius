@@ -6,7 +6,7 @@ export function TestimonialsSection() {
     <section id="testimonials" className="py-20 md:py-32 bg-accent/50" aria-labelledby="testimonials-heading">
       <ResponsiveContainer>
         <div className="text-center mb-16">
-          <h2 id="testimonials-heading" className="text-3xl md:text-4xl font-bold mb-4">What Finance Teams Say</h2>
+          <h2 id="testimonials-heading" className="text-3xl md:text-4xl font-bold mb-4">What Accounting Teams Say</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Industry professionals trust Gaapio for their accounting documentation needs.
           </p>
@@ -65,3 +65,4 @@ export function TestimonialsSection() {
     </section>
   );
 }
+
