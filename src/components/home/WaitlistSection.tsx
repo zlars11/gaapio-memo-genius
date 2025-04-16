@@ -6,18 +6,18 @@ export function WaitlistSection() {
   return (
     <section 
       id="waitlist" 
-      className="py-16 md:py-24 lg:py-32 bg-accent/50"
+      className="py-20 md:py-32 bg-accent/50"
       aria-labelledby="waitlist-heading"
     >
       <ResponsiveContainer className="max-w-5xl">
         <div className="flex flex-col items-center text-center">
           <h2 
             id="waitlist-heading"
-            className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4"
+            className="text-3xl md:text-4xl font-bold mb-4"
           >
             Join the Waitlist Today
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Be among the first to experience the future of accounting memo creation.
             Limited spots available for our beta program.
           </p>
@@ -29,4 +29,3 @@ export function WaitlistSection() {
     </section>
   );
 }
-
