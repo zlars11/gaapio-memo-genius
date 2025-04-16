@@ -61,7 +61,7 @@ export default function Index() {
         
         <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
-            Technical accounting memos in seconds
+            Accounting Memos in Seconds
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
             AI-Powered. CPA-Approved.
