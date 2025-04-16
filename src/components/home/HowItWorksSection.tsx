@@ -42,7 +42,7 @@ export function HowItWorksSection() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Manage</h3>
             <p className="text-muted-foreground">
-              Full version history, file management, and controls.
+              Full version history, file controls, and downloadable, presentation-ready memos.
             </p>
           </div>
         </div>
@@ -50,3 +50,4 @@ export function HowItWorksSection() {
     </section>
   );
 }
+
