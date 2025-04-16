@@ -1,4 +1,5 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -9,27 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <a href="/" className="inline-block mb-4">
-              <picture>
-                <source 
-                  srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
-                  media="(prefers-color-scheme: dark)" 
-                  width={500} 
-                  height={125}
-                />
-                <source 
-                  srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
-                  media="(prefers-color-scheme: light)" 
-                  width={500} 
-                  height={125}
-                />
-                <img
-                  src="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png"
-                  alt="Gaapio Logo"
-                  width={500}
-                  height={125}
-                  className="h-24 w-auto"
-                />
-              </picture>
+              <Logo className="h-28 w-auto" />
             </a>
             <p className="text-muted-foreground max-w-md">
               Gaapio helps CPAs and finance teams write high-quality accounting memos

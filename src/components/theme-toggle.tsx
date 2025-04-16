@@ -9,15 +9,20 @@ export function ThemeToggle() {
   // Initialize theme based on system preference
   useEffect(() => {
     const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDark(isDarkMode);
-    if (isDarkMode) {
+    setIsDark(isDarkMode || document.documentElement.classList.contains("dark"));
+    if (isDarkMode && !document.documentElement.classList.contains("dark")) {
       document.documentElement.classList.add("dark");
     }
   }, []);
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
+    const newDarkMode = !isDark;
+    setIsDark(newDarkMode);
+    if (newDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   };
 
   return (

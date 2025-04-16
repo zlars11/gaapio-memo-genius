@@ -1,17 +1,58 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle, CheckCircle2, Upload, FileCheck, Download, Clock, Shield, FileText, FileSearch } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Index() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Initialize based on system/user preference
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
+    
+    // Listen for changes in the color scheme
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDark(e.matches || document.documentElement.classList.contains("dark"));
+    };
+    
+    darkModeQuery.addEventListener("change", handleChange);
+    
+    // Listen for changes to the dark class on the document
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    return () => {
+      darkModeQuery.removeEventListener("change", handleChange);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      {/* Hero Section */}
+      {/* Hero Section with Background Memo */}
       <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
-        <div className="container px-4 md:px-6 flex flex-col items-center text-center">
+        {/* Background Memo Image */}
+        <div className="absolute top-[20%] right-0 transform -translate-y-1/4 opacity-20 z-0 pointer-events-none">
+          <img 
+            src={isDark ? "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png" : "/lovable-uploads/e13abd02-7766-469a-af2d-18a152812501.png"} 
+            alt="ASC 606 Memo" 
+            className="w-[500px] h-auto rotate-6"
+          />
+        </div>
+        
+        <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
             Real AI for Accountants
           </h1>

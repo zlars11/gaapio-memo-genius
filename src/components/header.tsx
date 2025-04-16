@@ -8,16 +8,45 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Logo } from "@/components/logo";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    
+    // Initialize dark mode state
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
+    
+    // Listen for changes in the color scheme
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDark(e.matches || document.documentElement.classList.contains("dark"));
+    };
+    
+    darkModeQuery.addEventListener("change", handleChange);
+    
+    // Listen for changes to the dark class on the document
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      darkModeQuery.removeEventListener("change", handleChange);
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -28,29 +57,9 @@ export function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="container flex items-center justify-between h-24 px-4 md:px-6">
+      <div className="container flex items-center justify-between h-28 px-4 md:px-6">
         <a href="/" className="flex items-center gap-2">
-          <picture>
-            <source 
-              srcSet="/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png" 
-              media="(prefers-color-scheme: dark)" 
-              width={500} 
-              height={125}
-            />
-            <source 
-              srcSet="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
-              media="(prefers-color-scheme: light)" 
-              width={500} 
-              height={125}
-            />
-            <img 
-              src="/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png" 
-              alt="Gaapio Logo" 
-              width={500} 
-              height={125} 
-              className="h-24 w-auto"
-            />
-          </picture>
+          <Logo className="h-28 w-auto" />
         </a>
 
         <nav className="hidden md:flex items-center gap-6">
