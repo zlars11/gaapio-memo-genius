@@ -44,16 +44,16 @@ export default function Blog() {
       </a>
       
       <main className="flex-1 pt-28" id="blog-content">
-        <section className="py-16 md:py-24" aria-labelledby="blog-heading">
+        <section className="py-12 md:py-16 lg:py-24" aria-labelledby="blog-heading">
           <div className="container px-4 md:px-6">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h1 id="blog-heading" className="text-4xl md:text-5xl font-bold mb-6">Insights from the Gaapio Team</h1>
-              <p className="text-xl text-muted-foreground">
+            <div className="max-w-3xl mx-auto text-center mb-10 md:mb-12">
+              <h1 id="blog-heading" className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">Insights from the Gaapio Team</h1>
+              <p className="text-lg md:text-xl text-muted-foreground">
                 Expert perspectives on technical accounting, compliance, and technology.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" role="list" aria-label="Blog posts">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" role="list" aria-label="Blog posts">
               {samplePosts.map(post => (
                 <div key={post.id} role="listitem">
                   <BlogPostCard post={post} />
@@ -61,8 +61,8 @@ export default function Blog() {
               ))}
             </div>
 
-            <div className="text-center mt-16">
-              <p className="text-muted-foreground">
+            <div className="text-center mt-12 md:mt-16">
+              <p className="text-muted-foreground px-4">
                 Stay tuned for more insights and articles from our team of accounting professionals.
               </p>
             </div>
