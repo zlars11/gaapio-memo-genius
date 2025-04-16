@@ -31,7 +31,7 @@ export function HowItWorksSection() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Review</h3>
             <p className="text-muted-foreground">
-              Propriety AI review with optional CPA review then you review with sign off.
+              Proprietary AI review, optional CPA oversight, and internal sign-off.
             </p>
           </div>
           
