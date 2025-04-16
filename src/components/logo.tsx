@@ -26,15 +26,23 @@ export function Logo({ className = "h-28 w-auto" }: { className?: string }) {
       attributeFilter: ["class"],
     });
     
+    // Listen for storage events (for theme toggle)
+    const handleStorageEvent = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    window.addEventListener('storage', handleStorageEvent);
+    
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
       observer.disconnect();
+      window.removeEventListener('storage', handleStorageEvent);
     };
   }, []);
 
   // Use the black logo for light mode and white for dark mode
-  const darkModeLogo = "/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png"; // White logo
-  const lightModeLogo = "/lovable-uploads/ce5a7511-e788-4d8e-9592-8f6fffc2698f.png"; // Black logo
+  const darkModeLogo = "/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png"; // White logo
+  const lightModeLogo = "/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png"; // Black logo
 
   return (
     <img 
