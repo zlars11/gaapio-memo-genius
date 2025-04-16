@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,12 +17,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +60,10 @@ export function Header() {
     };
   }, []);
 
+  // Custom navigation link style
+  const navLinkStyle = "text-sm font-medium transition-colors hover:text-foreground hover:border-b-2 hover:border-foreground/30 focus:outline-none";
+  const activeNavLinkStyle = "border-b-2 border-primary font-semibold text-foreground";
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -74,14 +79,22 @@ export function Header() {
 
         <nav className="hidden md:flex items-center gap-6">
           <NavigationMenu>
-            <NavigationMenuList>
+            <NavigationMenuList className="space-x-6">
               <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
+                <Link 
+                  to="/" 
+                  className={cn(
+                    navLinkStyle,
+                    location.pathname === "/" && activeNavLinkStyle
+                  )}
+                >
                   Home
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent px-0 py-1">
+                  About
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid w-[400px] gap-3 p-4">
                     <NavigationMenuLink asChild>
@@ -110,12 +123,24 @@ export function Header() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/blog" className={navigationMenuTriggerStyle()}>
+                <Link 
+                  to="/blog" 
+                  className={cn(
+                    navLinkStyle,
+                    location.pathname === "/blog" && activeNavLinkStyle
+                  )}
+                >
                   Blog
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                <Link 
+                  to="/contact" 
+                  className={cn(
+                    navLinkStyle,
+                    location.pathname === "/contact" && activeNavLinkStyle
+                  )}
+                >
                   Contact
                 </Link>
               </NavigationMenuItem>
@@ -140,31 +165,46 @@ export function Header() {
               <nav className="flex flex-col gap-4 mt-8">
                 <Link
                   to="/"
-                  className="text-lg font-medium py-2 hover:text-primary transition-colors"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
                 >
                   Home
                 </Link>
                 <Link
                   to="/about-us"
-                  className="text-lg font-medium py-2 hover:text-primary transition-colors"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/about-us" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
                 >
                   About Us
                 </Link>
                 <Link
                   to="/faq"
-                  className="text-lg font-medium py-2 hover:text-primary transition-colors"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/faq" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
                 >
                   FAQ
                 </Link>
                 <Link
                   to="/blog"
-                  className="text-lg font-medium py-2 hover:text-primary transition-colors"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/blog" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
                 >
                   Blog
                 </Link>
                 <Link
                   to="/contact"
-                  className="text-lg font-medium py-2 hover:text-primary transition-colors"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/contact" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
                 >
                   Contact
                 </Link>
