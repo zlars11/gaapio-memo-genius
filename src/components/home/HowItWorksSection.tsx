@@ -31,7 +31,7 @@ export function HowItWorksSection() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Review</h3>
             <p className="text-muted-foreground">
-              Our AI generates a professional accounting memo. Review and make any final adjustments.
+              Propriety AI review with optional CPA review then you review with sign off.
             </p>
           </div>
           
@@ -40,9 +40,9 @@ export function HowItWorksSection() {
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6">
               <Download className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Download</h3>
+            <h3 className="text-xl font-semibold mb-3">Manage</h3>
             <p className="text-muted-foreground">
-              Download your complete, audit-ready accounting memo in your preferred format.
+              Full version history, file management, and controls.
             </p>
           </div>
         </div>
