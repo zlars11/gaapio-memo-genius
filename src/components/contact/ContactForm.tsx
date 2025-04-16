@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +57,9 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="contact-form-heading">
+      <h2 id="contact-form-heading" className="sr-only">Contact Form</h2>
+      
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input 
@@ -65,6 +68,7 @@ export function ContactForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          aria-required="true"
         />
       </div>
       
@@ -77,6 +81,7 @@ export function ContactForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          aria-required="true"
         />
       </div>
       
@@ -88,6 +93,7 @@ export function ContactForm() {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           required
+          aria-required="true"
         />
       </div>
       
@@ -100,10 +106,16 @@ export function ContactForm() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
+          aria-required="true"
         />
       </div>
       
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button 
+        type="submit" 
+        className="w-full" 
+        disabled={isSubmitting}
+        aria-busy={isSubmitting}
+      >
         {isSubmitting ? "Sending..." : "Send Message"}
       </Button>
     </form>

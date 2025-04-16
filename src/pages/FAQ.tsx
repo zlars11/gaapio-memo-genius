@@ -8,11 +8,16 @@ export default function FAQ() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="flex-1 pt-28">
-        <section className="py-16 md:py-24">
+      {/* Skip to content link for keyboard users */}
+      <a href="#faq-content" className="skip-to-content">
+        Skip to content
+      </a>
+      
+      <main className="flex-1 pt-28" id="faq-content">
+        <section className="py-16 md:py-24" aria-labelledby="faq-heading">
           <div className="container px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
+              <h1 id="faq-heading" className="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
               <p className="text-xl text-muted-foreground">
                 Find answers to common questions about Gaapio.
               </p>

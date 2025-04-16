@@ -38,19 +38,26 @@ export default function Blog() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="flex-1 pt-28">
-        <section className="py-16 md:py-24">
+      {/* Skip to content link for keyboard users */}
+      <a href="#blog-content" className="skip-to-content">
+        Skip to content
+      </a>
+      
+      <main className="flex-1 pt-28" id="blog-content">
+        <section className="py-16 md:py-24" aria-labelledby="blog-heading">
           <div className="container px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Insights from the Gaapio Team</h1>
+              <h1 id="blog-heading" className="text-4xl md:text-5xl font-bold mb-6">Insights from the Gaapio Team</h1>
               <p className="text-xl text-muted-foreground">
                 Expert perspectives on technical accounting, compliance, and technology.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" role="list" aria-label="Blog posts">
               {samplePosts.map(post => (
-                <BlogPostCard key={post.id} post={post} />
+                <div key={post.id} role="listitem">
+                  <BlogPostCard post={post} />
+                </div>
               ))}
             </div>
 
