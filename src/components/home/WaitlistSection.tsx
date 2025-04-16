@@ -6,7 +6,7 @@ export function WaitlistSection() {
   return (
     <section 
       id="waitlist" 
-      className="py-16 md:py-24 lg:py-32 px-4 sm:px-6"
+      className="py-16 md:py-24 lg:py-32 bg-accent/50"
       aria-labelledby="waitlist-heading"
     >
       <ResponsiveContainer className="max-w-5xl">
@@ -29,3 +29,4 @@ export function WaitlistSection() {
     </section>
   );
 }
+
