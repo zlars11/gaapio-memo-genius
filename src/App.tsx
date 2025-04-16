@@ -13,6 +13,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const SubscriptionAgreement = lazy(() => import("./pages/SubscriptionAgreement"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/ssa" element={<SubscriptionAgreement />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

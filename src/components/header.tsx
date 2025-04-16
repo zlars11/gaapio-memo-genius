@@ -131,6 +131,18 @@ export function Header() {
                         </p>
                       </Link>
                     </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to="/ssa"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        role="menuitem"
+                      >
+                        <div className="text-sm font-medium leading-none">Subscription Agreement</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Our service terms and conditions
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -206,6 +218,16 @@ export function Header() {
                   aria-current={location.pathname === "/faq" ? "page" : undefined}
                 >
                   FAQ
+                </Link>
+                <Link
+                  to="/ssa"
+                  className={cn(
+                    "text-lg font-medium py-2 transition-colors hover:text-primary",
+                    location.pathname === "/ssa" && "text-primary font-semibold border-l-4 border-primary pl-2"
+                  )}
+                  aria-current={location.pathname === "/ssa" ? "page" : undefined}
+                >
+                  Subscription Agreement
                 </Link>
                 <Link
                   to="/blog"
