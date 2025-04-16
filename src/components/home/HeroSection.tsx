@@ -1,9 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, lazy, Suspense } from "react";
 
-export function HeroSection() {
+export const HeroSection = memo(function HeroSection() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -50,6 +50,10 @@ export function HeroSection() {
           src={isDark ? "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png" : "/lovable-uploads/e13abd02-7766-469a-af2d-18a152812501.png"} 
           alt="ASC 606 Memo" 
           className="w-[800px] h-auto rotate-6"
+          width={800}
+          height={1000}
+          loading="eager"
+          decoding="async"
         />
       </div>
       
@@ -74,4 +78,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+});

@@ -1,7 +1,7 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 
-export function Logo({ className = "h-28 w-auto" }: { className?: string }) {
+export const Logo = memo(({ className = "h-28 w-auto" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -51,6 +51,10 @@ export function Logo({ className = "h-28 w-auto" }: { className?: string }) {
       width={600} 
       height={150} 
       className={className}
+      loading="eager"
+      decoding="async"
     />
   );
-}
+});
+
+Logo.displayName = 'Logo';

@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { memo } from "react";
 
 interface BlogPost {
   id: number;
@@ -15,7 +16,7 @@ interface BlogPostCardProps {
   post: BlogPost;
 }
 
-export function BlogPostCard({ post }: BlogPostCardProps) {
+export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <div className="aspect-video w-full overflow-hidden">
@@ -23,6 +24,10 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
           src={post.imageUrl}
           alt={post.title}
           className="h-full w-full object-cover transition-transform hover:scale-105 duration-300"
+          loading="lazy"
+          decoding="async"
+          width={400}
+          height={225}
         />
       </div>
       <CardHeader className="pb-0">
@@ -52,4 +57,4 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});

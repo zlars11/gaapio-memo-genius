@@ -1,11 +1,12 @@
-import { useState } from "react";
+
+import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
 const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
-export function WaitlistForm() {
+export const WaitlistForm = memo(function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -68,4 +69,4 @@ export function WaitlistForm() {
       </p>
     </form>
   );
-}
+});
