@@ -5,7 +5,7 @@ import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, ArrowLeft, FileWarning, Shield, CheckCircle, AlertOctagon } from "lucide-react";
+import { ArrowLeft, FileWarning, CheckCircle, AlertTriangle, FileCheck, Shield, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function ASC606Pitfalls() {
@@ -19,7 +19,7 @@ export default function ASC606Pitfalls() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="mb-8 flex justify-center">
                 <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 transition-transform hover:scale-105 duration-300">
-                  <AlertTriangle className="h-10 w-10 text-destructive" />
+                  <FileWarning className="h-10 w-10 text-destructive" />
                 </div>
               </div>
               
@@ -30,15 +30,15 @@ export default function ASC606Pitfalls() {
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4" />
-                  <span>By Michael Chen, CPA</span>
+                  <span>By Zack Larsen, CPA</span>
                 </div>
                 <span>•</span>
                 <div className="flex items-center gap-2">
-                  <time>April 5, 2025</time>
+                  <time>October 29, 2025</time>
                 </div>
                 <span>•</span>
                 <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/15">
-                  Revenue Recognition
+                  Accounting Standards
                 </Badge>
               </div>
             </div>
@@ -47,71 +47,149 @@ export default function ASC606Pitfalls() {
 
         <ResponsiveContainer className="py-12 md:py-16">
           <article className="prose prose-gray dark:prose-invert mx-auto max-w-4xl">
-            <h2 className="flex items-center gap-3 text-2xl font-bold mt-8 mb-4">
-              <AlertOctagon className="h-6 w-6 text-destructive" />
-              Understanding ASC 606 Challenges
-            </h2>
-            
             <p className="text-lg leading-relaxed text-muted-foreground mb-6">
-              Revenue recognition under ASC 606 continues to challenge accounting teams across industries. Here are the five most common pitfalls we see companies encounter:
+              Since the adoption of ASC 606, companies have made meaningful strides toward aligning their revenue recognition practices with the standard. But even years after implementation, the complexities of ASC 606 continue to trip up accounting teams—especially in high-growth or contract-heavy environments.
+            </p>
+            
+            <p className="text-lg leading-relaxed text-muted-foreground mb-8">
+              As a CPA who works closely with finance leaders and technical accounting teams, I continue to see the same issues surface time and time again. Below are five of the most common ASC 606 pitfalls—and how to avoid them.
             </p>
 
             <div className="grid gap-8 my-8">
               <div>
-                <h3>1. Incorrect Performance Obligation Identification</h3>
+                <h3 className="flex items-center gap-2 text-xl font-bold">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  1. Incorrect Performance Obligation Identification
+                </h3>
                 <p>
-                  Many companies struggle to properly identify and separate distinct performance obligations within their contracts. This is particularly challenging in software and SaaS arrangements where multiple deliverables are bundled together.
+                  One of the foundational steps under ASC 606 is identifying the distinct performance obligations in a contract. Yet many companies, particularly those in software, SaaS, or services, continue to misclassify deliverables.
                 </p>
+                <p>
+                  Bundled arrangements that include implementation, licenses, and ongoing support often require significant judgment. Failure to separate these elements correctly can result in materially misstated revenue timing.
+                </p>
+                <div className="bg-primary/5 p-4 rounded-lg mt-4">
+                  <p className="flex items-center gap-2 font-medium">
+                    <Zap className="h-4 w-4 text-primary" />
+                    Pro Tip: Establish a consistent contract review framework to evaluate whether goods or services are distinct based on customer benefit and separability.
+                  </p>
+                </div>
               </div>
 
               <div>
-                <h3>2. Variable Consideration Estimation Errors</h3>
+                <h3 className="flex items-center gap-2 text-xl font-bold">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  2. Variable Consideration Estimation Errors
+                </h3>
                 <p>
-                  Organizations often miscalculate or overlook variable consideration components like rebates, refunds, or performance bonuses. The constraint on variable consideration requires careful judgment and documentation.
+                  Variable consideration—including discounts, rebates, service-level penalties, or performance bonuses—must be estimated and included in the transaction price using either the expected value or most likely amount approach.
                 </p>
+                <p>
+                  Many companies underestimate these components or fail to apply the constraint correctly. Overstating variable consideration can lead to premature revenue recognition, while excessive conservatism can distort financials.
+                </p>
+                <div className="bg-primary/5 p-4 rounded-lg mt-4">
+                  <p className="flex items-center gap-2 font-medium">
+                    <Zap className="h-4 w-4 text-primary" />
+                    Pro Tip: Support all estimates with contemporaneous documentation and reassess them regularly as new data becomes available.
+                  </p>
+                </div>
               </div>
 
               <div>
-                <h3>3. Standalone Selling Price Determination</h3>
+                <h3 className="flex items-center gap-2 text-xl font-bold">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  3. Weak Standalone Selling Price (SSP) Methodology
+                </h3>
                 <p>
-                  When observable standalone prices aren't available, companies sometimes use overly simplistic allocation methods that don't reflect the economic substance of their arrangements.
+                  When observable pricing isn't available, companies often default to arbitrary or overly simplified methods to allocate transaction price—especially in bundled contracts. This can result in non-compliance and inconsistent application across similar deals.
                 </p>
+                <p>
+                  ASC 606 expects that SSPs reflect the price at which the entity would sell a good or service separately under similar circumstances—not just a straight-line allocation.
+                </p>
+                <div className="bg-primary/5 p-4 rounded-lg mt-4">
+                  <p className="flex items-center gap-2 font-medium">
+                    <Zap className="h-4 w-4 text-primary" />
+                    Pro Tip: Use a data-driven approach—such as cost-plus or adjusted market assessment—and update it periodically as your pricing evolves.
+                  </p>
+                </div>
               </div>
 
               <div>
-                <h3>4. Contract Modification Complexities</h3>
+                <h3 className="flex items-center gap-2 text-xl font-bold">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  4. Contract Modification Confusion
+                </h3>
                 <p>
-                  Treatment of contract modifications, particularly in long-term arrangements, often trips up accounting teams. The decision between prospective or cumulative catch-up adjustment requires thorough analysis.
+                  Accounting for contract modifications is one of the trickiest areas under ASC 606. Whether a change is treated prospectively or as a cumulative catch-up depends on whether the modification adds distinct goods or services and whether those additions are priced at SSP.
                 </p>
+                <p>
+                  Many companies either default to one method or fail to document the rationale for their approach—putting them at risk during audits.
+                </p>
+                <div className="bg-primary/5 p-4 rounded-lg mt-4">
+                  <p className="flex items-center gap-2 font-medium">
+                    <Zap className="h-4 w-4 text-primary" />
+                    Pro Tip: Treat every modification as a separate accounting event. Create a checklist to evaluate whether the modification constitutes a new contract, a continuation, or a combination.
+                  </p>
+                </div>
               </div>
 
               <div>
-                <h3>5. Inadequate Disclosure Documentation</h3>
+                <h3 className="flex items-center gap-2 text-xl font-bold">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                  5. Inadequate Disclosure Documentation
+                </h3>
                 <p>
-                  Many companies underestimate the extensive disclosure requirements under ASC 606, particularly around remaining performance obligations and significant judgments made in applying the standard.
+                  ASC 606's disclosure requirements are expansive—especially around judgments made, the timing of revenue recognition, and remaining performance obligations. Yet many companies treat disclosures as an afterthought, leading to incomplete or boilerplate language in financial statements.
                 </p>
+                <p>
+                  This not only raises red flags with auditors but also reduces transparency for investors and stakeholders.
+                </p>
+                <div className="bg-primary/5 p-4 rounded-lg mt-4">
+                  <p className="flex items-center gap-2 font-medium">
+                    <Zap className="h-4 w-4 text-primary" />
+                    Pro Tip: Build out detailed disclosure templates early and update them throughout the year—not just during year-end reporting.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <h2>How to Avoid These Pitfalls</h2>
+            <h2 className="flex items-center gap-3 text-2xl font-bold mt-12 mb-6">
+              <FileCheck className="h-6 w-6 text-primary" />
+              How to Avoid These Pitfalls
+            </h2>
+
+            <p className="mb-6">Here's a quick checklist to keep your revenue recognition process on track:</p>
+
             <ul className="space-y-3 my-6">
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <span>Implement robust contract review processes</span>
+                <span>Implement a robust contract review process</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <span>Document key judgments and assumptions contemporaneously</span>
+                <span>Document all key judgments and assumptions at the time decisions are made</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <span>Maintain detailed pricing and allocation methodologies</span>
+                <span>Maintain detailed and supportable SSP methodologies</span>
               </li>
               <li className="flex items-start gap-3">
                 <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <span>Regular training and updates for accounting staff</span>
+                <span>Train your accounting team regularly on ASC 606 updates and industry-specific challenges</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <span>Leverage AI and automation tools to identify inconsistencies and support internal controls</span>
               </li>
             </ul>
+
+            <h2 className="flex items-center gap-3 text-2xl font-bold mt-12 mb-6">
+              <Shield className="h-6 w-6 text-primary" />
+              Final Thoughts
+            </h2>
+            
+            <p className="text-lg leading-relaxed mb-6">
+              ASC 606 is here to stay—and while it's complex, it doesn't have to be overwhelming. By proactively addressing common pitfalls, documenting your positions, and investing in ongoing education and process improvement, your team can stay ahead of the curve and avoid costly misstatements.
+            </p>
 
             <div className="mt-16 flex justify-center">
               <Button asChild variant="outline" size="lg" className="gap-2">
