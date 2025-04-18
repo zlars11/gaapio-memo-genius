@@ -14,6 +14,8 @@ const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SubscriptionAgreement = lazy(() => import("./pages/SubscriptionAgreement"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const ASC606Pitfalls = lazy(() => import("./pages/ASC606Pitfalls"));
+const AIAccounting = lazy(() => import("./pages/AIAccounting"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -48,6 +50,8 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
+            <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+            <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
             <Route path="/ssa" element={<SubscriptionAgreement />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

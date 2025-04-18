@@ -9,7 +9,7 @@ const samplePosts = [
     title: "Why Technical Accounting Memos Matter",
     excerpt: "Discover why thorough documentation is essential for audit readiness and regulatory compliance.",
     date: "April 10, 2025",
-    author: "Sarah Johnson, CPA",
+    author: "Zack Larsen, CPA",
     imageUrl: "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png",
     category: "Best Practices"
   },
