@@ -3,13 +3,13 @@ import React from "react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export function SocialProofSection() {
-  // Updated companies with more descriptive placeholder logos
+  // Updated companies with made-up names
   const companies = [
-    { id: 1, name: "QuickBooks", logo: "quickbooks" },
-    { id: 2, name: "Xero", logo: "xero" },
-    { id: 3, name: "NetSuite", logo: "netsuite" },
-    { id: 4, name: "Sage", logo: "sage" },
-    { id: 5, name: "Intacct", logo: "intacct" },
+    { id: 1, name: "FinSync", logo: "finsync" },
+    { id: 2, name: "AccuLedger", logo: "acculedger" },
+    { id: 3, name: "DataStream", logo: "datastream" },
+    { id: 4, name: "CloudCore", logo: "cloudcore" },
+    { id: 5, name: "NexusBooks", logo: "nexusbooks" },
   ];
 
   return (
