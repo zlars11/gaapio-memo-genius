@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BlogPostCard } from "@/components/blog/BlogPostCard";
@@ -17,18 +16,18 @@ const samplePosts = [
     id: 2,
     title: "5 Common ASC 606 Pitfalls",
     excerpt: "Navigate the complexities of revenue recognition and avoid these frequent mistakes in your accounting memos.",
-    date: "April 5, 2025",
-    author: "Michael Chen, CPA",
-    imageUrl: "/lovable-uploads/313c4648-d406-46d1-a3f7-429f3a8ea0e4.png",
-    category: "Revenue Recognition"
+    date: "October 29, 2025",
+    author: "Zack Larsen, CPA",
+    imageUrl: "/lovable-uploads/76a4d290-2102-4790-88a8-8783b2d8ae44.png",
+    category: "Accounting Standards"
   },
   {
     id: 3,
     title: "How AI Is Changing the Accounting Landscape",
     excerpt: "Explore the impact of artificial intelligence on accounting workflows and documentation processes.",
     date: "March 28, 2025",
-    author: "David Miller, CPA",
-    imageUrl: "/lovable-uploads/ce4eb84f-1d6e-4138-98c9-0c8b95e6797b.png",
+    author: "Zack Larsen, CPA",
+    imageUrl: "/lovable-uploads/ead5c2ec-d8c2-47fb-aed5-a0e83c161e41.png",
     category: "Technology"
   }
 ];
