@@ -1,11 +1,10 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Brain, ArrowLeft, Robot, Zap, MicrochipIcon, Settings2 } from "lucide-react";
+import { Brain, ArrowLeft, Bot, Zap, MicrochipIcon, Settings2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AIAccounting() {
@@ -29,7 +28,7 @@ export default function AIAccounting() {
               
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Robot className="h-4 w-4" />
+                  <Bot className="h-4 w-4" />
                   <span>By David Miller, CPA</span>
                 </div>
                 <span>•</span>
