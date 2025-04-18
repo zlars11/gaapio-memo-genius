@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -14,6 +13,7 @@ const FAQ = lazy(() => import("./pages/FAQ"));
 const Blog = lazy(() => import("./pages/Blog"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SubscriptionAgreement = lazy(() => import("./pages/SubscriptionAgreement"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -47,6 +47,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
             <Route path="/ssa" element={<SubscriptionAgreement />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

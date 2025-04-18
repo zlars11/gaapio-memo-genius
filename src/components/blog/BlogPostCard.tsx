@@ -1,6 +1,6 @@
-
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { memo } from "react";
+import { Link } from "react-router-dom";
 
 interface BlogPost {
   id: number;
@@ -17,6 +17,8 @@ interface BlogPostCardProps {
 }
 
 export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardProps) {
+  const postSlug = post.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  
   return (
     <Card className="h-full flex flex-col overflow-hidden hover:shadow-md transition-shadow">
       <div className="aspect-video w-full overflow-hidden">
@@ -38,9 +40,9 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
           <span className="text-xs text-muted-foreground">{post.date}</span>
         </div>
         <h3 className="text-lg sm:text-xl font-bold leading-tight hover:text-primary transition-colors">
-          <a href="#" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
+          <Link to={`/blog/${postSlug}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
             {post.title}
-          </a>
+          </Link>
         </h3>
       </CardHeader>
       <CardContent className="py-4 flex-grow">
@@ -50,13 +52,13 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
       </CardContent>
       <CardFooter className="flex items-center justify-between pt-0">
         <span className="text-xs text-muted-foreground">By {post.author}</span>
-        <a 
-          href="#" 
+        <Link 
+          to={`/blog/${postSlug}`}
           className="text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
           aria-label={`Read more about ${post.title}`}
         >
           Read More
-        </a>
+        </Link>
       </CardFooter>
     </Card>
   );
