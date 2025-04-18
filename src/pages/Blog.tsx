@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BlogPostCard } from "@/components/blog/BlogPostCard";
@@ -27,7 +28,7 @@ const samplePosts = [
     excerpt: "Explore the impact of artificial intelligence on accounting workflows and documentation processes.",
     date: "March 28, 2025",
     author: "Zack Larsen, CPA",
-    imageUrl: "/lovable-uploads/ead5c2ec-d8c2-47fb-aed5-a0e83c161e41.png",
+    imageUrl: "/lovable-uploads/0ca75d1e-cef9-48b9-b1fa-91dca93bbddc.png",
     category: "Technology"
   }
 ];
