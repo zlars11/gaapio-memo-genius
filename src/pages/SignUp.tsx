@@ -31,7 +31,7 @@ export default function SignUp() {
       existingSignups.push({
         email: `user${existingSignups.length + 1}@example.com`, // Placeholder
         plan: plan,
-        amount: plan === 'monthly' ? '$49.99' : '$499.99',
+        amount: plan === 'monthly' ? '$299' : '$2,499',
         date: new Date().toISOString()
       });
       localStorage.setItem("userSignups", JSON.stringify(existingSignups));
@@ -82,11 +82,12 @@ export default function SignUp() {
                 <TabsContent value="monthly">
                   <PricingCard
                     title="Monthly Subscription"
-                    price="$49.99"
+                    price="$299"
                     description="per month, billed monthly"
                     features={[
                       "Unlimited AI-generated memos",
                       "Access to all memo templates",
+                      "Up to 3 users",
                       "Priority support",
                       "Continuous updates"
                     ]}
@@ -99,10 +100,11 @@ export default function SignUp() {
                 <TabsContent value="annual">
                   <PricingCard
                     title="Annual Subscription"
-                    price="$499.99"
-                    description="per year (save 16%)"
+                    price="$2,499"
+                    description="per year (save 30%)"
                     features={[
                       "All monthly plan features",
+                      "Up to 3 users",
                       "Free premium templates",
                       "Team collaboration tools",
                       "API access"
