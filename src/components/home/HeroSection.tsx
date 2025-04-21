@@ -7,8 +7,12 @@ import { Link } from "react-router-dom";
 export const HeroSection = memo(function HeroSection() {
   const [isDark, setIsDark] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Mark that we're in the client environment
+    setIsClient(true);
+    
     // Initialize based on system/user preference for dark mode
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
@@ -78,7 +82,7 @@ export const HeroSection = memo(function HeroSection() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
           <Button size="lg" asChild>
-            {showSignUp ? (
+            {isClient && showSignUp ? (
               <Link to="/signup">Sign Up Now</Link>
             ) : (
               <a href="#waitlist">Join the Waitlist</a>

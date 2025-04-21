@@ -8,7 +8,6 @@ import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { WaitlistSection } from "@/components/home/WaitlistSection";
-import { Card, CardContent } from "@/components/ui/card";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export default function Index() {
@@ -18,8 +17,12 @@ export default function Index() {
     contactCount: 0,
     userCount: 0
   });
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Mark that we're in the client environment
+    setIsClient(true);
+    
     // Check if metrics should be displayed
     const shouldShowMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
     const isAdmin = localStorage.getItem("admin_authenticated") === "true";
@@ -28,15 +31,25 @@ export default function Index() {
     
     if (shouldShowMetrics && isAdmin) {
       // Load metrics data
-      const waitlistData = JSON.parse(localStorage.getItem("waitlistSubmissions") || "[]");
-      const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
-      const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
-      
-      setMetrics({
-        waitlistCount: waitlistData.length,
-        contactCount: contactData.length,
-        userCount: userData.length
-      });
+      try {
+        const waitlistData = JSON.parse(localStorage.getItem("waitlistSubmissions") || "[]");
+        const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
+        const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
+        
+        setMetrics({
+          waitlistCount: waitlistData.length,
+          contactCount: contactData.length,
+          userCount: userData.length
+        });
+      } catch (error) {
+        console.error("Error loading metrics data:", error);
+        // Fallback to default values if there's an error
+        setMetrics({
+          waitlistCount: 0,
+          contactCount: 0,
+          userCount: 0
+        });
+      }
     }
   }, []);
   
@@ -44,7 +57,7 @@ export default function Index() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      {showMetrics && (
+      {isClient && showMetrics && (
         <div className="bg-accent/30 py-3 border-b border-border/10">
           <ResponsiveContainer>
             <div className="grid grid-cols-3 gap-4">
