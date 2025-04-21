@@ -1,8 +1,26 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export function SocialProofSection() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    // Check feature toggle setting
+    const savedToggles = localStorage.getItem("featureToggles");
+    if (savedToggles) {
+      const toggles = JSON.parse(savedToggles);
+      const footerLogosToggle = toggles.find((toggle: any) => toggle.id === "footer-logos");
+      if (footerLogosToggle) {
+        setIsVisible(footerLogosToggle.enabled);
+      }
+    }
+  }, []);
+
+  if (!isVisible) {
+    return null;
+  }
+
   // Updated companies with made-up names
   const companies = [
     { id: 1, name: "FinSync", logo: "finsync" },
@@ -50,4 +68,3 @@ export function SocialProofSection() {
     </section>
   );
 }
-

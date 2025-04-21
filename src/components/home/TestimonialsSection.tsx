@@ -1,7 +1,26 @@
 
+import { useState, useEffect } from "react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export function TestimonialsSection() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    // Check feature toggle setting
+    const savedToggles = localStorage.getItem("featureToggles");
+    if (savedToggles) {
+      const toggles = JSON.parse(savedToggles);
+      const testimonialsToggle = toggles.find((toggle: any) => toggle.id === "testimonials");
+      if (testimonialsToggle) {
+        setIsVisible(testimonialsToggle.enabled);
+      }
+    }
+  }, []);
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <section id="testimonials" className="py-20 md:py-32 bg-accent/50" aria-labelledby="testimonials-heading">
       <ResponsiveContainer>
@@ -65,4 +84,3 @@ export function TestimonialsSection() {
     </section>
   );
 }
-
