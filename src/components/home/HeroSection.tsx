@@ -2,12 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
 import { useEffect, useState, memo } from "react";
+import { Link } from "react-router-dom";
 
 export const HeroSection = memo(function HeroSection() {
   const [isDark, setIsDark] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
 
   useEffect(() => {
-    // Initialize based on system/user preference
+    // Initialize based on system/user preference for dark mode
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
     
@@ -34,6 +36,10 @@ export const HeroSection = memo(function HeroSection() {
     };
     
     window.addEventListener('storage', handleStorageEvent);
+
+    // Check for CTA preference
+    const ctaSetting = localStorage.getItem("homepageCta");
+    setShowSignUp(ctaSetting === "signup");
     
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
@@ -72,7 +78,11 @@ export const HeroSection = memo(function HeroSection() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
           <Button size="lg" asChild>
-            <a href="#waitlist">Join the Waitlist</a>
+            {showSignUp ? (
+              <Link to="/signup">Sign Up Now</Link>
+            ) : (
+              <a href="#waitlist">Join the Waitlist</a>
+            )}
           </Button>
           <Button size="lg" variant="outline" asChild>
             <a href="#how-it-works" onClick={scrollToHowItWorks}>See How It Works</a>

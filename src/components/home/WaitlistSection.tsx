@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function WaitlistSection() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -35,8 +36,8 @@ export function WaitlistSection() {
           <div className="w-full max-w-md">
             {showSignUp ? (
               <div className="flex flex-col items-center">
-                <Button size="lg" className="w-full">
-                  Sign Up Now
+                <Button size="lg" className="w-full" asChild>
+                  <Link to="/signup">Sign Up Now</Link>
                 </Button>
                 <p className="text-sm text-muted-foreground mt-4">
                   By signing up, you agree to our Terms of Service and Privacy Policy
