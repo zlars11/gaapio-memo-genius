@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo"; // Import Logo
 
 export function Header() {
   const location = useLocation();
@@ -36,8 +37,9 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="font-bold text-xl">
-          Gaapio
+        {/* Logo at top-left for both light & dark modes */}
+        <Link to="/" className="flex items-center h-full group" aria-label="Go to homepage">
+          <Logo className="h-8 w-auto transition-all duration-150 group-hover:scale-105" />
         </Link>
         <nav className="flex items-center space-x-4">
           <Link
@@ -64,10 +66,9 @@ export function Header() {
           >
             Blog
           </Link>
-          {/* Removed Notes and Admin tab */}
           {/* Theme Toggle */}
           <ThemeToggle />
-          {/* Restore CTA button in top right */}
+          {/* CTA button in top right */}
           <Button
             size="sm"
             asChild
