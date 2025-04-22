@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -51,7 +50,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
   const [plan, setPlan] = useState(user.plan || "Emerging");
   const [status, setStatus] = useState(user.status || "Active");
   const [amount, setAmount] = useState(user.amount || "");
-  // Term is optional: default to 'Annual'
+  // Term defaults to 'Annual'
   const [term, setTerm] = useState(user.term || "Annual");
   const [saving, setSaving] = useState(false);
   const [deleteStep, setDeleteStep] = useState<null | "passcode">();
@@ -59,10 +58,6 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
   const [deleting, setDeleting] = useState(false);
 
   const { toast } = useToast();
-
-  // If no `term` provided, only allow Annual (self signup default/only)
-  const termOptions = ["Annual", "Monthly", "Quarterly"];
-  const isSelfSignup = !user.term || user.term === "Annual";
 
   const handleSave = async () => {
     setSaving(true);
@@ -137,6 +132,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
+          {/* First Name */}
           <div>
             <Label htmlFor="firstname">First Name</Label>
             <Input
@@ -146,6 +142,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               onChange={(e) => setFirstname(e.target.value)}
             />
           </div>
+          {/* Last Name */}
           <div>
             <Label htmlFor="lastname">Last Name</Label>
             <Input
@@ -155,6 +152,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               onChange={(e) => setLastname(e.target.value)}
             />
           </div>
+          {/* Email */}
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -164,6 +162,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          {/* Company */}
           <div>
             <Label htmlFor="company">Company</Label>
             <Input
@@ -173,6 +172,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               onChange={(e) => setCompany(e.target.value)}
             />
           </div>
+          {/* Phone */}
           <div>
             <Label htmlFor="phone">Phone</Label>
             <Input
@@ -182,6 +182,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
+          {/* Plan dropdown */}
           <div>
             <Label htmlFor="plan">Plan</Label>
             <Select value={plan} onValueChange={setPlan}>
@@ -195,32 +196,21 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               </SelectContent>
             </Select>
           </div>
+          {/* Term dropdown (always editable) */}
           <div>
             <Label htmlFor="term">Term</Label>
-            <Select
-              value={term}
-              onValueChange={setTerm}
-              disabled={isSelfSignup}
-            >
+            <Select value={term} onValueChange={setTerm}>
               <SelectTrigger id="term">
                 <SelectValue placeholder="Select term" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Annual">Annual</SelectItem>
-                {!isSelfSignup && (
-                  <>
-                    <SelectItem value="Monthly">Monthly</SelectItem>
-                    <SelectItem value="Quarterly">Quarterly</SelectItem>
-                  </>
-                )}
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="Quarterly">Quarterly</SelectItem>
               </SelectContent>
             </Select>
-            {isSelfSignup && (
-              <div className="text-xs text-muted-foreground mt-1">
-                Self sign-up users can only have Annual term.
-              </div>
-            )}
           </div>
+          {/* Status dropdown */}
           <div>
             <Label htmlFor="status">Status</Label>
             <Select value={status} onValueChange={setStatus}>
@@ -233,6 +223,7 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
               </SelectContent>
             </Select>
           </div>
+          {/* Amount */}
           <div>
             <Label htmlFor="amount">Amount</Label>
             <Input

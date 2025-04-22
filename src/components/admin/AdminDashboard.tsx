@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HomepageCtaToggle } from "@/components/admin/HomepageCtaToggle";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { FeatureToggles } from "@/components/admin/FeatureToggles";
 
 export function AdminDashboard() {
   const [waitlistCount, setWaitlistCount] = useState(0);
@@ -42,6 +42,18 @@ export function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <HomepageCtaToggle />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Homepage Feature Toggles</CardTitle>
+          <CardDescription>
+            Enable or disable features on your website (testimonials, pricing, partner logos)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <FeatureToggles />
         </CardContent>
       </Card>
       
