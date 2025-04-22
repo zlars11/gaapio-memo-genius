@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Label } from "@/components/ui/label";
 
 interface UserSignup {
   id: string;
@@ -78,54 +79,78 @@ export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
           <DialogDescription>Update user details, payments and license info.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
-          <Input
-            label="First Name"
-            placeholder="First Name"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-          />
-          <Input
-            label="Last Name"
-            placeholder="Last Name"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-          />
-          <Input
-            label="Email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            label="Company"
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
-          <Input
-            label="Phone"
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <Input
-            label="Plan"
-            placeholder="Plan"
-            value={plan}
-            onChange={(e) => setPlan(e.target.value)}
-          />
-          <Input
-            label="Status"
-            placeholder="Status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          />
-          <Input
-            label="Amount"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+          <div>
+            <Label htmlFor="firstname">First Name</Label>
+            <Input
+              id="firstname"
+              placeholder="First Name"
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="lastname">Last Name</Label>
+            <Input
+              id="lastname"
+              placeholder="Last Name"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="company">Company</Label>
+            <Input
+              id="company"
+              placeholder="Company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="plan">Plan</Label>
+            <Input
+              id="plan"
+              placeholder="Plan"
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="status">Status</Label>
+            <Input
+              id="status"
+              placeholder="Status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="amount">Amount</Label>
+            <Input
+              id="amount"
+              placeholder="Amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button
