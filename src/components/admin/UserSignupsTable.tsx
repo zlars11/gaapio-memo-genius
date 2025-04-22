@@ -13,6 +13,9 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { EditUserDialog } from "./EditUserDialog";
+import { Pen } from "lucide-react";
 
 interface UserSignup {
   id: string;
@@ -32,11 +35,11 @@ export function UserSignupsTable() {
   const [filteredUsers, setFilteredUsers] = useState<UserSignup[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [editUser, setEditUser] = useState<UserSignup | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      // The fields returned match table column names which are lowercase.
       const { data, error } = await supabase
         .from("user_signups")
         .select("*")
@@ -82,6 +85,27 @@ export function UserSignupsTable() {
     }
   };
 
+  const handleOpenEdit = (user: UserSignup) => {
+    setEditUser(user);
+  };
+
+  const handleCloseEdit = (changed: boolean) => {
+    setEditUser(null);
+    if (changed) {
+      // refetch
+      (async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("user_signups")
+          .select("*")
+          .order("signupdate", { ascending: false });
+        setUsers(data || []);
+        setFilteredUsers(data || []);
+        setLoading(false);
+      })();
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -110,12 +134,13 @@ export function UserSignupsTable() {
               <TableHead>Plan</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Sign-up Date</TableHead>
+              <TableHead className="text-right">Edit</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
                   Loading...
                 </TableCell>
               </TableRow>
@@ -139,17 +164,35 @@ export function UserSignupsTable() {
                       ? new Date(user.signupdate).toLocaleDateString()
                       : "—"}
                   </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="ml-auto"
+                      onClick={() => handleOpenEdit(user)}
+                    >
+                      <Pen className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
                   {searchQuery ? "No matching users found." : "No users have signed up yet."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+        {editUser && (
+          <EditUserDialog
+            user={editUser}
+            open={!!editUser}
+            onClose={handleCloseEdit}
+          />
+        )}
       </CardContent>
     </Card>
   );
