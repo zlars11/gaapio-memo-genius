@@ -15,8 +15,16 @@ import { SignUpInfoForm } from "./SignUpInfoForm";
 import { SignUpPaymentForm } from "./SignUpPaymentForm";
 import { SignUpSummary } from "./SignUpSummary";
 
-// TODO: PLACE your Zapier webhook URL here
-const ZAPIER_WEBHOOK_URL = "";
+// Obtain Zapier webhook URL from localStorage so it can be set from admin settings
+function getUserSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userSignupWebhookUrl") || "";
+  }
+  return "";
+}
+
+// REMOVE hardcoded Zapier webhook
+// const ZAPIER_WEBHOOK_URL = "";
 
 const ANNUAL_PRICE = 249900; // in cents ($2,499.00)
 const ANNUAL_LABEL = "$2,499";
@@ -76,8 +84,15 @@ export default function SignUp() {
 
   // Helper: Trigger zapier with all form data
   async function triggerZapier(allData: any) {
+    // Fetch dynamically from localStorage
+    const ZAPIER_WEBHOOK_URL = getUserSignupZapierWebhookUrl();
+
     if (!ZAPIER_WEBHOOK_URL) {
-      // Zapier not configured. Optionally show a toast.
+      toast({
+        title: "Zapier not configured",
+        description: "No Zapier webhook URL set for User Signups. Please set it in the Admin panel.",
+        variant: "destructive",
+      });
       return;
     }
     try {
