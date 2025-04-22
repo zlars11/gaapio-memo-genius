@@ -1,6 +1,5 @@
+
 import { useState, useEffect, useCallback } from "react";
-import { useTheme } from "@/components/theme-provider";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -12,11 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, useLocation } from "react-router-dom";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Moon, Sun } from "lucide-react";
 
 export function Header() {
-  const { setTheme, theme } = useTheme();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const location = useLocation();
 
   const handleLogin = useCallback(() => {
     localStorage.setItem("admin_authenticated", "true");
@@ -70,7 +71,9 @@ export function Header() {
           </Link>
           <Link
             to="/notes"
-            className={`font-medium px-3 py-2 rounded ${useLocation().pathname === "/notes" ? "bg-accent" : ""}`}
+            className={`font-medium px-3 py-2 rounded ${
+              location.pathname === "/notes" ? "bg-accent" : ""
+            }`}
           >
             Notes
           </Link>
@@ -83,14 +86,8 @@ export function Header() {
             </Link>
           ) : null}
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          >
-            {theme === "light" ? <MoonIcon /> : <SunIcon />}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+          {/* Theme Toggle: shows moon or sun icon */}
+          <ThemeToggle />
 
           {!isAuthenticated ? (
             <Button size="sm" onClick={handleLogin}>
@@ -109,7 +106,9 @@ export function Header() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Log out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}

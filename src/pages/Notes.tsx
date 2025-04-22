@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 
 // Note type matches the database columns
 type Note = {
@@ -23,7 +22,8 @@ function NoteForm({ onCreate }: { onCreate: () => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Insert new note
-    const { error } = await supabase
+    // Use any to skip types issue from missing generated types for notes table
+    const { error } = await (supabase as any)
       .from("notes")
       .insert({ title, content });
     if (!error) {
@@ -58,7 +58,7 @@ export default function Notes() {
   // Fetch notes
   const fetchNotes = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("notes")
       .select("*")
       .order("created_at", { ascending: false });
@@ -67,7 +67,7 @@ export default function Notes() {
   };
 
   const deleteNote = async (id: string) => {
-    await supabase.from("notes").delete().eq("id", id);
+    await (supabase as any).from("notes").delete().eq("id", id);
     fetchNotes();
   };
 
