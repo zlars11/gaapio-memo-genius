@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -12,17 +13,32 @@ import { Label } from "@/components/ui/label";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { supabase } from "@/integrations/supabase/client";
 
-// ⚠️ PLACE your Zapier webhook URL here or, ideally, manage it in admin
+// TODO: PLACE your Zapier webhook URL here
 const ZAPIER_WEBHOOK_URL = "";
 
 const ANNUAL_PRICE = 249900; // in cents ($2,499.00)
 const ANNUAL_LABEL = "$2,499";
 
+// Helper to match DB column names
+function mapUserToDb(info: any) {
+  return {
+    firstname: info.firstName,
+    lastname: info.lastName,
+    email: info.email,
+    phone: info.phone,
+    company: info.company,
+    plan: "annual",
+    amount: ANNUAL_LABEL,
+    signupdate: new Date().toISOString(),
+    status: "active",
+  };
+}
+
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userInfo, setUserInfo] = useState<any>(null);
+  const [paymentInfo, setPaymentInfo] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,7 +53,7 @@ export default function SignUp() {
     },
   });
 
-  // Simulate payment form for step 2
+  // Payment form for step 2
   const paymentForm = useForm({
     defaultValues: {
       cardNumber: "",
@@ -47,77 +63,64 @@ export default function SignUp() {
     },
   });
 
-  // Helper for inserting signups into Supabase "user_signups" table
+  // Helper: insert into Supabase user_signups table
   async function createUserSignup(info: any) {
-    // You may want more robust error handling and deduplication
-    const { data, error } = await supabase.from("user_signups").insert([
-      {
-        firstName: info.firstName,
-        lastName: info.lastName,
-        email: info.email,
-        phone: info.phone,
-        company: info.company,
-        plan: "annual",
-        amount: ANNUAL_LABEL,
-        signupDate: new Date().toISOString(),
-        status: "active",
-      }
-    ]);
-    if (error) {
-      throw new Error(error.message);
-    }
+    const dbInfo = mapUserToDb(info);
+    const { data, error } = await supabase.from("user_signups").insert([dbInfo]);
+    if (error) throw new Error(error.message);
     return data;
   }
 
-  async function triggerZapier(info: any) {
+  // Helper: Trigger zapier with all form data
+  async function triggerZapier(allData: any) {
     if (!ZAPIER_WEBHOOK_URL) {
-      // Uncomment the next line if you want to enforce a webhook url before going live, or show a toast instead.
-      // toast({ title: "Zapier Not Set", description: "No Zapier webhook configured.", variant: "destructive" });
+      // Zapier not configured. Optionally show a toast.
       return;
     }
     try {
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        mode: "no-cors", // to skip CORS errors
-        body: JSON.stringify(info),
+        mode: "no-cors",
+        body: JSON.stringify(allData),
       });
     } catch (err) {
-      // Optionally handle error, but "no-cors" will usually not throw
+      // Ignore non-blocking errors (no-cors)
     }
   }
 
-  // Handle info form submit (Step 1)
-  const onInfoSubmit = async (data: any) => {
+  // STEP 1: User info form submit
+  const onInfoSubmit = (data: any) => {
     setIsLoading(true);
-    setTimeout(() => { // Small UX pause for loader consistency
+    setTimeout(() => {
       setIsLoading(false);
       setUserInfo(data);
       setStep(2);
     }, 300);
   };
 
-  // Handle payment and final submit (Step 2)
+  // STEP 2: Payment info form submit
   const onPaymentSubmit = async (paymentData: any) => {
     setIsLoading(true);
 
-    // Simulate stripe payment process (replace with real stripe integration as needed)
     setTimeout(async () => {
-      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: ANNUAL_LABEL, signupDate: new Date().toISOString() };
-      // Save to Supabase
+      setPaymentInfo(paymentData);
+      // Save only the user info (personal, not card!) to Supabase for compliance
       try {
-        await createUserSignup(allData);
+        await createUserSignup(userInfo);
       } catch (err: any) {
         setIsLoading(false);
         toast({ title: "Submission failed", description: err.message, variant: "destructive" });
         return;
       }
 
-      // Trigger Zapier email
+      // Send allData (user details + payment) to Zapier for notification
+      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: ANNUAL_LABEL, signupDate: new Date().toISOString() };
       await triggerZapier(allData);
 
       setIsLoading(false);
-      setPaymentSuccessful(true);
+      setStep(3);
+
       toast({
         title: "Thank you for subscribing to Gaapio!",
         description: "We've received your info. You'll receive a confirmation soon.",
@@ -125,12 +128,34 @@ export default function SignUp() {
     }, 1200);
   };
 
+  // Helper: show summary
+  function InfoSummary() {
+    return (
+      <ul className="text-left mx-auto mb-6 max-w-md space-y-2">
+        <li><span className="font-medium">First Name:</span> {userInfo.firstName}</li>
+        <li><span className="font-medium">Last Name:</span> {userInfo.lastName}</li>
+        <li><span className="font-medium">Email:</span> {userInfo.email}</li>
+        <li><span className="font-medium">Phone:</span> {userInfo.phone}</li>
+        <li><span className="font-medium">Company:</span> {userInfo.company}</li>
+        <li><span className="font-medium">Plan:</span> Annual Subscription ({ANNUAL_LABEL})</li>
+        {paymentInfo && (
+          <>
+            <li><span className="font-medium">Card Number:</span> ••••{(paymentInfo.cardNumber || "").slice(-4)}</li>
+            <li><span className="font-medium">Expiry:</span> {paymentInfo.cardExpiry}</li>
+            <li><span className="font-medium">Billing Zip:</span> {paymentInfo.billingZip}</li>
+          </>
+        )}
+      </ul>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 pt-28 pb-16">
         <ResponsiveContainer>
-          {paymentSuccessful ? (
+          {step === 3 ? (
+            // Success/thank you step
             <div className="text-center py-12">
               <div className="flex justify-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
@@ -141,6 +166,16 @@ export default function SignUp() {
               <p className="text-muted-foreground max-w-md mx-auto mb-8">
                 We've sent a confirmation email with your account details. You'll be able to access your account shortly.
               </p>
+              <div className="mb-8">
+                <Card className="inline-block bg-muted/40 text-left">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Your Submitted Info</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {userInfo && <InfoSummary />}
+                  </CardContent>
+                </Card>
+              </div>
               <Button onClick={() => navigate("/")} size="lg">
                 Return to Homepage
               </Button>
@@ -279,6 +314,18 @@ export default function SignUp() {
                     {isLoading ? "Processing Payment..." : "Complete Purchase"}
                   </Button>
                 </form>
+              )}
+              {step === 2 && userInfo && (
+                <div className="max-w-2xl mx-auto mt-4 mb-4">
+                  <Card className="bg-background">
+                    <CardHeader>
+                      <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <InfoSummary />
+                    </CardContent>
+                  </Card>
+                </div>
               )}
             </>
           )}
