@@ -26,48 +26,21 @@ export function ContactTable() {
   const [filteredSubmissions, setFilteredSubmissions] = useState<ContactSubmission[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock data - this would be replaced with actual API calls
   useEffect(() => {
-    // Simulate getting data from localStorage (would be an API in real app)
+    // Only use actual submissions from localStorage. No dummy/mock data.
     const savedSubmissions = localStorage.getItem("contactSubmissions");
-    
+    let parsed: ContactSubmission[] = [];
     if (savedSubmissions) {
-      const parsedSubmissions = JSON.parse(savedSubmissions);
-      setSubmissions(parsedSubmissions);
-      setFilteredSubmissions(parsedSubmissions);
-    } else {
-      // Create mock data if none exists
-      const mockData: ContactSubmission[] = [
-        { 
-          id: "1", 
-          name: "Michael Brown", 
-          email: "michael@example.com", 
-          message: "I'm interested in learning more about your ASC 606 solutions.", 
-          date: "2025-04-10" 
-        },
-        { 
-          id: "2", 
-          name: "Sarah Wilson", 
-          email: "sarah@example.com", 
-          message: "When do you plan to launch the full product?", 
-          date: "2025-04-12" 
-        },
-        { 
-          id: "3", 
-          name: "Robert Jones", 
-          email: "robert@example.com", 
-          message: "Can you tell me more about your pricing plans?", 
-          date: "2025-04-14" 
-        }
-      ];
-      
-      localStorage.setItem("contactSubmissions", JSON.stringify(mockData));
-      setSubmissions(mockData);
-      setFilteredSubmissions(mockData);
+      try {
+        parsed = JSON.parse(savedSubmissions);
+      } catch {
+        parsed = [];
+      }
     }
+    setSubmissions(parsed);
+    setFilteredSubmissions(parsed);
   }, []);
 
-  // Filter submissions based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredSubmissions(submissions);
@@ -140,3 +113,4 @@ export function ContactTable() {
     </div>
   );
 }
+

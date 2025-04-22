@@ -26,48 +26,21 @@ export function WaitlistTable() {
   const [filteredSubmissions, setFilteredSubmissions] = useState<WaitlistSubmission[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock data - this would be replaced with actual API calls
   useEffect(() => {
-    // Simulate getting data from localStorage (would be an API in real app)
+    // Only use actual submissions from localStorage. No dummy/mock data.
     const savedSubmissions = localStorage.getItem("waitlistSubmissions");
-    
+    let parsed: WaitlistSubmission[] = [];
     if (savedSubmissions) {
-      const parsedSubmissions = JSON.parse(savedSubmissions);
-      setSubmissions(parsedSubmissions);
-      setFilteredSubmissions(parsedSubmissions);
-    } else {
-      // Create mock data if none exists
-      const mockData: WaitlistSubmission[] = [
-        { 
-          id: "1", 
-          name: "Jane Smith", 
-          email: "jane.smith@example.com", 
-          company: "Tech Corp", 
-          date: "2025-04-15" 
-        },
-        { 
-          id: "2", 
-          name: "John Doe", 
-          email: "john.doe@example.com", 
-          company: "Finance Inc", 
-          date: "2025-04-16" 
-        },
-        { 
-          id: "3", 
-          name: "Alex Johnson", 
-          email: "alex@example.com", 
-          company: "Design Studio", 
-          date: "2025-04-18" 
-        }
-      ];
-      
-      localStorage.setItem("waitlistSubmissions", JSON.stringify(mockData));
-      setSubmissions(mockData);
-      setFilteredSubmissions(mockData);
+      try {
+        parsed = JSON.parse(savedSubmissions);
+      } catch {
+        parsed = [];
+      }
     }
+    setSubmissions(parsed);
+    setFilteredSubmissions(parsed);
   }, []);
 
-  // Filter submissions based on search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredSubmissions(submissions);
@@ -140,3 +113,4 @@ export function WaitlistTable() {
     </div>
   );
 }
+

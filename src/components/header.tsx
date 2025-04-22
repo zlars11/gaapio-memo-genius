@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -23,6 +22,7 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -50,13 +50,22 @@ export function Header() {
       attributes: true,
       attributeFilter: ["class"],
     });
-    
+
+    // NEW: Listen for admin toggle to show sign up or waitlist button
+    const localStorageCtaCheck = () => {
+      const cta = localStorage.getItem("homepageCta");
+      setShowSignUp(cta === "signup");
+    };
+    localStorageCtaCheck();
+    window.addEventListener("storage", localStorageCtaCheck);
+
     window.addEventListener("scroll", handleScroll);
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
       darkModeQuery.removeEventListener("change", handleChange);
       observer.disconnect();
+      window.removeEventListener("storage", localStorageCtaCheck);
     };
   }, []);
 
@@ -174,7 +183,11 @@ export function Header() {
           </NavigationMenu>
           
           <Button asChild>
-            <a href="#waitlist">Join Waitlist</a>
+            {showSignUp ? (
+              <Link to="/signup">Sign Up Now</Link>
+            ) : (
+              <a href="#waitlist">Join Waitlist</a>
+            )}
           </Button>
           <ThemeToggle />
         </nav>
@@ -250,7 +263,11 @@ export function Header() {
                   Contact
                 </Link>
                 <Button className="mt-4" asChild>
-                  <a href="#waitlist">Join Waitlist</a>
+                  {showSignUp ? (
+                    <Link to="/signup">Sign Up Now</Link>
+                  ) : (
+                    <a href="#waitlist">Join Waitlist</a>
+                  )}
                 </Button>
               </nav>
             </SheetContent>
