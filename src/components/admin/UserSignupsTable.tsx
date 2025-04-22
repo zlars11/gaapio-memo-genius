@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Table, 
   TableBody, 
@@ -26,35 +27,26 @@ export function UserSignupsTable() {
   const [users, setUsers] = useState<UserSignup[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserSignup[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load user signups from localStorage
-    const savedUsers = localStorage.getItem("userSignups");
-    if (savedUsers) {
-      // Support both previous array/object formats
-      let parsed = [];
-      try {
-        parsed = JSON.parse(savedUsers);
-        // Normalize structure
-        if (Array.isArray(parsed)) {
-          parsed = parsed.map((u: any, idx) => ({
-            id: u.id || `auto_${(u.email || "")}_${idx}`,
-            name: u.name || "",
-            email: u.email || "",
-            plan: u.plan || (u.amount && u.amount.includes("Annual") ? "Annual" : "Monthly"),
-            status: "active",
-            signupDate: u.signupDate || u.date || new Date().toISOString(),
-          }));
-        }
-      } catch (err) {
-        parsed = [];
+    async function fetchData() {
+      setLoading(true);
+      // Try to fetch from the 'user_signups' table
+      const { data, error } = await (supabase as any)
+        .from("user_signups")
+        .select("*")
+        .order("signupDate", { ascending: false });
+      if (error) {
+        setUsers([]);
+        setFilteredUsers([]);
+      } else {
+        setUsers(data);
+        setFilteredUsers(data);
       }
-      setUsers(parsed);
-      setFilteredUsers(parsed);
-    } else {
-      setUsers([]);
-      setFilteredUsers([]);
+      setLoading(false);
     }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -62,7 +54,7 @@ export function UserSignupsTable() {
       setFilteredUsers(users);
     } else {
       const filtered = users.filter(
-        (user) =>
+        (user: UserSignup) =>
           (user.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.plan || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -114,7 +106,13 @@ export function UserSignupsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.length > 0 ? (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : filteredUsers.length > 0 ? (
               filteredUsers.map((user, idx) => (
                 <TableRow key={user.id || user.email || idx}>
                   <TableCell className="font-medium">{user.name || "—"}</TableCell>
@@ -125,7 +123,11 @@ export function UserSignupsTable() {
                       {user.status ? (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : "Active"}
                     </Badge>
                   </TableCell>
-                  <TableCell>{new Date(user.signupDate).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {user.signupDate
+                      ? new Date(user.signupDate).toLocaleDateString()
+                      : "—"}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -141,4 +143,3 @@ export function UserSignupsTable() {
     </Card>
   );
 }
-

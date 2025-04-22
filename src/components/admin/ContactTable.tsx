@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Table, 
   TableBody, 
@@ -25,20 +26,26 @@ export function ContactTable() {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<ContactSubmission[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Only use actual submissions from localStorage. No dummy/mock data.
-    const savedSubmissions = localStorage.getItem("contactSubmissions");
-    let parsed: ContactSubmission[] = [];
-    if (savedSubmissions) {
-      try {
-        parsed = JSON.parse(savedSubmissions);
-      } catch {
-        parsed = [];
+    async function fetchData() {
+      setLoading(true);
+      // Try to fetch from the 'contact_submissions' table
+      const { data, error } = await (supabase as any)
+        .from("contact_submissions")
+        .select("*")
+        .order("date", { ascending: false });
+      if (error) {
+        setSubmissions([]);
+        setFilteredSubmissions([]);
+      } else {
+        setSubmissions(data);
+        setFilteredSubmissions(data);
       }
+      setLoading(false);
     }
-    setSubmissions(parsed);
-    setFilteredSubmissions(parsed);
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -46,10 +53,10 @@ export function ContactTable() {
       setFilteredSubmissions(submissions);
     } else {
       const filtered = submissions.filter(
-        (submission) =>
-          submission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          submission.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          submission.message.toLowerCase().includes(searchQuery.toLowerCase())
+        (submission: ContactSubmission) =>
+          (submission.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (submission.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (submission.message || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredSubmissions(filtered);
     }
@@ -85,13 +92,23 @@ export function ContactTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredSubmissions.length > 0 ? (
-                filteredSubmissions.map((submission) => (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              ) : filteredSubmissions.length > 0 ? (
+                filteredSubmissions.map((submission: ContactSubmission) => (
                   <TableRow key={submission.id}>
                     <TableCell className="font-medium">{submission.name}</TableCell>
                     <TableCell>{submission.email}</TableCell>
                     <TableCell className="max-w-xs truncate">{submission.message}</TableCell>
-                    <TableCell>{new Date(submission.date).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      {submission.date
+                        ? new Date(submission.date).toLocaleDateString()
+                        : "—"}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -113,4 +130,3 @@ export function ContactTable() {
     </div>
   );
 }
-
