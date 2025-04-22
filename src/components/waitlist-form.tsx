@@ -3,6 +3,7 @@ import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
@@ -14,14 +15,26 @@ export const WaitlistForm = memo(function WaitlistForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
+      // Submit to Supabase table (waitlist_submissions)
+      // We'll try to upsert for email uniqueness, but fall back to insert if table has no constraints
+      await (supabase as any)
+        .from("waitlist_submissions")
+        .insert([
+          {
+            email,
+            date: new Date().toISOString(),
+          },
+        ]);
+
+      // Also send to Zapier as before
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "no-cors", // Handle CORS issues
+        mode: "no-cors",
         body: JSON.stringify({
           email,
           source: "Waitlist Form",
@@ -34,7 +47,7 @@ export const WaitlistForm = memo(function WaitlistForm() {
         title: "You're on the list!",
         description: "Thanks for joining our waitlist. We'll be in touch soon.",
       });
-      
+
       setEmail("");
     } catch (error) {
       console.error("Error submitting form:", error);

@@ -25,17 +25,17 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
-      <div className="container flex items-center justify-between h-[88px] md:h-[94px]">
-        {/* Logo: left-most, very large */}
+      <div className="container flex items-center justify-between" style={{ height: "110px" }}>
+        {/* Logo: left-most, extra large */}
         <Link
           to="/"
-          className="flex items-center h-full group pl-1 pr-5"
+          className="flex items-center h-full group pl-1 pr-7"
           aria-label="Go to homepage"
-          style={{ minHeight: "75px" }}
+          style={{ minHeight: "100px" }}
         >
-          <Logo className="h-[75px] w-auto transition-all duration-150 group-hover:scale-105" />
+          <Logo className="h-[100px] w-auto transition-all duration-150 group-hover:scale-105" />
         </Link>
-        <nav className="flex items-center space-x-5">
+        <nav className="flex items-center space-x-7">
           <Link
             to="/about-us"
             className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
