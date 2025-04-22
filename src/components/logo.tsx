@@ -1,38 +1,39 @@
 
 import { useEffect, useState, memo } from "react";
 
-export const Logo = memo(({ className = "h-28 w-auto" }: { className?: string }) => {
+// Ensures correct sizing, day/night mode support, optimized for header
+export const Logo = memo(({ className = "h-14 w-auto" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     // Initialize based on system/user preference
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
-    
+
     // Listen for changes in the color scheme
     const handleChange = (e: MediaQueryListEvent) => {
       setIsDark(e.matches || document.documentElement.classList.contains("dark"));
     };
-    
+
     darkModeQuery.addEventListener("change", handleChange);
-    
+
     // Listen for changes to the dark class on the document
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
-    
+
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
-    
+
     // Listen for storage events (for theme toggle)
     const handleStorageEvent = () => {
       setIsDark(document.documentElement.classList.contains("dark"));
     };
-    
+
     window.addEventListener('storage', handleStorageEvent);
-    
+
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
       observer.disconnect();
@@ -48,11 +49,13 @@ export const Logo = memo(({ className = "h-28 w-auto" }: { className?: string })
     <img 
       src={isDark ? darkModeLogo : lightModeLogo}
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform" 
-      width={600} 
-      height={150} 
-      className={className}
+      width={160} 
+      height={56} 
+      className={className + " block object-contain"}
       loading="eager"
       decoding="async"
+      draggable={false}
+      style={{ maxHeight: "56px", minWidth: "120px" }}
     />
   );
 });

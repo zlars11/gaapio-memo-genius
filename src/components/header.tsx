@@ -26,14 +26,14 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
-      <div className="container flex items-center justify-between h-16">
-        {/* Logo at top-left, proper sizing and always visible */}
+      <div className="container flex items-center justify-between h-20">
+        {/* Logo at top-left, larger sizing and always visible */}
         <Link
           to="/"
           className="flex items-center h-full group"
           aria-label="Go to homepage"
         >
-          <Logo className="h-10 w-auto transition-all duration-150 group-hover:scale-105" />
+          <Logo className="h-14 w-auto transition-all duration-150 group-hover:scale-105" />
         </Link>
         <nav className="flex items-center space-x-4">
           <Link
@@ -68,13 +68,10 @@ export function Header() {
               <a href={ctaTo}>{ctaText}</a>
             )}
           </Button>
-          {/* Theme toggle, to the right of CTA */}
-          <div className="ml-2">
-            <ThemeToggle />
-          </div>
+          {/* Theme toggle, immediately to the right of CTA */}
+          <ThemeToggle />
         </nav>
       </div>
     </header>
   );
 }
-

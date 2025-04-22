@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -41,6 +42,7 @@ export default function SignUp() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [paymentInfo, setPaymentInfo] = useState<any>(null);
+  const [showInfoForm, setShowInfoForm] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -91,7 +93,13 @@ export default function SignUp() {
     }
   }
 
-  // STEP 1: User info form submit
+  // STEP 1: Show pricing card only, then show info form after Subscribe Now
+  // Click of Subscribe Now reveals info form (without leaving the page)
+  const handleSubscribeClick = () => {
+    setShowInfoForm(true);
+  };
+
+  // STEP 1.5: User info form submit
   const onInfoSubmit = (data: any) => {
     setIsLoading(true);
     setTimeout(() => {
@@ -192,7 +200,54 @@ export default function SignUp() {
                   Get started with AI-powered accounting memos on our Annual Plan.
                 </p>
               </div>
-              {step === 1 && (
+              {step === 1 && !showInfoForm && (
+                <Card className="max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
+                  <CardHeader>
+                    <CardTitle className="text-2xl">Annual Subscription</CardTitle>
+                    <CardDescription>per year (save 30%)</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-base mb-4">
+                      <li className="flex items-center">
+                        <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        Unlimited AI-generated memos
+                      </li>
+                      <li className="flex items-center">
+                        <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        Up to 3 users
+                      </li>
+                      <li className="flex items-center">
+                        <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        Free premium templates
+                      </li>
+                      <li className="flex items-center">
+                        <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        Team collaboration tools
+                      </li>
+                      <li className="flex items-center">
+                        <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        API access
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      size="lg"
+                      className="w-full"
+                      type="button"
+                      onClick={handleSubscribeClick}
+                      disabled={isLoading}
+                      data-testid="subscribe-now-btn"
+                    >
+                      {isLoading ? "Processing..." : "Subscribe Now"}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              )}
+              {step === 1 && showInfoForm && (
                 <SignUpInfoForm
                   isLoading={isLoading}
                   infoForm={infoForm}
