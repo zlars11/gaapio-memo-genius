@@ -1,304 +1,149 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogHeader,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
-interface UserSignup {
-  id: string;
-  firstname?: string;
-  lastname?: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  plan: string;
-  term?: string;
-  status?: string;
-  amount?: string;
-  signupdate?: string;
-}
+// Add Plan, Term, Status options
+const PLAN_OPTIONS = [
+  { value: "emerging", label: "Emerging" },
+  { value: "mid", label: "Mid" },
+  { value: "enterprise", label: "Enterprise" },
+];
 
-interface EditUserDialogProps {
-  user: UserSignup;
-  open: boolean;
-  onClose: (changed: boolean) => void;
-}
+const TERM_OPTIONS = [
+  { value: "annual", label: "Annual" },
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+];
 
-export function EditUserDialog({ user, open, onClose }: EditUserDialogProps) {
-  // All user fields as state
-  const [firstname, setFirstname] = useState(user.firstname || "");
-  const [lastname, setLastname] = useState(user.lastname || "");
-  const [email, setEmail] = useState(user.email || "");
-  const [company, setCompany] = useState(user.company || "");
-  const [phone, setPhone] = useState(user.phone || "");
-  const [plan, setPlan] = useState(user.plan || "Emerging");
-  const [status, setStatus] = useState(user.status || "Active");
-  const [amount, setAmount] = useState(user.amount || "");
-  // Term defaults to 'Annual'
-  const [term, setTerm] = useState(user.term || "Annual");
-  const [saving, setSaving] = useState(false);
-  const [deleteStep, setDeleteStep] = useState<null | "passcode">();
+const STATUS_OPTIONS = [
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];
+
+export default function EditUserDialog({ user, onSave, onDelete, ...props }: any) {
+  const [plan, setPlan] = useState(user.plan || "emerging");
+  const [term, setTerm] = useState(user.term || "annual");
+  const [status, setStatus] = useState(user.status || "active");
   const [passcode, setPasscode] = useState("");
-  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [fields, setFields] = useState({
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    phone: user.phone,
+    company: user.company,
+  });
 
-  const { toast } = useToast();
+  function handleChange(e: any) {
+    setFields({ ...fields, [e.target.name]: e.target.value });
+  }
 
-  const handleSave = async () => {
-    setSaving(true);
-    const updates: Partial<UserSignup> = {
-      firstname,
-      lastname,
-      email,
-      company,
-      phone,
-      plan,
-      status,
-      amount,
-      term,
-    };
-    const { error } = await supabase
-      .from("user_signups")
-      .update(updates)
-      .eq("id", user.id);
-    setSaving(false);
-    if (error) {
-      toast({
-        title: "Failed to update user",
-        description: error.message,
-        variant: "destructive",
-      });
+  function handlePlanChange(e: any) {
+    setPlan(e.target.value);
+  }
+
+  function handleTermChange(e: any) {
+    setTerm(e.target.value);
+  }
+
+  function handleStatusChange(e: any) {
+    setStatus(e.target.value);
+  }
+
+  function handleSave() {
+    // Call onSave with all values, including plan/term/status
+    onSave({ ...fields, plan, term, status });
+  }
+
+  function confirmDelete() {
+    setShowDeleteConfirm(true);
+  }
+
+  function handleDelete() {
+    if (passcode === "admin123") {
+      onDelete();
+      setShowDeleteConfirm(false);
     } else {
-      toast({
-        title: "User updated",
-        description: "The user was updated successfully.",
-      });
-      onClose(true);
+      alert("Incorrect passcode.");
     }
-  };
-
-  const handleDelete = async () => {
-    if (passcode !== "admin123") {
-      toast({
-        title: "Wrong passcode",
-        description: "The passcode entered is incorrect.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setDeleting(true);
-    const { error } = await supabase
-      .from("user_signups")
-      .delete()
-      .eq("id", user.id);
-    setDeleting(false);
-    if (error) {
-      toast({
-        title: "Failed to delete user",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "User deleted",
-        description: "The user was deleted successfully.",
-      });
-      onClose(true);
-    }
-  };
+  }
 
   return (
-    <Dialog open={open} onOpenChange={() => onClose(false)}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>
-            Update user details, payments and license info.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-2">
-          {/* First Name */}
+    <div>
+      <form>
+        <div className="space-y-4">
           <div>
             <Label htmlFor="firstname">First Name</Label>
-            <Input
-              id="firstname"
-              placeholder="First Name"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-            />
+            <Input id="firstname" name="firstname" value={fields.firstname} onChange={handleChange} placeholder="First Name" />
           </div>
-          {/* Last Name */}
           <div>
             <Label htmlFor="lastname">Last Name</Label>
-            <Input
-              id="lastname"
-              placeholder="Last Name"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-            />
+            <Input id="lastname" name="lastname" value={fields.lastname} onChange={handleChange} placeholder="Last Name" />
           </div>
-          {/* Email */}
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <Input id="email" name="email" value={fields.email} onChange={handleChange} placeholder="Email" />
           </div>
-          {/* Company */}
-          <div>
-            <Label htmlFor="company">Company</Label>
-            <Input
-              id="company"
-              placeholder="Company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            />
-          </div>
-          {/* Phone */}
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+            <Input id="phone" name="phone" value={fields.phone} onChange={handleChange} placeholder="Phone" />
           </div>
-          {/* Plan dropdown */}
+          <div>
+            <Label htmlFor="company">Company</Label>
+            <Input id="company" name="company" value={fields.company} onChange={handleChange} placeholder="Company" />
+          </div>
           <div>
             <Label htmlFor="plan">Plan</Label>
-            <Select value={plan} onValueChange={setPlan}>
-              <SelectTrigger id="plan">
-                <SelectValue placeholder="Select a plan" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Emerging">Emerging</SelectItem>
-                <SelectItem value="Mid">Mid</SelectItem>
-                <SelectItem value="Enterprise">Enterprise</SelectItem>
-              </SelectContent>
-            </Select>
+            <select id="plan" name="plan" value={plan} onChange={handlePlanChange} className="w-full border rounded px-3 py-2">
+              {PLAN_OPTIONS.map(opt => (
+                <option value={opt.value} key={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
-          {/* Term dropdown (always editable) */}
           <div>
             <Label htmlFor="term">Term</Label>
-            <Select value={term} onValueChange={setTerm}>
-              <SelectTrigger id="term">
-                <SelectValue placeholder="Select term" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Annual">Annual</SelectItem>
-                <SelectItem value="Monthly">Monthly</SelectItem>
-                <SelectItem value="Quarterly">Quarterly</SelectItem>
-              </SelectContent>
-            </Select>
+            <select id="term" name="term" value={term} onChange={handleTermChange} className="w-full border rounded px-3 py-2">
+              {TERM_OPTIONS.map(opt => (
+                <option value={opt.value} key={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
-          {/* Status dropdown */}
           <div>
             <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger id="status">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {/* Amount */}
-          <div>
-            <Label htmlFor="amount">Amount</Label>
-            <Input
-              id="amount"
-              placeholder="Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
+            <select id="status" name="status" value={status} onChange={handleStatusChange} className="w-full border rounded px-3 py-2">
+              {STATUS_OPTIONS.map(opt => (
+                <option value={opt.value} key={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
         </div>
-        <DialogFooter>
-          <Button
-            variant="ghost"
-            onClick={() => onClose(false)}
-            type="button"
-            disabled={saving || deleting}
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={saving || deleting} type="button">
-            {saving ? "Saving..." : "Save"}
-          </Button>
-        </DialogFooter>
-        {/* Delete user section */}
-        <div className="mt-6 border-t pt-4">
-          {!deleteStep ? (
-            <Button
-              variant="destructive"
-              type="button"
-              className="w-full"
-              disabled={saving || deleting}
-              onClick={() => setDeleteStep("passcode")}
-            >
-              {deleting ? "Deleting..." : "Delete User"}
+        <div className="flex gap-3 mt-8">
+          <Button type="button" onClick={handleSave}>Save</Button>
+          <Button type="button" variant="destructive" onClick={confirmDelete}>Delete User</Button>
+        </div>
+      </form>
+      {showDeleteConfirm && (
+        <div className="mt-4">
+          <Label htmlFor="delete-passcode">Enter passcode to delete user:</Label>
+          <Input
+            type="password"
+            id="delete-passcode"
+            value={passcode}
+            onChange={e => setPasscode(e.target.value)}
+            placeholder="Enter passcode"
+            className="mt-2"
+          />
+          <div className="flex gap-2 mt-2">
+            <Button type="button" variant="destructive" onClick={handleDelete}>
+              Confirm Delete
             </Button>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="admin-delete-passcode" className="text-red-600">
-                Enter passcode to delete user
-              </Label>
-              <Input
-                id="admin-delete-passcode"
-                placeholder="Passcode"
-                type="password"
-                autoFocus
-                value={passcode}
-                onChange={e => setPasscode(e.target.value)}
-                disabled={deleting}
-                className="border-red-500 focus-visible:ring-destructive"
-              />
-              <div className="flex gap-2 mt-1">
-                <Button
-                  variant="secondary"
-                  type="button"
-                  onClick={() => {
-                    setDeleteStep(null);
-                    setPasscode("");
-                  }}
-                  disabled={deleting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  type="button"
-                  onClick={handleDelete}
-                  disabled={deleting || !passcode}
-                >
-                  {deleting ? "Deleting..." : "Confirm Delete"}
-                </Button>
-              </div>
-            </div>
-          )}
+            <Button type="button" variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+              Cancel
+            </Button>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      )}
+    </div>
   );
 }

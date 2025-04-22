@@ -10,9 +10,23 @@ interface Props {
   infoForm: any;
   onSubmit: (data: any) => void;
   ANNUAL_LABEL: string;
+  plan: string;
+  term: string;
 }
 
-export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL }: Props) {
+// Improved yearly/plan selector. We lock term to annual for self sign up.
+// But plan is chosen by props.
+export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, plan, term }: Props) {
+  // Features by plan
+  const userLabel = plan === "emerging"
+    ? "Up to 3 users"
+    : plan === "mid"
+      ? "Up to 6 users"
+      : plan === "enterprise"
+        ? "Unlimited users"
+        : "";
+
+  // For self-serve sign-up, term is always annual.
   return (
     <form
       className="max-w-2xl mx-auto space-y-6 p-6 rounded-lg bg-muted/40"
@@ -57,7 +71,9 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL }: 
       <div>
         <Card className="my-6 border-primary shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">Annual Subscription</CardTitle>
+            <CardTitle className="text-2xl">
+              {plan ? `${plan.charAt(0).toUpperCase()}${plan.slice(1)}` : "Annual"} Subscription
+            </CardTitle>
             <CardDescription>per year (save 30%)</CardDescription>
             <div className="mt-4">
               <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
@@ -71,7 +87,7 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL }: 
               </li>
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                Up to 3 users
+                {userLabel}
               </li>
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
@@ -99,6 +115,9 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL }: 
           </CardFooter>
         </Card>
       </div>
+      <input type="hidden" {...infoForm.register("plan")} value={plan} />
+      <input type="hidden" {...infoForm.register("term")} value={term} />
+      <input type="hidden" {...infoForm.register("amount")} value={ANNUAL_LABEL} />
     </form>
   );
 }
