@@ -1,24 +1,39 @@
-import { UserSignupsTable } from "@/components/admin/UserSignupsTable";
-import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
-import { WaitlistTable } from "@/components/admin/WaitlistTable";
 
-// Keep the admin layout simple, display WaitlistTable, UserSignupsTable, and webhook setup
+import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { WaitlistTable } from "@/components/admin/WaitlistTable";
+import { ContactTable } from "@/components/admin/ContactTable";
+import { UserSignupsTable } from "@/components/admin/UserSignupsTable";
+
+/**
+ * The Admin Portal includes:
+ * - Admin dashboard metrics & CTA toggle
+ * - Waitlist table with Zapier integration
+ * - User sign-ups table with Zapier integration
+ * - Contact submissions table with Zapier integration
+ * - Admin page guard for authentication
+ * 
+ * All major functionality is restored.
+ */
 export default function Admin() {
   return (
-    <div className="space-y-8 max-w-5xl mx-auto py-8">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8">Admin Portal</h1>
+    <AdminPageGuard>
+      <div className="max-w-6xl mx-auto py-8 space-y-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-8">Admin Portal</h1>
+        <AdminDashboard />
 
-      <WaitlistTable />
+        <section>
+          <WaitlistTable />
+        </section>
+        
+        <section>
+          <UserSignupsTable />
+        </section>
 
-      <UserSignupsTable />
-
-      {/* ----- User Signup Webhook Setup ------ */}
-      <div className="max-w-2xl mx-auto mt-8">
-        <ZapierWebhookSetup
-          webhookType="userSignup"
-          description="Receive an email when a new user subscribes via the signup form"
-        />
+        <section>
+          <ContactTable />
+        </section>
       </div>
-    </div>
+    </AdminPageGuard>
   );
 }
