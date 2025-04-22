@@ -285,20 +285,21 @@ export default function SignUp() {
               {/* *** PLAN SELECTOR AS TABS *** */}
               <div className="max-w-2xl mx-auto my-8">
                 <Tabs defaultValue={selectedPlan} value={selectedPlan} onValueChange={handlePlanChange}>
-                  <TabsList className="w-full mb-4 gap-0 bg-muted/40 border border-muted rounded-lg overflow-hidden shadow-sm flex justify-between">
+                  <TabsList className="w-full mb-4 gap-0 overflow-hidden flex justify-between glass-morphism">
                     {PLANS.map(plan => (
                       <TabsTrigger
                         key={plan.id}
                         value={plan.id}
                         className={`
                           w-1/4 px-0 py-3 text-base rounded-none border-0
-                          [&[data-state=active]]:bg-white [&[data-state=active]]:text-black [&[data-state=active]]:font-semibold
-                          dark:[&[data-state=active]]:bg-primary dark:[&[data-state=active]]:text-white
-                          bg-transparent border-r border-muted last:border-r-0
-                          font-medium tracking-tight hover:bg-primary/10 hover:text-primary-foreground
-                          transition-colors
+                          font-medium tracking-tight transition-colors
+                          border-r border-muted last:border-r-0
+                          data-[state=active]:font-semibold
                         `}
-                        style={{ minWidth: 0, minHeight: 0 }}
+                        style={{
+                          minWidth: 0,
+                          minHeight: 0,
+                        }}
                         data-testid={`plan-tab-${plan.id}`}
                       >
                         {plan.label}
@@ -308,10 +309,9 @@ export default function SignUp() {
                   {/* -- CARD FOR SELECTED PLAN OR FIRMS -- */}
                   <div>
                     {selectedPlan !== "firms" ? (
-                      // ... keep existing code for subscription card ...
                       <>
                         {step === 1 && !showInfoForm && (
-                          <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
+                          <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40 glass-morphism">
                             <CardHeader>
                               <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
                               {/* Only show CardDescription except on Emerging */}
@@ -360,7 +360,7 @@ export default function SignUp() {
                             onSubmit={onInfoSubmit}
                             ANNUAL_LABEL={getPlanLabel(selectedPlan)}
                             plan={selectedPlan}
-                            term={selectedTerm}
+                            term={"annual"}
                           />
                         )}
                         {step === 2 && (
@@ -397,16 +397,15 @@ export default function SignUp() {
                         )}
                       </>
                     ) : (
-                      // FIRMS: Card with "Contact Sales" restored under heading
-                      <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
+                      // FIRMS CARD, improved card effect and overlay for both modes
+                      <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg glass-morphism">
                         <CardHeader>
-                          <CardTitle className="text-2xl">Firm</CardTitle>
-                          <div className="mt-2 text-3xl font-bold">Contact Sales</div>
+                          <CardTitle className="text-2xl !text-foreground">Firm</CardTitle>
+                          <div className="mt-2 text-3xl font-bold !text-foreground">Contact Sales</div>
                         </CardHeader>
                         <CardContent>
                           <FirmContactForm onSuccess={handleFirmContactSuccess} />
                         </CardContent>
-                        {/* No CardFooter, for full-width button in the form */}
                       </Card>
                     )}
                   </div>
@@ -426,4 +425,3 @@ import { ContactForm } from "@/components/contact/ContactForm";
 function FirmContactForm({ onSuccess }: { onSuccess: () => void }) {
   return <ContactForm />;
 }
-

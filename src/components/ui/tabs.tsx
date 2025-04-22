@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
@@ -12,7 +13,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-12 items-center justify-center space-x-0 w-full shadow-sm bg-background border border-muted rounded-lg overflow-hidden",
+      "inline-flex h-12 items-center justify-center space-x-0 w-full shadow-sm bg-muted/60 border border-muted rounded-lg overflow-hidden",
       className
     )}
     {...props}
@@ -27,13 +28,14 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      // Ensures GREAT contrast in all modes, especially when active
       `
-        inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-base font-medium transition-colors border-0 border-b-2 border-transparent rounded-none w-full h-full
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
-        data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:font-semibold
-        dark:data-[state=active]:bg-primary dark:data-[state=active]:text-white
-        data-[state=inactive]:bg-background data-[state=inactive]:text-foreground hover:bg-primary/5 hover:text-primary
+      inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-base font-medium transition-colors border-0 border-b-2 border-transparent
+      rounded-none w-full h-full
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+      data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:font-semibold
+      dark:data-[state=active]:bg-primary dark:data-[state=active]:text-white dark:data-[state=active]:shadow-none dark:data-[state=active]:font-semibold
+      data-[state=inactive]:bg-muted/60 data-[state=inactive]:text-foreground hover:bg-primary/10 hover:text-primary
+      border-r border-muted last:border-r-0
       `,
       className
     )}
