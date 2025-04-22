@@ -1,7 +1,7 @@
 
 import { useEffect, useState, memo } from "react";
 
-// Ensures extra-large sizing, day/night mode support, optimized for header
+// Ensures massive sizing, day/night mode support, optimized for header
 export const Logo = memo(({ className = "" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -31,7 +31,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Extra large logo (white for dark, black for light)
+  // Massive logo (white for dark, black for light)
   const darkModeLogo = "/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png";
   const lightModeLogo = "/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png";
 
@@ -39,13 +39,13 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     <img
       src={isDark ? darkModeLogo : lightModeLogo}
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-      width={370}
-      height={100}
-      className={`h-[100px] w-auto max-w-[420px] min-w-[190px] block object-contain transition-all duration-200 ${className}`}
+      width={700}
+      height={200}
+      className={`h-[170px] w-auto max-w-[640px] min-w-[250px] block object-contain transition-all duration-200 ${className}`}
       loading="eager"
       decoding="async"
       draggable={false}
-      style={{ maxHeight: "100px", minWidth: "190px" }}
+      style={{ maxHeight: "170px", minWidth: "250px" }}
     />
   );
 });

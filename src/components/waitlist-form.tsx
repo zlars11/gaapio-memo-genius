@@ -9,6 +9,8 @@ const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps
 
 export const WaitlistForm = memo(function WaitlistForm() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [company, setCompany] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -18,12 +20,13 @@ export const WaitlistForm = memo(function WaitlistForm() {
 
     try {
       // Submit to Supabase table (waitlist_submissions)
-      // We'll try to upsert for email uniqueness, but fall back to insert if table has no constraints
       await (supabase as any)
         .from("waitlist_submissions")
         .insert([
           {
             email,
+            name,
+            company,
             date: new Date().toISOString(),
           },
         ]);
@@ -37,6 +40,8 @@ export const WaitlistForm = memo(function WaitlistForm() {
         mode: "no-cors",
         body: JSON.stringify({
           email,
+          name,
+          company,
           source: "Waitlist Form",
           timestamp: new Date().toISOString(),
           destination: "zacklarsen11@gmail.com",
@@ -49,6 +54,8 @@ export const WaitlistForm = memo(function WaitlistForm() {
       });
 
       setEmail("");
+      setName("");
+      setCompany("");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
@@ -63,13 +70,30 @@ export const WaitlistForm = memo(function WaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-2">
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="flex flex-col gap-2">
+        <Input
+          type="text"
+          placeholder="Your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="w-full"
+          disabled={isLoading}
+        />
         <Input
           type="email"
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          className="w-full"
+          disabled={isLoading}
+        />
+        <Input
+          type="text"
+          placeholder="Your company (optional)"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
           className="w-full"
           disabled={isLoading}
         />
