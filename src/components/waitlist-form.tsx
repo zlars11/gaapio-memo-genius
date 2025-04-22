@@ -1,7 +1,8 @@
+
 import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
@@ -18,7 +19,7 @@ export const WaitlistForm = memo(function WaitlistForm() {
       // Save to localStorage
       const waitlistSubmissions = JSON.parse(localStorage.getItem("waitlistSubmissions") || "[]");
       const submission = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
         name: "",
         email,
         company: "",

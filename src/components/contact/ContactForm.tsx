@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/YOUR_CONTACT_WEBHOOK_ID/"; // Replace with your Zapier URL if needed
 
@@ -21,7 +22,7 @@ export function ContactForm() {
       // Save to localStorage
       const contactSubmissions = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
       const submission = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
         name,
         email,
         message,

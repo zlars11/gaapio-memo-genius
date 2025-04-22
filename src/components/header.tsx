@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -27,7 +28,19 @@ export function Header() {
       }
     };
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+
+    // Listen for homepageCta changes on this tab as well
+    const onLocalHomepageCta = () => {
+      const updatedCta = localStorage.getItem("homepageCta");
+      setShowSignUp(updatedCta === "signup");
+    };
+
+    window.addEventListener("focus", onLocalHomepageCta);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onLocalHomepageCta);
+    };
   }, []);
 
   return (
