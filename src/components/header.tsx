@@ -12,30 +12,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Moon, Sun } from "lucide-react";
 
 export function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
-
-  const handleLogin = useCallback(() => {
-    localStorage.setItem("admin_authenticated", "true");
-    setIsAuthenticated(true);
-    setIsAdmin(true);
-  }, []);
-
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("admin_authenticated");
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-    localStorage.removeItem("showMetricsOnHomepage");
-  }, []);
+  // For CTA button (Join the Waitlist or Sign Up Now)
+  const [ctaText, setCtaText] = useState("Join the Waitlist");
+  const [ctaTo, setCtaTo] = useState("#waitlist");
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem("admin_authenticated");
-    setIsAuthenticated(storedAuth === "true");
-    setIsAdmin(storedAuth === "true");
+    setIsClient(true);
+    // Check for CTA preference from localStorage
+    const ctaSetting = localStorage.getItem("homepageCta");
+    if (ctaSetting === "signup") {
+      setCtaText("Sign Up Now");
+      setCtaTo("/signup");
+    } else {
+      setCtaText("Join the Waitlist");
+      setCtaTo("#waitlist");
+    }
   }, []);
 
   return (
@@ -69,49 +64,21 @@ export function Header() {
           >
             Blog
           </Link>
-          <Link
-            to="/notes"
-            className={`font-medium px-3 py-2 rounded ${
-              location.pathname === "/notes" ? "bg-accent" : ""
-            }`}
-          >
-            Notes
-          </Link>
-          {isAdmin ? (
-            <Link
-              to="/admin"
-              className="font-medium px-3 py-2 rounded hover:bg-accent"
-            >
-              Admin
-            </Link>
-          ) : null}
-
-          {/* Theme Toggle: shows moon or sun icon */}
+          {/* Removed Notes and Admin tab */}
+          {/* Theme Toggle */}
           <ThemeToggle />
-
-          {!isAuthenticated ? (
-            <Button size="sm" onClick={handleLogin}>
-              Log In
-            </Button>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="Admin" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                  Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+          {/* Restore CTA button in top right */}
+          <Button
+            size="sm"
+            asChild
+            className="ml-2"
+          >
+            {isClient && ctaTo.startsWith("/") ? (
+              <Link to={ctaTo}>{ctaText}</Link>
+            ) : (
+              <a href={ctaTo}>{ctaText}</a>
+            )}
+          </Button>
         </nav>
       </div>
     </header>
