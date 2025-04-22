@@ -2,7 +2,7 @@
 import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps1/";
 
@@ -14,27 +14,14 @@ export const WaitlistForm = memo(function WaitlistForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
+    
     try {
-      // Save to localStorage
-      const waitlistSubmissions = JSON.parse(localStorage.getItem("waitlistSubmissions") || "[]");
-      const submission = {
-        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 9),
-        name: "",
-        email,
-        company: "",
-        date: new Date().toISOString(),
-      };
-      waitlistSubmissions.push(submission);
-      localStorage.setItem("waitlistSubmissions", JSON.stringify(waitlistSubmissions));
-
-      // Send to Zapier
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "no-cors",
+        mode: "no-cors", // Handle CORS issues
         body: JSON.stringify({
           email,
           source: "Waitlist Form",
@@ -47,7 +34,7 @@ export const WaitlistForm = memo(function WaitlistForm() {
         title: "You're on the list!",
         description: "Thanks for joining our waitlist. We'll be in touch soon.",
       });
-
+      
       setEmail("");
     } catch (error) {
       console.error("Error submitting form:", error);

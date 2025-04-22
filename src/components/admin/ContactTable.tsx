@@ -27,19 +27,12 @@ export function ContactTable() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Only use actual submissions from localStorage.
+    // Only use actual submissions from localStorage. No dummy/mock data.
     const savedSubmissions = localStorage.getItem("contactSubmissions");
     let parsed: ContactSubmission[] = [];
     if (savedSubmissions) {
       try {
         parsed = JSON.parse(savedSubmissions);
-        if (Array.isArray(parsed)) {
-          parsed = parsed.filter(
-            (s) => s && typeof s.email === "string" && typeof s.id === "string"
-          );
-        } else {
-          parsed = [];
-        }
       } catch {
         parsed = [];
       }
@@ -54,9 +47,9 @@ export function ContactTable() {
     } else {
       const filtered = submissions.filter(
         (submission) =>
-          (submission.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (submission.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (submission.message || "").toLowerCase().includes(searchQuery.toLowerCase())
+          submission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          submission.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          submission.message.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredSubmissions(filtered);
     }
@@ -95,7 +88,7 @@ export function ContactTable() {
               {filteredSubmissions.length > 0 ? (
                 filteredSubmissions.map((submission) => (
                   <TableRow key={submission.id}>
-                    <TableCell className="font-medium">{submission.name || "—"}</TableCell>
+                    <TableCell className="font-medium">{submission.name}</TableCell>
                     <TableCell>{submission.email}</TableCell>
                     <TableCell className="max-w-xs truncate">{submission.message}</TableCell>
                     <TableCell>{new Date(submission.date).toLocaleDateString()}</TableCell>
@@ -120,3 +113,4 @@ export function ContactTable() {
     </div>
   );
 }
+

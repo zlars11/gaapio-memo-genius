@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   Table, 
@@ -30,16 +31,18 @@ export function UserSignupsTable() {
     // Load user signups from localStorage
     const savedUsers = localStorage.getItem("userSignups");
     if (savedUsers) {
+      // Support both previous array/object formats
       let parsed = [];
       try {
         parsed = JSON.parse(savedUsers);
+        // Normalize structure
         if (Array.isArray(parsed)) {
           parsed = parsed.map((u: any, idx) => ({
             id: u.id || `auto_${(u.email || "")}_${idx}`,
             name: u.name || "",
             email: u.email || "",
             plan: u.plan || (u.amount && u.amount.includes("Annual") ? "Annual" : "Monthly"),
-            status: u.status || "active",
+            status: "active",
             signupDate: u.signupDate || u.date || new Date().toISOString(),
           }));
         }
@@ -138,3 +141,4 @@ export function UserSignupsTable() {
     </Card>
   );
 }
+

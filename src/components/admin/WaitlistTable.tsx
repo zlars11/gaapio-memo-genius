@@ -27,20 +27,12 @@ export function WaitlistTable() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Only use actual submissions from localStorage.
+    // Only use actual submissions from localStorage. No dummy/mock data.
     const savedSubmissions = localStorage.getItem("waitlistSubmissions");
     let parsed: WaitlistSubmission[] = [];
     if (savedSubmissions) {
       try {
         parsed = JSON.parse(savedSubmissions);
-        // Only allow array data and filter noise out
-        if (Array.isArray(parsed)) {
-          parsed = parsed.filter(
-            (s) => s && typeof s.email === "string" && typeof s.id === "string"
-          );
-        } else {
-          parsed = [];
-        }
       } catch {
         parsed = [];
       }
@@ -55,9 +47,9 @@ export function WaitlistTable() {
     } else {
       const filtered = submissions.filter(
         (submission) =>
-          (submission.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (submission.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (submission.company || "").toLowerCase().includes(searchQuery.toLowerCase())
+          submission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          submission.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          submission.company.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredSubmissions(filtered);
     }
@@ -96,9 +88,9 @@ export function WaitlistTable() {
               {filteredSubmissions.length > 0 ? (
                 filteredSubmissions.map((submission) => (
                   <TableRow key={submission.id}>
-                    <TableCell className="font-medium">{submission.name || "—"}</TableCell>
+                    <TableCell className="font-medium">{submission.name}</TableCell>
                     <TableCell>{submission.email}</TableCell>
-                    <TableCell>{submission.company || "—"}</TableCell>
+                    <TableCell>{submission.company}</TableCell>
                     <TableCell>{new Date(submission.date).toLocaleDateString()}</TableCell>
                   </TableRow>
                 ))
@@ -121,3 +113,4 @@ export function WaitlistTable() {
     </div>
   );
 }
+
