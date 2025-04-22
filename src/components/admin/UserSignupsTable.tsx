@@ -16,15 +16,15 @@ import { Badge } from "@/components/ui/badge";
 
 interface UserSignup {
   id: string;
-  firstName?: string;
-  lastName?: string;
-  name?: string;
+  firstname?: string;
+  lastname?: string;
   email: string;
   phone?: string;
   company?: string;
   plan: string;
-  status?: "active" | "inactive" | "trial";
-  signupDate: string;
+  status?: string;
+  amount?: string;
+  signupdate?: string;
 }
 
 export function UserSignupsTable() {
@@ -36,11 +36,11 @@ export function UserSignupsTable() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      // Try to fetch from the 'user_signups' table
+      // The fields returned match table column names which are lowercase.
       const { data, error } = await (supabase as any)
         .from("user_signups")
         .select("*")
-        .order("signupDate", { ascending: false });
+        .order("signupdate", { ascending: false }); // Use correct column for date
       if (error) {
         setUsers([]);
         setFilteredUsers([]);
@@ -59,8 +59,8 @@ export function UserSignupsTable() {
     } else {
       const filtered = users.filter(
         (user: UserSignup) =>
-          (user.firstName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.lastName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (user.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (user.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.plan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.company || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -69,8 +69,8 @@ export function UserSignupsTable() {
     }
   }, [searchQuery, users]);
 
-  const getStatusBadgeVariant = (status: UserSignup['status']) => {
-    switch (status) {
+  const getStatusBadgeVariant = (status?: string) => {
+    switch ((status || "").toLowerCase()) {
       case 'active':
         return 'default';
       case 'trial':
@@ -122,19 +122,20 @@ export function UserSignupsTable() {
             ) : filteredUsers.length > 0 ? (
               filteredUsers.map((user, idx) => (
                 <TableRow key={user.id || user.email || idx}>
-                  <TableCell className="font-medium">{user.firstName || "—"}</TableCell>
-                  <TableCell>{user.lastName || "—"}</TableCell>
+                  <TableCell className="font-medium">{user.firstname || "—"}</TableCell>
+                  <TableCell>{user.lastname || "—"}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.company || "—"}</TableCell>
                   <TableCell>{user.plan}</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusBadgeVariant(user.status || "active")}>
-                      {user.status ? (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : "Active"}
+                    <Badge variant={getStatusBadgeVariant(user.status)}>
+                      {user.status ? 
+                        (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : "Active"}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {user.signupDate
-                      ? new Date(user.signupDate).toLocaleDateString()
+                    {user.signupdate
+                      ? new Date(user.signupdate).toLocaleDateString()
                       : "—"}
                   </TableCell>
                 </TableRow>
