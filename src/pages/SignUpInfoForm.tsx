@@ -72,22 +72,25 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
         <Card className="my-6 border-primary shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">
-              {plan ? `${plan.charAt(0).toUpperCase()}${plan.slice(1)}` : "Annual"} Subscription
+              {plan ? `${plan.charAt(0).toUpperCase()}${plan.slice(1)}`.replace("Mid", "Mid-Market") : "Annual"} Subscription
             </CardTitle>
-            <CardDescription>per year (save 30%)</CardDescription>
+            {/* remove "per year (save 30%)" */}
             <div className="mt-4">
               <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
             </div>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
+              {/* Users at TOP */}
+              {userLabel && (
+                <li className="flex items-center">
+                  <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                  {userLabel}
+                </li>
+              )}
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
                 Unlimited AI-generated memos
-              </li>
-              <li className="flex items-center">
-                <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                {userLabel}
               </li>
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />

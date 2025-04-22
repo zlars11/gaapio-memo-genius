@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -284,17 +283,18 @@ export default function SignUp() {
               {/* *** PLAN SELECTOR AS TABS *** */}
               <div className="max-w-2xl mx-auto my-8">
                 <Tabs defaultValue={selectedPlan} value={selectedPlan} onValueChange={handlePlanChange}>
-                  <TabsList className="w-full mb-4 gap-0 bg-transparent border border-muted rounded-lg overflow-hidden shadow-sm flex justify-between bg-white dark:bg-muted/40">
+                  <TabsList className="w-full mb-4 gap-0 bg-muted/40 border border-muted rounded-lg overflow-hidden shadow-sm flex justify-between">
                     {PLANS.map(plan => (
                       <TabsTrigger
                         key={plan.id}
                         value={plan.id}
                         className={`
-                          w-1/4 px-0 py-3 text-base transition-none rounded-none border-0
+                          w-1/4 px-0 py-3 text-base rounded-none border-0
                           [&[data-state=active]]:bg-primary [&[data-state=active]]:text-white [&[data-state=active]]:shadow
                           dark:[&[data-state=active]]:bg-primary dark:[&[data-state=active]]:text-white
-                          bg-white dark:bg-muted/80 border-r border-muted last:border-r-0
-                          font-medium tracking-tight hover:bg-primary/10
+                          bg-transparent border-r border-muted last:border-r-0
+                          font-medium tracking-tight hover:bg-primary/10 hover:text-primary-foreground
+                          transition-colors
                         `}
                         style={{ minWidth: 0, minHeight: 0 }}
                         data-testid={`plan-tab-${plan.id}`}
@@ -311,7 +311,10 @@ export default function SignUp() {
                           <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
                             <CardHeader>
                               <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
-                              {/* removed "per year (save 30%)" as requested */}
+                              {/* Only show CardDescription except on Emerging */}
+                              {selectedPlan !== "emerging" && (
+                                <div className="mt-1 text-muted-foreground text-base">{/* no extra label */}</div>
+                              )}
                               <div className="mt-4">
                                 <span className="text-4xl font-bold">{getPlanLabel(selectedPlan)}</span>
                               </div>
@@ -391,17 +394,16 @@ export default function SignUp() {
                         )}
                       </>
                     ) : (
-                      // FIRMS: Show contact form/card, styled like other plan cards
+                      // FIRMS: Show contact form as a proper card with only a single "Contact Sales" heading
                       <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
                         <CardHeader>
-                          <CardTitle className="text-2xl">Firms &mdash; Contact Sales</CardTitle>
-                          <div className="mt-4">
-                            <span className="text-4xl font-bold">Contact Sales</span>
-                          </div>
+                          {/* Only show one title in the card header */}
+                          <CardTitle className="text-2xl">Contact Sales</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <FirmContactForm onSuccess={handleFirmContactSuccess} />
                         </CardContent>
+                        {/* No CardFooter, for full-width button in the form */}
                       </Card>
                     )}
                   </div>

@@ -22,7 +22,6 @@ export function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      // Send to Supabase
       await (supabase as any)
         .from("contact_submissions")
         .insert([
@@ -34,13 +33,10 @@ export function ContactForm() {
             date: new Date().toISOString(),
           },
         ]);
-
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors", // Handle CORS issues
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
         body: JSON.stringify({
           name,
           email,
@@ -57,7 +53,6 @@ export function ContactForm() {
         description: "We'll get back to you within 1 business day."
       });
 
-      // Reset form
       setName("");
       setEmail("");
       setSubject("");
@@ -74,9 +69,8 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-md mx-auto px-4 sm:px-0" aria-labelledby="contact-form-heading">
-      <h2 id="contact-form-heading" className="sr-only">Contact Form</h2>
-
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-md mx-auto px-4 sm:px-0 bg-white rounded-lg shadow-md border border-muted" aria-labelledby="contact-form-heading">
+      <h2 id="contact-form-heading" className="text-2xl font-extrabold mb-2">Contact Sales</h2>
       <div className="space-y-2">
         <Label htmlFor="name" className="text-base">Name</Label>
         <Input
@@ -89,7 +83,6 @@ export function ContactForm() {
           className="w-full"
         />
       </div>
-
       <div className="space-y-2">
         <Label htmlFor="email" className="text-base">Email</Label>
         <Input
@@ -103,7 +96,6 @@ export function ContactForm() {
           className="w-full"
         />
       </div>
-      
       <div className="space-y-2">
         <Label htmlFor="company" className="text-base">Company</Label>
         <Input
@@ -114,9 +106,18 @@ export function ContactForm() {
           className="w-full"
         />
       </div>
-
       <div className="space-y-2">
-        <Label htmlFor="subject" className="text-base">Subject</Label>
+        <Label htmlFor="phone" className="text-base text-blue-600 font-semibold">Phone</Label>
+        <Input
+          id="phone"
+          placeholder="Your phone number"
+          value={"" /* No phone support in original, keep for future */}
+          readOnly
+          className="w-full"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="subject" className="text-base text-blue-600 font-semibold">Subject</Label>
         <Input
           id="subject"
           placeholder="What's this about?"
@@ -127,9 +128,8 @@ export function ContactForm() {
           className="w-full"
         />
       </div>
-
       <div className="space-y-2">
-        <Label htmlFor="message" className="text-base">Message</Label>
+        <Label htmlFor="message" className="text-base text-blue-600 font-semibold">Message</Label>
         <Textarea
           id="message"
           placeholder="Your message"
@@ -141,7 +141,6 @@ export function ContactForm() {
           className="w-full min-h-[120px]"
         />
       </div>
-
       <Button
         type="submit"
         className="w-full py-6 text-base"
