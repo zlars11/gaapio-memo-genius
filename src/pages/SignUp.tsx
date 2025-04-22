@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -14,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SignUpInfoForm } from "./SignUpInfoForm";
 import { SignUpPaymentForm } from "./SignUpPaymentForm";
 import { SignUpSummary } from "./SignUpSummary";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // PLAN CONFIGURATION
 const PLANS = [
@@ -26,7 +28,7 @@ const PLANS = [
   },
   {
     id: "mid",
-    label: "Mid",
+    label: "Mid-Market",
     price: 3500,
     users: 6,
     description: "Up to 6 users"
@@ -62,13 +64,6 @@ function getUserSignupZapierWebhookUrl() {
   return "";
 }
 
-// REMOVE hardcoded Zapier webhook
-// const ZAPIER_WEBHOOK_URL = "";
-
-// Remove hardcoded ANNUAL_PRICE/ANNUAL_LABEL
-// const ANNUAL_PRICE = 249900; // in cents ($2,499.00)
-// const ANNUAL_LABEL = "$2,499";
-
 // Helper to match DB column names, updated to include plan, term, and amount
 function mapUserToDb(info: any) {
   return {
@@ -93,7 +88,6 @@ export default function SignUp() {
   const [showInfoForm, setShowInfoForm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("emerging");
   const [selectedTerm, setSelectedTerm] = useState("annual");
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showFirmContact, setShowFirmContact] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -167,7 +161,7 @@ export default function SignUp() {
   const handlePlanChange = (planId: string) => {
     setSelectedPlan(planId);
     infoForm.setValue("plan", planId);
-    // Firms has no price or payment, skip payment step and show firm contact
+
     if (planId === "firms") {
       setShowFirmContact(true);
       setShowInfoForm(false);
@@ -175,6 +169,7 @@ export default function SignUp() {
       setShowFirmContact(false);
       setShowInfoForm(false);
     }
+    setStep(1); // Always go back to step 1 (card/contact)
   };
 
   // TERM SELECTOR HANDLER
@@ -183,16 +178,12 @@ export default function SignUp() {
     infoForm.setValue("term", term);
   };
 
-  // MODIFIED: Plan and term forced to annual for sign up, but visible in admin
-  // (user can change plan/term at sign up if we ever open this, UI supports it)
-  // (For self-signup: only annual is selectable, but support dropdown for admin.)
-
   // STEP 1: Show pricing/plan selector
   const handleSubscribeClick = () => {
     setShowInfoForm(true);
   };
 
-  // Updated: Add back button handler for step 2
+  // Back button handler for step 2
   const handleBackFromPayment = () => {
     setStep(1);
     setPaymentInfo(null);
@@ -243,27 +234,6 @@ export default function SignUp() {
     setStep(3);
   }
 
-  // Helper: show summary. Update features to show correct user count.
-  function InfoSummary() {
-    return (
-      <ul className="text-left mx-auto mb-6 max-w-md space-y-2">
-        <li><span className="font-medium">First Name:</span> {userInfo.firstName}</li>
-        <li><span className="font-medium">Last Name:</span> {userInfo.lastName}</li>
-        <li><span className="font-medium">Email:</span> {userInfo.email}</li>
-        <li><span className="font-medium">Phone:</span> {userInfo.phone}</li>
-        <li><span className="font-medium">Company:</span> {userInfo.company}</li>
-        <li><span className="font-medium">Plan:</span> Annual Subscription ({getPlanLabel(selectedPlan)})</li>
-        {paymentInfo && (
-          <>
-            <li><span className="font-medium">Card Number:</span> ••••{(paymentInfo.cardNumber || "").slice(-4)}</li>
-            <li><span className="font-medium">Expiry:</span> {paymentInfo.cardExpiry}</li>
-            <li><span className="font-medium">Billing Zip:</span> {paymentInfo.billingZip}</li>
-          </>
-        )}
-      </ul>
-    );
-  }
-
   // --- MAIN RENDER ---
   return (
     <div className="flex min-h-screen flex-col">
@@ -285,7 +255,6 @@ export default function SignUp() {
                   : "We've sent a confirmation email with your account details. You'll be able to access your account shortly."
                 }
               </p>
-              {/* SUMMARIZE INFO */}
               {!showFirmContact && (
                 <div className="mb-8">
                   <Card className="inline-block bg-muted/40 text-left">
@@ -304,23 +273,7 @@ export default function SignUp() {
                 Return to Homepage
               </Button>
             </div>
-          ) : showFirmContact ? (
-            // Show firm contact form
-            <div className="max-w-lg mx-auto">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Sales</CardTitle>
-                  <CardDescription>
-                    Please fill out the form below and our team will reach out to discuss your firm's needs.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <FirmContactForm onSuccess={handleFirmContactSuccess} />
-                </CardContent>
-              </Card>
-            </div>
           ) : (
-            // -- Regular plan signup flow
             <>
               <div className="mb-12 text-center">
                 <h1 className="text-3xl md:text-4xl font-bold mb-4">Sign Up for Gaapio</h1>
@@ -328,115 +281,132 @@ export default function SignUp() {
                   Get started with AI-powered accounting memos on our Annual Plan.
                 </p>
               </div>
-              {/* PLAN TABS/SELECTOR */}
+              {/* *** PLAN SELECTOR AS TABS *** */}
               <div className="max-w-2xl mx-auto my-8">
-                <div className="flex justify-center mb-6 gap-2 flex-wrap">
-                  {PLANS.map(plan => (
-                    <Button
-                      key={plan.id}
-                      variant={selectedPlan === plan.id ? "default" : "outline"}
-                      onClick={() => handlePlanChange(plan.id)}
-                      className="px-6 py-2 text-base"
-                    >
-                      {plan.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              {/* PLAN CARD */}
-              {step === 1 && !showInfoForm && (
-                <Card className="max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
-                  <CardHeader>
-                    <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
-                    <CardDescription>per year (save 30%)</CardDescription>
-                    <div className="mt-4">
-                      <span className="text-4xl font-bold">{getPlanLabel(selectedPlan)}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2 text-base mb-4">
-                      {PLAN_FEATURES.map(f => (
-                        <li className="flex items-center" key={f}>
-                          <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                      {getPlanObject(selectedPlan).users && (
-                        <li className="flex items-center">
-                          <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                          {getPlanObject(selectedPlan).description}
-                        </li>
-                      )}
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
+                <Tabs defaultValue={selectedPlan} value={selectedPlan} onValueChange={handlePlanChange}>
+                  <TabsList className="w-full mb-4 gap-0 bg-transparent border border-muted rounded-lg overflow-hidden shadow-sm flex justify-between bg-white dark:bg-muted/40">
+                    {PLANS.map(plan => (
+                      <TabsTrigger
+                        key={plan.id}
+                        value={plan.id}
+                        className={`
+                          w-1/4 px-0 py-3 text-base transition-none rounded-none border-0
+                          [&[data-state=active]]:bg-primary [&[data-state=active]]:text-white [&[data-state=active]]:shadow
+                          dark:[&[data-state=active]]:bg-primary dark:[&[data-state=active]]:text-white
+                          bg-white dark:bg-muted/80 border-r border-muted last:border-r-0
+                          font-medium tracking-tight hover:bg-primary/10
+                        `}
+                        style={{ minWidth: 0, minHeight: 0 }}
+                        data-testid={`plan-tab-${plan.id}`}
+                      >
+                        {plan.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  {/* -- CARD FOR SELECTED PLAN OR FIRMS -- */}
+                  <div>
                     {selectedPlan !== "firms" ? (
-                      <Button
-                        size="lg"
-                        className="w-full"
-                        type="button"
-                        onClick={handleSubscribeClick}
-                        disabled={isLoading}
-                        data-testid="subscribe-now-btn"
-                      >
-                        {isLoading ? "Processing..." : "Subscribe Now"}
-                      </Button>
+                      <>
+                        {step === 1 && !showInfoForm && (
+                          <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
+                            <CardHeader>
+                              <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
+                              {/* removed "per year (save 30%)" as requested */}
+                              <div className="mt-4">
+                                <span className="text-4xl font-bold">{getPlanLabel(selectedPlan)}</span>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <ul className="space-y-2 text-base mb-4">
+                                {/* Move users at TOP */}
+                                {getPlanObject(selectedPlan).users && (
+                                  <li className="flex items-center">
+                                    <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                                    {getPlanObject(selectedPlan).description}
+                                  </li>
+                                )}
+                                {PLAN_FEATURES.map(f => (
+                                  <li className="flex items-center" key={f}>
+                                    <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                                    {f}
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                            <CardFooter>
+                              <Button
+                                size="lg"
+                                className="w-full"
+                                type="button"
+                                onClick={handleSubscribeClick}
+                                disabled={isLoading}
+                                data-testid="subscribe-now-btn"
+                              >
+                                {isLoading ? "Processing..." : "Subscribe Now"}
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        )}
+                        {step === 1 && showInfoForm && (
+                          <SignUpInfoForm
+                            isLoading={isLoading}
+                            infoForm={infoForm}
+                            onSubmit={onInfoSubmit}
+                            ANNUAL_LABEL={getPlanLabel(selectedPlan)}
+                            plan={selectedPlan}
+                            term={selectedTerm}
+                          />
+                        )}
+                        {step === 2 && (
+                          <div className="max-w-2xl mx-auto">
+                            <div className="mb-2">
+                              <Button
+                                variant="outline"
+                                className="mb-4"
+                                type="button"
+                                onClick={handleBackFromPayment}
+                                disabled={isLoading}
+                              >
+                                Back
+                              </Button>
+                            </div>
+                            <SignUpPaymentForm
+                              isLoading={isLoading}
+                              paymentForm={paymentForm}
+                              onSubmit={onPaymentSubmit}
+                            />
+                          </div>
+                        )}
+                        {step === 2 && userInfo && (
+                          <div className="max-w-2xl mx-auto mt-4 mb-4">
+                            <Card className="bg-background">
+                              <CardHeader>
+                                <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <SignUpSummary userInfo={userInfo} ANNUAL_LABEL={getPlanLabel(selectedPlan)} />
+                              </CardContent>
+                            </Card>
+                          </div>
+                        )}
+                      </>
                     ) : (
-                      <Button
-                        size="lg"
-                        className="w-full"
-                        type="button"
-                        variant="secondary"
-                        onClick={() => setShowFirmContact(true)}
-                      >
-                        Contact Sales
-                      </Button>
+                      // FIRMS: Show contact form/card, styled like other plan cards
+                      <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
+                        <CardHeader>
+                          <CardTitle className="text-2xl">Firms &mdash; Contact Sales</CardTitle>
+                          <div className="mt-4">
+                            <span className="text-4xl font-bold">Contact Sales</span>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <FirmContactForm onSuccess={handleFirmContactSuccess} />
+                        </CardContent>
+                      </Card>
                     )}
-                  </CardFooter>
-                </Card>
-              )}
-              {step === 1 && showInfoForm && (
-                <SignUpInfoForm
-                  isLoading={isLoading}
-                  infoForm={infoForm}
-                  onSubmit={onInfoSubmit}
-                  ANNUAL_LABEL={getPlanLabel(selectedPlan)}
-                  plan={selectedPlan}
-                  term={selectedTerm}
-                />
-              )}
-              {step === 2 && (
-                <div className="max-w-2xl mx-auto">
-                  <div className="mb-2">
-                    <Button
-                      variant="outline"
-                      className="mb-4"
-                      type="button"
-                      onClick={handleBackFromPayment}
-                      disabled={isLoading}
-                    >
-                      Back
-                    </Button>
                   </div>
-                  <SignUpPaymentForm
-                    isLoading={isLoading}
-                    paymentForm={paymentForm}
-                    onSubmit={onPaymentSubmit}
-                  />
-                </div>
-              )}
-              {step === 2 && userInfo && (
-                <div className="max-w-2xl mx-auto mt-4 mb-4">
-                  <Card className="bg-background">
-                    <CardHeader>
-                      <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <SignUpSummary userInfo={userInfo} ANNUAL_LABEL={getPlanLabel(selectedPlan)} />
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
+                </Tabs>
+              </div>
             </>
           )}
         </ResponsiveContainer>
@@ -450,7 +420,6 @@ export default function SignUp() {
 import { ContactForm } from "@/components/contact/ContactForm";
 function FirmContactForm({ onSuccess }: { onSuccess: () => void }) {
   // Use the existing ContactForm, but intercept after submit
-  // We'll just show the ContactForm and on success show thank you above
   // The ContactForm already shows its own success toast
   return <ContactForm />;
 }
