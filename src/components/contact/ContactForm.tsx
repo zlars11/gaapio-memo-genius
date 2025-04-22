@@ -12,9 +12,8 @@ const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22551110/2xusps
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
   const [company, setCompany] = useState("");
+  const [message, setMessage] = useState(""); // Now for "Notes"
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +28,7 @@ export function ContactForm() {
             name,
             email,
             company: company || null,
-            message: subject ? `[${subject}] ${message}` : message,
+            message, // Just the "Notes" now
             date: new Date().toISOString(),
           },
         ]);
@@ -41,8 +40,7 @@ export function ContactForm() {
           name,
           email,
           company: company || undefined,
-          subject,
-          message,
+          message, // "Notes"
           source: "Contact Form",
           timestamp: new Date().toISOString(),
           destination: "zacklarsen11@gmail.com",
@@ -55,9 +53,8 @@ export function ContactForm() {
 
       setName("");
       setEmail("");
-      setSubject("");
-      setMessage("");
       setCompany("");
+      setMessage("");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Something went wrong", {
@@ -79,7 +76,7 @@ export function ContactForm() {
         "
         aria-labelledby="contact-form-heading"
       >
-        {/* Add the "Contact Sales" heading, styled to match the rest of the site */}
+        {/* Add the "Firm" heading, styled to match the rest of the site */}
         <div className="w-full mb-4">
           <h2
             id="contact-form-heading"
@@ -144,23 +141,12 @@ export function ContactForm() {
               autoComplete="tel"
             />
           </div>
+          {/* Subject REMOVED */}
           <div className="space-y-2">
-            <Label htmlFor="subject" className="text-base text-neutral-900 font-medium">Subject</Label>
-            <Input
-              id="subject"
-              placeholder="What's this about?"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              required
-              aria-required="true"
-              className="w-full"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Message</Label>
+            <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Notes</Label>
             <Textarea
               id="message"
-              placeholder="Your message"
+              placeholder="Additional notes"
               rows={5}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -183,4 +169,3 @@ export function ContactForm() {
     </div>
   );
 }
-
