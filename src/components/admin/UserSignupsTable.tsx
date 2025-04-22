@@ -16,8 +16,12 @@ import { Badge } from "@/components/ui/badge";
 
 interface UserSignup {
   id: string;
+  firstName?: string;
+  lastName?: string;
   name?: string;
   email: string;
+  phone?: string;
+  company?: string;
   plan: string;
   status?: "active" | "inactive" | "trial";
   signupDate: string;
@@ -55,9 +59,11 @@ export function UserSignupsTable() {
     } else {
       const filtered = users.filter(
         (user: UserSignup) =>
-          (user.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (user.firstName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (user.lastName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.plan || "").toLowerCase().includes(searchQuery.toLowerCase())
+          (user.plan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (user.company || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
     }
@@ -87,19 +93,20 @@ export function UserSignupsTable() {
       <CardContent>
         <div className="mb-4">
           <Input
-            placeholder="Search by name, email or plan..."
+            placeholder="Search by first name, last name, email, company, or plan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-md"
           />
         </div>
-        
         <Table>
           <TableCaption>A list of users who have signed up.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>First Name</TableHead>
+              <TableHead>Last Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Company</TableHead>
               <TableHead>Plan</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Sign-up Date</TableHead>
@@ -108,15 +115,17 @@ export function UserSignupsTable() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
                   Loading...
                 </TableCell>
               </TableRow>
             ) : filteredUsers.length > 0 ? (
               filteredUsers.map((user, idx) => (
                 <TableRow key={user.id || user.email || idx}>
-                  <TableCell className="font-medium">{user.name || "—"}</TableCell>
+                  <TableCell className="font-medium">{user.firstName || "—"}</TableCell>
+                  <TableCell>{user.lastName || "—"}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.company || "—"}</TableCell>
                   <TableCell>{user.plan}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusBadgeVariant(user.status || "active")}>
@@ -132,7 +141,7 @@ export function UserSignupsTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
                   {searchQuery ? "No matching users found." : "No users have signed up yet."}
                 </TableCell>
               </TableRow>

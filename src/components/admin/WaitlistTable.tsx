@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -81,7 +80,6 @@ export function WaitlistTable() {
               className="max-w-md"
             />
           </div>
-          
           <Table>
             <TableCaption>A list of waitlist submissions.</TableCaption>
             <TableHeader>
@@ -123,7 +121,6 @@ export function WaitlistTable() {
           </Table>
         </CardContent>
       </Card>
-      
       <ZapierWebhookSetup 
         webhookType="waitlist" 
         description="Connect your waitlist form to this admin dashboard" 
