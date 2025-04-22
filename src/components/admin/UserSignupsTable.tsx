@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,16 +37,16 @@ export function UserSignupsTable() {
     async function fetchData() {
       setLoading(true);
       // The fields returned match table column names which are lowercase.
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("user_signups")
         .select("*")
-        .order("signupdate", { ascending: false }); // Use correct column for date
+        .order("signupdate", { ascending: false });
       if (error) {
         setUsers([]);
         setFilteredUsers([]);
       } else {
-        setUsers(data);
-        setFilteredUsers(data);
+        setUsers(data as UserSignup[]);
+        setFilteredUsers(data as UserSignup[]);
       }
       setLoading(false);
     }
@@ -71,14 +71,14 @@ export function UserSignupsTable() {
 
   const getStatusBadgeVariant = (status?: string) => {
     switch ((status || "").toLowerCase()) {
-      case 'active':
-        return 'default';
-      case 'trial':
-        return 'secondary';
-      case 'inactive':
-        return 'outline';
+      case "active":
+        return "default";
+      case "trial":
+        return "secondary";
+      case "inactive":
+        return "outline";
       default:
-        return 'default';
+        return "default";
     }
   };
 
@@ -87,13 +87,13 @@ export function UserSignupsTable() {
       <CardHeader>
         <CardTitle>User Sign-ups</CardTitle>
         <CardDescription>
-          Users who have signed up for a paid plan via Stripe
+          Users who have subscribed to a paid plan.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-4">
           <Input
-            placeholder="Search by first name, last name, email, company, or plan..."
+            placeholder="Search by name, email, company, or plan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-md"
@@ -129,8 +129,9 @@ export function UserSignupsTable() {
                   <TableCell>{user.plan}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusBadgeVariant(user.status)}>
-                      {user.status ? 
-                        (user.status.charAt(0).toUpperCase() + user.status.slice(1)) : "Active"}
+                      {user.status
+                        ? user.status.charAt(0).toUpperCase() + user.status.slice(1)
+                        : "Active"}
                     </Badge>
                   </TableCell>
                   <TableCell>

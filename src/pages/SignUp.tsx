@@ -84,7 +84,7 @@ export default function SignUp() {
 
   // Helper: Trigger zapier with all form data
   async function triggerZapier(allData: any) {
-    // Fetch dynamically from localStorage
+    // Fetch dynamically from localStorage (set by admin panel)
     const ZAPIER_WEBHOOK_URL = getUserSignupZapierWebhookUrl();
 
     if (!ZAPIER_WEBHOOK_URL) {
