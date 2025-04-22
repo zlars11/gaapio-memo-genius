@@ -69,10 +69,16 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-md mx-auto px-4 sm:px-0 bg-white rounded-lg shadow-md border border-muted" aria-labelledby="contact-form-heading">
-      <h2 id="contact-form-heading" className="text-2xl font-extrabold mb-2">Contact Sales</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5 w-full max-w-md mx-auto px-4 sm:px-0 bg-white rounded-lg shadow-md border border-muted"
+      aria-labelledby="contact-form-heading"
+    >
+      {/* REMOVE extra "Contact Sales" heading, handled in Firm card now */}
+      {/* <h2 id="contact-form-heading" className="text-2xl font-extrabold mb-2">Contact Sales</h2> */}
+
       <div className="space-y-2">
-        <Label htmlFor="name" className="text-base">Name</Label>
+        <Label htmlFor="name" className="text-base text-neutral-900 font-medium">Name</Label>
         <Input
           id="name"
           placeholder="Your name"
@@ -84,7 +90,7 @@ export function ContactForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-base">Email</Label>
+        <Label htmlFor="email" className="text-base text-neutral-900 font-medium">Email</Label>
         <Input
           id="email"
           type="email"
@@ -97,7 +103,7 @@ export function ContactForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="company" className="text-base">Company</Label>
+        <Label htmlFor="company" className="text-base text-neutral-900 font-medium">Company</Label>
         <Input
           id="company"
           placeholder="Your company (optional)"
@@ -107,17 +113,17 @@ export function ContactForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="phone" className="text-base text-blue-600 font-semibold">Phone</Label>
+        <Label htmlFor="phone" className="text-base text-neutral-900 font-medium">Phone</Label>
         <Input
           id="phone"
           placeholder="Your phone number"
-          value={"" /* No phone support in original, keep for future */}
+          value={""}
           readOnly
           className="w-full"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="subject" className="text-base text-blue-600 font-semibold">Subject</Label>
+        <Label htmlFor="subject" className="text-base text-neutral-900 font-medium">Subject</Label>
         <Input
           id="subject"
           placeholder="What's this about?"
@@ -129,7 +135,7 @@ export function ContactForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message" className="text-base text-blue-600 font-semibold">Message</Label>
+        <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Message</Label>
         <Textarea
           id="message"
           placeholder="Your message"

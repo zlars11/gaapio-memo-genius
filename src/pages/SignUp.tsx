@@ -394,13 +394,13 @@ export default function SignUp() {
                         )}
                       </>
                     ) : (
-                      // FIRMS: Show contact form as a proper card with only a single "Contact Sales" heading
+                      // FIRMS: Make card just like other plans. Title = "Firm", no repeated "Contact Sales" inside.
                       <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
                         <CardHeader>
-                          {/* Only show one title in the card header */}
-                          <CardTitle className="text-2xl">Contact Sales</CardTitle>
+                          <CardTitle className="text-2xl">Firm</CardTitle>
                         </CardHeader>
                         <CardContent>
+                          {/* Remove duplicate heading in ContactForm; form itself starts without h2. */}
                           <FirmContactForm onSuccess={handleFirmContactSuccess} />
                         </CardContent>
                         {/* No CardFooter, for full-width button in the form */}
@@ -421,7 +421,5 @@ export default function SignUp() {
 // --- FIRM CONTACT FORM COMPONENT ---
 import { ContactForm } from "@/components/contact/ContactForm";
 function FirmContactForm({ onSuccess }: { onSuccess: () => void }) {
-  // Use the existing ContactForm, but intercept after submit
-  // The ContactForm already shows its own success toast
   return <ContactForm />;
 }
