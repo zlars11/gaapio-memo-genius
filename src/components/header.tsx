@@ -25,52 +25,52 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
-      <div className="container flex items-center justify-between h-20">
-        {/* Logo at top-left, larger sizing and always visible */}
+      <div className="container flex items-center justify-between h-[88px] md:h-[94px]">
+        {/* Logo: left-most, very large */}
         <Link
           to="/"
           className="flex items-center h-full group pl-1 pr-5"
           aria-label="Go to homepage"
-          style={{ minHeight: "48px" }}
+          style={{ minHeight: "75px" }}
         >
-          <Logo className="h-12 w-auto transition-all duration-150 group-hover:scale-105" />
+          <Logo className="h-[75px] w-auto transition-all duration-150 group-hover:scale-105" />
         </Link>
-        <nav className="flex items-center space-x-4">
+        <nav className="flex items-center space-x-5">
           <Link
             to="/about-us"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
+            className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
           >
             About Us
           </Link>
           <Link
             to="/contact"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
+            className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
           >
             Contact
           </Link>
           <Link
             to="/faq"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
+            className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
           >
             FAQ
           </Link>
           <Link
             to="/blog"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
+            className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
           >
             Blog
           </Link>
-          {/* CTA button in top right */}
-          <div className="flex items-center">
-            <Button size="sm" asChild className="ml-2">
+          {/* CTA+Theme toggle: right aligned */}
+          <div className="flex items-center ml-2 space-x-2">
+            <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
               {isClient && ctaTo.startsWith("/") ? (
                 <Link to={ctaTo}>{ctaText}</Link>
               ) : (
                 <a href={ctaTo}>{ctaText}</a>
               )}
             </Button>
-            {/* Theme toggle, immediately to the right of CTA */}
-            <span className="ml-1">
+            {/* Theme toggle: immediately to right of CTA */}
+            <span>
               <ThemeToggle />
             </span>
           </div>
