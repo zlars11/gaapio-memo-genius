@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -97,6 +96,12 @@ export default function SignUp() {
   // Click of Subscribe Now reveals info form (without leaving the page)
   const handleSubscribeClick = () => {
     setShowInfoForm(true);
+  };
+
+  // Updated: Add back button handler for step 2
+  const handleBackFromPayment = () => {
+    setStep(1);
+    setPaymentInfo(null);
   };
 
   // STEP 1.5: User info form submit
@@ -256,11 +261,24 @@ export default function SignUp() {
                 />
               )}
               {step === 2 && (
-                <SignUpPaymentForm
-                  isLoading={isLoading}
-                  paymentForm={paymentForm}
-                  onSubmit={onPaymentSubmit}
-                />
+                <div className="max-w-2xl mx-auto">
+                  <div className="mb-2">
+                    <Button
+                      variant="outline"
+                      className="mb-4"
+                      type="button"
+                      onClick={handleBackFromPayment}
+                      disabled={isLoading}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                  <SignUpPaymentForm
+                    isLoading={isLoading}
+                    paymentForm={paymentForm}
+                    onSubmit={onPaymentSubmit}
+                  />
+                </div>
               )}
               {step === 2 && userInfo && (
                 <div className="max-w-2xl mx-auto mt-4 mb-4">
