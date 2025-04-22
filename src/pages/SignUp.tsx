@@ -224,7 +224,7 @@ export default function SignUp() {
       }
 
       // Send allData (user details + payment) to Zapier for notification
-      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: ANNUAL_LABEL, signupDate: new Date().toISOString() };
+      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
       await triggerZapier(allData);
 
       setIsLoading(false);
@@ -252,7 +252,7 @@ export default function SignUp() {
         <li><span className="font-medium">Email:</span> {userInfo.email}</li>
         <li><span className="font-medium">Phone:</span> {userInfo.phone}</li>
         <li><span className="font-medium">Company:</span> {userInfo.company}</li>
-        <li><span className="font-medium">Plan:</span> Annual Subscription ({ANNUAL_LABEL})</li>
+        <li><span className="font-medium">Plan:</span> Annual Subscription ({getPlanLabel(selectedPlan)})</li>
         {paymentInfo && (
           <>
             <li><span className="font-medium">Card Number:</span> ••••{(paymentInfo.cardNumber || "").slice(-4)}</li>
