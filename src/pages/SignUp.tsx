@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -12,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { supabase } from "@/integrations/supabase/client";
+import { SignUpInfoForm } from "./SignUpInfoForm";
+import { SignUpPaymentForm } from "./SignUpPaymentForm";
+import { SignUpSummary } from "./SignUpSummary";
 
 // TODO: PLACE your Zapier webhook URL here
 const ZAPIER_WEBHOOK_URL = "";
@@ -172,7 +174,9 @@ export default function SignUp() {
                     <CardTitle className="text-lg">Your Submitted Info</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {userInfo && <InfoSummary />}
+                    {userInfo && (
+                      <SignUpSummary userInfo={userInfo} paymentInfo={paymentInfo} ANNUAL_LABEL={ANNUAL_LABEL} />
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -189,131 +193,19 @@ export default function SignUp() {
                 </p>
               </div>
               {step === 1 && (
-                <form
-                  className="max-w-2xl mx-auto space-y-6 p-6 rounded-lg bg-muted/40"
-                  onSubmit={infoForm.handleSubmit(onInfoSubmit)}
-                  autoComplete="off"
-                >
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" {...infoForm.register("firstName", { required: true })} disabled={isLoading} />
-                      {infoForm.formState.errors.firstName && <p className="text-red-500 text-xs mt-1">First name is required</p>}
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" {...infoForm.register("lastName", { required: true })} disabled={isLoading} />
-                      {infoForm.formState.errors.lastName && <p className="text-red-500 text-xs mt-1">Last name is required</p>}
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...infoForm.register("email", {
-                        required: "Email is required",
-                        pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" }
-                      })}
-                      disabled={isLoading}
-                    />
-                    {infoForm.formState.errors.email && <p className="text-red-500 text-xs mt-1">{infoForm.formState.errors.email.message as string}</p>}
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" {...infoForm.register("phone", { required: true })} disabled={isLoading} />
-                    {infoForm.formState.errors.phone && <p className="text-red-500 text-xs mt-1">Phone is required</p>}
-                  </div>
-                  <div>
-                    <Label htmlFor="company">Company</Label>
-                    <Input id="company" {...infoForm.register("company", { required: true })} disabled={isLoading} />
-                    {infoForm.formState.errors.company && <p className="text-red-500 text-xs mt-1">Company is required</p>}
-                  </div>
-                  {/* Only Annual Plan is offered */}
-                  <div>
-                    <Card className="my-6 border-primary shadow-lg">
-                      <CardHeader>
-                        <CardTitle className="text-2xl">Annual Subscription</CardTitle>
-                        <CardDescription>per year (save 30%)</CardDescription>
-                        <div className="mt-4">
-                          <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2">
-                          <li className="flex items-center">
-                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                            Unlimited AI-generated memos
-                          </li>
-                          <li className="flex items-center">
-                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                            Up to 3 users
-                          </li>
-                          <li className="flex items-center">
-                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                            Free premium templates
-                          </li>
-                          <li className="flex items-center">
-                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                            Team collaboration tools
-                          </li>
-                          <li className="flex items-center">
-                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                            API access
-                          </li>
-                        </ul>
-                      </CardContent>
-                      <CardFooter>
-                        <Button
-                          size="lg"
-                          className="w-full"
-                          type="submit"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? "Processing..." : "Subscribe Now"}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                </form>
+                <SignUpInfoForm
+                  isLoading={isLoading}
+                  infoForm={infoForm}
+                  onSubmit={onInfoSubmit}
+                  ANNUAL_LABEL={ANNUAL_LABEL}
+                />
               )}
               {step === 2 && (
-                <form
-                  className="max-w-2xl mx-auto space-y-6 p-6 rounded-lg bg-muted/40"
-                  onSubmit={paymentForm.handleSubmit(onPaymentSubmit)}
-                  autoComplete="off"
-                >
-                  <div className="mb-4">
-                    <h2 className="text-xl font-semibold mb-2">Payment Details</h2>
-                    <p className="text-muted-foreground mb-4">Please enter your payment information below.</p>
-                    {/* In a real app, use Stripe Elements or a payment integration! */}
-                    <div>
-                      <Label htmlFor="cardNumber">Card Number</Label>
-                      <Input id="cardNumber" {...paymentForm.register("cardNumber", { required: true })} placeholder="1234 5678 9012 3456" disabled={isLoading} maxLength={19} />
-                      {paymentForm.formState.errors.cardNumber && <p className="text-red-500 text-xs mt-1">Card number is required</p>}
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4 mt-2">
-                      <div>
-                        <Label htmlFor="cardExpiry">Expiry</Label>
-                        <Input id="cardExpiry" {...paymentForm.register("cardExpiry", { required: true })} placeholder="MM/YY" disabled={isLoading} maxLength={5} />
-                        {paymentForm.formState.errors.cardExpiry && <p className="text-red-500 text-xs mt-1">Expiry is required</p>}
-                      </div>
-                      <div>
-                        <Label htmlFor="cardCvc">CVC</Label>
-                        <Input id="cardCvc" {...paymentForm.register("cardCvc", { required: true })} placeholder="CVC" disabled={isLoading} maxLength={4} />
-                        {paymentForm.formState.errors.cardCvc && <p className="text-red-500 text-xs mt-1">CVC is required</p>}
-                      </div>
-                    </div>
-                    <div className="mt-2">
-                      <Label htmlFor="billingZip">Billing ZIP/Postal Code</Label>
-                      <Input id="billingZip" {...paymentForm.register("billingZip", { required: true })} placeholder="ZIP/Postal" disabled={isLoading} maxLength={10} />
-                      {paymentForm.formState.errors.billingZip && <p className="text-red-500 text-xs mt-1">Billing ZIP is required</p>}
-                    </div>
-                  </div>
-                  <Button size="lg" className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? "Processing Payment..." : "Complete Purchase"}
-                  </Button>
-                </form>
+                <SignUpPaymentForm
+                  isLoading={isLoading}
+                  paymentForm={paymentForm}
+                  onSubmit={onPaymentSubmit}
+                />
               )}
               {step === 2 && userInfo && (
                 <div className="max-w-2xl mx-auto mt-4 mb-4">
@@ -322,7 +214,7 @@ export default function SignUp() {
                       <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <InfoSummary />
+                      <SignUpSummary userInfo={userInfo} ANNUAL_LABEL={ANNUAL_LABEL} />
                     </CardContent>
                   </Card>
                 </div>
