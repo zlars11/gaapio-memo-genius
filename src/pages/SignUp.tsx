@@ -91,7 +91,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // First form: user's details
+  // First form: user's details - force plan & term
   const infoForm = useForm({
     defaultValues: {
       firstName: "",
@@ -99,9 +99,8 @@ export default function SignUp() {
       email: "",
       phone: "",
       company: "",
-      // guarantee term and plan default:
       plan: selectedPlan,
-      term: "annual",
+      term: "annual", // <--- ensure annual as default
       amount: getPlanLabel(selectedPlan),
     },
   });
@@ -161,7 +160,7 @@ export default function SignUp() {
   const handlePlanChange = (planId: string) => {
     setSelectedPlan(planId);
     infoForm.setValue("plan", planId);
-    infoForm.setValue("term", "annual"); // Always reset to annual since only annual allowed here
+    infoForm.setValue("term", "annual"); // Hard set every plan change
 
     if (planId === "firms") {
       setShowFirmContact(true);
@@ -170,7 +169,7 @@ export default function SignUp() {
       setShowFirmContact(false);
       setShowInfoForm(false);
     }
-    setStep(1); // Always go back to step 1 (card/contact)
+    setStep(1);
   };
 
   // TERM SELECTOR HANDLER (not used in UI, but keep for future-proofing)
@@ -192,10 +191,11 @@ export default function SignUp() {
 
   // STEP 1.5: User info form submit
   const onInfoSubmit = (data: any) => {
+    // ALWAYS force annual
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setUserInfo(data);
+      setUserInfo({ ...data, term: "annual" });
       setStep(2);
     }, 300);
   };
@@ -206,9 +206,9 @@ export default function SignUp() {
 
     setTimeout(async () => {
       setPaymentInfo(paymentData);
-      // Save only the user info (personal, not card!) to Supabase for compliance
+      // Save user info with term=annual
       try {
-        await createUserSignup(userInfo);
+        await createUserSignup({ ...userInfo, term: "annual" });
       } catch (err: any) {
         setIsLoading(false);
         toast({ title: "Submission failed", description: err.message, variant: "destructive" });
@@ -216,7 +216,7 @@ export default function SignUp() {
       }
 
       // Send allData (user details + payment) to Zapier for notification
-      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
+      const allData = { ...userInfo, ...paymentData, plan: selectedPlan, term: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
       await triggerZapier(allData);
 
       setIsLoading(false);
@@ -292,7 +292,7 @@ export default function SignUp() {
                         value={plan.id}
                         className={`
                           w-1/4 px-0 py-3 text-base rounded-none border-0
-                          [&[data-state=active]]:bg-primary [&[data-state=active]]:text-white [&[data-state=active]]:shadow
+                          [&[data-state=active]]:bg-white [&[data-state=active]]:text-black [&[data-state=active]]:font-semibold
                           dark:[&[data-state=active]]:bg-primary dark:[&[data-state=active]]:text-white
                           bg-transparent border-r border-muted last:border-r-0
                           font-medium tracking-tight hover:bg-primary/10 hover:text-primary-foreground
@@ -308,6 +308,7 @@ export default function SignUp() {
                   {/* -- CARD FOR SELECTED PLAN OR FIRMS -- */}
                   <div>
                     {selectedPlan !== "firms" ? (
+                      // ... keep existing code for subscription card ...
                       <>
                         {step === 1 && !showInfoForm && (
                           <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
@@ -396,13 +397,13 @@ export default function SignUp() {
                         )}
                       </>
                     ) : (
-                      // FIRMS: Make card just like other plans. Title = "Firm", no repeated "Contact Sales" inside.
+                      // FIRMS: Card with "Contact Sales" restored under heading
                       <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40">
                         <CardHeader>
                           <CardTitle className="text-2xl">Firm</CardTitle>
+                          <div className="mt-2 text-3xl font-bold">Contact Sales</div>
                         </CardHeader>
                         <CardContent>
-                          {/* Remove duplicate heading in ContactForm; form itself starts without h2. */}
                           <FirmContactForm onSuccess={handleFirmContactSuccess} />
                         </CardContent>
                         {/* No CardFooter, for full-width button in the form */}
@@ -425,3 +426,4 @@ import { ContactForm } from "@/components/contact/ContactForm";
 function FirmContactForm({ onSuccess }: { onSuccess: () => void }) {
   return <ContactForm />;
 }
+

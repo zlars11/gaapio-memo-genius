@@ -12,7 +12,6 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      // Make background fully opaque for dropdown, Tabs border and contrast
       "inline-flex h-12 items-center justify-center space-x-0 w-full shadow-sm bg-background border border-muted rounded-lg overflow-hidden",
       className
     )}
@@ -28,11 +27,14 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      // Clean, strong contrast for all states (light/dark)
-      "inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-base font-medium transition-colors border-0 border-b-2 border-transparent rounded-none w-full h-full" +
-      " focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" +
-      " data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:font-semibold" +
-      " data-[state=inactive]:bg-background data-[state=inactive]:text-foreground hover:bg-primary/5 hover:text-primary",
+      // Ensures GREAT contrast in all modes, especially when active
+      `
+        inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-base font-medium transition-colors border-0 border-b-2 border-transparent rounded-none w-full h-full
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+        data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-none data-[state=active]:font-semibold
+        dark:data-[state=active]:bg-primary dark:data-[state=active]:text-white
+        data-[state=inactive]:bg-background data-[state=inactive]:text-foreground hover:bg-primary/5 hover:text-primary
+      `,
       className
     )}
     {...props}
