@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -11,16 +10,24 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
+import { supabase } from "@/integrations/supabase/client";
+
+// ⚠️ PLACE your Zapier webhook URL here or, ideally, manage it in admin
+const ZAPIER_WEBHOOK_URL = "";
+
+const ANNUAL_PRICE = 249900; // in cents ($2,499.00)
+const ANNUAL_LABEL = "$2,499";
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-  const [showForm, setShowForm] = useState(true);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [userInfo, setUserInfo] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Collect user info before "Subscribe"
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  // First form: user's details
+  const infoForm = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -30,30 +37,92 @@ export default function SignUp() {
     },
   });
 
-  // Simulate a payment processing flow
-  const onInfoSubmit = (data: any) => {
+  // Simulate payment form for step 2
+  const paymentForm = useForm({
+    defaultValues: {
+      cardNumber: "",
+      cardExpiry: "",
+      cardCvc: "",
+      billingZip: "",
+    },
+  });
+
+  // Helper for inserting signups into Supabase "user_signups" table
+  async function createUserSignup(info: any) {
+    // You may want more robust error handling and deduplication
+    const { data, error } = await supabase.from("user_signups").insert([
+      {
+        firstName: info.firstName,
+        lastName: info.lastName,
+        email: info.email,
+        phone: info.phone,
+        company: info.company,
+        plan: "annual",
+        amount: ANNUAL_LABEL,
+        signupDate: new Date().toISOString(),
+        status: "active",
+      }
+    ]);
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  }
+
+  async function triggerZapier(info: any) {
+    if (!ZAPIER_WEBHOOK_URL) {
+      // Uncomment the next line if you want to enforce a webhook url before going live, or show a toast instead.
+      // toast({ title: "Zapier Not Set", description: "No Zapier webhook configured.", variant: "destructive" });
+      return;
+    }
+    try {
+      await fetch(ZAPIER_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors", // to skip CORS errors
+        body: JSON.stringify(info),
+      });
+    } catch (err) {
+      // Optionally handle error, but "no-cors" will usually not throw
+    }
+  }
+
+  // Handle info form submit (Step 1)
+  const onInfoSubmit = async (data: any) => {
+    setIsLoading(true);
+    setTimeout(() => { // Small UX pause for loader consistency
+      setIsLoading(false);
+      setUserInfo(data);
+      setStep(2);
+    }, 300);
+  };
+
+  // Handle payment and final submit (Step 2)
+  const onPaymentSubmit = async (paymentData: any) => {
     setIsLoading(true);
 
-    // Simulate payment process with a timeout, and store all fields
-    setTimeout(() => {
+    // Simulate stripe payment process (replace with real stripe integration as needed)
+    setTimeout(async () => {
+      const allData = { ...userInfo, ...paymentData, plan: "annual", amount: ANNUAL_LABEL, signupDate: new Date().toISOString() };
+      // Save to Supabase
+      try {
+        await createUserSignup(allData);
+      } catch (err: any) {
+        setIsLoading(false);
+        toast({ title: "Submission failed", description: err.message, variant: "destructive" });
+        return;
+      }
+
+      // Trigger Zapier email
+      await triggerZapier(allData);
+
       setIsLoading(false);
       setPaymentSuccessful(true);
-
-      // Save signups to localStorage (simulate for admin dashboard metrics)
-      const existingSignups = JSON.parse(localStorage.getItem("userSignups") || "[]");
-      existingSignups.push({
-        ...data,
-        plan: "annual",
-        amount: "$2,499",
-        signupDate: new Date().toISOString()
-      });
-      localStorage.setItem("userSignups", JSON.stringify(existingSignups));
-
       toast({
-        title: "Payment successful!",
-        description: "Thank you for subscribing to Gaapio.",
+        title: "Thank you for subscribing to Gaapio!",
+        description: "We've received your info. You'll receive a confirmation soon.",
       });
-    }, 1500);
+    }, 1200);
   };
 
   return (
@@ -84,22 +153,22 @@ export default function SignUp() {
                   Get started with AI-powered accounting memos on our Annual Plan.
                 </p>
               </div>
-              {showForm && (
+              {step === 1 && (
                 <form
                   className="max-w-2xl mx-auto space-y-6 p-6 rounded-lg bg-muted/40"
-                  onSubmit={handleSubmit(onInfoSubmit)}
+                  onSubmit={infoForm.handleSubmit(onInfoSubmit)}
                   autoComplete="off"
                 >
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" {...register("firstName", { required: true })} disabled={isLoading} />
-                      {errors.firstName && <p className="text-red-500 text-xs mt-1">First name is required</p>}
+                      <Input id="firstName" {...infoForm.register("firstName", { required: true })} disabled={isLoading} />
+                      {infoForm.formState.errors.firstName && <p className="text-red-500 text-xs mt-1">First name is required</p>}
                     </div>
                     <div>
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" {...register("lastName", { required: true })} disabled={isLoading} />
-                      {errors.lastName && <p className="text-red-500 text-xs mt-1">Last name is required</p>}
+                      <Input id="lastName" {...infoForm.register("lastName", { required: true })} disabled={isLoading} />
+                      {infoForm.formState.errors.lastName && <p className="text-red-500 text-xs mt-1">Last name is required</p>}
                     </div>
                   </div>
                   <div>
@@ -107,32 +176,32 @@ export default function SignUp() {
                     <Input
                       id="email"
                       type="email"
-                      {...register("email", {
+                      {...infoForm.register("email", {
                         required: "Email is required",
                         pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" }
                       })}
                       disabled={isLoading}
                     />
-                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message as string}</p>}
+                    {infoForm.formState.errors.email && <p className="text-red-500 text-xs mt-1">{infoForm.formState.errors.email.message as string}</p>}
                   </div>
                   <div>
                     <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" {...register("phone", { required: true })} disabled={isLoading} />
-                    {errors.phone && <p className="text-red-500 text-xs mt-1">Phone is required</p>}
+                    <Input id="phone" {...infoForm.register("phone", { required: true })} disabled={isLoading} />
+                    {infoForm.formState.errors.phone && <p className="text-red-500 text-xs mt-1">Phone is required</p>}
                   </div>
                   <div>
                     <Label htmlFor="company">Company</Label>
-                    <Input id="company" {...register("company", { required: true })} disabled={isLoading} />
-                    {errors.company && <p className="text-red-500 text-xs mt-1">Company is required</p>}
+                    <Input id="company" {...infoForm.register("company", { required: true })} disabled={isLoading} />
+                    {infoForm.formState.errors.company && <p className="text-red-500 text-xs mt-1">Company is required</p>}
                   </div>
-                  {/* You'd insert Stripe payment form here in a real integration */}
+                  {/* Only Annual Plan is offered */}
                   <div>
                     <Card className="my-6 border-primary shadow-lg">
                       <CardHeader>
                         <CardTitle className="text-2xl">Annual Subscription</CardTitle>
                         <CardDescription>per year (save 30%)</CardDescription>
                         <div className="mt-4">
-                          <span className="text-4xl font-bold">$2,499</span>
+                          <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -171,6 +240,44 @@ export default function SignUp() {
                       </CardFooter>
                     </Card>
                   </div>
+                </form>
+              )}
+              {step === 2 && (
+                <form
+                  className="max-w-2xl mx-auto space-y-6 p-6 rounded-lg bg-muted/40"
+                  onSubmit={paymentForm.handleSubmit(onPaymentSubmit)}
+                  autoComplete="off"
+                >
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold mb-2">Payment Details</h2>
+                    <p className="text-muted-foreground mb-4">Please enter your payment information below.</p>
+                    {/* In a real app, use Stripe Elements or a payment integration! */}
+                    <div>
+                      <Label htmlFor="cardNumber">Card Number</Label>
+                      <Input id="cardNumber" {...paymentForm.register("cardNumber", { required: true })} placeholder="1234 5678 9012 3456" disabled={isLoading} maxLength={19} />
+                      {paymentForm.formState.errors.cardNumber && <p className="text-red-500 text-xs mt-1">Card number is required</p>}
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <Label htmlFor="cardExpiry">Expiry</Label>
+                        <Input id="cardExpiry" {...paymentForm.register("cardExpiry", { required: true })} placeholder="MM/YY" disabled={isLoading} maxLength={5} />
+                        {paymentForm.formState.errors.cardExpiry && <p className="text-red-500 text-xs mt-1">Expiry is required</p>}
+                      </div>
+                      <div>
+                        <Label htmlFor="cardCvc">CVC</Label>
+                        <Input id="cardCvc" {...paymentForm.register("cardCvc", { required: true })} placeholder="CVC" disabled={isLoading} maxLength={4} />
+                        {paymentForm.formState.errors.cardCvc && <p className="text-red-500 text-xs mt-1">CVC is required</p>}
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <Label htmlFor="billingZip">Billing ZIP/Postal Code</Label>
+                      <Input id="billingZip" {...paymentForm.register("billingZip", { required: true })} placeholder="ZIP/Postal" disabled={isLoading} maxLength={10} />
+                      {paymentForm.formState.errors.billingZip && <p className="text-red-500 text-xs mt-1">Billing ZIP is required</p>}
+                    </div>
+                  </div>
+                  <Button size="lg" className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? "Processing Payment..." : "Complete Purchase"}
+                  </Button>
                 </form>
               )}
             </>
