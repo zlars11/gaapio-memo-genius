@@ -99,8 +99,9 @@ export default function SignUp() {
       email: "",
       phone: "",
       company: "",
+      // guarantee term and plan default:
       plan: selectedPlan,
-      term: selectedTerm,
+      term: "annual",
       amount: getPlanLabel(selectedPlan),
     },
   });
@@ -125,7 +126,7 @@ export default function SignUp() {
 
   // Helper: insert into Supabase user_signups table
   async function createUserSignup(info: any) {
-    const dbInfo = mapUserToDb(info);
+    const dbInfo = mapUserToDb({ ...info, term: info.term || "annual" }); // safest default
     const { data, error } = await supabase.from("user_signups").insert([dbInfo]);
     if (error) throw new Error(error.message);
     return data;
@@ -160,6 +161,7 @@ export default function SignUp() {
   const handlePlanChange = (planId: string) => {
     setSelectedPlan(planId);
     infoForm.setValue("plan", planId);
+    infoForm.setValue("term", "annual"); // Always reset to annual since only annual allowed here
 
     if (planId === "firms") {
       setShowFirmContact(true);
@@ -171,10 +173,10 @@ export default function SignUp() {
     setStep(1); // Always go back to step 1 (card/contact)
   };
 
-  // TERM SELECTOR HANDLER
+  // TERM SELECTOR HANDLER (not used in UI, but keep for future-proofing)
   const handleTermChange = (term: string) => {
     setSelectedTerm(term);
-    infoForm.setValue("term", term);
+    infoForm.setValue("term", term || "annual");
   };
 
   // STEP 1: Show pricing/plan selector

@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
@@ -13,7 +12,8 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-12 items-center justify-center space-x-0 bg-muted/40 border border-muted rounded-lg overflow-hidden w-full shadow-sm", // tighter/cleaner
+      // Make background fully opaque for dropdown, Tabs border and contrast
+      "inline-flex h-12 items-center justify-center space-x-0 w-full shadow-sm bg-background border border-muted rounded-lg overflow-hidden",
       className
     )}
     {...props}
@@ -28,10 +28,11 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      // cleaned style, no weird gaps, cohesive hover, cleaner rounded edges
-      "inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-sm font-medium transition-colors border-0 border-b-2 border-transparent rounded-none w-full h-full " +
-      "hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 " +
-      "data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:font-semibold",
+      // Clean, strong contrast for all states (light/dark)
+      "inline-flex items-center justify-center whitespace-nowrap px-0 py-3 text-base font-medium transition-colors border-0 border-b-2 border-transparent rounded-none w-full h-full" +
+      " focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" +
+      " data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:font-semibold" +
+      " data-[state=inactive]:bg-background data-[state=inactive]:text-foreground hover:bg-primary/5 hover:text-primary",
       className
     )}
     {...props}

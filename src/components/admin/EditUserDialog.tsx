@@ -95,7 +95,7 @@ export default function EditUserDialog({ user, onSave, onDelete, ...props }: any
           </div>
           <div>
             <Label htmlFor="plan">Plan</Label>
-            <select id="plan" name="plan" value={plan} onChange={handlePlanChange} className="w-full border rounded px-3 py-2">
+            <select id="plan" name="plan" value={plan} onChange={handlePlanChange} className="w-full border rounded px-3 py-2 bg-background text-foreground">
               {PLAN_OPTIONS.map(opt => (
                 <option value={opt.value} key={opt.value}>{opt.label}</option>
               ))}
@@ -103,7 +103,7 @@ export default function EditUserDialog({ user, onSave, onDelete, ...props }: any
           </div>
           <div>
             <Label htmlFor="term">Term</Label>
-            <select id="term" name="term" value={term} onChange={handleTermChange} className="w-full border rounded px-3 py-2">
+            <select id="term" name="term" value={term} onChange={handleTermChange} className="w-full border rounded px-3 py-2 bg-background text-foreground">
               {TERM_OPTIONS.map(opt => (
                 <option value={opt.value} key={opt.value}>{opt.label}</option>
               ))}
@@ -111,11 +111,23 @@ export default function EditUserDialog({ user, onSave, onDelete, ...props }: any
           </div>
           <div>
             <Label htmlFor="status">Status</Label>
-            <select id="status" name="status" value={status} onChange={handleStatusChange} className="w-full border rounded px-3 py-2">
+            <select id="status" name="status" value={status} onChange={handleStatusChange} className="w-full border rounded px-3 py-2 bg-background text-foreground">
               {STATUS_OPTIONS.map(opt => (
                 <option value={opt.value} key={opt.value}>{opt.label}</option>
               ))}
             </select>
+          </div>
+          {/* Payment Info Display */}
+          <div className="p-4 mt-4 rounded-md bg-muted/60 text-foreground shadow-inner border border-muted">
+            <div className="text-sm font-semibold mb-2">Payment Details</div>
+            <div>
+              <span className="font-medium">Amount:</span>{" "}
+              {user.amount ? <span>{user.amount}</span> : <span className="text-muted-foreground">—</span>}
+            </div>
+            <div>
+              <span className="font-medium">Term:</span>{" "}
+              {user.term ? <span className="capitalize">{user.term}</span> : <span className="text-muted-foreground">—</span>}
+            </div>
           </div>
         </div>
         <div className="flex gap-3 mt-8">

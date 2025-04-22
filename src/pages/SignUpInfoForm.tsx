@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -118,8 +117,8 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
           </CardFooter>
         </Card>
       </div>
-      <input type="hidden" {...infoForm.register("plan")} value={plan} />
-      <input type="hidden" {...infoForm.register("term")} value={term} />
+      <input type="hidden" {...infoForm.register("plan")} value={plan || "emerging"} />
+      <input type="hidden" {...infoForm.register("term")} value={term || "annual"} />
       <input type="hidden" {...infoForm.register("amount")} value={ANNUAL_LABEL} />
     </form>
   );
