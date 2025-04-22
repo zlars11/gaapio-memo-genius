@@ -69,93 +69,118 @@ export function ContactForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5 w-full max-w-md mx-auto px-4 sm:px-0 bg-white rounded-lg shadow-md border border-muted"
-      aria-labelledby="contact-form-heading"
-    >
-      {/* REMOVE extra "Contact Sales" heading, handled in Firm card now */}
-      {/* <h2 id="contact-form-heading" className="text-2xl font-extrabold mb-2">Contact Sales</h2> */}
-
-      <div className="space-y-2">
-        <Label htmlFor="name" className="text-base text-neutral-900 font-medium">Name</Label>
-        <Input
-          id="name"
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          aria-required="true"
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email" className="text-base text-neutral-900 font-medium">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="your.email@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          aria-required="true"
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="company" className="text-base text-neutral-900 font-medium">Company</Label>
-        <Input
-          id="company"
-          placeholder="Your company (optional)"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="phone" className="text-base text-neutral-900 font-medium">Phone</Label>
-        <Input
-          id="phone"
-          placeholder="Your phone number"
-          value={""}
-          readOnly
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="subject" className="text-base text-neutral-900 font-medium">Subject</Label>
-        <Input
-          id="subject"
-          placeholder="What's this about?"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          required
-          aria-required="true"
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Message</Label>
-        <Textarea
-          id="message"
-          placeholder="Your message"
-          rows={5}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-          aria-required="true"
-          className="w-full min-h-[120px]"
-        />
-      </div>
-      <Button
-        type="submit"
-        className="w-full py-6 text-base"
-        disabled={isSubmitting}
-        aria-busy={isSubmitting}
-        size="lg"
+    <div className="w-full flex justify-center">
+      <form
+        onSubmit={handleSubmit}
+        className="
+          w-full max-w-md px-0 sm:px-0 
+          flex flex-col items-center 
+          bg-transparent border-none shadow-none
+        "
+        aria-labelledby="contact-form-heading"
       >
-        {isSubmitting ? "Sending..." : "Send Message"}
-      </Button>
-    </form>
+        {/* Add the "Contact Sales" heading, styled to match the rest of the site */}
+        <div className="w-full mb-4">
+          <h2
+            id="contact-form-heading"
+            className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 pl-2 pt-1"
+          >
+            Contact Sales
+          </h2>
+        </div>
+        {/* Card for the actual form */}
+        <div className="
+            w-full bg-white rounded-lg shadow-md border border-muted 
+            px-5 py-6 sm:px-8 sm:py-8
+            flex flex-col gap-5
+          "
+        >
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-base text-neutral-900 font-medium">Name</Label>
+            <Input
+              id="name"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              aria-required="true"
+              className="w-full"
+              autoComplete="name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-base text-neutral-900 font-medium">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="your.email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              aria-required="true"
+              className="w-full"
+              autoComplete="email"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="company" className="text-base text-neutral-900 font-medium">Company</Label>
+            <Input
+              id="company"
+              placeholder="Your company (optional)"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="w-full"
+              autoComplete="organization"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-base text-neutral-900 font-medium">Phone</Label>
+            <Input
+              id="phone"
+              placeholder="Your phone number"
+              value={""}
+              readOnly
+              className="w-full"
+              autoComplete="tel"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="subject" className="text-base text-neutral-900 font-medium">Subject</Label>
+            <Input
+              id="subject"
+              placeholder="What's this about?"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              required
+              aria-required="true"
+              className="w-full"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Message</Label>
+            <Textarea
+              id="message"
+              placeholder="Your message"
+              rows={5}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              aria-required="true"
+              className="w-full min-h-[120px]"
+            />
+          </div>
+          <Button
+            type="submit"
+            className="w-full py-6 text-base mt-2"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            size="lg"
+          >
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
+
