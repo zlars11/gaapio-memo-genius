@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -52,8 +51,14 @@ export function FirmSignupsTable() {
 
     if (error) {
       console.error("Error fetching firm signups:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch firm signups",
+        variant: "destructive",
+      });
       setFirmSignups([]);
     } else {
+      console.log("Fetched firm signups:", data);
       setFirmSignups(data || []);
     }
     setLoading(false);

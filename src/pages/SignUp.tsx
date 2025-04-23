@@ -58,10 +58,18 @@ const PLAN_FEATURES = [
   "Team collaboration tools",
 ];
 
-// Obtain Zapier webhook URL from localStorage so it can be set from admin settings
+// Helper functions to get Zapier webhook URLs from localStorage
 function getUserSignupZapierWebhookUrl() {
   if (typeof window !== "undefined") {
     return localStorage.getItem("userSignupWebhookUrl") || "";
+  }
+  return "";
+}
+
+// New helper function to get firm signup webhook URL
+function getFirmSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("firmSignupWebhookUrl") || "";
   }
   return "";
 }
@@ -134,27 +142,52 @@ export default function SignUp() {
     return data;
   }
 
+  // Helper: Create firm signup in Supabase
+  async function createFirmSignup(info: any) {
+    const firmData = {
+      type: "firm",
+      company: info.company,
+      firstname: info.firstName || info.firstname,
+      lastname: info.lastName || info.lastname,
+      email: info.email,
+      phone: info.phone,
+      notes: info.message || '',
+      signupdate: new Date().toISOString(),
+      plan: "firms"
+    };
+    
+    const { data, error } = await supabase.from("user_signups").insert([firmData]);
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
   // Helper: Trigger zapier with all form data
-  async function triggerZapier(allData: any) {
+  async function triggerZapier(allData: any, isFirm: boolean = false) {
     // Fetch dynamically from localStorage (set by admin panel)
-    const ZAPIER_WEBHOOK_URL = getUserSignupZapierWebhookUrl();
+    const ZAPIER_WEBHOOK_URL = isFirm ? 
+      getFirmSignupZapierWebhookUrl() : 
+      getUserSignupZapierWebhookUrl();
 
     if (!ZAPIER_WEBHOOK_URL) {
       toast({
         title: "Zapier not configured",
-        description: "No Zapier webhook URL set for User Signups. Please set it in the Admin panel.",
+        description: `No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups. Please set it in the Admin panel.`,
         variant: "destructive",
       });
       return;
     }
+    
     try {
+      console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         mode: "no-cors",
         body: JSON.stringify(allData),
       });
+      console.log("Zapier webhook triggered successfully");
     } catch (err) {
+      console.error("Error triggering Zapier webhook:", err);
       // Ignore non-blocking errors (no-cors)
     }
   }
@@ -233,9 +266,32 @@ export default function SignUp() {
   };
 
   // FIRM CONTACT FORM handler
-  function handleFirmContactSuccess() {
-    setShowFirmContact(false);
-    setStep(3);
+  async function handleFirmContactSuccess(formData: any) {
+    try {
+      // Save firm signup to database
+      await createFirmSignup(formData);
+      
+      // Send firm data to Zapier
+      await triggerZapier({
+        ...formData,
+        signupDate: new Date().toISOString(),
+        type: "firm"
+      }, true);
+      
+      toast({
+        title: "Thank you for your interest!",
+        description: "We've received your information and will be in touch soon.",
+      });
+      
+      setShowFirmContact(false);
+      setStep(3);
+    } catch (error: any) {
+      toast({
+        title: "Submission failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   }
 
   // --- MAIN RENDER ---
@@ -425,6 +481,6 @@ export default function SignUp() {
 
 // --- FIRM CONTACT FORM COMPONENT ---
 import { ContactForm } from "@/components/contact/ContactForm";
-function FirmContactForm({ onSuccess }: { onSuccess: () => void }) {
-  return <ContactForm />;
+function FirmContactForm({ onSuccess }: { onSuccess: (data: any) => void }) {
+  return <ContactForm onSubmitSuccess={onSuccess} />;
 }
