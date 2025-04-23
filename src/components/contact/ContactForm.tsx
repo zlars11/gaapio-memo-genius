@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ interface ContactFormValues {
   name: string;
   email: string;
   company?: string;
+  phone?: string;
   message: string;
 }
 
@@ -39,6 +39,7 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
         name: data.name,
         email: data.email,
         company: data.company || null,
+        phone: data.phone || null,
         message: data.message,
       });
       
@@ -50,8 +51,8 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
         // Pass data without the message field to ensure it matches user_signups schema
         const firmData = {
           ...data,
-          firstName: data.name.split(' ')[0],
-          lastName: data.name.split(' ').slice(1).join(' ')
+          firstname: data.name.split(' ')[0],
+          lastname: data.name.split(' ').slice(1).join(' ')
         };
         onSubmitSuccess(firmData);
       } else {
@@ -121,7 +122,7 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="phone">Phone</Label>
+        <Label htmlFor="phone">Phone (Optional)</Label>
         <Input
           id="phone"
           type="tel"
