@@ -120,7 +120,7 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
           {...register("company")}
         />
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="phone">Phone (Optional)</Label>
         <Input
