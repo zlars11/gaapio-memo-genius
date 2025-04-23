@@ -10,31 +10,106 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { Pen } from "lucide-react";
+
+interface FirmSignup {
+  id: string;
+  company: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  notes?: string;
+  signupdate: string;
+  plan: string;
+}
 
 export function FirmSignupsTable() {
-  const [firmSignups, setFirmSignups] = useState<any[]>([]);
+  const [firmSignups, setFirmSignups] = useState<FirmSignup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingFirm, setEditingFirm] = useState<FirmSignup | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState<Partial<FirmSignup>>({});
+  const { toast } = useToast();
 
   useEffect(() => {
-    async function fetchFirmSignups() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("user_signups")
-        .select("*")
-        .eq("type", "firm")
-        .order("signupdate", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching firm signups:", error);
-        setFirmSignups([]);
-      } else {
-        setFirmSignups(data || []);
-      }
-      setLoading(false);
-    }
-
     fetchFirmSignups();
   }, []);
+
+  async function fetchFirmSignups() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("user_signups")
+      .select("*")
+      .eq("type", "firm")
+      .order("signupdate", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching firm signups:", error);
+      setFirmSignups([]);
+    } else {
+      setFirmSignups(data || []);
+    }
+    setLoading(false);
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditFirm = (firm: FirmSignup) => {
+    setEditingFirm(firm);
+    setFormData({
+      company: firm.company,
+      firstname: firm.firstname,
+      lastname: firm.lastname,
+      email: firm.email,
+      phone: firm.phone,
+      notes: firm.notes || '',
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveFirmChanges = async () => {
+    if (!editingFirm) return;
+    
+    try {
+      const { error } = await supabase
+        .from("user_signups")
+        .update({
+          company: formData.company,
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          email: formData.email,
+          phone: formData.phone,
+          notes: formData.notes,
+        })
+        .eq("id", editingFirm.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Firm information updated successfully",
+      });
+
+      setIsDialogOpen(false);
+      fetchFirmSignups();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Failed to update firm: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -56,12 +131,13 @@ export function FirmSignupsTable() {
                 <TableHead>Notes</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Plan</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
                     Loading firm sign-ups...
                   </TableCell>
                 </TableRow>
@@ -75,11 +151,20 @@ export function FirmSignupsTable() {
                     <TableCell>{signup.notes || 'No notes'}</TableCell>
                     <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
                     <TableCell>{signup.plan}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditFirm(signup)}
+                      >
+                        <Pen className="w-4 h-4 mr-1" /> Edit
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
                     No firm sign-ups found.
                   </TableCell>
                 </TableRow>
@@ -87,6 +172,82 @@ export function FirmSignupsTable() {
             </TableBody>
           </Table>
         </div>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <div className="space-y-4 py-2">
+              <div className="space-y-1">
+                <Label htmlFor="company">Company Name</Label>
+                <Input
+                  id="company"
+                  name="company"
+                  value={formData.company || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="firstname">First Name</Label>
+                  <Input
+                    id="firstname"
+                    name="firstname"
+                    value={formData.firstname || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="lastname">Last Name</Label>
+                  <Input
+                    id="lastname"
+                    name="lastname"
+                    value={formData.lastname || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  name="notes"
+                  value={formData.notes || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveFirmChanges}>
+                  Save Changes
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
