@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -12,10 +13,11 @@ interface ContactFormProps {
 }
 
 interface ContactFormValues {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  company?: string;
-  phone?: string;
+  company: string;
+  phone: string;
   message: string;
 }
 
@@ -36,23 +38,23 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
     try {
       // Store in Supabase contact_submissions table
       const { error } = await supabase.from("contact_submissions").insert({
-        name: data.name,
+        firstname: data.firstname,
+        lastname: data.lastname,
         email: data.email,
-        company: data.company || null,
-        phone: data.phone || null,
+        company: data.company,
+        phone: data.phone,
         message: data.message,
       });
       
       if (error) throw new Error(error.message);
 
       // If an onSubmitSuccess callback was provided (e.g., for firm signups),
-      // call it with the form data - but without the message as it's not stored in user_signups
+      // call it with the form data - but without the message
       if (onSubmitSuccess) {
-        // Pass data without the message field to ensure it matches user_signups schema
+        // Pass data without the message field
         const firmData = {
           ...data,
-          firstname: data.name.split(' ')[0],
-          lastname: data.name.split(' ').slice(1).join(' ')
+          // No need to split name as it's already split
         };
         onSubmitSuccess(firmData);
       } else {
@@ -79,17 +81,32 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
   
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input 
-          id="name"
-          placeholder="Your name"
-          {...register("name", { required: "Name is required" })}
-          aria-invalid={errors.name ? "true" : "false"}
-        />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="firstname">First Name</Label>
+          <Input 
+            id="firstname"
+            placeholder="First name"
+            {...register("firstname", { required: "First name is required" })}
+            aria-invalid={errors.firstname ? "true" : "false"}
+          />
+          {errors.firstname && (
+            <p className="text-sm text-red-500">{errors.firstname.message}</p>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="lastname">Last Name</Label>
+          <Input 
+            id="lastname"
+            placeholder="Last name"
+            {...register("lastname", { required: "Last name is required" })}
+            aria-invalid={errors.lastname ? "true" : "false"}
+          />
+          {errors.lastname && (
+            <p className="text-sm text-red-500">{errors.lastname.message}</p>
+          )}
+        </div>
       </div>
       
       <div className="space-y-2">
@@ -113,24 +130,32 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="company">Company (Optional)</Label>
+        <Label htmlFor="company">Company</Label>
         <Input
           id="company"
           placeholder="Your company name"
-          {...register("company")}
+          {...register("company", { required: "Company is required" })}
+          aria-invalid={errors.company ? "true" : "false"}
         />
+        {errors.company && (
+          <p className="text-sm text-red-500">{errors.company.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone">Phone (Optional)</Label>
+        <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
           type="tel"
           inputMode="tel"
           autoComplete="tel"
           placeholder="Your phone number"
-          {...register("phone")}
+          {...register("phone", { required: "Phone number is required" })}
+          aria-invalid={errors.phone ? "true" : "false"}
         />
+        {errors.phone && (
+          <p className="text-sm text-red-500">{errors.phone.message}</p>
+        )}
       </div>
       
       <div className="space-y-2">
