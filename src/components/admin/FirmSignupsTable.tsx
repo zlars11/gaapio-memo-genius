@@ -27,6 +27,7 @@ export function FirmSignupsTable() {
             <TableHead>Contact Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone</TableHead>
+            <TableHead>Notes</TableHead>
             <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
@@ -37,6 +38,7 @@ export function FirmSignupsTable() {
               <TableCell>{signup.contactName}</TableCell>
               <TableCell>{signup.email}</TableCell>
               <TableCell>{signup.phone}</TableCell>
+              <TableCell>{signup.notes || 'No notes'}</TableCell>
               <TableCell>{new Date(signup.date).toLocaleDateString()}</TableCell>
             </TableRow>
           ))}
