@@ -20,27 +20,27 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const PLANS = [
   {
     id: "emerging",
-    label: "Emerging Annual",
+    label: "Emerging", // Removed "Annual"
     price: 200,
     users: 3,
     description: "Up to 3 users",
-    display: "$200/month (Paid Annually)"
+    display: "$200/month <span class='text-sm font-normal'>(Paid Annually)</span>" // Added span for styling
   },
   {
     id: "mid",
-    label: "Mid-Market Annual",
+    label: "Mid-Market", // Removed "Annual"
     price: 300,
     users: 6,
     description: "Up to 6 users",
-    display: "$300/month (Paid Annually)"
+    display: "$300/month <span class='text-sm font-normal'>(Paid Annually)</span>"
   },
   {
     id: "enterprise",
-    label: "Enterprise Annual",
+    label: "Enterprise", // Removed "Annual"
     price: 500,
     users: "Unlimited",
     description: "Unlimited users",
-    display: "$500/month (Paid Annually)"
+    display: "$500/month <span class='text-sm font-normal'>(Paid Annually)</span>"
   },
   {
     id: "firms",
@@ -322,7 +322,7 @@ export default function SignUp() {
                                 <div className="mt-1 text-muted-foreground text-base">{/* no extra label */}</div>
                               )}
                               <div className="mt-4">
-                                <span className="text-4xl font-bold">{getPlanLabel(selectedPlan)}</span>
+                                <span className="text-4xl font-bold" dangerouslySetInnerHTML={{ __html: getPlanLabel(selectedPlan) }} />
                               </div>
                             </CardHeader>
                             <CardContent>

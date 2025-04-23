@@ -27,13 +27,13 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
 
   const getPlanObject = (planId: string) => {
     if (planId === "emerging") {
-      return { label: "Emerging Annual" };
+      return { label: "Emerging" }; // Removed "Annual"
     } else if (planId === "mid") {
-      return { label: "Mid-Market Annual" };
+      return { label: "Mid-Market" }; // Removed "Annual"
     } else if (planId === "enterprise") {
-      return { label: "Enterprise Annual" };
+      return { label: "Enterprise" }; // Removed "Annual"
     }
-    return { label: "Annual" };
+    return { label: "Plan" };
   };
 
   // For self-serve sign-up, term is always annual.
@@ -82,10 +82,13 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
         <Card className="my-6 border-primary shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">
-              {plan ? `${getPlanObject(plan)?.label}` : "Annual Subscription"}
+              {plan ? `${getPlanObject(plan)?.label} Subscription` : "Subscription"}
             </CardTitle>
             <div className="mt-4">
-              <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
+              <span 
+                className="text-4xl font-bold" 
+                dangerouslySetInnerHTML={{ __html: ANNUAL_LABEL }}
+              />
             </div>
           </CardHeader>
           <CardContent>
