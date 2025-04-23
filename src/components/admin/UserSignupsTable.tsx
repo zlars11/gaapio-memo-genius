@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EditUserDialog from "./EditUserDialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Pen } from "lucide-react";
 
 interface UserSignup {
@@ -28,6 +29,7 @@ interface UserSignup {
   status?: string;
   amount?: string;
   signupdate?: string;
+  term?: string;
 }
 
 export function UserSignupsTable() {
@@ -36,6 +38,7 @@ export function UserSignupsTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -87,22 +90,65 @@ export function UserSignupsTable() {
 
   const handleOpenEdit = (user: UserSignup) => {
     setEditUser(user);
+    setDialogOpen(true);
   };
 
-  const handleCloseEdit = (changed: boolean) => {
-    setEditUser(null);
-    if (changed) {
-      // refetch
-      (async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("user_signups")
-          .select("*")
-          .order("signupdate", { ascending: false });
-        setUsers(data || []);
-        setFilteredUsers(data || []);
-        setLoading(false);
-      })();
+  const handleCloseEdit = () => {
+    setDialogOpen(false);
+  };
+
+  const handleSaveUser = async (updatedUser: UserSignup) => {
+    try {
+      const { error } = await supabase
+        .from("user_signups")
+        .update({
+          firstname: updatedUser.firstname,
+          lastname: updatedUser.lastname,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          company: updatedUser.company,
+          plan: updatedUser.plan,
+          term: updatedUser.term,
+          status: updatedUser.status
+        })
+        .eq("id", updatedUser.id);
+      
+      if (error) throw error;
+      
+      // Refresh the user data
+      const { data, error: fetchError } = await supabase
+        .from("user_signups")
+        .select("*")
+        .order("signupdate", { ascending: false });
+      
+      if (!fetchError && data) {
+        setUsers(data as UserSignup[]);
+        setFilteredUsers(data as UserSignup[]);
+      }
+      
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from("user_signups")
+        .delete()
+        .eq("id", userId);
+      
+      if (error) throw error;
+      
+      // Remove the deleted user from the state
+      const updatedUsers = users.filter(user => user.id !== userId);
+      setUsers(updatedUsers);
+      setFilteredUsers(updatedUsers);
+      
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error deleting user:", error);
     }
   };
 
@@ -186,13 +232,19 @@ export function UserSignupsTable() {
             )}
           </TableBody>
         </Table>
-        {editUser && (
-          <EditUserDialog
-            user={editUser}
-            open={!!editUser}
-            onClose={handleCloseEdit}
-          />
-        )}
+        
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          {editUser && (
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+              <EditUserDialog
+                user={editUser}
+                onSave={handleSaveUser}
+                onDelete={() => handleDeleteUser(editUser.id)}
+                onClose={handleCloseEdit}
+              />
+            </DialogContent>
+          )}
+        </Dialog>
       </CardContent>
     </Card>
   );
