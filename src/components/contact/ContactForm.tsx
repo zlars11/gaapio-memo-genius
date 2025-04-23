@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,20 +79,20 @@ export function ContactForm() {
         <div className="w-full mb-4">
           <h2
             id="contact-form-heading"
-            className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2 pl-2 pt-1"
+            className="text-xl sm:text-2xl font-bold text-foreground mb-2 pl-2 pt-1"
           >
             Contact Sales
           </h2>
         </div>
         {/* Card for the actual form */}
         <div className="
-            w-full bg-white rounded-lg shadow-md border border-muted 
+            w-full bg-card rounded-lg shadow-md border border-border
             px-5 py-6 sm:px-8 sm:py-8
             flex flex-col gap-5
           "
         >
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-base text-neutral-900 font-medium">Name</Label>
+            <Label htmlFor="name" className="text-base font-medium">Name</Label>
             <Input
               id="name"
               placeholder="Your name"
@@ -101,12 +100,12 @@ export function ContactForm() {
               onChange={(e) => setName(e.target.value)}
               required
               aria-required="true"
-              className="w-full"
+              className="w-full bg-background"
               autoComplete="name"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-base text-neutral-900 font-medium">Email</Label>
+            <Label htmlFor="email" className="text-base font-medium">Email</Label>
             <Input
               id="email"
               type="email"
@@ -115,35 +114,35 @@ export function ContactForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               aria-required="true"
-              className="w-full"
+              className="w-full bg-background"
               autoComplete="email"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="company" className="text-base text-neutral-900 font-medium">Company</Label>
+            <Label htmlFor="company" className="text-base font-medium">Company</Label>
             <Input
               id="company"
               placeholder="Your company (optional)"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full"
+              className="w-full bg-background"
               autoComplete="organization"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-base text-neutral-900 font-medium">Phone</Label>
+            <Label htmlFor="phone" className="text-base font-medium">Phone</Label>
             <Input
               id="phone"
               placeholder="Your phone number"
               value={""}
               readOnly
-              className="w-full"
+              className="w-full bg-background"
               autoComplete="tel"
             />
           </div>
           {/* Subject REMOVED */}
           <div className="space-y-2">
-            <Label htmlFor="message" className="text-base text-neutral-900 font-medium">Notes</Label>
+            <Label htmlFor="message" className="text-base font-medium">Notes</Label>
             <Textarea
               id="message"
               placeholder="Additional notes"
@@ -152,7 +151,7 @@ export function ContactForm() {
               onChange={(e) => setMessage(e.target.value)}
               required
               aria-required="true"
-              className="w-full min-h-[120px]"
+              className="w-full min-h-[120px] bg-background"
             />
           </div>
           <Button
