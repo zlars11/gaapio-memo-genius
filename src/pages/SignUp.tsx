@@ -142,7 +142,7 @@ export default function SignUp() {
     return data;
   }
 
-  // Helper: Create firm signup in Supabase
+  // Helper: Create firm signup in Supabase - FIXED FUNCTION
   async function createFirmSignup(info: any) {
     const firmData = {
       type: "firm",
@@ -151,12 +151,14 @@ export default function SignUp() {
       lastname: info.lastName || info.lastname,
       email: info.email,
       phone: info.phone,
-      notes: info.message || '',
+      amount: "Contact Sales", // Add required field
+      status: "active", // Add required field
       signupdate: new Date().toISOString(),
-      plan: "firms"
+      plan: "firms",
+      notes: info.message || ''
     };
     
-    const { data, error } = await supabase.from("user_signups").insert([firmData]);
+    const { data, error } = await supabase.from("user_signups").insert(firmData);
     if (error) throw new Error(error.message);
     return data;
   }
