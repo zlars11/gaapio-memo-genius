@@ -49,6 +49,7 @@ export type Database = {
           signupdate: string
           status: string
           term: string | null
+          type: string
         }
         Insert: {
           amount: string
@@ -62,6 +63,7 @@ export type Database = {
           signupdate?: string
           status?: string
           term?: string | null
+          type?: string
         }
         Update: {
           amount?: string
@@ -75,6 +77,7 @@ export type Database = {
           signupdate?: string
           status?: string
           term?: string | null
+          type?: string
         }
         Relationships: []
       }
