@@ -4,121 +4,155 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-type ContactFormFields = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  company: string;
-  message: string;
-};
-
 interface ContactFormProps {
-  onSubmitSuccess?: (data: ContactFormFields) => void;
+  onSubmitSuccess?: (data: any) => void;
 }
 
-export function ContactForm({ onSubmitSuccess }: ContactFormProps = {}) {
+interface ContactFormValues {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+}
+
+export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactFormFields>();
-
-  const onSubmit = async (data: ContactFormFields) => {
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>();
+  
+  const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-
+    
     try {
-      // Save to Supabase
-      await supabase.from("contact_submissions").insert([
-        {
-          name: `${data.firstName} ${data.lastName}`,
-          email: data.email,
-          company: data.company,
-          message: data.message
-        }
-      ]);
-
-      // Show success message
-      toast({
-        title: "Message sent",
-        description: "Thank you for reaching out. We'll get back to you soon.",
+      // Store in Supabase contact_submissions table
+      const { error } = await supabase.from("contact_submissions").insert({
+        name: data.name,
+        email: data.email,
+        company: data.company || null,
+        message: data.message,
       });
+      
+      if (error) throw new Error(error.message);
 
-      // Reset form
-      reset();
-
-      // Call the onSubmitSuccess callback if provided
-      if (onSubmitSuccess && typeof onSubmitSuccess === 'function') {
-        onSubmitSuccess(data);
+      // If an onSubmitSuccess callback was provided (e.g., for firm signups),
+      // call it with the form data - but without the message as it's not stored in user_signups
+      if (onSubmitSuccess) {
+        // Pass data without the message field to ensure it matches user_signups schema
+        const firmData = {
+          ...data,
+          firstName: data.name.split(' ')[0],
+          lastName: data.name.split(' ').slice(1).join(' ')
+        };
+        onSubmitSuccess(firmData);
+      } else {
+        // Show success message
+        toast({
+          title: "Message Sent",
+          description: "Thank you! We'll be in touch soon.",
+        });
+        
+        // Reset form
+        reset();
       }
     } catch (error: any) {
+      console.error("Contact form submission error:", error);
       toast({
-        title: "Error",
-        description: "There was a problem sending your message. Please try again.",
+        title: "Something went wrong",
+        description: error.message,
         variant: "destructive",
       });
-      console.error("Contact form error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Input
-            id="firstName"
-            placeholder="First name"
-            {...register("firstName", { required: true })}
-          />
-          {errors.firstName && <p className="text-xs text-destructive">First name is required</p>}
-        </div>
-        <div className="space-y-2">
-          <Input
-            id="lastName"
-            placeholder="Last name"
-            {...register("lastName", { required: true })}
-          />
-          {errors.lastName && <p className="text-xs text-destructive">Last name is required</p>}
-        </div>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input 
+          id="name"
+          placeholder="Your name"
+          {...register("name", { required: "Name is required" })}
+          aria-invalid={errors.name ? "true" : "false"}
+        />
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
+        )}
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
         <Input
           id="email"
           type="email"
-          placeholder="Your email"
-          {...register("email", { required: true })}
+          placeholder="Your email address"
+          {...register("email", { 
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          })}
+          aria-invalid={errors.email ? "true" : "false"}
         />
-        {errors.email && <p className="text-xs text-destructive">Email is required</p>}
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
+      
       <div className="space-y-2">
-        <Input
-          id="phone"
-          type="tel"
-          placeholder="Phone number"
-          {...register("phone")}
-        />
-      </div>
-      <div className="space-y-2">
+        <Label htmlFor="company">Company (Optional)</Label>
         <Input
           id="company"
-          placeholder="Company"
+          placeholder="Your company name"
           {...register("company")}
         />
       </div>
+      
       <div className="space-y-2">
+        <Label htmlFor="phone">Phone</Label>
+        <Input
+          id="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="Your phone number"
+          {...register("phone")}
+        />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="message">Message</Label>
         <Textarea
           id="message"
-          placeholder="How can we help?"
-          className="min-h-[120px]"
-          {...register("message", { required: true })}
+          placeholder="How can we help you?"
+          rows={5}
+          {...register("message", { required: "Message is required" })}
+          aria-invalid={errors.message ? "true" : "false"}
         />
-        {errors.message && <p className="text-xs text-destructive">Message is required</p>}
+        {errors.message && (
+          <p className="text-sm text-red-500">{errors.message.message}</p>
+        )}
       </div>
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Send message"}
+      
+      <Button 
+        type="submit" 
+        className="w-full" 
+        size="lg"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Sending..." : "Send Message"}
       </Button>
     </form>
   );

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -24,7 +25,7 @@ interface FirmSignup {
   lastname: string;
   email: string;
   phone: string;
-  notes?: string;
+  notes?: string; // Keep this as optional since we might get it from legacy data
   signupdate: string;
   plan: string;
 }
@@ -77,7 +78,6 @@ export function FirmSignupsTable() {
       lastname: firm.lastname,
       email: firm.email,
       phone: firm.phone,
-      notes: firm.notes || '',
     });
     setIsDialogOpen(true);
   };
@@ -94,7 +94,7 @@ export function FirmSignupsTable() {
           lastname: formData.lastname,
           email: formData.email,
           phone: formData.phone,
-          notes: formData.notes,
+          // Removed notes to match the database schema
         })
         .eq("id", editingFirm.id);
 
@@ -133,7 +133,6 @@ export function FirmSignupsTable() {
                 <TableHead>Contact Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
-                <TableHead>Notes</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Plan</TableHead>
                 <TableHead>Actions</TableHead>
@@ -142,7 +141,7 @@ export function FirmSignupsTable() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
                     Loading firm sign-ups...
                   </TableCell>
                 </TableRow>
@@ -153,7 +152,6 @@ export function FirmSignupsTable() {
                     <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
                     <TableCell>{signup.email}</TableCell>
                     <TableCell>{signup.phone}</TableCell>
-                    <TableCell>{signup.notes || 'No notes'}</TableCell>
                     <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
                     <TableCell>{signup.plan}</TableCell>
                     <TableCell>
@@ -169,7 +167,7 @@ export function FirmSignupsTable() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
                     No firm sign-ups found.
                   </TableCell>
                 </TableRow>
@@ -226,16 +224,9 @@ export function FirmSignupsTable() {
                   id="phone"
                   name="phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={formData.phone || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  value={formData.notes || ''}
                   onChange={handleInputChange}
                 />
               </div>

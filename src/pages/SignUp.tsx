@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -151,11 +152,11 @@ export default function SignUp() {
       lastname: info.lastName || info.lastname,
       email: info.email,
       phone: info.phone,
-      amount: "Contact Sales", // Add required field
-      status: "active", // Add required field
+      amount: "Contact Sales", // Required field
+      status: "active", // Required field
       signupdate: new Date().toISOString(),
-      plan: "firms",
-      notes: info.message || ''
+      plan: "firms"
+      // Removed 'notes' field as it doesn't exist in the database schema
     };
     
     const { data, error } = await supabase.from("user_signups").insert(firmData);

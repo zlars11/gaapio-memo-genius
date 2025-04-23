@@ -17,9 +17,6 @@ export function WaitlistSection() {
     const ctaSetting = localStorage.getItem("homepageCta");
     setShowSignUp(ctaSetting === "signup");
   }, []);
-
-  // Only render the dynamic content after we're confident we're on the client side
-  // This prevents hydration mismatches between SSR and client
   
   return (
     <section 
