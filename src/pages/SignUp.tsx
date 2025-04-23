@@ -20,31 +20,35 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const PLANS = [
   {
     id: "emerging",
-    label: "Emerging",
-    price: 2400,
+    label: "Emerging Annual",
+    price: 200,
     users: 3,
-    description: "Up to 3 users"
+    description: "Up to 3 users",
+    display: "$200/month (Paid Annually)"
   },
   {
     id: "mid",
-    label: "Mid-Market",
-    price: 3500,
+    label: "Mid-Market Annual",
+    price: 300,
     users: 6,
-    description: "Up to 6 users"
+    description: "Up to 6 users",
+    display: "$300/month (Paid Annually)"
   },
   {
     id: "enterprise",
-    label: "Enterprise",
-    price: 5000,
+    label: "Enterprise Annual",
+    price: 500,
     users: "Unlimited",
-    description: "Unlimited users"
+    description: "Unlimited users",
+    display: "$500/month (Paid Annually)"
   },
   {
     id: "firms",
     label: "Firms",
     price: null,
     users: null,
-    description: "Contact Sales"
+    description: "Contact Sales",
+    display: "Contact Sales"
   },
 ];
 
@@ -52,7 +56,6 @@ const PLAN_FEATURES = [
   "Unlimited AI-generated memos",
   "Free premium templates",
   "Team collaboration tools",
-  "API access",
 ];
 
 // Obtain Zapier webhook URL from localStorage so it can be set from admin settings
@@ -120,7 +123,7 @@ export default function SignUp() {
   }
   function getPlanLabel(planId: string) {
     const plan = getPlanObject(planId);
-    return plan && plan.price !== null ? `$${plan.price.toLocaleString()}` : "Contact Sales";
+    return plan ? plan.display : "Contact Sales";
   }
 
   // Helper: insert into Supabase user_signups table

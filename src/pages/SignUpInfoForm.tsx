@@ -25,6 +25,17 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
         ? "Unlimited users"
         : "";
 
+  const getPlanObject = (planId: string) => {
+    if (planId === "emerging") {
+      return { label: "Emerging Annual" };
+    } else if (planId === "mid") {
+      return { label: "Mid-Market Annual" };
+    } else if (planId === "enterprise") {
+      return { label: "Enterprise Annual" };
+    }
+    return { label: "Annual" };
+  };
+
   // For self-serve sign-up, term is always annual.
   return (
     <form
@@ -71,9 +82,8 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
         <Card className="my-6 border-primary shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl">
-              {plan ? `${plan.charAt(0).toUpperCase()}${plan.slice(1)}`.replace("Mid", "Mid-Market") : "Annual"} Subscription
+              {plan ? `${getPlanObject(plan)?.label}` : "Annual Subscription"}
             </CardTitle>
-            {/* remove "per year (save 30%)" */}
             <div className="mt-4">
               <span className="text-4xl font-bold">{ANNUAL_LABEL}</span>
             </div>
@@ -98,10 +108,6 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
                 Team collaboration tools
-              </li>
-              <li className="flex items-center">
-                <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                API access
               </li>
             </ul>
           </CardContent>
