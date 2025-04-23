@@ -1,12 +1,11 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { CreditCard } from "lucide-react";
+import { CreditCard, X } from "lucide-react";
 
-// Add Plan, Term, Status options
+// Existing plan options
 const PLAN_OPTIONS = [
   { value: "emerging", label: "Emerging" },
   { value: "mid", label: "Mid" },
@@ -45,65 +44,76 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     company: user.company,
   });
   
-  // Payment details state
+  // Improved payment details state with better masking
   const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: "",
-    expDate: "",
-    cvv: ""
+    cardNumber: user.cardNumber ? maskCardNumber(user.cardNumber) : "",
+    expDate: user.expDate || "",
+    cvv: user.cvv ? "•••" : ""
   });
+
+  // Function to mask card number
+  function maskCardNumber(number: string) {
+    if (!number) return "";
+    // Remove any existing spaces
+    const cleanNumber = number.replace(/\s/g, '');
+    // Mask all but last 4 digits
+    return cleanNumber.slice(-4).padStart(cleanNumber.length, '•');
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFields({ ...fields, [e.target.name]: e.target.value });
   }
 
-  function handlePlanChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setPlan(e.target.value);
-  }
-
-  function handleTermChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setTerm(e.target.value);
-  }
-
-  function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setStatus(e.target.value);
-  }
-
   function handlePaymentChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+    
     let formattedValue = value;
     
-    // Format card number with spaces
+    // Card number formatting
     if (name === "cardNumber") {
-      formattedValue = value.replace(/\s/g, "").replace(/(\d{4})(?=\d)/g, "$1 ").trim();
-      formattedValue = formattedValue.slice(0, 19); // Limit to 16 digits + 3 spaces
+      // Remove non-digit characters
+      const digitsOnly = value.replace(/\D/g, '');
+      
+      // Format with spaces every 4 digits
+      formattedValue = digitsOnly
+        .replace(/(\d{4})(?=\d)/g, '$1 ')
+        .slice(0, 19);
     }
     
-    // Format expiration date
+    // Expiration date formatting
     if (name === "expDate") {
-      formattedValue = value.replace(/\D/g, "").replace(/^(\d{2})(\d{0,2})/, "$1/$2").trim();
-      formattedValue = formattedValue.slice(0, 5); // Limit to MM/YY format
+      // Remove non-digit characters
+      const digitsOnly = value.replace(/\D/g, '');
+      
+      // Format as MM/YY
+      formattedValue = digitsOnly
+        .slice(0, 4)
+        .replace(/^(\d{2})(\d{0,2})/, '$1/$2')
+        .slice(0, 5);
     }
     
-    // Format CVV
+    // CVV formatting
     if (name === "cvv") {
-      formattedValue = value.replace(/\D/g, "").slice(0, 3); // Limit to 3 digits
+      formattedValue = value.replace(/\D/g, '').slice(0, 3);
     }
     
     setPaymentDetails({ ...paymentDetails, [name]: formattedValue });
   }
 
   function handleSave() {
-    // Call onSave with all values, including plan/term/status
-    onSave({ 
+    // Prepare save data, handling payment details carefully
+    const saveData = { 
       ...user,
       ...fields, 
       plan, 
       term, 
       status,
-      // We would normally not include plaintext payment details in a production app
-      // This would typically be handled by a secure payment processor
-      paymentDetails
-    });
+      cardNumber: paymentDetails.cardNumber.replace(/\s/g, ''), // Remove spaces for storage
+      expDate: paymentDetails.expDate,
+      cvv: paymentDetails.cvv
+    };
+    
+    onSave(saveData);
   }
 
   function confirmDelete() {
@@ -120,7 +130,15 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
   }
 
   return (
-    <div>
+    <div className="relative">
+      {/* Close button */}
+      <button 
+        onClick={onClose} 
+        className="absolute top-4 right-4 text-muted-foreground hover:text-destructive"
+      >
+        <X className="h-6 w-6" />
+      </button>
+
       <DialogHeader className="mb-4">
         <DialogTitle>Edit User</DialogTitle>
         <DialogDescription>
@@ -156,7 +174,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
               id="plan" 
               name="plan" 
               value={plan} 
-              onChange={handlePlanChange} 
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPlan(e.target.value)}
               className="w-full border rounded px-3 py-2 bg-background text-foreground"
             >
               {PLAN_OPTIONS.map(opt => (
@@ -170,7 +188,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
               id="term" 
               name="term" 
               value={term} 
-              onChange={handleTermChange} 
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTerm(e.target.value)}
               className="w-full border rounded px-3 py-2 bg-background text-foreground"
             >
               {TERM_OPTIONS.map(opt => (
@@ -184,7 +202,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
               id="status" 
               name="status" 
               value={status} 
-              onChange={handleStatusChange} 
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatus(e.target.value)}
               className="w-full border rounded px-3 py-2 bg-background text-foreground"
             >
               {STATUS_OPTIONS.map(opt => (
@@ -193,7 +211,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
             </select>
           </div>
           
-          {/* Payment Info Display */}
+          {/* Payment Info with improved input */}
           <div className="p-4 mt-4 rounded-md bg-muted/60 text-foreground shadow-inner border border-muted">
             <div className="flex items-center mb-3 space-x-2">
               <CreditCard className="h-5 w-5" />
@@ -223,6 +241,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
                     value={paymentDetails.expDate}
                     onChange={handlePaymentChange}
                     className="font-mono"
+                    maxLength={5}
                   />
                 </div>
                 <div>
@@ -235,6 +254,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
                     onChange={handlePaymentChange}
                     type="password"
                     className="font-mono"
+                    maxLength={3}
                   />
                 </div>
               </div>
