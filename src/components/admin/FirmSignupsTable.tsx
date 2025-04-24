@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -13,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Pen } from "lucide-react";
 import { usePagination } from "@/hooks/usePagination";
@@ -151,42 +151,43 @@ export function FirmSignupsTable() {
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
-        <TableBody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                Loading firm sign-ups...
-              </TableCell>
-            </TableRow>
-          ) : paginatedFirmSignups.length > 0 ? (
-            paginatedFirmSignups.map((signup) => (
-              <TableRow key={signup.id}>
-                <TableCell>{signup.company}</TableCell>
-                <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
-                <TableCell>{signup.email}</TableCell>
-                <TableCell>{signup.phone}</TableCell>
-                <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
-                <TableCell>{signup.plan}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEditFirm(signup)}
-                  >
-                    <Pen className="w-4 h-4 mr-1" /> Edit
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                No firm sign-ups found.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-        </Table>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                    Loading firm sign-ups...
+                  </TableCell>
+                </TableRow>
+              ) : paginatedFirmSignups.length > 0 ? (
+                paginatedFirmSignups.map((signup) => (
+                  <TableRow key={signup.id}>
+                    <TableCell>{signup.company}</TableCell>
+                    <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
+                    <TableCell>{signup.email}</TableCell>
+                    <TableCell>{signup.phone}</TableCell>
+                    <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
+                    <TableCell>{signup.plan}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditFirm(signup)}
+                      >
+                        <Pen className="w-4 h-4 mr-1" /> Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                    No firm sign-ups found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
         <PaginationControls
           currentPage={currentPage}
