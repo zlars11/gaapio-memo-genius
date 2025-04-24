@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -170,13 +169,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
 
   return (
     <div className="relative">
-      <button 
-        onClick={onClose} 
-        className="absolute top-4 right-4 text-muted-foreground hover:text-destructive"
-      >
-        <X className="h-6 w-6" />
-      </button>
-
+      
       <DialogHeader className="mb-4">
         <DialogTitle>Edit User</DialogTitle>
         <DialogDescription>
