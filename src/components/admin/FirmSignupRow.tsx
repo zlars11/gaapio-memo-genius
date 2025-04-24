@@ -2,21 +2,16 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pen } from "lucide-react";
-import { FirmSignup } from "./types";
-
-interface FirmSignupRowProps {
-  signup: FirmSignup;
-  onEdit: (firm: FirmSignup) => void;
-}
+import { FirmSignupRowProps } from "./types/userTypes";
 
 export function FirmSignupRow({ signup, onEdit }: FirmSignupRowProps) {
   return (
     <TableRow key={signup.id}>
       <TableCell>{signup.company}</TableCell>
-      <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
+      <TableCell>{`${signup.firstname || ''} ${signup.lastname || ''}`.trim()}</TableCell>
       <TableCell>{signup.email}</TableCell>
       <TableCell>{signup.phone}</TableCell>
-      <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
+      <TableCell>{signup.signupdate ? new Date(signup.signupdate).toLocaleDateString() : 'N/A'}</TableCell>
       <TableCell>{signup.plan}</TableCell>
       <TableCell>
         <Button

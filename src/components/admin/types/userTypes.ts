@@ -22,6 +22,7 @@ export interface UserSignupRowProps {
 }
 
 export interface FirmSignup extends UserSignup {
+  company: string; // Making company required, not optional
   notes?: string;
 }
 
