@@ -51,15 +51,17 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       // If an onSubmitSuccess callback was provided (e.g., for firm signups),
       // call it with the form data with preserved firstname and lastname fields
       if (onSubmitSuccess) {
-        // Format data for Zapier with exact field names matching the email template
+        // Create a properly structured object that ensures firstname and lastname 
+        // are explicitly set as top-level properties for the database
         const firmData = {
+          // These fields are required for database insertion
           firstname: data.firstname,
           lastname: data.lastname,
           email: data.email,
           phone: data.phone,
           company: data.company,
           message: data.message,
-          // Additional fields for Zapier formatting
+          // Additional fields for Zapier formatting - using the exact field names
           "Firm Name": data.company,
           "Contact Name": `${data.firstname} ${data.lastname}`,
           "Email": data.email,

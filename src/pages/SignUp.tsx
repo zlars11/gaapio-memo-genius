@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/header";
@@ -143,14 +142,15 @@ export default function SignUp() {
     return data;
   }
 
-  // Helper: Create firm signup in Supabase - FIXED FUNCTION
+  // Helper: Create firm signup in Supabase - ensuring firstname/lastname are properly set
   async function createFirmSignup(info: any) {
-    // Updated to ensure firstname and lastname remain separate
+    // Explicitly ensure firstname and lastname are set properly
+    // This is critical because the database has not-null constraints on these fields
     const firmData = {
       type: "firm",
       company: info.company,
-      firstname: info.firstName || info.firstname,
-      lastname: info.lastName || info.lastname,
+      firstname: info.firstName || info.firstname || "", // Ensure it's never null
+      lastname: info.lastName || info.lastname || "",    // Ensure it's never null
       email: info.email,
       phone: info.phone,
       amount: "Contact Sales", 
@@ -158,6 +158,8 @@ export default function SignUp() {
       signupdate: new Date().toISOString(),
       plan: "firms"
     };
+    
+    console.log("Creating firm signup with data:", firmData); // Add logging to debug
     
     const { data, error } = await supabase.from("user_signups").insert(firmData);
     if (error) throw new Error(error.message);
@@ -282,7 +284,9 @@ export default function SignUp() {
   // FIRM CONTACT FORM handler
   async function handleFirmContactSuccess(formData: any) {
     try {
-      // Save firm signup to database
+      console.log("Form data received for firm contact:", formData); // Add logging
+      
+      // Save firm signup to database - ensure data has firstname/lastname
       await createFirmSignup(formData);
       
       // Send firm data to Zapier
@@ -300,6 +304,7 @@ export default function SignUp() {
       setShowFirmContact(false);
       setStep(3);
     } catch (error: any) {
+      console.error("Firm signup error:", error); // Better error logging
       toast({
         title: "Submission failed",
         description: error.message,
