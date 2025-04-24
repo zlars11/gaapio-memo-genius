@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -17,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import EditUserDialog from "./EditUserDialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Pen } from "lucide-react";
+import { usePagination } from "@/hooks/usePagination";
+import { PaginationControls } from "./PaginationControls";
 
 interface UserSignup {
   id: string;
@@ -39,6 +40,17 @@ export function UserSignupsTable() {
   const [loading, setLoading] = useState(true);
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { 
+    currentItems: paginatedUsers,
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    setItemsPerPage,
+    goToPage
+  } = usePagination({
+    items: filteredUsers,
+    initialItemsPerPage: 10
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -190,8 +202,8 @@ export function UserSignupsTable() {
                   Loading...
                 </TableCell>
               </TableRow>
-            ) : filteredUsers.length > 0 ? (
-              filteredUsers.map((user, idx) => (
+            ) : paginatedUsers.length > 0 ? (
+              paginatedUsers.map((user, idx) => (
                 <TableRow key={user.id || user.email || idx}>
                   <TableCell className="font-medium">{user.firstname || "—"}</TableCell>
                   <TableCell>{user.lastname || "—"}</TableCell>
@@ -232,7 +244,15 @@ export function UserSignupsTable() {
             )}
           </TableBody>
         </Table>
-        
+
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
+        onPageChange={goToPage}
+        onItemsPerPageChange={setItemsPerPage}
+      />
+      
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           {editUser && (
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -17,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Pen } from "lucide-react";
+import { usePagination } from "@/hooks/usePagination";
+import { PaginationControls } from "./PaginationControls";
 
 interface FirmSignup {
   id: string;
@@ -37,6 +38,18 @@ export function FirmSignupsTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<FirmSignup>>({});
   const { toast } = useToast();
+
+  const {
+    currentItems: paginatedFirmSignups,
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    setItemsPerPage,
+    goToPage
+  } = usePagination({
+    items: firmSignups,
+    initialItemsPerPage: 10
+  });
 
   useEffect(() => {
     fetchFirmSignups();
@@ -138,43 +151,50 @@ export function FirmSignupsTable() {
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                    Loading firm sign-ups...
-                  </TableCell>
-                </TableRow>
-              ) : firmSignups.length > 0 ? (
-                firmSignups.map((signup) => (
-                  <TableRow key={signup.id}>
-                    <TableCell>{signup.company}</TableCell>
-                    <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
-                    <TableCell>{signup.email}</TableCell>
-                    <TableCell>{signup.phone}</TableCell>
-                    <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
-                    <TableCell>{signup.plan}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditFirm(signup)}
-                      >
-                        <Pen className="w-4 h-4 mr-1" /> Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                    No firm sign-ups found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                Loading firm sign-ups...
+              </TableCell>
+            </TableRow>
+          ) : paginatedFirmSignups.length > 0 ? (
+            paginatedFirmSignups.map((signup) => (
+              <TableRow key={signup.id}>
+                <TableCell>{signup.company}</TableCell>
+                <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
+                <TableCell>{signup.email}</TableCell>
+                <TableCell>{signup.phone}</TableCell>
+                <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
+                <TableCell>{signup.plan}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEditFirm(signup)}
+                  >
+                    <Pen className="w-4 h-4 mr-1" /> Edit
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
+                No firm sign-ups found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+        </Table>
+
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={goToPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
