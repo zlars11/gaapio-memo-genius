@@ -51,10 +51,14 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       // If an onSubmitSuccess callback was provided (e.g., for firm signups),
       // call it with the form data - but without the message
       if (onSubmitSuccess) {
-        // Pass data without the message field
+        // Format data for Zapier with exact field names matching the email template
         const firmData = {
-          ...data,
-          // No need to split name as it's already split
+          "Firm Name": data.company,
+          "Contact Name": `${data.firstname} ${data.lastname}`,
+          "Email": data.email,
+          "Phone": data.phone,
+          "Notes": data.message,
+          "Submission Date": new Date().toISOString(),
         };
         onSubmitSuccess(firmData);
       } else {

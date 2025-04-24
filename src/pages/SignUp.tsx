@@ -182,11 +182,22 @@ export default function SignUp() {
     
     try {
       console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
+      
+      // Format data to match Zapier email template field names
+      const formattedData = isFirm ? {
+        "Firm Name": allData.company,
+        "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
+        "Email": allData.email,
+        "Phone": allData.phone,
+        "Notes": allData.message || "",
+        "Submission Date": new Date().toISOString(),
+      } : allData;
+      
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         mode: "no-cors",
-        body: JSON.stringify(allData),
+        body: JSON.stringify(formattedData),
       });
       console.log("Zapier webhook triggered successfully");
     } catch (err) {

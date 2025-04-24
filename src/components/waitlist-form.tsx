@@ -31,21 +31,24 @@ export const WaitlistForm = memo(function WaitlistForm() {
           },
         ]);
 
-      // Also send to Zapier as before
+      // Format data with exact field names for Zapier
+      const zapierData = {
+        "Email": email,
+        "Name": name,
+        "Company": company,
+        "Source": "Waitlist Form",
+        "Submission Date": new Date().toISOString(),
+        "Destination": "zacklarsen11@gmail.com",
+      };
+
+      // Send to Zapier with formatted field names
       await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         mode: "no-cors",
-        body: JSON.stringify({
-          email,
-          name,
-          company,
-          source: "Waitlist Form",
-          timestamp: new Date().toISOString(),
-          destination: "zacklarsen11@gmail.com",
-        }),
+        body: JSON.stringify(zapierData),
       });
 
       toast({
