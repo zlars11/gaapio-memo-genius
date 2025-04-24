@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HomepageCtaToggle } from "@/components/admin/HomepageCtaToggle";
@@ -10,6 +11,7 @@ export function AdminDashboard() {
   const [contactCount, setContactCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
   const [showMetricsOnHomepage, setShowMetricsOnHomepage] = useState(false);
+  const [showWaitlistToUsers, setShowWaitlistToUsers] = useState(true);
 
   // Simulate fetching counts (in a real app, this would be an API call)
   useEffect(() => {
@@ -24,11 +26,20 @@ export function AdminDashboard() {
     
     const showMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
     setShowMetricsOnHomepage(showMetrics);
+    
+    const showWaitlist = localStorage.getItem("showWaitlistToUsers");
+    // Default to true if no preference is saved
+    setShowWaitlistToUsers(showWaitlist === null ? true : showWaitlist === "true");
   }, []);
 
   const handleToggleMetricsVisibility = (checked: boolean) => {
     setShowMetricsOnHomepage(checked);
     localStorage.setItem("showMetricsOnHomepage", checked.toString());
+  };
+  
+  const handleToggleWaitlistVisibility = (checked: boolean) => {
+    setShowWaitlistToUsers(checked);
+    localStorage.setItem("showWaitlistToUsers", checked.toString());
   };
 
   return (
@@ -71,15 +82,31 @@ export function AdminDashboard() {
             <MetricCard title="User Sign-ups" value={userCount} />
           </div>
           
-          <div className="mt-6 flex items-center space-x-2">
-            <Switch 
-              id="show-metrics" 
-              checked={showMetricsOnHomepage}
-              onCheckedChange={handleToggleMetricsVisibility}
-            />
-            <Label htmlFor="show-metrics">
-              Show metrics on homepage (for admins only)
-            </Label>
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="show-metrics" 
+                checked={showMetricsOnHomepage}
+                onCheckedChange={handleToggleMetricsVisibility}
+              />
+              <Label htmlFor="show-metrics">
+                Show metrics on homepage (for admins only)
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="show-waitlist" 
+                checked={showWaitlistToUsers}
+                onCheckedChange={handleToggleWaitlistVisibility}
+              />
+              <Label htmlFor="show-waitlist">
+                Show Waitlist Tab to Users
+              </Label>
+              <span className="text-xs text-muted-foreground ml-2">
+                (When toggled off, the Waitlist tab will be hidden from users)
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>

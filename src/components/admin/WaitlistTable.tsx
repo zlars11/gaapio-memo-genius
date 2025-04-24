@@ -1,17 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ZapierWebhookSetup } from "./ZapierWebhookSetup";
+import { PaginatedTable } from "./PaginatedTable";
 
 interface WaitlistSubmission {
   id: string;
@@ -62,6 +55,36 @@ export function WaitlistTable() {
     }
   }, [searchQuery, submissions]);
 
+  const columns = [
+    {
+      header: "Name",
+      accessorKey: "name" as keyof WaitlistSubmission,
+      cell: (submission: WaitlistSubmission) => (
+        <span className="font-medium">{submission.name}</span>
+      ),
+    },
+    {
+      header: "Email",
+      accessorKey: "email" as keyof WaitlistSubmission,
+    },
+    {
+      header: "Company",
+      accessorKey: "company" as keyof WaitlistSubmission,
+      cell: (submission: WaitlistSubmission) => (
+        submission.company || "—"
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "date" as keyof WaitlistSubmission,
+      cell: (submission: WaitlistSubmission) => (
+        submission.date
+          ? new Date(submission.date).toLocaleDateString()
+          : "—"
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -80,45 +103,15 @@ export function WaitlistTable() {
               className="max-w-md"
             />
           </div>
-          <Table>
-            <TableCaption>A list of waitlist submissions.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : filteredSubmissions.length > 0 ? (
-                filteredSubmissions.map((submission: WaitlistSubmission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell className="font-medium">{submission.name}</TableCell>
-                    <TableCell>{submission.email}</TableCell>
-                    <TableCell>{submission.company}</TableCell>
-                    <TableCell>
-                      {submission.date
-                        ? new Date(submission.date).toLocaleDateString()
-                        : "—"}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                    {searchQuery ? "No matching submissions found." : "No submissions yet."}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          
+          <PaginatedTable
+            data={filteredSubmissions}
+            columns={columns}
+            loading={loading}
+            searchQuery={searchQuery}
+            caption="A list of waitlist submissions."
+            noDataMessage="No submissions yet."
+          />
         </CardContent>
       </Card>
       <ZapierWebhookSetup 

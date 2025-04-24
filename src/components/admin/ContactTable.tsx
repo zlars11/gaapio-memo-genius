@@ -1,18 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ZapierWebhookSetup } from "./ZapierWebhookSetup";
+import { PaginatedTable } from "./PaginatedTable";
 
 interface ContactSubmission {
   id: string;
@@ -64,6 +56,43 @@ export function ContactTable() {
     }
   }, [searchQuery, submissions]);
 
+  const columns = [
+    {
+      header: "Name",
+      accessorKey: "name" as keyof ContactSubmission,
+      cell: (submission: ContactSubmission) => (
+        <span className="font-medium">{submission.name}</span>
+      ),
+    },
+    {
+      header: "Email",
+      accessorKey: "email" as keyof ContactSubmission,
+    },
+    {
+      header: "Company",
+      accessorKey: "company" as keyof ContactSubmission,
+      cell: (submission: ContactSubmission) => (
+        submission.company || "—"
+      ),
+    },
+    {
+      header: "Message",
+      accessorKey: "message" as keyof ContactSubmission,
+      cell: (submission: ContactSubmission) => (
+        <div className="max-w-xs truncate">{submission.message}</div>
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "date" as keyof ContactSubmission,
+      cell: (submission: ContactSubmission) => (
+        submission.date
+          ? new Date(submission.date).toLocaleDateString()
+          : "—"
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
@@ -82,47 +111,15 @@ export function ContactTable() {
               className="max-w-md"
             />
           </div>
-          <Table>
-            <TableCaption>A list of contact form submissions.</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Message</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : filteredSubmissions.length > 0 ? (
-                filteredSubmissions.map((submission: ContactSubmission) => (
-                  <TableRow key={submission.id}>
-                    <TableCell className="font-medium">{submission.name}</TableCell>
-                    <TableCell>{submission.email}</TableCell>
-                    <TableCell>{submission.company || "—"}</TableCell>
-                    <TableCell className="max-w-xs truncate">{submission.message}</TableCell>
-                    <TableCell>
-                      {submission.date
-                        ? new Date(submission.date).toLocaleDateString()
-                        : "—"}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                    {searchQuery ? "No matching submissions found." : "No submissions yet."}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          
+          <PaginatedTable
+            data={filteredSubmissions}
+            columns={columns}
+            loading={loading}
+            searchQuery={searchQuery}
+            caption="A list of contact form submissions."
+            noDataMessage="No submissions yet."
+          />
         </CardContent>
       </Card>
       <ZapierWebhookSetup 

@@ -15,7 +15,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
 import { EditFirmDialog } from "./EditFirmDialog";
 import { FirmSignupRow } from "./FirmSignupRow";
-import { FirmSignup } from "./types";
+import { FirmSignup } from "./types/userTypes";
 
 export function FirmSignupsTable() {
   const [firmSignups, setFirmSignups] = useState<FirmSignup[]>([]);
@@ -64,7 +64,7 @@ export function FirmSignupsTable() {
     setLoading(false);
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -77,6 +77,10 @@ export function FirmSignupsTable() {
       lastname: firm.lastname,
       email: firm.email,
       phone: firm.phone,
+      notes: firm.notes,
+      cardNumber: firm.cardNumber,
+      expDate: firm.expDate,
+      cvv: firm.cvv,
     });
     setIsDialogOpen(true);
   };
@@ -93,6 +97,10 @@ export function FirmSignupsTable() {
           lastname: formData.lastname,
           email: formData.email,
           phone: formData.phone,
+          notes: formData.notes,
+          cardNumber: formData.cardNumber,
+          expDate: formData.expDate,
+          cvv: formData.cvv,
         })
         .eq("id", editingFirm.id);
 
@@ -123,7 +131,7 @@ export function FirmSignupsTable() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
+        <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>

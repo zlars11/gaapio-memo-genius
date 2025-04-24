@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { X } from "lucide-react";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserInfoForm } from "./forms/UserInfoForm";
 import { PaymentDetailsForm } from "./forms/PaymentDetailsForm";
+import { validateCardNumber, validateExpiryDate, validateCVV, formatCardNumber, formatExpiryDate } from "@/utils/cardValidation";
 
 // Plan options moved to constants
 const PLAN_OPTIONS = [
@@ -24,6 +25,7 @@ const TERM_OPTIONS = [
 const STATUS_OPTIONS = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
+  { value: "trial", label: "Trial" },
 ];
 
 interface EditUserDialogProps {
@@ -40,11 +42,11 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
   const [passcode, setPasscode] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [fields, setFields] = useState({
-    firstname: user.firstname,
-    lastname: user.lastname,
-    email: user.email,
-    phone: user.phone,
-    company: user.company,
+    firstname: user.firstname || "",
+    lastname: user.lastname || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    company: user.company || "",
   });
   
   const [paymentDetails, setPaymentDetails] = useState({
@@ -52,11 +54,45 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     expDate: user.expDate || "",
     cvv: user.cvv ? "•••" : ""
   });
+  
+  const [validation, setValidation] = useState({
+    cardNumberValid: true,
+    expDateValid: true,
+    cvvValid: true
+  });
+  
+  const [showValidation, setShowValidation] = useState(false);
+  
+  // Track if card fields have been modified
+  const [cardFieldsModified, setCardFieldsModified] = useState({
+    cardNumber: false,
+    expDate: false,
+    cvv: false
+  });
+
+  useEffect(() => {
+    // Update validation state
+    setValidation({
+      cardNumberValid: 
+        !cardFieldsModified.cardNumber || 
+        paymentDetails.cardNumber === "" || 
+        validateCardNumber(paymentDetails.cardNumber),
+      expDateValid: 
+        !cardFieldsModified.expDate || 
+        paymentDetails.expDate === "" || 
+        validateExpiryDate(paymentDetails.expDate),
+      cvvValid: 
+        !cardFieldsModified.cvv || 
+        paymentDetails.cvv === "" || 
+        paymentDetails.cvv === "•••" || 
+        validateCVV(paymentDetails.cvv)
+    });
+  }, [paymentDetails, cardFieldsModified]);
 
   function maskCardNumber(number: string) {
     if (!number) return "";
     const cleanNumber = number.replace(/\s/g, '');
-    return cleanNumber.slice(-4).padStart(cleanNumber.length, '•');
+    return cleanNumber.slice(-4).padStart(cleanNumber.length, '•').replace(/(.{4})(?=.)/g, '$1 ');
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -67,39 +103,54 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     const { name, value } = e.target;
     let formattedValue = value;
     
+    // Track that this field has been modified
+    setCardFieldsModified(prev => ({
+      ...prev,
+      [name]: true
+    }));
+    
     if (name === "cardNumber") {
-      const digitsOnly = value.replace(/\D/g, '');
-      formattedValue = digitsOnly
-        .replace(/(\d{4})(?=\d)/g, '$1 ')
-        .slice(0, 19);
+      formattedValue = formatCardNumber(value);
     }
     
     if (name === "expDate") {
-      const digitsOnly = value.replace(/\D/g, '');
-      formattedValue = digitsOnly
-        .slice(0, 4)
-        .replace(/^(\d{2})(\d{0,2})/, '$1/$2')
-        .slice(0, 5);
+      formattedValue = formatExpiryDate(value);
     }
     
     if (name === "cvv") {
-      formattedValue = value.replace(/\D/g, '').slice(0, 3);
+      formattedValue = value.replace(/\D/g, '').slice(0, 4);
     }
     
     setPaymentDetails({ ...paymentDetails, [name]: formattedValue });
   }
 
   function handleSave() {
+    setShowValidation(true);
+    
+    if (!validation.cardNumberValid || !validation.expDateValid || !validation.cvvValid) {
+      return;
+    }
+    
     const saveData = { 
       ...user,
       ...fields, 
       plan, 
       term, 
       status,
-      cardNumber: paymentDetails.cardNumber.replace(/\s/g, ''),
-      expDate: paymentDetails.expDate,
-      cvv: paymentDetails.cvv
     };
+    
+    // Only update card fields if they've been modified
+    if (cardFieldsModified.cardNumber && paymentDetails.cardNumber !== "•••" && paymentDetails.cardNumber !== "") {
+      saveData.cardNumber = paymentDetails.cardNumber.replace(/\s/g, '');
+    }
+    
+    if (cardFieldsModified.expDate && paymentDetails.expDate !== "") {
+      saveData.expDate = paymentDetails.expDate;
+    }
+    
+    if (cardFieldsModified.cvv && paymentDetails.cvv !== "•••" && paymentDetails.cvv !== "") {
+      saveData.cvv = paymentDetails.cvv;
+    }
     
     onSave(saveData);
   }
@@ -151,6 +202,8 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
         <PaymentDetailsForm 
           paymentDetails={paymentDetails}
           onPaymentChange={handlePaymentChange}
+          validation={validation}
+          showValidation={showValidation}
         />
 
         <div className="flex gap-3 mt-8 justify-between">
