@@ -11,7 +11,7 @@ export function AdminDashboard() {
   const [contactCount, setContactCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
   const [showMetricsOnHomepage, setShowMetricsOnHomepage] = useState(false);
-  const [showWaitlistToUsers, setShowWaitlistToUsers] = useState(true);
+  const [showWaitlistTab, setShowWaitlistTab] = useState(true);
 
   // Simulate fetching counts (in a real app, this would be an API call)
   useEffect(() => {
@@ -29,7 +29,7 @@ export function AdminDashboard() {
     
     const showWaitlist = localStorage.getItem("showWaitlistToUsers");
     // Default to true if no preference is saved
-    setShowWaitlistToUsers(showWaitlist === null ? true : showWaitlist === "true");
+    setShowWaitlistTab(showWaitlist === null ? true : showWaitlist === "true");
   }, []);
 
   const handleToggleMetricsVisibility = (checked: boolean) => {
@@ -38,7 +38,7 @@ export function AdminDashboard() {
   };
   
   const handleToggleWaitlistVisibility = (checked: boolean) => {
-    setShowWaitlistToUsers(checked);
+    setShowWaitlistTab(checked);
     localStorage.setItem("showWaitlistToUsers", checked.toString());
   };
 
@@ -97,14 +97,14 @@ export function AdminDashboard() {
             <div className="flex items-center space-x-2">
               <Switch 
                 id="show-waitlist" 
-                checked={showWaitlistToUsers}
+                checked={showWaitlistTab}
                 onCheckedChange={handleToggleWaitlistVisibility}
               />
               <Label htmlFor="show-waitlist">
-                Show Waitlist Tab to Users
+                Show Waitlist Tab in Admin Portal
               </Label>
               <span className="text-xs text-muted-foreground ml-2">
-                (When toggled off, the Waitlist tab will be hidden from users)
+                (When toggled off, the Waitlist tab will be hidden from the admin portal)
               </span>
             </div>
           </div>

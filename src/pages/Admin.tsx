@@ -35,7 +35,7 @@ export default function Admin() {
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="mb-8">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="waitlist">Waitlist</TabsTrigger>
+            {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
             <TabsTrigger value="user-signups">User Sign-ups</TabsTrigger>
             <TabsTrigger value="firm-signups">Firm Sign-ups</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
@@ -43,9 +43,11 @@ export default function Admin() {
           <TabsContent value="dashboard">
             <AdminDashboard />
           </TabsContent>
-          <TabsContent value="waitlist">
-            <WaitlistTable />
-          </TabsContent>
+          {showWaitlistTab && (
+            <TabsContent value="waitlist">
+              <WaitlistTable />
+            </TabsContent>
+          )}
           <TabsContent value="user-signups">
             <div className="space-y-8 max-w-full">
               <UserSignupsTable />
