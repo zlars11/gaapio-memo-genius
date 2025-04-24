@@ -1,37 +1,23 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
+  TableCell
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import EditUserDialog from "./EditUserDialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Pen } from "lucide-react";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
-
-interface UserSignup {
-  id: string;
-  firstname?: string;
-  lastname?: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  plan: string;
-  status?: string;
-  amount?: string;
-  signupdate?: string;
-  term?: string;
-}
+import { UserSignupRow } from "./UserSignupRow";
+import EditUserDialog from "./EditUserDialog";
+import { UserSignup } from "./types/userTypes";
 
 export function UserSignupsTable() {
   const [users, setUsers] = useState<UserSignup[]>([]);
@@ -40,6 +26,7 @@ export function UserSignupsTable() {
   const [loading, setLoading] = useState(true);
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  
   const { 
     currentItems: paginatedUsers,
     currentPage,
@@ -86,19 +73,6 @@ export function UserSignupsTable() {
       setFilteredUsers(filtered);
     }
   }, [searchQuery, users]);
-
-  const getStatusBadgeVariant = (status?: string) => {
-    switch ((status || "").toLowerCase()) {
-      case "active":
-        return "default";
-      case "trial":
-        return "secondary";
-      case "inactive":
-        return "outline";
-      default:
-        return "default";
-    }
-  };
 
   const handleOpenEdit = (user: UserSignup) => {
     setEditUser(user);
@@ -153,7 +127,6 @@ export function UserSignupsTable() {
       
       if (error) throw error;
       
-      // Remove the deleted user from the state
       const updatedUsers = users.filter(user => user.id !== userId);
       setUsers(updatedUsers);
       setFilteredUsers(updatedUsers);
@@ -203,37 +176,12 @@ export function UserSignupsTable() {
                 </TableCell>
               </TableRow>
             ) : paginatedUsers.length > 0 ? (
-              paginatedUsers.map((user, idx) => (
-                <TableRow key={user.id || user.email || idx}>
-                  <TableCell className="font-medium">{user.firstname || "—"}</TableCell>
-                  <TableCell>{user.lastname || "—"}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.company || "—"}</TableCell>
-                  <TableCell>{user.plan}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusBadgeVariant(user.status)}>
-                      {user.status
-                        ? user.status.charAt(0).toUpperCase() + user.status.slice(1)
-                        : "Active"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {user.signupdate
-                      ? new Date(user.signupdate).toLocaleDateString()
-                      : "—"}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="ml-auto"
-                      onClick={() => handleOpenEdit(user)}
-                    >
-                      <Pen className="w-4 h-4 mr-1" />
-                      Edit
-                    </Button>
-                  </TableCell>
-                </TableRow>
+              paginatedUsers.map((user) => (
+                <UserSignupRow
+                  key={user.id}
+                  user={user}
+                  onEdit={handleOpenEdit}
+                />
               ))
             ) : (
               <TableRow>
@@ -245,14 +193,14 @@ export function UserSignupsTable() {
           </TableBody>
         </Table>
 
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={totalPages}
-        itemsPerPage={itemsPerPage}
-        onPageChange={goToPage}
-        onItemsPerPageChange={setItemsPerPage}
-      />
-      
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={goToPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
+
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           {editUser && (
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
