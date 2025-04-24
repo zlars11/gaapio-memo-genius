@@ -145,6 +145,7 @@ export default function SignUp() {
 
   // Helper: Create firm signup in Supabase - FIXED FUNCTION
   async function createFirmSignup(info: any) {
+    // Updated to ensure firstname and lastname remain separate
     const firmData = {
       type: "firm",
       company: info.company,
@@ -152,11 +153,10 @@ export default function SignUp() {
       lastname: info.lastName || info.lastname,
       email: info.email,
       phone: info.phone,
-      amount: "Contact Sales", // Required field
-      status: "active", // Required field
+      amount: "Contact Sales", 
+      status: "active",
       signupdate: new Date().toISOString(),
       plan: "firms"
-      // Removed 'notes' field as it doesn't exist in the database schema
     };
     
     const { data, error } = await supabase.from("user_signups").insert(firmData);

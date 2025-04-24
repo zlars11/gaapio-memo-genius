@@ -49,10 +49,17 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       if (error) throw new Error(error.message);
 
       // If an onSubmitSuccess callback was provided (e.g., for firm signups),
-      // call it with the form data - but without the message
+      // call it with the form data with preserved firstname and lastname fields
       if (onSubmitSuccess) {
         // Format data for Zapier with exact field names matching the email template
         const firmData = {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          phone: data.phone,
+          company: data.company,
+          message: data.message,
+          // Additional fields for Zapier formatting
           "Firm Name": data.company,
           "Contact Name": `${data.firstname} ${data.lastname}`,
           "Email": data.email,
