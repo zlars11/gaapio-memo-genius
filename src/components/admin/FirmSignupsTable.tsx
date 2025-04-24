@@ -10,26 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Pen } from "lucide-react";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
-
-interface FirmSignup {
-  id: string;
-  company: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  notes?: string; // Keep this as optional since we might get it from legacy data
-  signupdate: string;
-  plan: string;
-}
+import { EditFirmDialog } from "./EditFirmDialog";
+import { FirmSignupRow } from "./FirmSignupRow";
+import { FirmSignup } from "./types";
 
 export function FirmSignupsTable() {
   const [firmSignups, setFirmSignups] = useState<FirmSignup[]>([]);
@@ -78,7 +64,7 @@ export function FirmSignupsTable() {
     setLoading(false);
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -107,7 +93,6 @@ export function FirmSignupsTable() {
           lastname: formData.lastname,
           email: formData.email,
           phone: formData.phone,
-          // Removed notes to match the database schema
         })
         .eq("id", editingFirm.id);
 
@@ -160,23 +145,11 @@ export function FirmSignupsTable() {
                 </TableRow>
               ) : paginatedFirmSignups.length > 0 ? (
                 paginatedFirmSignups.map((signup) => (
-                  <TableRow key={signup.id}>
-                    <TableCell>{signup.company}</TableCell>
-                    <TableCell>{`${signup.firstname} ${signup.lastname}`.trim()}</TableCell>
-                    <TableCell>{signup.email}</TableCell>
-                    <TableCell>{signup.phone}</TableCell>
-                    <TableCell>{new Date(signup.signupdate).toLocaleDateString()}</TableCell>
-                    <TableCell>{signup.plan}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditFirm(signup)}
-                      >
-                        <Pen className="w-4 h-4 mr-1" /> Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <FirmSignupRow
+                    key={signup.id}
+                    signup={signup}
+                    onEdit={handleEditFirm}
+                  />
                 ))
               ) : (
                 <TableRow>
@@ -197,74 +170,13 @@ export function FirmSignupsTable() {
           onItemsPerPageChange={setItemsPerPage}
         />
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <div className="space-y-4 py-2">
-              <div className="space-y-1">
-                <Label htmlFor="company">Company Name</Label>
-                <Input
-                  id="company"
-                  name="company"
-                  value={formData.company || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="firstname">First Name</Label>
-                  <Input
-                    id="firstname"
-                    name="firstname"
-                    value={formData.firstname || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="lastname">Last Name</Label>
-                  <Input
-                    id="lastname"
-                    name="lastname"
-                    value={formData.lastname || ''}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={formData.phone || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleSaveFirmChanges}>
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <EditFirmDialog
+          isOpen={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          formData={formData}
+          onInputChange={handleInputChange}
+          onSave={handleSaveFirmChanges}
+        />
       </CardContent>
     </Card>
   );
