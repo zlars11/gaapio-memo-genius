@@ -60,28 +60,32 @@ export function CompaniesTable() {
   const columns = [
     {
       header: "Company Name",
-      accessorKey: "name",
+      accessorKey: "name" as keyof Company,
     },
     {
       header: "Plan",
+      accessorKey: "plan" as keyof Company,
       cell: (item: Company) => (
         <span className="capitalize">{item.plan}</span>
       ),
     },
     {
       header: "User Limit",
+      accessorKey: "user_limit" as keyof Company,
       cell: (item: Company) => (
         <span>{item.user_limit || "Unlimited"}</span>
       ),
     },
     {
       header: "Status",
+      accessorKey: "status" as keyof Company,
       cell: (item: Company) => (
         <span className="capitalize">{item.status || "active"}</span>
       ),
     },
     {
       header: "Created",
+      accessorKey: "created_at" as keyof Company,
       cell: (item: Company) => (
         <span>{item.created_at ? formatDate(new Date(item.created_at)) : "N/A"}</span>
       ),

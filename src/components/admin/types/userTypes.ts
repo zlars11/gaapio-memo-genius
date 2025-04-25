@@ -15,6 +15,7 @@ export interface UserSignup {
   cardNumberLast4?: string; // Added this field to support storing last 4 digits
   expDate?: string;
   cvv?: string;
+  role?: string; // Added role property to fix the type error
 }
 
 export interface UserSignupRowProps {
