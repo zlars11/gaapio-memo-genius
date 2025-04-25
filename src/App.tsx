@@ -36,10 +36,10 @@ const queryClient = new QueryClient({
       gcTime: 5 * 60 * 1000, // 5 minutes (replaces cacheTime)
       refetchOnWindowFocus: false,
       retry: 1,
-      useErrorBoundary: true, // Better error handling
+      throwOnError: true, // Updated from useErrorBoundary to throwOnError
     },
     mutations: {
-      useErrorBoundary: true,
+      throwOnError: true, // Updated from useErrorBoundary to throwOnError
       retry: 0,
     },
   },
