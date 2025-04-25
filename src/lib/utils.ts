@@ -10,8 +10,20 @@ export function cn(...inputs: ClassValue[]) {
  * Formats a date object or string into a string with the format MM/DD/YYYY
  */
 export function formatDate(date: Date | string): string {
+  if (!date) {
+    return 'N/A';
+  }
+  
   if (typeof date === 'string') {
-    date = new Date(date);
+    // Create a new Date object from the string
+    const parsedDate = new Date(date);
+    
+    // Check if the date is valid
+    if (isNaN(parsedDate.getTime())) {
+      return 'Invalid Date';
+    }
+    
+    date = parsedDate;
   }
   
   return date.toLocaleDateString('en-US', {

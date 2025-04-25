@@ -6,16 +6,17 @@ export interface UserSignup {
   email: string;
   phone?: string;
   company?: string;
+  company_id?: string; // Added this field to support company relationship
   plan: string;
   status?: string;
   amount?: string;
   signupdate?: string;
   term?: string;
   cardNumber?: string;
-  cardNumberLast4?: string; // Added this field to support storing last 4 digits
+  cardNumberLast4?: string;
   expDate?: string;
   cvv?: string;
-  role?: string; // Added role property to fix the type error
+  role?: string;
 }
 
 export interface UserSignupRowProps {
