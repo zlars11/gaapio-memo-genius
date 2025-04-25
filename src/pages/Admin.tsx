@@ -102,7 +102,7 @@ export default function Admin() {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
             <TabsTrigger value="companies">Companies</TabsTrigger>
-            <TabsTrigger value="firm-signups">Firm Sign-ups</TabsTrigger>
+            <TabsTrigger value="firms">Firms</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
@@ -122,7 +122,7 @@ export default function Admin() {
               />
             </div>
           </TabsContent>
-          <TabsContent value="firm-signups">
+          <TabsContent value="firms">
             <div className="space-y-8 max-w-full">
               <FirmSignupsTable />
               <ZapierWebhookSetup

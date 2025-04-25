@@ -61,27 +61,39 @@ export function FirmSignupsTable() {
 
   async function fetchFirmSignups() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("user_signups")
-      .select("*")
-      .eq("type", "firm")
-      .order("signupdate", { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from("user_signups")
+        .select("*")
+        .eq("type", "firm")
+        .order("signupdate", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching firm signups:", error);
+      if (error) {
+        console.error("Error fetching firm signups:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch firm signups",
+          variant: "destructive",
+        });
+        setFirmSignups([]);
+        setFilteredFirmSignups([]);
+      } else {
+        console.log("Fetched firm signups:", data);
+        setFirmSignups(data as FirmSignup[] || []);
+        setFilteredFirmSignups(data as FirmSignup[] || []);
+      }
+    } catch (err) {
+      console.error("Exception when fetching firm signups:", err);
       toast({
         title: "Error",
-        description: "Failed to fetch firm signups",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
       setFirmSignups([]);
       setFilteredFirmSignups([]);
-    } else {
-      console.log("Fetched firm signups:", data);
-      setFirmSignups(data || []);
-      setFilteredFirmSignups(data || []);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -145,7 +157,7 @@ export function FirmSignupsTable() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Firm Sign-ups</CardTitle>
+        <CardTitle>Firms</CardTitle>
         <CardDescription>
           Firms that have registered for the service
         </CardDescription>
@@ -177,7 +189,7 @@ export function FirmSignupsTable() {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                    Loading firm sign-ups...
+                    Loading firms...
                   </TableCell>
                 </TableRow>
               ) : paginatedFirmSignups.length > 0 ? (
@@ -191,7 +203,7 @@ export function FirmSignupsTable() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                    {searchQuery ? "No matching firms found." : "No firm sign-ups found."}
+                    {searchQuery ? "No matching firms found." : "No firms found."}
                   </TableCell>
                 </TableRow>
               )}

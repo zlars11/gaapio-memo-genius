@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,7 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import EditUserDialog from "./EditUserDialog";
-import { Edit } from "lucide-react"; // Add this import for the Edit icon
+import { Edit, Plus } from "lucide-react"; 
+import { useToast } from "@/components/ui/use-toast";
 
 interface Company {
   id: string;
@@ -50,6 +52,16 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   const [loadingPayments, setLoadingPayments] = useState(true);
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
+  const [newUser, setNewUser] = useState<Partial<UserSignup>>({
+    company_id: company.id,
+    company: company.name,
+    plan: company.plan,
+    status: 'active',
+    role: 'member'
+  });
+  const { toast } = useToast();
+  
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: "",
     expDate: formData.expDate || "",
@@ -68,15 +80,23 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
 
   async function fetchUsers() {
     setLoadingUsers(true);
+    console.log("Fetching users for company ID:", company.id);
+    
     const { data, error } = await supabase
       .from("user_signups")
       .select("*")
-      .eq("company_id", company.id)
-      .order("signupdate", { ascending: false });
+      .eq("company_id", company.id);
 
     if (error) {
       console.error("Error fetching company users:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load users for this company",
+        variant: "destructive"
+      });
+      setUsers([]);
     } else {
+      console.log("Fetched users:", data);
       setUsers(data as UserSignup[]);
     }
     setLoadingUsers(false);
@@ -113,6 +133,11 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewUserInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,9 +179,78 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
 
       if (error) throw error;
       
+      toast({
+        title: "Success",
+        description: "Company information updated successfully"
+      });
+      
       onSave();
     } catch (error) {
       console.error("Error updating company:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update company information",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCreateUser = async () => {
+    if (!newUser.firstname || !newUser.lastname || !newUser.email) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill out all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("user_signups")
+        .insert([
+          {
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+            email: newUser.email,
+            phone: newUser.phone || "",
+            company: company.name,
+            company_id: company.id,
+            plan: company.plan,
+            status: 'active',
+            role: newUser.role || 'member',
+            amount: "0", // Default amount
+            signupdate: new Date().toISOString(),
+            term: "annual", // Default term
+            type: "user"
+          }
+        ])
+        .select();
+
+      if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: "User created successfully"
+      });
+      
+      setCreateUserDialogOpen(false);
+      setNewUser({
+        company_id: company.id,
+        company: company.name,
+        plan: company.plan,
+        status: 'active',
+        role: 'member'
+      });
+      
+      await fetchUsers();
+    } catch (error) {
+      console.error("Error creating user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create user",
+        variant: "destructive"
+      });
     }
   };
 
@@ -184,10 +278,20 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       
       if (error) throw error;
       
+      toast({
+        title: "Success",
+        description: "User updated successfully"
+      });
+      
       await fetchUsers();
       setUserDialogOpen(false);
     } catch (error) {
       console.error("Error updating user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update user",
+        variant: "destructive"
+      });
     }
   };
 
@@ -200,10 +304,20 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       
       if (error) throw error;
       
+      toast({
+        title: "Success",
+        description: "User deleted successfully"
+      });
+      
       await fetchUsers();
       setUserDialogOpen(false);
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete user",
+        variant: "destructive"
+      });
     }
   };
 
@@ -297,46 +411,59 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         </TabsContent>
 
         <TabsContent value="users">
-          {loadingUsers ? (
-            <div className="text-center py-4">Loading users...</div>
-          ) : users.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Sign-up Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map(user => (
-                  <TableRow key={user.id}>
-                    <TableCell>{`${user.firstname || ''} ${user.lastname || ''}`}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell className="capitalize">{user.role || 'member'}</TableCell>
-                    <TableCell className="capitalize">{user.status || 'active'}</TableCell>
-                    <TableCell>{user.signupdate ? formatDate(new Date(user.signupdate)) : 'N/A'}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditUser(user)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" /> Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="text-center py-6 text-muted-foreground">
-              No users found for this company.
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Company Users</h3>
+              <Button 
+                size="sm" 
+                onClick={() => setCreateUserDialogOpen(true)}
+                className="flex items-center gap-1"
+              >
+                <Plus className="h-4 w-4" /> Add User
+              </Button>
             </div>
-          )}
+            
+            {loadingUsers ? (
+              <div className="text-center py-4">Loading users...</div>
+            ) : users.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Sign-up Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map(user => (
+                    <TableRow key={user.id}>
+                      <TableCell>{`${user.firstname || ''} ${user.lastname || ''}`}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell className="capitalize">{user.role || 'member'}</TableCell>
+                      <TableCell className="capitalize">{user.status || 'active'}</TableCell>
+                      <TableCell>{user.signupdate ? formatDate(new Date(user.signupdate)) : 'N/A'}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditUser(user)}
+                        >
+                          <Edit className="h-4 w-4 mr-1" /> Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="text-center py-6 text-muted-foreground">
+                No users found for this company.
+              </div>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="billing" className="space-y-6">
@@ -444,6 +571,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         </Button>
       </div>
 
+      {/* Edit User Dialog */}
       <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
         {editUser && (
           <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -455,6 +583,90 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
             />
           </DialogContent>
         )}
+      </Dialog>
+
+      {/* Create User Dialog */}
+      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstname">First Name *</Label>
+                <Input
+                  id="firstname"
+                  name="firstname"
+                  value={newUser.firstname || ''}
+                  onChange={handleNewUserInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="lastname">Last Name *</Label>
+                <Input
+                  id="lastname"
+                  name="lastname"
+                  value={newUser.lastname || ''}
+                  onChange={handleNewUserInputChange}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={newUser.email || ''}
+                onChange={handleNewUserInputChange}
+                required
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={newUser.phone || ''}
+                onChange={handleNewUserInputChange}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="role">Role</Label>
+              <select
+                id="role"
+                name="role"
+                value={newUser.role || 'member'}
+                onChange={handleNewUserInputChange}
+                className="w-full border rounded px-3 py-2 bg-background text-foreground"
+              >
+                <option value="admin">Admin</option>
+                <option value="member">Member</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
+            
+            <div className="flex justify-end gap-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setCreateUserDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleCreateUser}>
+                Create User
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
       </Dialog>
     </div>
   );
