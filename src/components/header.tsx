@@ -4,14 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
   const [ctaText, setCtaText] = useState("Join the Waitlist");
   const [ctaTo, setCtaTo] = useState("#waitlist");
   const [isClient, setIsClient] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    
     // Check for CTA preference from localStorage
     const ctaSetting = localStorage.getItem("homepageCta");
     if (ctaSetting === "signup") {
@@ -21,6 +24,25 @@ export function Header() {
       setCtaText("Join the Waitlist");
       setCtaTo("#waitlist");
     }
+
+    // Check login status
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setIsLoggedIn(!!session);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
@@ -62,14 +84,24 @@ export function Header() {
           </Link>
           {/* CTA+Theme toggle: right aligned */}
           <div className="flex items-center ml-2 space-x-2">
-            <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
-              {isClient && ctaTo.startsWith("/") ? (
-                <Link to={ctaTo}>{ctaText}</Link>
-              ) : (
-                <a href={ctaTo}>{ctaText}</a>
-              )}
-            </Button>
-            {/* Theme toggle: immediately to right of CTA */}
+            {isClient && (
+              <>
+                {!isLoggedIn ? (
+                  <>
+                    <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
+                      <Link to="/login">Login</Link>
+                    </Button>
+                    <Button size="sm" asChild variant="outline" className="text-base py-2 px-5">
+                      <Link to="/signup">Sign Up</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
+                    <Link to="/" onClick={() => supabase.auth.signOut()}>Logout</Link>
+                  </Button>
+                )}
+              </>
+            )}
             <span>
               <ThemeToggle />
             </span>
