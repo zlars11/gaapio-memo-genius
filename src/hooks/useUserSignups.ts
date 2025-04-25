@@ -13,7 +13,7 @@ export function useUserSignups() {
     async function fetchData() {
       setLoading(true);
       const { data, error } = await supabase
-        .from("user_signups")
+        .from("users")
         .select("*")
         .order("signupdate", { ascending: false });
       
@@ -47,7 +47,7 @@ export function useUserSignups() {
 
   const refreshUsers = async () => {
     const { data, error } = await supabase
-      .from("user_signups")
+      .from("users")
       .select("*")
       .order("signupdate", { ascending: false });
     

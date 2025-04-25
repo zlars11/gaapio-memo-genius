@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Table, TableCaption } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,7 +41,7 @@ export function UserSignupsTable() {
   const handleSaveUser = async (updatedUser: UserSignup) => {
     try {
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .update({
           firstname: updatedUser.firstname,
           lastname: updatedUser.lastname,
@@ -65,7 +66,7 @@ export function UserSignupsTable() {
   const handleDeleteUser = async (userId: string) => {
     try {
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .delete()
         .eq("id", userId);
       

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,7 +34,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     status: 'active',
     role: 'member',
     is_active: true,
-    type: 'user' // Added type field
+    type: 'user'
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
@@ -56,7 +57,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     try {
       console.log("Fetching users for company_id:", company.id);
       const { data, error } = await supabase
-        .from("user_signups")
+        .from("users")
         .select("*")
         .eq("company_id", company.id);
 
@@ -121,7 +122,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
 
       console.log("Creating new user:", userToCreate);
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .insert([userToCreate]);
 
       if (error) throw error;
@@ -161,7 +162,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   const handleSaveUser = async (updatedUser: UserSignup) => {
     try {
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .update(updatedUser)
         .eq("id", updatedUser.id);
       
@@ -187,7 +188,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   const handleDeleteUser = async (userId: string) => {
     try {
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .delete()
         .eq("id", userId);
       
@@ -263,7 +264,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     try {
       // First delete all users associated with this company
       const { error: usersDeleteError } = await supabase
-        .from("user_signups")
+        .from("users")
         .delete()
         .eq("company_id", company.id);
       

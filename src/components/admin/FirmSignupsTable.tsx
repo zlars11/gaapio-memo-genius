@@ -141,7 +141,7 @@ export function FirmSignupsTable() {
     
     try {
       const { error } = await supabase
-        .from("user_signups")
+        .from("users")
         .update({
           company: formData.company,
           firstname: formData.firstname,
