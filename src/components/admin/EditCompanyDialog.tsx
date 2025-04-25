@@ -74,6 +74,10 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         role: user.role || "member", // Default role if undefined
         term: user.term || "annual", // Default term if undefined
         type: user.type || "user", // Default type if undefined
+        amount: user.amount || "0.00", // Ensure amount is present
+        phone: user.phone || "", // Ensure phone is present
+        status: user.status || "active", // Ensure status is present
+        company: user.company || company.name, // Ensure company name is present
       })) || [];
       
       setUsers(normalizedUsers);
@@ -169,6 +173,13 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     const normalizedUser: User = {
       ...user,
       notes: user.notes || "", // Default to empty string if notes is undefined
+      role: user.role || "member",
+      term: user.term || "annual",
+      type: user.type || "user",
+      amount: user.amount || "0.00",
+      phone: user.phone || "",
+      status: user.status || "active",
+      company: user.company || company.name,
     };
     setEditUser(normalizedUser);
     setUserDialogOpen(true);
@@ -180,6 +191,13 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       const normalizedUser = {
         ...updatedUser,
         notes: updatedUser.notes || "", // Ensure notes has a value
+        role: updatedUser.role || "member",
+        term: updatedUser.term || "annual",
+        type: updatedUser.type || "user",
+        amount: updatedUser.amount || "0.00",
+        phone: updatedUser.phone || "",
+        status: updatedUser.status || "active",
+        company: updatedUser.company || company.name,
       };
       
       const { error } = await supabase
