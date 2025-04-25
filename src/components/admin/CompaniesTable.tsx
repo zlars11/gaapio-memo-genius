@@ -9,6 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Edit } from "lucide-react";
 import { EditCompanyDialog } from "./EditCompanyDialog";
 import { formatDate } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Company {
   id: string;
@@ -31,6 +32,7 @@ export function CompaniesTable() {
   const [loading, setLoading] = useState(true);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchCompanies();
@@ -38,20 +40,39 @@ export function CompaniesTable() {
 
   async function fetchCompanies() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("companies")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      console.log("Fetching companies...");
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching companies:", error);
+      if (error) {
+        console.error("Error fetching companies:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch companies",
+          variant: "destructive",
+        });
+        setCompanies([]);
+        setFilteredCompanies([]);
+      } else {
+        console.log("Fetched companies:", data);
+        setCompanies(data as Company[]);
+        setFilteredCompanies(data as Company[]);
+      }
+    } catch (err) {
+      console.error("Exception when fetching companies:", err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
       setCompanies([]);
       setFilteredCompanies([]);
-    } else {
-      setCompanies(data as Company[]);
-      setFilteredCompanies(data as Company[]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {

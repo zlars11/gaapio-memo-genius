@@ -1,3 +1,4 @@
+
 export interface UserSignup {
   id: string;
   firstname?: string;
@@ -18,6 +19,7 @@ export interface UserSignup {
   role?: string;
   is_active?: boolean; // Added this field that was missing
   type?: string; // Added this field that might be used elsewhere
+  notes?: string; // Added notes field
 }
 
 export interface UserSignupRowProps {
@@ -40,4 +42,3 @@ export interface CardValidation {
   expDateValid: boolean;
   cvvValid: boolean;
 }
-

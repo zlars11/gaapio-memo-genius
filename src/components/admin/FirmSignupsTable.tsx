@@ -73,7 +73,7 @@ export function FirmSignupsTable() {
         console.error("Error fetching firm signups:", error);
         toast({
           title: "Error",
-          description: "Failed to fetch firm signups",
+          description: "Failed to fetch firm signups: " + error.message,
           variant: "destructive",
         });
         setFirmSignups([]);
@@ -90,21 +90,22 @@ export function FirmSignupsTable() {
           firstname: item.firstname || "",
           lastname: item.lastname || "",
           phone: item.phone || "",
-          plan: item.plan || "",
-          status: item.status || "active",
+          plan: item.plan || "enterprise",
+          status: item.status || "lead",
           signupdate: item.signupdate || new Date().toISOString(),
-          term: item.term || "",
-          type: item.type || "firm"
+          term: item.term || "annual",
+          type: item.type || "firm",
+          notes: item.notes || ""
         })) as FirmSignup[];
         
         setFirmSignups(firmData);
         setFilteredFirmSignups(firmData);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Exception when fetching firm signups:", err);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: `An unexpected error occurred: ${err.message || "Unknown error"}`,
         variant: "destructive",
       });
       setFirmSignups([]);
