@@ -8,16 +8,34 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function AdminNavLink() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const { data } = await supabase.rpc('has_role', {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setIsAdmin(false);
+          return;
+        }
+
+        const { data, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
           role: 'admin'
         });
+
+        if (error) {
+          console.error('Error checking admin role:', error);
+          setIsAdmin(false);
+          return;
+        }
+
         setIsAdmin(!!data);
+      } catch (error) {
+        console.error('Error in admin check:', error);
+        setIsAdmin(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -32,7 +50,7 @@ export function AdminNavLink() {
     };
   }, []);
 
-  if (!isAdmin) {
+  if (isLoading || !isAdmin) {
     return null;
   }
 

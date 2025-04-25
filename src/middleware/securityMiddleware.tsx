@@ -31,14 +31,16 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
             throw new Error('Authentication required');
           }
 
-          // Check if user has admin role
-          const { data, error } = await supabase
-            .rpc('has_role', {
-              user_id: session.user.id,
-              role: 'admin'
-            });
+          // Check if user has admin role using the has_role RPC function
+          const { data, error } = await supabase.rpc('has_role', {
+            user_id: session.user.id,
+            role: 'admin'
+          });
 
-          if (error) throw error;
+          if (error) {
+            console.error('Role check error:', error);
+            throw new Error('Authorization check failed');
+          }
           
           // If not admin, throw error
           if (!data) {
@@ -53,7 +55,14 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
             description: error.message || "You don't have permission to access this area",
             variant: "destructive"
           });
-          navigate('/', { replace: true });
+          
+          // Redirect to login if not authenticated, home if authenticated but not authorized
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+            navigate('/signup', { replace: true });
+          } else {
+            navigate('/', { replace: true });
+          }
         } finally {
           setIsLoading(false);
         }
@@ -63,17 +72,26 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
       
       // Subscribe to auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (_event, session) => {
+        async (event, session) => {
           if (!session) {
             setIsAuthorized(false);
             navigate('/', { replace: true });
           } else {
             // Recheck admin status on auth changes
-            const { data } = await supabase.rpc('has_role', {
-              user_id: session.user.id,
-              role: 'admin'
-            });
-            setIsAuthorized(!!data);
+            try {
+              const { data } = await supabase.rpc('has_role', {
+                user_id: session.user.id,
+                role: 'admin'
+              });
+              setIsAuthorized(!!data);
+              
+              if (!data && protectedPaths.some(path => location.pathname.startsWith(path))) {
+                navigate('/', { replace: true });
+              }
+            } catch (error) {
+              console.error('Auth change error:', error);
+              setIsAuthorized(false);
+            }
           }
         }
       );

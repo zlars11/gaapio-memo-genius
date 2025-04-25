@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface AdminPageGuardProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ interface AdminPageGuardProps {
 
 export function AdminPageGuard({ children }: AdminPageGuardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,30 +31,39 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
-        if (session) {
-          // Check if user has admin role in metadata
-          // This would ideally query a user_roles table in your database
-          const { data, error } = await supabase
-            .from('user_signups')
-            .select('*')
-            .eq('email', session.user.email)
-            .eq('status', 'active')
-            .single();
-            
-          if (data && data.plan === 'enterprise') {
-            setIsAuthenticated(true);
-          } else {
-            // Not an admin, redirect
-            toast({
-              title: "Access Denied",
-              description: "You don't have permission to access the admin area.",
-              variant: "destructive"
-            });
-            navigate("/");
-          }
+        if (!session) {
+          setIsAuthenticated(false);
+          setIsAuthorized(false);
+          return;
+        }
+        
+        setIsAuthenticated(true);
+        
+        // Check if user has admin role
+        const { data, error } = await supabase.rpc('has_role', {
+          user_id: session.user.id,
+          role: 'admin'
+        });
+        
+        if (error) {
+          console.error('Error checking admin role:', error);
+          setIsAuthorized(false);
+          return;
+        }
+        
+        setIsAuthorized(!!data);
+        
+        if (!data) {
+          toast({
+            title: "Access Denied",
+            description: "You don't have permission to access the admin area.",
+            variant: "destructive"
+          });
         }
       } catch (err) {
         console.error("Error checking admin status:", err);
+        setIsAuthenticated(false);
+        setIsAuthorized(false);
       } finally {
         setIsLoading(false);
       }
@@ -65,12 +76,17 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       (_event, session) => {
         if (!session) {
           setIsAuthenticated(false);
+          setIsAuthorized(false);
+        } else {
+          setIsAuthenticated(true);
+          // Recheck authorization when auth state changes
+          checkAdminStatus();
         }
       }
     );
     
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [toast]);
 
   const handleLogin = async () => {
     setError("");
@@ -91,23 +107,21 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       
       if (data.user) {
         // Check if user has admin role after login
-        const { data: userData, error: userError } = await supabase
-          .from('user_signups')
-          .select('*')
-          .eq('email', data.user.email)
-          .eq('status', 'active')
-          .single();
+        const { data: adminData, error: adminError } = await supabase.rpc('has_role', {
+          user_id: data.user.id,
+          role: 'admin'
+        });
         
-        if (userError || !userData || userData.plan !== 'enterprise') {
-          await supabase.auth.signOut();
+        if (adminError || !adminData) {
+          setError("You don't have permission to access the admin area.");
           toast({
             title: "Access Denied",
             description: "You don't have permission to access the admin area.",
             variant: "destructive"
           });
-          setError("You don't have permission to access the admin area.");
         } else {
           setIsAuthenticated(true);
+          setIsAuthorized(true);
           setError("");
         }
       }
@@ -123,6 +137,7 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     try {
       await supabase.auth.signOut();
       setIsAuthenticated(false);
+      setIsAuthorized(false);
       navigate("/");
     } catch (err) {
       console.error("Logout error:", err);
@@ -179,6 +194,24 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
             </Button>
           </CardFooter>
         </Card>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="container mx-auto py-8">
+        <Alert variant="destructive" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Access Denied</AlertTitle>
+          <AlertDescription>
+            You don't have permission to access the admin area. Please contact an administrator if you believe this is an error.
+          </AlertDescription>
+        </Alert>
+        <div className="flex justify-center">
+          <Button onClick={() => navigate("/")} className="mr-4">Return to Home</Button>
+          <Button variant="outline" onClick={handleLogout}>Logout</Button>
+        </div>
       </div>
     );
   }
