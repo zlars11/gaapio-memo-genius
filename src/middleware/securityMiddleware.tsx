@@ -2,37 +2,60 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from "@/components/ui/use-toast";
 
 interface SecurityMiddlewareProps {
   children: React.ReactNode;
 }
 
-// List of paths that require authentication
 const protectedPaths = ['/admin'];
 
-/**
- * Security middleware component that enforces authentication for protected routes
- */
 export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthorized, setIsAuthorized] = React.useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Check if current path requires authentication
     const requiresAuth = protectedPaths.some(path => 
       location.pathname.startsWith(path)
     );
     
     if (requiresAuth) {
       const checkAuth = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsAuthenticated(!!session);
-        setIsLoading(false);
-        
-        if (!session) {
-          navigate(`/`, { replace: true });
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          if (!session) {
+            throw new Error('Authentication required');
+          }
+
+          // Check if user has admin role
+          const { data, error } = await supabase
+            .rpc('has_role', {
+              user_id: session.user.id,
+              role: 'admin'
+            });
+
+          if (error) throw error;
+          
+          // If not admin, throw error
+          if (!data) {
+            throw new Error('Unauthorized access');
+          }
+
+          setIsAuthorized(true);
+        } catch (error: any) {
+          console.error('Auth error:', error);
+          toast({
+            title: "Access Denied",
+            description: error.message || "You don't have permission to access this area",
+            variant: "destructive"
+          });
+          navigate('/', { replace: true });
+        } finally {
+          setIsLoading(false);
         }
       };
       
@@ -40,11 +63,17 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
       
       // Subscribe to auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (_event, session) => {
-          setIsAuthenticated(!!session);
-          
-          if (!session && requiresAuth) {
-            navigate(`/`, { replace: true });
+        async (_event, session) => {
+          if (!session) {
+            setIsAuthorized(false);
+            navigate('/', { replace: true });
+          } else {
+            // Recheck admin status on auth changes
+            const { data } = await supabase.rpc('has_role', {
+              user_id: session.user.id,
+              role: 'admin'
+            });
+            setIsAuthorized(!!data);
           }
         }
       );
@@ -54,8 +83,9 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
       };
     } else {
       setIsLoading(false);
+      setIsAuthorized(true);
     }
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, toast]);
 
   if (isLoading) {
     return (
@@ -63,6 +93,10 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
         <div className="animate-pulse">Loading...</div>
       </div>
     );
+  }
+
+  if (!isAuthorized) {
+    return null;
   }
 
   return <>{children}</>;
