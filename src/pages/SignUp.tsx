@@ -137,7 +137,7 @@ export default function SignUp() {
   // Helper: insert into Supabase user_signups table
   async function createUserSignup(info: any) {
     const dbInfo = mapUserToDb({ ...info, term: info.term || "annual" }); // safest default
-    const { data, error } = await supabase.from("user_signups").insert([dbInfo]);
+    const { data, error } = await supabase.from("users").insert([dbInfo]);
     if (error) throw new Error(error.message);
     return data;
   }
@@ -161,7 +161,7 @@ export default function SignUp() {
     
     console.log("Creating firm signup with data:", firmData); // Add logging to debug
     
-    const { data, error } = await supabase.from("user_signups").insert(firmData);
+    const { data, error } = await supabase.from("users").insert([firmData]);
     if (error) throw new Error(error.message);
     return data;
   }

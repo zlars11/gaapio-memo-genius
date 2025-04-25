@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Company } from "./types/companyTypes";
-import { UserSignup } from "./types/userTypes";
+import { User } from "./types/userTypes";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { CompanyDetailsForm } from "./forms/CompanyDetailsForm";
@@ -22,12 +21,12 @@ interface EditCompanyDialogProps {
 
 export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialogProps) {
   const [formData, setFormData] = useState<Partial<Company>>({...company});
-  const [users, setUsers] = useState<UserSignup[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const [editUser, setEditUser] = useState<UserSignup | null>(null);
+  const [editUser, setEditUser] = useState<User | null>(null);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
-  const [newUser, setNewUser] = useState<Partial<UserSignup>>({
+  const [newUser, setNewUser] = useState<Partial<User>>({
     company_id: company.id,
     company: company.name,
     plan: company.plan,
@@ -154,12 +153,12 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
   };
 
-  const handleEditUser = (user: UserSignup) => {
+  const handleEditUser = (user: User) => {
     setEditUser(user);
     setUserDialogOpen(true);
   };
 
-  const handleSaveUser = async (updatedUser: UserSignup) => {
+  const handleSaveUser = async (updatedUser: User) => {
     try {
       const { error } = await supabase
         .from("users")

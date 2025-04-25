@@ -1,4 +1,4 @@
-export interface UserSignup {
+export interface User {
   id: string;
   firstname: string;
   lastname: string;
@@ -21,12 +21,12 @@ export interface UserSignup {
   notes?: string;
 }
 
-export interface UserSignupRowProps {
-  user: UserSignup;
-  onEdit: (user: UserSignup) => void;
+export interface UserRowProps {
+  user: User;
+  onEdit: (user: User) => void;
 }
 
-export interface FirmSignup extends UserSignup {
+export interface FirmSignup extends User {
   company: string;
   notes?: string;
 }

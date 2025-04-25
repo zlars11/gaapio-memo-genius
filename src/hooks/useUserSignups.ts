@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { UserSignup } from "@/components/admin/types/userTypes";
+import { User } from "@/components/admin/types/userTypes";
 
 export function useUserSignups() {
-  const [users, setUsers] = useState<UserSignup[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<UserSignup[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -21,8 +20,8 @@ export function useUserSignups() {
         setUsers([]);
         setFilteredUsers([]);
       } else {
-        setUsers(data as UserSignup[]);
-        setFilteredUsers(data as UserSignup[]);
+        setUsers(data as User[]);
+        setFilteredUsers(data as User[]);
       }
       setLoading(false);
     }
@@ -34,7 +33,7 @@ export function useUserSignups() {
       setFilteredUsers(users);
     } else {
       const filtered = users.filter(
-        (user: UserSignup) =>
+        (user: User) =>
           (user.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (user.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,8 +51,8 @@ export function useUserSignups() {
       .order("signupdate", { ascending: false });
     
     if (!error && data) {
-      setUsers(data as UserSignup[]);
-      setFilteredUsers(data as UserSignup[]);
+      setUsers(data as User[]);
+      setFilteredUsers(data as User[]);
     }
   };
 

@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Table, TableCaption } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
-import { UserSignup } from "./types/userTypes";
+import { User, UserSignup } from "./types/userTypes";
 import { UserSignupsSearch } from "./UserSignupsSearch";
 import { UserSignupsTableContent } from "./UserSignupsTableContent";
 import { useUserSignups } from "@/hooks/useUserSignups";
@@ -14,7 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function UserSignupsTable() {
   const { filteredUsers, loading, searchQuery, setSearchQuery, refreshUsers } = useUserSignups();
-  const [editUser, setEditUser] = useState<UserSignup | null>(null);
+  const [editUser, setEditUser] = useState<User | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   
   const { 
@@ -29,7 +28,7 @@ export function UserSignupsTable() {
     initialItemsPerPage: 10
   });
 
-  const handleOpenEdit = (user: UserSignup) => {
+  const handleOpenEdit = (user: User) => {
     setEditUser(user);
     setDialogOpen(true);
   };
@@ -38,7 +37,7 @@ export function UserSignupsTable() {
     setDialogOpen(false);
   };
 
-  const handleSaveUser = async (updatedUser: UserSignup) => {
+  const handleSaveUser = async (updatedUser: User) => {
     try {
       const { error } = await supabase
         .from("users")
