@@ -42,8 +42,8 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
         
         // Check if user has admin role
         const { data, error } = await supabase.rpc('has_role', {
-          _user_id: session.user.id,
-          _role: 'admin'
+          user_id: session.user.id,
+          role: 'admin'
         });
         
         if (error) {
@@ -108,8 +108,8 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       if (data.user) {
         // Check if user has admin role after login
         const { data: adminData, error: adminError } = await supabase.rpc('has_role', {
-          _user_id: data.user.id,
-          _role: 'admin'
+          user_id: data.user.id,
+          role: 'admin'
         });
         
         if (adminError || !adminData) {

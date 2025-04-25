@@ -21,8 +21,8 @@ export function AdminNavLink() {
         }
 
         const { data, error } = await supabase.rpc('has_role', {
-          _user_id: session.user.id,
-          _role: 'admin'
+          user_id: session.user.id,
+          role: 'admin'
         });
 
         if (error) {

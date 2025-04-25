@@ -36,8 +36,8 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
 
           // Check if user has admin role using the has_role RPC function
           const { data, error } = await supabase.rpc('has_role', {
-            _user_id: session.user.id,
-            _role: 'admin'
+            user_id: session.user.id,
+            role: 'admin'
           });
 
           if (error) {
@@ -85,8 +85,8 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
             // Recheck admin status on auth changes
             try {
               const { data } = await supabase.rpc('has_role', {
-                _user_id: session.user.id,
-                _role: 'admin'
+                user_id: session.user.id,
+                role: 'admin'
               });
               
               setIsAuthorized(!!data);
