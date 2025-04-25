@@ -1,29 +1,18 @@
-
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell
-} from "@/components/ui/table";
+import { useState } from "react";
+import { Table, TableCaption } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
-import { UserSignupRow } from "./UserSignupRow";
-import EditUserDialog from "./EditUserDialog";
 import { UserSignup } from "./types/userTypes";
+import { UserSignupsSearch } from "./UserSignupsSearch";
+import { UserSignupsTableContent } from "./UserSignupsTableContent";
+import { useUserSignups } from "@/hooks/useUserSignups";
+import EditUserDialog from "./EditUserDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 export function UserSignupsTable() {
-  const [users, setUsers] = useState<UserSignup[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<UserSignup[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { filteredUsers, loading, searchQuery, setSearchQuery, refreshUsers } = useUserSignups();
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   
@@ -38,41 +27,6 @@ export function UserSignupsTable() {
     items: filteredUsers,
     initialItemsPerPage: 10
   });
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("user_signups")
-        .select("*")
-        .order("signupdate", { ascending: false });
-      if (error) {
-        setUsers([]);
-        setFilteredUsers([]);
-      } else {
-        setUsers(data as UserSignup[]);
-        setFilteredUsers(data as UserSignup[]);
-      }
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredUsers(users);
-    } else {
-      const filtered = users.filter(
-        (user: UserSignup) =>
-          (user.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.plan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (user.company || "").toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredUsers(filtered);
-    }
-  }, [searchQuery, users]);
 
   const handleOpenEdit = (user: UserSignup) => {
     setEditUser(user);
@@ -101,17 +55,7 @@ export function UserSignupsTable() {
       
       if (error) throw error;
       
-      // Refresh the user data
-      const { data, error: fetchError } = await supabase
-        .from("user_signups")
-        .select("*")
-        .order("signupdate", { ascending: false });
-      
-      if (!fetchError && data) {
-        setUsers(data as UserSignup[]);
-        setFilteredUsers(data as UserSignup[]);
-      }
-      
+      await refreshUsers();
       setDialogOpen(false);
     } catch (error) {
       console.error("Error updating user:", error);
@@ -127,10 +71,7 @@ export function UserSignupsTable() {
       
       if (error) throw error;
       
-      const updatedUsers = users.filter(user => user.id !== userId);
-      setUsers(updatedUsers);
-      setFilteredUsers(updatedUsers);
-      
+      await refreshUsers();
       setDialogOpen(false);
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -146,51 +87,16 @@ export function UserSignupsTable() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-4">
-          <Input
-            placeholder="Search by name, email, company, or plan..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-md"
-          />
-        </div>
+        <UserSignupsSearch value={searchQuery} onChange={setSearchQuery} />
+        
         <Table>
           <TableCaption>A list of users who have signed up.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>First Name</TableHead>
-              <TableHead>Last Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Plan</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Sign-up Date</TableHead>
-              <TableHead className="text-right">Edit</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : paginatedUsers.length > 0 ? (
-              paginatedUsers.map((user) => (
-                <UserSignupRow
-                  key={user.id}
-                  user={user}
-                  onEdit={handleOpenEdit}
-                />
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
-                  {searchQuery ? "No matching users found." : "No users have signed up yet."}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+          <UserSignupsTableContent
+            loading={loading}
+            items={paginatedUsers}
+            onEdit={handleOpenEdit}
+            searchQuery={searchQuery}
+          />
         </Table>
 
         <PaginationControls
