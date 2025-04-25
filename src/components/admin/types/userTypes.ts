@@ -12,6 +12,7 @@ export interface UserSignup {
   signupdate?: string;
   term?: string;
   cardNumber?: string;
+  cardNumberLast4?: string; // Added this field to support storing last 4 digits
   expDate?: string;
   cvv?: string;
 }
