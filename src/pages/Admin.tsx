@@ -13,20 +13,67 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Admin() {
   const [showWaitlistTab, setShowWaitlistTab] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
-  // Load waitlist visibility setting
+  // Load waitlist visibility setting and verify admin status
   useEffect(() => {
-    const showWaitlist = localStorage.getItem("showWaitlistToUsers");
-    setShowWaitlistTab(showWaitlist === null ? true : showWaitlist === "true");
-  }, []);
+    const checkAccess = async () => {
+      // Load saved setting for waitlist tab visibility
+      const showWaitlist = localStorage.getItem("showWaitlistToUsers");
+      setShowWaitlistTab(showWaitlist === null ? true : showWaitlist === "true");
+      
+      // Add explicit check for admin status
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          console.log("Admin.tsx: No session found");
+          setIsLoading(false);
+          return;
+        }
+        
+        const { data, error } = await supabase.rpc('has_role', {
+          user_id: session.user.id,
+          role: 'admin'
+        });
+        
+        console.log("Admin.tsx: Admin check result:", { data, error });
+        
+        if (error || !data) {
+          console.error("Admin.tsx: Access denied or error:", error);
+          toast({
+            title: "Access Denied",
+            description: "You don't have permission to access the admin area.",
+            variant: "destructive"
+          });
+        }
+      } catch (error) {
+        console.error("Admin.tsx: Error checking admin status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkAccess();
+  }, [toast]);
   
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse">Initializing admin panel...</div>
+      </div>
+    );
+  }
 
   return (
     <AdminPageGuard>

@@ -13,26 +13,31 @@ export function AdminNavLink() {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
+        console.log('AdminNavLink: Checking session');
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
+          console.log('AdminNavLink: No session found');
           setIsAdmin(false);
           setIsLoading(false);
           return;
         }
 
+        console.log('AdminNavLink: Session found, checking admin role');
         const { data, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
           role: 'admin'
         });
 
+        console.log('AdminNavLink: Admin role check result:', { data, error });
+
         if (error) {
-          console.error('Error checking admin role:', error);
+          console.error('AdminNavLink: Error checking admin role:', error);
           setIsAdmin(false);
         } else {
           setIsAdmin(!!data);
         }
       } catch (error) {
-        console.error('Error in admin check:', error);
+        console.error('AdminNavLink: Error in admin check:', error);
         setIsAdmin(false);
       } finally {
         setIsLoading(false);
@@ -42,6 +47,7 @@ export function AdminNavLink() {
     checkAdminStatus();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      console.log('AdminNavLink: Auth state changed, rechecking admin status');
       checkAdminStatus();
     });
 

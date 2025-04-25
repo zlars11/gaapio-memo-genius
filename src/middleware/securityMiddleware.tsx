@@ -25,6 +25,7 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
     if (requiresAuth) {
       const checkAuth = async () => {
         try {
+          console.log('Checking authentication...');
           const { data: { session } } = await supabase.auth.getSession();
           
           if (!session) {
@@ -34,11 +35,14 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
             return;
           }
 
+          console.log('Session found, checking admin role');
           // Check if user has admin role using the has_role RPC function
           const { data, error } = await supabase.rpc('has_role', {
             user_id: session.user.id,
             role: 'admin'
           });
+
+          console.log('Admin role check result:', { data, error });
 
           if (error) {
             console.error('Role check error:', error);
@@ -76,6 +80,7 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
       // Subscribe to auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
+          console.log('Auth state changed:', event);
           if (!session) {
             setIsAuthorized(false);
             if (requiresAuth) {
@@ -89,6 +94,7 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
                 role: 'admin'
               });
               
+              console.log('Admin role check on auth change:', data);
               setIsAuthorized(!!data);
               
               if (!data && protectedPaths.some(path => location.pathname.startsWith(path))) {
