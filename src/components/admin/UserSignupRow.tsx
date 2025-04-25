@@ -1,52 +1,38 @@
 
-import { TableCell, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pen } from "lucide-react";
-import { UserSignupRowProps } from "./types/userTypes";
+import { Edit } from "lucide-react";
+import { UserSignup } from "./types/userTypes";
+
+interface UserSignupRowProps {
+  user: UserSignup;
+  onEdit: (user: UserSignup) => void;
+}
 
 export function UserSignupRow({ user, onEdit }: UserSignupRowProps) {
-  const getStatusBadgeVariant = (status?: string) => {
-    switch ((status || "").toLowerCase()) {
-      case "active":
-        return "default";
-      case "trial":
-        return "secondary";
-      case "inactive":
-        return "outline";
-      default:
-        return "default";
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
   return (
-    <TableRow key={user.id || user.email}>
-      <TableCell className="font-medium">{user.firstname || "—"}</TableCell>
-      <TableCell>{user.lastname || "—"}</TableCell>
+    <TableRow>
+      <TableCell>{user.firstname}</TableCell>
+      <TableCell>{user.lastname}</TableCell>
       <TableCell>{user.email}</TableCell>
-      <TableCell>{user.company || "—"}</TableCell>
-      <TableCell>{user.plan}</TableCell>
-      <TableCell>
-        <Badge variant={getStatusBadgeVariant(user.status)}>
-          {user.status
-            ? user.status.charAt(0).toUpperCase() + user.status.slice(1)
-            : "Active"}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        {user.signupdate
-          ? new Date(user.signupdate).toLocaleDateString()
-          : "—"}
-      </TableCell>
-      <TableCell align="right">
+      <TableCell>{user.company}</TableCell>
+      <TableCell className="capitalize">{user.plan}</TableCell>
+      <TableCell className="capitalize">{user.role || 'member'}</TableCell>
+      <TableCell className="capitalize">{user.status}</TableCell>
+      <TableCell>{formatDate(user.signupdate)}</TableCell>
+      <TableCell className="text-right">
         <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto"
+          variant="ghost"
+          size="icon"
           onClick={() => onEdit(user)}
+          className="h-8 w-8 p-0"
         >
-          <Pen className="w-4 h-4 mr-1" />
-          Edit
+          <Edit className="h-4 w-4" />
+          <span className="sr-only">Edit user</span>
         </Button>
       </TableCell>
     </TableRow>

@@ -6,6 +6,7 @@ import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import { ContactTable } from "@/components/admin/ContactTable";
 import { UserSignupsTable } from "@/components/admin/UserSignupsTable";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
+import { CompaniesTable } from "@/components/admin/CompaniesTable";
 import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
@@ -101,6 +102,7 @@ export default function Admin() {
           <TabsList className="mb-8">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
+            <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="user-signups">User Sign-ups</TabsTrigger>
             <TabsTrigger value="firm-signups">Firm Sign-ups</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
@@ -113,6 +115,9 @@ export default function Admin() {
               <WaitlistTable />
             </TabsContent>
           )}
+          <TabsContent value="companies">
+            <CompaniesTable />
+          </TabsContent>
           <TabsContent value="user-signups">
             <div className="space-y-8 max-w-full">
               <UserSignupsTable />
