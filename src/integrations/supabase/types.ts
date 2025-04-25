@@ -176,7 +176,7 @@ export type Database = {
         }
         Relationships: []
       }
-      user_signups: {
+      users: {
         Row: {
           amount: string
           company: string
@@ -186,6 +186,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           lastname: string
+          notes: string | null
           phone: string
           plan: string
           role: string | null
@@ -203,6 +204,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           lastname: string
+          notes?: string | null
           phone: string
           plan: string
           role?: string | null
@@ -220,6 +222,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           lastname?: string
+          notes?: string | null
           phone?: string
           plan?: string
           role?: string | null

@@ -3,48 +3,71 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
 
   const handleFirmSignupSubmit = async (data: any) => {
     try {
-      // Add type field to identify this as a firm signup
-      const firmData = {
-        ...data,
-        type: "firm",
-        // Format the company name for consistency
-        company: data.company || data["Firm Name"],
-      };
+      // First, try to create the company
+      const { data: companyData, error: companyError } = await supabase
+        .from("companies")
+        .insert([{
+          name: data.company,
+          plan: "firms",
+          status: "active"
+        }])
+        .select()
+        .single();
 
-      // Check that we have the minimum required fields
-      if (!firmData.email || !firmData.company) {
-        throw new Error("Missing required fields");
+      if (companyError) {
+        if (companyError.code === '23505') { // Unique violation
+          toast({
+            title: "Company already exists",
+            description: "This company is already registered in our system.",
+            variant: "destructive"
+          });
+          return;
+        }
+        throw companyError;
       }
 
-      const { error } = await supabase
-        .from("user_signups")
+      // Then create the user record
+      const { error: userError } = await supabase
+        .from("users")
         .insert([
           {
-            firstname: firmData.firstname || "",
-            lastname: firmData.lastname || "",
-            email: firmData.email,
-            phone: firmData.phone || "",
-            company: firmData.company,
-            notes: firmData.message || firmData.notes || "",
-            plan: "enterprise", // Default plan for firms
+            firstname: data.firstname,
+            lastname: data.lastname,
+            email: data.email,
+            phone: data.phone || "",
+            company: data.company,
+            company_id: companyData.id,
+            notes: data.message || "",
+            plan: "firms",
             type: "firm",
-            status: "lead", // Set status as lead for new firm signups
-            amount: "0.00" // Adding the required amount field with a default value
+            status: "lead",
+            amount: "0.00",
+            is_active: true
           }
         ]);
 
-      if (error) throw error;
+      if (userError) throw userError;
       
-      // Show success message
       setIsSubmitted(true);
+      toast({
+        title: "Success",
+        description: "Your information has been submitted successfully.",
+      });
     } catch (error: any) {
       console.error("Error submitting firm data:", error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 

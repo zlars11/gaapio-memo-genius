@@ -1,15 +1,14 @@
-
 export interface UserSignup {
   id: string;
-  firstname?: string;
-  lastname?: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  phone?: string;
-  company?: string;
-  company_id?: string;
+  phone: string;
+  company: string;
+  company_id: string;
   plan: string;
-  status?: string;
-  amount?: string;
+  status: string;
+  amount: string;
   signupdate?: string;
   term?: string;
   cardNumber?: string;
@@ -17,7 +16,7 @@ export interface UserSignup {
   expDate?: string;
   cvv?: string;
   role?: string;
-  is_active?: boolean;
+  is_active: boolean;
   type?: string;
   notes?: string;
 }
@@ -28,7 +27,7 @@ export interface UserSignupRowProps {
 }
 
 export interface FirmSignup extends UserSignup {
-  company: string; // Making company required, not optional
+  company: string;
   notes?: string;
 }
 

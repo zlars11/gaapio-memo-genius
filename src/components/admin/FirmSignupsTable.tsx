@@ -64,7 +64,7 @@ export function FirmSignupsTable() {
     try {
       console.log("Fetching firm signups...");
       const { data, error } = await supabase
-        .from("user_signups")
+        .from("users")
         .select("*")
         .eq("type", "firm")
         .order("signupdate", { ascending: false });
@@ -80,7 +80,6 @@ export function FirmSignupsTable() {
         setFilteredFirmSignups([]);
       } else {
         console.log("Fetched firm signups:", data);
-        // Convert to FirmSignup type with required company field and handle null values
         const firmData = (data || []).map(item => ({
           ...item,
           id: item.id || "",
@@ -90,12 +89,13 @@ export function FirmSignupsTable() {
           firstname: item.firstname || "",
           lastname: item.lastname || "",
           phone: item.phone || "",
-          plan: item.plan || "enterprise",
+          plan: item.plan || "firms",
           status: item.status || "lead",
           signupdate: item.signupdate || new Date().toISOString(),
           term: item.term || "annual",
           type: item.type || "firm",
-          notes: item.notes || ""
+          notes: item.notes || "",
+          is_active: item.is_active !== false
         })) as FirmSignup[];
         
         setFirmSignups(firmData);
