@@ -4,40 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Company } from "./types/companyTypes";
 import { UserSignup } from "./types/userTypes";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDate } from "@/lib/utils";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import EditUserDialog from "./EditUserDialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Edit, Plus, Trash2 } from "lucide-react"; 
+import { Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-interface Company {
-  id: string;
-  name: string;
-  plan: string;
-  user_limit: number | null;
-  billing_email: string | null;
-  status: string | null;
-  created_at: string | null;
-  billing_first_name?: string | null;
-  billing_last_name?: string | null;
-  cardNumberLast4?: string | null;
-  expDate?: string | null;
-}
-
-interface Payment {
-  id: string;
-  company_id: string;
-  amount: string;
-  status: string;
-  payment_date: string;
-  payment_method: string;
-  last4?: string;
-}
+import { CompanyDetailsForm } from "./forms/CompanyDetailsForm";
+import { CompanyUsersForm } from "./forms/CompanyUsersForm";
+import { CompanyBillingForm } from "./forms/CompanyBillingForm";
+import { DeleteCompanyDialog } from "./dialogs/DeleteCompanyDialog";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 interface EditCompanyDialogProps {
   company: Company;
@@ -46,11 +21,9 @@ interface EditCompanyDialogProps {
 }
 
 export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialogProps) {
-  const [formData, setFormData] = useState<Company>({...company});
+  const [formData, setFormData] = useState<Partial<Company>>({...company});
   const [users, setUsers] = useState<UserSignup[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const [payments, setPayments] = useState<Payment[]>([]);
-  const [loadingPayments, setLoadingPayments] = useState(true);
   const [editUser, setEditUser] = useState<UserSignup | null>(null);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
@@ -70,45 +43,28 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     cardNumber: "",
     expDate: formData.expDate || "",
     cvv: "",
-  });
-  const [cardFieldsModified, setCardFieldsModified] = useState({
-    cardNumber: false,
-    expDate: false,
-    cvv: false
+    cardNumberLast4: company.cardNumberLast4
   });
 
   useEffect(() => {
     fetchUsers();
-    fetchPayments();
   }, [company.id]);
 
   async function fetchUsers() {
     setLoadingUsers(true);
-    console.log("Fetching users for company ID:", company.id);
-    
     try {
       const { data, error } = await supabase
         .from("user_signups")
         .select("*")
         .eq("company_id", company.id);
 
-      if (error) {
-        console.error("Error fetching company users:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load users for this company",
-          variant: "destructive"
-        });
-        setUsers([]);
-      } else {
-        console.log("Fetched users:", data);
-        setUsers(data || []);
-      }
-    } catch (err) {
-      console.error("Exception when fetching users:", err);
+      if (error) throw error;
+      setUsers(data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred when fetching users",
+        description: "Failed to load users",
         variant: "destructive"
       });
       setUsers([]);
@@ -117,97 +73,14 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
   }
 
-  async function fetchPayments() {
-    setLoadingPayments(true);
-    // In a real application, we would fetch from a payments table
-    // For now we'll use mock data
-    const mockPayments: Payment[] = [
-      {
-        id: "pay_1",
-        company_id: company.id,
-        amount: "$99.00",
-        status: "completed",
-        payment_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-        payment_method: "Credit Card",
-        last4: company.cardNumberLast4 || "1234"
-      },
-      {
-        id: "pay_2",
-        company_id: company.id,
-        amount: "$99.00",
-        status: "completed",
-        payment_date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-        payment_method: "Credit Card",
-        last4: company.cardNumberLast4 || "1234"
-      }
-    ];
-    setPayments(mockPayments);
-    setLoadingPayments(false);
-  }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleNewUserInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewUser((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
-    setCardFieldsModified(prev => ({
-      ...prev,
-      [name]: true
-    }));
-    
     setPaymentDetails(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSaveCompany = async () => {
-    try {
-      const updateData: any = {
-        name: formData.name,
-        plan: formData.plan,
-        user_limit: formData.user_limit,
-        billing_email: formData.billing_email,
-        status: formData.status,
-        billing_first_name: formData.billing_first_name,
-        billing_last_name: formData.billing_last_name
-      };
-      
-      if (cardFieldsModified.cardNumber && paymentDetails.cardNumber) {
-        const last4 = paymentDetails.cardNumber.replace(/\s/g, '').slice(-4);
-        updateData.cardNumberLast4 = last4;
-      }
-      
-      if (cardFieldsModified.expDate) {
-        updateData.expDate = paymentDetails.expDate;
-      }
-      
-      const { error } = await supabase
-        .from("companies")
-        .update(updateData)
-        .eq("id", company.id);
-
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "Company information updated successfully"
-      });
-      
-      onSave();
-    } catch (error) {
-      console.error("Error updating company:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update company information",
-        variant: "destructive"
-      });
-    }
   };
 
   const handleCreateUser = async () => {
@@ -221,26 +94,13 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("user_signups")
-        .insert([
-          {
-            firstname: newUser.firstname,
-            lastname: newUser.lastname,
-            email: newUser.email,
-            phone: newUser.phone || "",
-            company: company.name,
-            company_id: company.id,
-            plan: company.plan,
-            status: 'active',
-            role: newUser.role || 'member',
-            amount: "0", // Default amount
-            signupdate: new Date().toISOString(),
-            term: "annual", // Default term
-            type: "user"
-          }
-        ])
-        .select();
+        .insert([{
+          ...newUser,
+          signupdate: new Date().toISOString(),
+          type: "user"
+        }]);
 
       if (error) throw error;
       
@@ -278,17 +138,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     try {
       const { error } = await supabase
         .from("user_signups")
-        .update({
-          firstname: updatedUser.firstname,
-          lastname: updatedUser.lastname,
-          email: updatedUser.email,
-          phone: updatedUser.phone,
-          company: updatedUser.company,
-          plan: updatedUser.plan,
-          term: updatedUser.term,
-          status: updatedUser.status,
-          role: updatedUser.role
-        })
+        .update(updatedUser)
         .eq("id", updatedUser.id);
       
       if (error) throw error;
@@ -331,6 +181,50 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       toast({
         title: "Error",
         description: "Failed to delete user",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSaveCompany = async () => {
+    try {
+      const updateData: any = {
+        name: formData.name,
+        plan: formData.plan,
+        user_limit: formData.user_limit,
+        billing_email: formData.billing_email,
+        status: formData.status,
+        billing_first_name: formData.billing_first_name,
+        billing_last_name: formData.billing_last_name
+      };
+      
+      if (paymentDetails.cardNumber && paymentDetails.cardNumber !== "") {
+        const last4 = paymentDetails.cardNumber.replace(/\s/g, '').slice(-4);
+        updateData.cardNumberLast4 = last4;
+      }
+      
+      if (paymentDetails.expDate) {
+        updateData.expDate = paymentDetails.expDate;
+      }
+      
+      const { error } = await supabase
+        .from("companies")
+        .update(updateData)
+        .eq("id", company.id);
+
+      if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: "Company information updated successfully"
+      });
+      
+      onSave();
+    } catch (error) {
+      console.error("Error updating company:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update company information",
         variant: "destructive"
       });
     }
@@ -390,231 +284,42 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
           <TabsTrigger value="billing">Billing</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="details" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Company Name</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="billing_email">Billing Email</Label>
-              <Input
-                id="billing_email"
-                name="billing_email"
-                value={formData.billing_email || ""}
-                onChange={handleInputChange}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="plan">Plan</Label>
-              <select
-                id="plan"
-                name="plan"
-                value={formData.plan}
-                onChange={handleInputChange}
-                className="w-full border rounded px-3 py-2 bg-background text-foreground"
-              >
-                <option value="free">Free</option>
-                <option value="basic">Basic</option>
-                <option value="premium">Premium</option>
-                <option value="enterprise">Enterprise</option>
-              </select>
-            </div>
-
-            <div>
-              <Label htmlFor="user_limit">User Limit</Label>
-              <Input
-                id="user_limit"
-                name="user_limit"
-                type="number"
-                value={formData.user_limit || ""}
-                onChange={handleInputChange}
-                placeholder="Leave empty for unlimited"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status || "active"}
-                onChange={handleInputChange}
-                className="w-full border rounded px-3 py-2 bg-background text-foreground"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="suspended">Suspended</option>
-              </select>
-            </div>
-
-            <div>
-              <Label>Created At</Label>
-              <Input
-                value={formData.created_at ? formatDate(formData.created_at) : "N/A"}
-                readOnly
-                disabled
-              />
-            </div>
-          </div>
+        <TabsContent value="details">
+          <CompanyDetailsForm 
+            formData={formData} 
+            onInputChange={handleInputChange}
+          />
         </TabsContent>
 
         <TabsContent value="users">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Company Users</h3>
-              <Button 
-                size="sm" 
-                onClick={() => setCreateUserDialogOpen(true)}
-                className="flex items-center gap-1"
-              >
-                <Plus className="h-4 w-4" /> Add User
-              </Button>
-            </div>
-            
-            {loadingUsers ? (
-              <div className="text-center py-4">Loading users...</div>
-            ) : users.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Sign-up Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map(user => (
-                    <TableRow key={user.id}>
-                      <TableCell>{`${user.firstname || ''} ${user.lastname || ''}`}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell className="capitalize">{user.role || 'member'}</TableCell>
-                      <TableCell className="capitalize">{user.status || 'active'}</TableCell>
-                      <TableCell>{user.signupdate ? formatDate(user.signupdate) : 'N/A'}</TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditUser(user)}
-                        >
-                          <Edit className="h-4 w-4 mr-1" /> Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-6 text-muted-foreground">
-                No users found for this company.
-              </div>
-            )}
-          </div>
+          <CompanyUsersForm
+            users={users}
+            companyId={company.id}
+            companyName={company.name}
+            companyPlan={company.plan}
+            onUserUpdate={fetchUsers}
+            loadingUsers={loadingUsers}
+            createUserDialogOpen={createUserDialogOpen}
+            setCreateUserDialogOpen={setCreateUserDialogOpen}
+            newUser={newUser}
+            setNewUser={setNewUser}
+            handleCreateUser={handleCreateUser}
+            handleEditUser={handleEditUser}
+            handleSaveUser={handleSaveUser}
+            handleDeleteUser={handleDeleteUser}
+            editUser={editUser}
+            userDialogOpen={userDialogOpen}
+            setUserDialogOpen={setUserDialogOpen}
+          />
         </TabsContent>
 
-        <TabsContent value="billing" className="space-y-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Payment Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="billing_first_name">Billing First Name</Label>
-                <Input
-                  id="billing_first_name"
-                  name="billing_first_name"
-                  value={formData.billing_first_name || ""}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="billing_last_name">Billing Last Name</Label>
-                <Input
-                  id="billing_last_name"
-                  name="billing_last_name"
-                  value={formData.billing_last_name || ""}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="cardNumber">Card Number</Label>
-                <Input
-                  id="cardNumber"
-                  name="cardNumber"
-                  placeholder={company.cardNumberLast4 ? `•••• •••• •••• ${company.cardNumberLast4}` : "•••• •••• •••• ••••"}
-                  value={paymentDetails.cardNumber}
-                  onChange={handlePaymentChange}
-                  className="font-mono"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="expDate">Expiration Date</Label>
-                  <Input
-                    id="expDate"
-                    name="expDate"
-                    placeholder="MM/YY"
-                    value={paymentDetails.expDate}
-                    onChange={handlePaymentChange}
-                    className="font-mono"
-                    maxLength={5}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="cvv">CVV</Label>
-                  <Input
-                    id="cvv"
-                    name="cvv"
-                    placeholder="•••"
-                    value={paymentDetails.cvv}
-                    onChange={handlePaymentChange}
-                    className="font-mono"
-                    maxLength={4}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Payment History</h3>
-            {loadingPayments ? (
-              <div className="text-center py-4">Loading payment history...</div>
-            ) : payments.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Payment Method</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {payments.map(payment => (
-                    <TableRow key={payment.id}>
-                      <TableCell>{formatDate(payment.payment_date)}</TableCell>
-                      <TableCell>{payment.amount}</TableCell>
-                      <TableCell className="capitalize">{payment.status}</TableCell>
-                      <TableCell>{payment.payment_method} {payment.last4 ? `(••••${payment.last4})` : ''}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-6 text-muted-foreground">
-                No payment history available.
-              </div>
-            )}
-          </div>
+        <TabsContent value="billing">
+          <CompanyBillingForm
+            formData={formData}
+            paymentDetails={paymentDetails}
+            onInputChange={handleInputChange}
+            onPaymentChange={handlePaymentChange}
+          />
         </TabsContent>
       </Tabs>
 
@@ -636,149 +341,15 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         </div>
       </div>
 
-      {/* Edit User Dialog */}
-      <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
-        {editUser && (
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-            <EditUserDialog
-              user={editUser}
-              onSave={handleSaveUser}
-              onDelete={() => handleDeleteUser(editUser.id)}
-              onClose={() => setUserDialogOpen(false)}
-            />
-          </DialogContent>
-        )}
-      </Dialog>
-
-      {/* Create User Dialog */}
-      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Add New User</DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4 mt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstname">First Name *</Label>
-                <Input
-                  id="firstname"
-                  name="firstname"
-                  value={newUser.firstname || ''}
-                  onChange={handleNewUserInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="lastname">Last Name *</Label>
-                <Input
-                  id="lastname"
-                  name="lastname"
-                  value={newUser.lastname || ''}
-                  onChange={handleNewUserInputChange}
-                  required
-                />
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={newUser.email || ''}
-                onChange={handleNewUserInputChange}
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={newUser.phone || ''}
-                onChange={handleNewUserInputChange}
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="role">Role</Label>
-              <select
-                id="role"
-                name="role"
-                value={newUser.role || 'member'}
-                onChange={handleNewUserInputChange}
-                className="w-full border rounded px-3 py-2 bg-background text-foreground"
-              >
-                <option value="admin">Admin</option>
-                <option value="member">Member</option>
-                <option value="manager">Manager</option>
-              </select>
-            </div>
-            
-            <div className="flex justify-end gap-3 pt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setCreateUserDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreateUser}>
-                Create User
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Company Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Company</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this company? This action will also delete all associated users and cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          
-          <div className="py-4">
-            <Label htmlFor="deletePassword">
-              Enter password to confirm deletion
-            </Label>
-            <Input
-              id="deletePassword"
-              type="password"
-              value={deletePassword}
-              onChange={(e) => {
-                setDeletePassword(e.target.value);
-                setDeleteError("");
-              }}
-              placeholder="Enter 'admin123' to confirm"
-              className="mt-2"
-            />
-            {deleteError && (
-              <p className="text-sm text-destructive mt-1">{deleteError}</p>
-            )}
-          </div>
-          
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
-              setDeletePassword("");
-              setDeleteError("");
-            }}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDeleteCompany}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+      {/* Delete Company Dialog */}
+      <AlertDialog open={deleteDialogOpen}>
+        <DeleteCompanyDialog
+          deletePassword={deletePassword}
+          deleteError={deleteError}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={handleDeleteCompany}
+          onPasswordChange={setDeletePassword}
+        />
       </AlertDialog>
     </div>
   );
