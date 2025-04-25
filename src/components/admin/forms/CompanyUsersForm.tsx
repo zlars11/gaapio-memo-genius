@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ interface CompanyUsersFormProps {
   createUserDialogOpen: boolean;
   setCreateUserDialogOpen: (open: boolean) => void;
   newUser: Partial<UserSignup>;
-  setNewUser: (user: Partial<UserSignup>) => void;
+  setNewUser: (user: Partial<UserSignup> | ((prev: Partial<UserSignup>) => Partial<UserSignup>)) => void;
   handleCreateUser: () => void;
   handleEditUser: (user: UserSignup) => void;
   handleSaveUser: (user: UserSignup) => void;
@@ -83,8 +82,8 @@ export function CompanyUsersForm({
   };
 
   const handleChange = (name: string, value: string) => {
-    // Fix the setState call by using the functional update form
-    setNewUser((prev: Partial<UserSignup>) => {
+    // Fix the setState call by correctly using the functional update pattern
+    setNewUser((prev) => {
       return { ...prev, [name]: value };
     });
     
