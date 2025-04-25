@@ -7,11 +7,11 @@ import { useEditUserForm } from "./hooks/useEditUserForm";
 import { PLAN_OPTIONS, TERM_OPTIONS, STATUS_OPTIONS } from "./constants/userDialogOptions";
 import { getCSRFToken } from "@/utils/securityUtils";
 import { Button } from "@/components/ui/button";
-import { UserSignup } from "./types/userTypes";
+import { User } from "./types/userTypes";
 import { useState } from "react";
 
 interface EditUserDialogProps {
-  user: UserSignup;
+  user: User;
   onSave: (user: any) => void;
   onDelete: () => void;
   onClose?: () => void;

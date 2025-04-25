@@ -1,21 +1,20 @@
-
 import { TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { UserSignup } from "./types/userTypes";
-import { UserSignupRow } from "./UserSignupRow";
+import { User } from "./types/userTypes";
+import { UserRow } from "./UserRow";
 
-interface UserSignupsTableContentProps {
+interface UsersTableContentProps {
   loading: boolean;
-  items: UserSignup[];
-  onEdit: (user: UserSignup) => void;
+  items: User[];
+  onEdit: (user: User) => void;
   searchQuery: string;
 }
 
-export function UserSignupsTableContent({ 
+export function UsersTableContent({ 
   loading, 
   items, 
   onEdit,
   searchQuery 
-}: UserSignupsTableContentProps) {
+}: UsersTableContentProps) {
   return (
     <>
       <TableHeader>
@@ -39,7 +38,7 @@ export function UserSignupsTableContent({
           </TableRow>
         ) : items.length > 0 ? (
           items.map((user) => (
-            <UserSignupRow
+            <UserRow
               key={user.id}
               user={user}
               onEdit={onEdit}

@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit } from "lucide-react";
-import { UserSignup } from "../types/userTypes";
+import { Database } from "@/integrations/supabase/types";
+type User = Database["public"]["Tables"]["users"]["Row"];
 import EditUserDialog from "../EditUserDialog";
 import { formatDate } from "@/lib/utils";
 
 interface CompanyUsersFormProps {
-  users: UserSignup[];
+  users: User[];
   companyId: string;
   companyName: string;
   companyPlan: string;
@@ -19,13 +20,13 @@ interface CompanyUsersFormProps {
   loadingUsers?: boolean;
   createUserDialogOpen: boolean;
   setCreateUserDialogOpen: (open: boolean) => void;
-  newUser: Partial<UserSignup>;
-  setNewUser: (user: Partial<UserSignup> | ((prev: Partial<UserSignup>) => Partial<UserSignup>)) => void;
+  newUser: Partial<User>;
+  setNewUser: (user: Partial<User> | ((prev: Partial<User>) => Partial<User>)) => void;
   handleCreateUser: () => void;
-  handleEditUser: (user: UserSignup) => void;
-  handleSaveUser: (user: UserSignup) => void;
+  handleEditUser: (user: User) => void;
+  handleSaveUser: (user: User) => void;
   handleDeleteUser: (userId: string) => void;
-  editUser: UserSignup | null;
+  editUser: User | null;
   userDialogOpen: boolean;
   setUserDialogOpen: (open: boolean) => void;
 }

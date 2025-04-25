@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
-import { User, UserSignup } from "./types/userTypes";
+import { User } from "./types/userTypes";
 import { UserSignupsSearch } from "./UserSignupsSearch";
-import { UserSignupsTableContent } from "./UserSignupsTableContent";
+import { UsersTableContent } from "./UsersTableContent";
 import { useUserSignups } from "@/hooks/useUserSignups";
 import EditUserDialog from "./EditUserDialog";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,7 +91,7 @@ export function UserSignupsTable() {
         
         <Table>
           <TableCaption>A list of users who have signed up.</TableCaption>
-          <UserSignupsTableContent
+          <UsersTableContent
             loading={loading}
             items={paginatedUsers}
             onEdit={handleOpenEdit}

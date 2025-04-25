@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { validateCardNumber, validateExpiryDate, validateCVV, formatCardNumber, formatExpiryDate } from "@/utils/cardValidation";
-import { UserSignup } from "../types/userTypes";
+import { User } from "../types/userTypes";
 
 interface FormFields {
   firstname: string;
@@ -17,7 +16,7 @@ interface PaymentDetails {
   cvv: string;
 }
 
-export function useEditUserForm(user: UserSignup) {
+export function useEditUserForm(user: User) {
   const [plan, setPlan] = useState(user.plan || "emerging");
   const [term, setTerm] = useState(user.term || "annual");
   const [status, setStatus] = useState(user.status || "active");
