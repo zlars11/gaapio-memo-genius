@@ -1,3 +1,4 @@
+
 import { TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { User } from "./types/userTypes";
 import { UserRow } from "./UserRow";
@@ -19,20 +20,18 @@ export function UsersTableContent({
     <>
       <TableHeader>
         <TableRow>
-          <TableHead>First Name</TableHead>
-          <TableHead>Last Name</TableHead>
+          <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Company</TableHead>
-          <TableHead>Plan</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Phone</TableHead>
           <TableHead>Sign-up Date</TableHead>
-          <TableHead className="text-right">Edit</TableHead>
+          <TableHead>Plan</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {loading ? (
           <TableRow>
-            <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+            <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
               Loading...
             </TableCell>
           </TableRow>
@@ -46,7 +45,7 @@ export function UsersTableContent({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+            <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
               {searchQuery ? "No matching users found." : "No users have signed up yet."}
             </TableCell>
           </TableRow>

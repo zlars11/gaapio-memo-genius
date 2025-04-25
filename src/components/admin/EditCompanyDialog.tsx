@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -66,7 +67,16 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       }
       
       console.log("Fetched users:", data);
-      setUsers(data || []);
+      // Normalize the data to ensure all required fields are present
+      const normalizedUsers = data?.map(user => ({
+        ...user,
+        notes: user.notes || "", // Default to empty string if notes is undefined
+        role: user.role || "member", // Default role if undefined
+        term: user.term || "annual", // Default term if undefined
+        type: user.type || "user", // Default type if undefined
+      })) || [];
+      
+      setUsers(normalizedUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast({
@@ -116,7 +126,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         type: "user",
         status: newUser.status || "active",
         is_active: true,
-        company_id: company.id // Ensure company_id is set correctly
+        company_id: company.id, // Ensure company_id is set correctly
+        notes: newUser.notes || "", // Ensure notes has a default value
       };
 
       console.log("Creating new user:", userToCreate);
@@ -154,16 +165,27 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   };
 
   const handleEditUser = (user: User) => {
-    setEditUser(user);
+    // Ensure the user object has all required properties before editing
+    const normalizedUser: User = {
+      ...user,
+      notes: user.notes || "", // Default to empty string if notes is undefined
+    };
+    setEditUser(normalizedUser);
     setUserDialogOpen(true);
   };
 
   const handleSaveUser = async (updatedUser: User) => {
     try {
+      // Normalize the user data before saving
+      const normalizedUser = {
+        ...updatedUser,
+        notes: updatedUser.notes || "", // Ensure notes has a value
+      };
+      
       const { error } = await supabase
         .from("users")
-        .update(updatedUser)
-        .eq("id", updatedUser.id);
+        .update(normalizedUser)
+        .eq("id", normalizedUser.id);
       
       if (error) throw error;
       
