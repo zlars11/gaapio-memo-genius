@@ -83,7 +83,11 @@ export function CompanyUsersForm({
   };
 
   const handleChange = (name: string, value: string) => {
-    setNewUser((prev) => ({ ...prev, [name]: value }));
+    // Fix the setState call by using the functional update form
+    setNewUser((prev: Partial<UserSignup>) => {
+      return { ...prev, [name]: value };
+    });
+    
     // Clear the error when user types
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors((prev) => ({ ...prev, [name]: undefined }));

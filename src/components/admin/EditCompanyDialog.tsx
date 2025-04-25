@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,7 +32,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     plan: company.plan,
     status: 'active',
     role: 'member',
-    is_active: true
+    is_active: true,
+    type: 'user' // Added type field
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
@@ -138,7 +138,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         plan: company.plan,
         status: 'active',
         role: 'member',
-        is_active: true
+        is_active: true,
+        type: 'user'
       });
       
       await fetchUsers();
