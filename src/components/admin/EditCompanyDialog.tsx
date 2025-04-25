@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,7 +32,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     company: company.name,
     plan: company.plan,
     status: 'active',
-    role: 'member'
+    role: 'member',
+    is_active: true
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
@@ -52,12 +54,18 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   async function fetchUsers() {
     setLoadingUsers(true);
     try {
+      console.log("Fetching users for company_id:", company.id);
       const { data, error } = await supabase
         .from("user_signups")
         .select("*")
         .eq("company_id", company.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching users:", error);
+        throw error;
+      }
+      
+      console.log("Fetched users:", data);
       setUsers(data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -106,9 +114,12 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         plan: newUser.plan || company.plan,
         signupdate: new Date().toISOString(),
         type: "user",
-        status: newUser.status || "active"
+        status: newUser.status || "active",
+        is_active: true,
+        company_id: company.id // Ensure company_id is set correctly
       };
 
+      console.log("Creating new user:", userToCreate);
       const { error } = await supabase
         .from("user_signups")
         .insert([userToCreate]);
@@ -126,15 +137,16 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         company: company.name,
         plan: company.plan,
         status: 'active',
-        role: 'member'
+        role: 'member',
+        is_active: true
       });
       
       await fetchUsers();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
-        description: "Failed to create user",
+        description: `Failed to create user: ${error.message || "Unknown error"}`,
         variant: "destructive"
       });
     }

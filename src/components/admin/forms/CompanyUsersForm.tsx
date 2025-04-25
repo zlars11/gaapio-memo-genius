@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit } from "lucide-react";
 import { UserSignup } from "../types/userTypes";
 import EditUserDialog from "../EditUserDialog";
@@ -47,6 +50,46 @@ export function CompanyUsersForm({
   userDialogOpen,
   setUserDialogOpen,
 }: CompanyUsersFormProps) {
+  const [formErrors, setFormErrors] = useState<{
+    firstname?: string;
+    lastname?: string;
+    email?: string;
+  }>({});
+
+  const validateForm = () => {
+    const errors: {
+      firstname?: string;
+      lastname?: string;
+      email?: string;
+    } = {};
+    
+    if (!newUser.firstname) errors.firstname = "First name is required";
+    if (!newUser.lastname) errors.lastname = "Last name is required";
+    
+    if (!newUser.email) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(newUser.email)) {
+      errors.email = "Email is invalid";
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      handleCreateUser();
+    }
+  };
+
+  const handleChange = (name: string, value: string) => {
+    setNewUser((prev) => ({ ...prev, [name]: value }));
+    // Clear the error when user types
+    if (formErrors[name as keyof typeof formErrors]) {
+      setFormErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -101,6 +144,107 @@ export function CompanyUsersForm({
           No users found for this company.
         </div>
       )}
+
+      {/* Create User Dialog */}
+      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstname">First Name <span className="text-red-500">*</span></Label>
+                <Input
+                  id="firstname"
+                  value={newUser.firstname || ''}
+                  onChange={(e) => handleChange('firstname', e.target.value)}
+                  className={formErrors.firstname ? "border-red-500" : ""}
+                />
+                {formErrors.firstname && (
+                  <p className="text-xs text-red-500">{formErrors.firstname}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastname">Last Name <span className="text-red-500">*</span></Label>
+                <Input
+                  id="lastname"
+                  value={newUser.lastname || ''}
+                  onChange={(e) => handleChange('lastname', e.target.value)}
+                  className={formErrors.lastname ? "border-red-500" : ""}
+                />
+                {formErrors.lastname && (
+                  <p className="text-xs text-red-500">{formErrors.lastname}</p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+              <Input
+                id="email"
+                type="email"
+                value={newUser.email || ''}
+                onChange={(e) => handleChange('email', e.target.value)}
+                className={formErrors.email ? "border-red-500" : ""}
+              />
+              {formErrors.email && (
+                <p className="text-xs text-red-500">{formErrors.email}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                value={newUser.phone || ''}
+                onChange={(e) => handleChange('phone', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select
+                value={newUser.role || 'member'}
+                onValueChange={(value) => handleChange('role', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="member">Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={newUser.status || 'active'}
+                onValueChange={(value) => handleChange('status', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Hidden fields with company info */}
+            <input type="hidden" name="company_id" value={companyId} />
+            <input type="hidden" name="company" value={companyName} />
+            <input type="hidden" name="plan" value={companyPlan} />
+            <input type="hidden" name="is_active" value="true" />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateUserDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit}>
+              Create User
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit User Dialog */}
       <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
