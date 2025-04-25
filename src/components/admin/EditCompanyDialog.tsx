@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -94,13 +93,25 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
+      // Ensure all required fields are present
+      const userToCreate = {
+        ...newUser,
+        // Set defaults for required fields if they're not provided
+        amount: newUser.amount || "0.00",
+        company: newUser.company || company.name,
+        email: newUser.email,
+        firstname: newUser.firstname,
+        lastname: newUser.lastname,
+        phone: newUser.phone || "",
+        plan: newUser.plan || company.plan,
+        signupdate: new Date().toISOString(),
+        type: "user",
+        status: newUser.status || "active"
+      };
+
       const { error } = await supabase
         .from("user_signups")
-        .insert([{
-          ...newUser,
-          signupdate: new Date().toISOString(),
-          type: "user"
-        }]);
+        .insert([userToCreate]);
 
       if (error) throw error;
       

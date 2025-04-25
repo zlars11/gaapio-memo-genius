@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CreditCard } from "lucide-react";
-import { PaymentDetails } from "../types/userTypes";
+import { PaymentDetails } from "../types/companyTypes";
 
 interface CompanyBillingFormProps {
   formData: {
