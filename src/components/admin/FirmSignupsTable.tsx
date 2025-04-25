@@ -16,9 +16,12 @@ import { PaginationControls } from "./PaginationControls";
 import { EditFirmDialog } from "./EditFirmDialog";
 import { FirmSignupRow } from "./FirmSignupRow";
 import { FirmSignup } from "./types/userTypes";
+import { Input } from "@/components/ui/input";
 
 export function FirmSignupsTable() {
   const [firmSignups, setFirmSignups] = useState<FirmSignup[]>([]);
+  const [filteredFirmSignups, setFilteredFirmSignups] = useState<FirmSignup[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editingFirm, setEditingFirm] = useState<FirmSignup | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -33,13 +36,28 @@ export function FirmSignupsTable() {
     setItemsPerPage,
     goToPage
   } = usePagination({
-    items: firmSignups,
+    items: filteredFirmSignups,
     initialItemsPerPage: 10
   });
 
   useEffect(() => {
     fetchFirmSignups();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredFirmSignups(firmSignups);
+    } else {
+      const filtered = firmSignups.filter(
+        (firm) =>
+          (firm.company || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (firm.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (firm.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (firm.email || "").toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredFirmSignups(filtered);
+    }
+  }, [searchQuery, firmSignups]);
 
   async function fetchFirmSignups() {
     setLoading(true);
@@ -57,9 +75,11 @@ export function FirmSignupsTable() {
         variant: "destructive",
       });
       setFirmSignups([]);
+      setFilteredFirmSignups([]);
     } else {
       console.log("Fetched firm signups:", data);
       setFirmSignups(data || []);
+      setFilteredFirmSignups(data || []);
     }
     setLoading(false);
   }
@@ -131,6 +151,15 @@ export function FirmSignupsTable() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-4">
+          <Input
+            placeholder="Search by company name, contact name, or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-md"
+          />
+        </div>
+        
         <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
@@ -162,7 +191,7 @@ export function FirmSignupsTable() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                    No firm sign-ups found.
+                    {searchQuery ? "No matching firms found." : "No firm sign-ups found."}
                   </TableCell>
                 </TableRow>
               )}

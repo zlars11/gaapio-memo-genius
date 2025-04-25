@@ -4,7 +4,6 @@ import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import { ContactTable } from "@/components/admin/ContactTable";
-import { UserSignupsTable } from "@/components/admin/UserSignupsTable";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { CompaniesTable } from "@/components/admin/CompaniesTable";
 import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
@@ -103,7 +102,6 @@ export default function Admin() {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
             <TabsTrigger value="companies">Companies</TabsTrigger>
-            <TabsTrigger value="user-signups">User Sign-ups</TabsTrigger>
             <TabsTrigger value="firm-signups">Firm Sign-ups</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
@@ -116,14 +114,11 @@ export default function Admin() {
             </TabsContent>
           )}
           <TabsContent value="companies">
-            <CompaniesTable />
-          </TabsContent>
-          <TabsContent value="user-signups">
             <div className="space-y-8 max-w-full">
-              <UserSignupsTable />
+              <CompaniesTable />
               <ZapierWebhookSetup
-                webhookType="userSignup"
-                description="Receive a webhook trigger when a new user subscribes via the signup form."
+                webhookType="companyCreated"
+                description="Receive a webhook trigger when a new company is created."
               />
             </div>
           </TabsContent>
