@@ -20,11 +20,31 @@ interface EditCompanyDialogProps {
   onClose: () => void;
 }
 
+// Define a normalized user type with all required fields to ensure consistency
+interface NormalizedUser {
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  company: string;
+  company_id: string;
+  plan: string;
+  status: string;
+  amount: string;
+  signupdate: string;
+  term: string;
+  role: string;
+  is_active: boolean;
+  type: string;
+  notes: string;
+}
+
 export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialogProps) {
   const [formData, setFormData] = useState<Partial<Company>>({...company});
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<NormalizedUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const [editUser, setEditUser] = useState<User | null>(null);
+  const [editUser, setEditUser] = useState<NormalizedUser | null>(null);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
   const [newUser, setNewUser] = useState<Partial<User>>({
@@ -48,6 +68,26 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     cardNumberLast4: company.cardNumberLast4
   });
 
+  // Helper function to normalize a user from Supabase
+  const normalizeUser = (user: User): NormalizedUser => ({
+    id: user.id,
+    firstname: user.firstname || "",
+    lastname: user.lastname || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    company: user.company || company.name,
+    company_id: user.company_id || company.id,
+    plan: user.plan || company.plan,
+    status: user.status || "active",
+    amount: user.amount || "0.00",
+    signupdate: user.signupdate || new Date().toISOString(),
+    term: user.term || "annual",
+    role: user.role || "member",
+    is_active: user.is_active ?? true,
+    type: user.type || "user",
+    notes: user.notes || "",
+  });
+
   useEffect(() => {
     fetchUsers();
   }, [company.id]);
@@ -67,25 +107,9 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       }
       
       console.log("Fetched users:", data);
-      // Normalize the data to ensure all required fields are present
-      const normalizedUsers = data?.map(user => ({
-        id: user.id,
-        firstname: user.firstname || "",
-        lastname: user.lastname || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        company: user.company || company.name,
-        company_id: user.company_id || company.id,
-        plan: user.plan || company.plan,
-        status: user.status || "active",
-        amount: user.amount || "0.00",
-        signupdate: user.signupdate || new Date().toISOString(),
-        term: user.term || "annual",
-        role: user.role || "member",
-        is_active: user.is_active ?? true,
-        type: user.type || "user",
-        notes: user.notes || "",
-      })) || [];
+      
+      // Normalize all users with the helper function
+      const normalizedUsers = (data || []).map(normalizeUser);
       
       setUsers(normalizedUsers);
     } catch (error) {
@@ -122,8 +146,9 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
-      const userToCreate = {
-        id: newUser.id,
+      // Create a normalized user from the newUser partial data
+      const userToCreate = normalizeUser({
+        id: newUser.id || "",
         firstname: newUser.firstname,
         lastname: newUser.lastname,
         email: newUser.email,
@@ -133,13 +158,9 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         plan: newUser.plan || company.plan,
         status: newUser.status || "active",
         amount: newUser.amount || "0.00",
-        signupdate: new Date().toISOString(),
-        term: newUser.term || "annual",
-        role: newUser.role || "member",
         is_active: true,
-        type: "user",
-        notes: newUser.notes || "",
-      };
+        type: "user"
+      } as User);
 
       console.log("Creating new user:", userToCreate);
       const { error } = await supabase
@@ -176,37 +197,16 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   };
 
   const handleEditUser = (user: User) => {
-    // Normalize the user data before setting it for editing
-    const normalizedUser = {
-      ...user,
-      notes: user.notes || "",
-      role: user.role || "member",
-      term: user.term || "annual",
-      type: user.type || "user",
-      amount: user.amount || "0.00",
-      phone: user.phone || "",
-      status: user.status || "active",
-      company: user.company || company.name,
-    };
-    
+    // Normalize the user using our helper function
+    const normalizedUser = normalizeUser(user);
     setEditUser(normalizedUser);
     setUserDialogOpen(true);
   };
 
   const handleSaveUser = async (updatedUser: User) => {
     try {
-      // Normalize the user data before saving
-      const normalizedUser = {
-        ...updatedUser,
-        notes: updatedUser.notes || "", // Ensure notes has a value
-        role: updatedUser.role || "member",
-        term: updatedUser.term || "annual",
-        type: updatedUser.type || "user",
-        amount: updatedUser.amount || "0.00",
-        phone: updatedUser.phone || "",
-        status: updatedUser.status || "active",
-        company: updatedUser.company || company.name,
-      };
+      // Normalize the user data before saving to ensure all required fields are present
+      const normalizedUser = normalizeUser(updatedUser);
       
       const { error } = await supabase
         .from("users")
