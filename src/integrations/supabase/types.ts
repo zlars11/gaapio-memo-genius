@@ -42,6 +42,42 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          billing_email: string | null
+          created_at: string | null
+          custom_terms: Json | null
+          id: string
+          name: string
+          plan: string
+          status: string | null
+          stripe_customer_id: string | null
+          user_limit: number | null
+        }
+        Insert: {
+          billing_email?: string | null
+          created_at?: string | null
+          custom_terms?: Json | null
+          id?: string
+          name: string
+          plan: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          user_limit?: number | null
+        }
+        Update: {
+          billing_email?: string | null
+          created_at?: string | null
+          custom_terms?: Json | null
+          id?: string
+          name?: string
+          plan?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          user_limit?: number | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           company: string
@@ -75,6 +111,47 @@ export type Database = {
         }
         Relationships: []
       }
+      invitations: {
+        Row: {
+          company_id: string | null
+          email: string
+          id: string
+          invited_by: string | null
+          role: string | null
+          sent_at: string | null
+          status: string | null
+          token: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          email: string
+          id?: string
+          invited_by?: string | null
+          role?: string | null
+          sent_at?: string | null
+          status?: string | null
+          token?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          email?: string
+          id?: string
+          invited_by?: string | null
+          role?: string | null
+          sent_at?: string | null
+          status?: string | null
+          token?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -103,12 +180,15 @@ export type Database = {
         Row: {
           amount: string
           company: string
+          company_id: string | null
           email: string
           firstname: string
           id: string
+          is_active: boolean | null
           lastname: string
           phone: string
           plan: string
+          role: string | null
           signupdate: string
           status: string
           term: string | null
@@ -117,12 +197,15 @@ export type Database = {
         Insert: {
           amount: string
           company: string
+          company_id?: string | null
           email: string
           firstname: string
           id?: string
+          is_active?: boolean | null
           lastname: string
           phone: string
           plan: string
+          role?: string | null
           signupdate?: string
           status?: string
           term?: string | null
@@ -131,18 +214,29 @@ export type Database = {
         Update: {
           amount?: string
           company?: string
+          company_id?: string | null
           email?: string
           firstname?: string
           id?: string
+          is_active?: boolean | null
           lastname?: string
           phone?: string
           plan?: string
+          role?: string | null
           signupdate?: string
           status?: string
           term?: string | null
           type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_signups_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waitlist_submissions: {
         Row: {

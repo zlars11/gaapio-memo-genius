@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminNavLink } from "@/components/admin/AdminNavLink";
 
 export function Header() {
   const [ctaText, setCtaText] = useState("Join the Waitlist");
@@ -101,6 +102,7 @@ export function Header() {
             <span>
               <ThemeToggle />
             </span>
+            {isClient && isLoggedIn && <AdminNavLink />}
           </div>
         </nav>
       </div>
