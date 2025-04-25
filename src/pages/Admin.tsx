@@ -7,19 +7,16 @@ import { ContactTable } from "@/components/admin/ContactTable";
 import { UserSignupsTable } from "@/components/admin/UserSignupsTable";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 export default function Admin() {
   const [showWaitlistTab, setShowWaitlistTab] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   
   // Load waitlist visibility setting and verify admin status
@@ -31,12 +28,19 @@ export default function Admin() {
       
       // Add explicit check for admin status
       try {
+        console.log("Admin.tsx: Checking session");
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           console.log("Admin.tsx: No session found");
           setIsLoading(false);
           return;
         }
+        
+        console.log("Admin.tsx: Session found, user ID:", session.user.id);
+        console.log("Admin.tsx: Checking admin role with parameters:", {
+          user_id: session.user.id,
+          role: 'admin'
+        });
         
         const { data, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
@@ -45,16 +49,29 @@ export default function Admin() {
         
         console.log("Admin.tsx: Admin check result:", { data, error });
         
-        if (error || !data) {
-          console.error("Admin.tsx: Access denied or error:", error);
+        if (error) {
+          console.error("Admin.tsx: Error checking admin status:", error);
+          toast({
+            title: "Error",
+            description: "Could not verify your admin privileges. Please try again.",
+            variant: "destructive"
+          });
+          setIsAdmin(false);
+        } else if (!data) {
+          console.log("Admin.tsx: User is not an admin");
           toast({
             title: "Access Denied",
             description: "You don't have permission to access the admin area.",
             variant: "destructive"
           });
+          setIsAdmin(false);
+        } else {
+          console.log("Admin.tsx: User is confirmed as admin");
+          setIsAdmin(true);
         }
       } catch (error) {
         console.error("Admin.tsx: Error checking admin status:", error);
+        setIsAdmin(false);
       } finally {
         setIsLoading(false);
       }
@@ -70,7 +87,8 @@ export default function Admin() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse">Initializing admin panel...</div>
+        <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+        <span>Loading admin panel...</span>
       </div>
     );
   }

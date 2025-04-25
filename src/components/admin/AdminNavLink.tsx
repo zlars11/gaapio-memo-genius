@@ -22,7 +22,12 @@ export function AdminNavLink() {
           return;
         }
 
-        console.log('AdminNavLink: Session found, checking admin role');
+        console.log('AdminNavLink: Session found, user ID:', session.user.id);
+        console.log('AdminNavLink: Checking admin role with parameters:', {
+          user_id: session.user.id,
+          role: 'admin'
+        });
+        
         const { data, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
           role: 'admin'
@@ -35,6 +40,7 @@ export function AdminNavLink() {
           setIsAdmin(false);
         } else {
           setIsAdmin(!!data);
+          console.log('AdminNavLink: Is admin:', !!data);
         }
       } catch (error) {
         console.error('AdminNavLink: Error in admin check:', error);

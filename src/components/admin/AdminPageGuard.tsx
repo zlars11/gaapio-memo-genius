@@ -40,10 +40,15 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
           return;
         }
         
-        console.log('AdminPageGuard: Session found, user is authenticated');
+        console.log('AdminPageGuard: Session found, user ID:', session.user.id);
         setIsAuthenticated(true);
         
         // Check if user has admin role
+        console.log('AdminPageGuard: Checking admin role with parameters:', {
+          user_id: session.user.id,
+          role: 'admin'
+        });
+        
         const { data, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
           role: 'admin'
@@ -54,15 +59,23 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
         if (error) {
           console.error('AdminPageGuard: Error checking admin role:', error);
           setIsAuthorized(false);
+          toast({
+            title: "Error",
+            description: "Could not verify your admin privileges. Please try again.",
+            variant: "destructive"
+          });
         } else {
           setIsAuthorized(!!data);
           
           if (!data) {
+            console.log('AdminPageGuard: User is not an admin');
             toast({
               title: "Access Denied",
               description: "You don't have permission to access the admin area.",
               variant: "destructive"
             });
+          } else {
+            console.log('AdminPageGuard: User is authorized as admin');
           }
         }
       } catch (err) {
@@ -104,6 +117,8 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     
     try {
       setIsLoading(true);
+      console.log('AdminPageGuard: Attempting login with:', { email });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -112,7 +127,12 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       if (error) throw error;
       
       if (data.user) {
-        console.log('AdminPageGuard: Login successful, checking admin role');
+        console.log('AdminPageGuard: Login successful, user ID:', data.user.id);
+        console.log('AdminPageGuard: Checking admin role after login with parameters:', {
+          user_id: data.user.id,
+          role: 'admin'
+        });
+        
         // Check if user has admin role after login
         const { data: adminData, error: adminError } = await supabase.rpc('has_role', {
           user_id: data.user.id,
@@ -122,6 +142,7 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
         console.log('AdminPageGuard: Admin role check after login:', { adminData, adminError });
         
         if (adminError || !adminData) {
+          console.log('AdminPageGuard: User is not an admin');
           setError("You don't have permission to access the admin area.");
           toast({
             title: "Access Denied",
@@ -129,6 +150,7 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
             variant: "destructive"
           });
         } else {
+          console.log('AdminPageGuard: User is authorized as admin');
           setIsAuthenticated(true);
           setIsAuthorized(true);
           setError("");
@@ -156,8 +178,8 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">Verifying access...</span>
+        <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+        <span>Verifying admin access...</span>
       </div>
     );
   }
