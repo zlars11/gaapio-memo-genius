@@ -1,9 +1,11 @@
+
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SecurityMiddleware from "./middleware/securityMiddleware";
 
 // Use React.lazy for code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -26,7 +28,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Configure query client with performance optimizations
+// Configure query client with performance optimizations and security
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -34,6 +36,11 @@ const queryClient = new QueryClient({
       gcTime: 5 * 60 * 1000, // 5 minutes (replaces cacheTime)
       refetchOnWindowFocus: false,
       retry: 1,
+      useErrorBoundary: true, // Better error handling
+    },
+    mutations: {
+      useErrorBoundary: true,
+      retry: 0,
     },
   },
 });
@@ -44,22 +51,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
-            <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
-            <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
-            <Route path="/ssa" element={<SubscriptionAgreement />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <SecurityMiddleware>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
+              <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+              <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
+              <Route path="/ssa" element={<SubscriptionAgreement />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </SecurityMiddleware>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

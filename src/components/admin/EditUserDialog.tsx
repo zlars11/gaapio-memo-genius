@@ -1,12 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserInfoForm } from "./forms/UserInfoForm";
 import { PaymentDetailsForm } from "./forms/PaymentDetailsForm";
 import { validateCardNumber, validateExpiryDate, validateCVV, formatCardNumber, formatExpiryDate } from "@/utils/cardValidation";
+import { getCSRFToken } from "@/utils/securityUtils";
 
 // Plan options moved to constants
 const PLAN_OPTIONS = [
@@ -68,6 +69,9 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     expDate: false,
     cvv: false
   });
+  
+  // CSRF token for form submissions
+  const [csrfToken] = useState(() => getCSRFToken());
 
   useEffect(() => {
     // Update validation state
@@ -136,20 +140,27 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       plan, 
       term, 
       status,
+      _csrf: csrfToken // Add CSRF token to the request
     };
     
     // Only update card fields if they've been modified
     if (cardFieldsModified.cardNumber && paymentDetails.cardNumber !== "•••" && paymentDetails.cardNumber !== "") {
-      saveData.cardNumber = paymentDetails.cardNumber.replace(/\s/g, '');
+      // In a production environment, we shouldn't store full card numbers
+      // Instead, we should be using a payment processor's tokenization
+      // Here we'll just store the last 4 digits for reference
+      const last4 = paymentDetails.cardNumber.replace(/\s/g, '').slice(-4);
+      saveData.cardNumberLast4 = last4;
+      
+      // Don't save the full card number
+      delete saveData.cardNumber;
     }
     
     if (cardFieldsModified.expDate && paymentDetails.expDate !== "") {
       saveData.expDate = paymentDetails.expDate;
     }
     
-    if (cardFieldsModified.cvv && paymentDetails.cvv !== "•••" && paymentDetails.cvv !== "") {
-      saveData.cvv = paymentDetails.cvv;
-    }
+    // Don't save CVV at all - it's a security risk
+    delete saveData.cvv;
     
     onSave(saveData);
   }
@@ -158,13 +169,10 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     setShowDeleteConfirm(true);
   }
 
-  function handleDelete() {
-    if (passcode === "admin123") {
-      onDelete();
-      setShowDeleteConfirm(false);
-    } else {
-      alert("Incorrect passcode.");
-    }
+  async function handleDelete() {
+    // In a real application, we should verify this server-side with a proper auth check
+    onDelete();
+    setShowDeleteConfirm(false);
   }
 
   return (
@@ -178,6 +186,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       </DialogHeader>
 
       <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+        <input type="hidden" name="_csrf" value={csrfToken} />
         <UserInfoForm 
           fields={fields}
           plan={plan}
@@ -214,15 +223,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
 
       {showDeleteConfirm && (
         <div className="mt-4 p-4 border border-destructive/20 bg-destructive/5 rounded-md">
-          <Label htmlFor="delete-passcode" className="text-destructive">Enter passcode to delete user:</Label>
-          <Input
-            type="password"
-            id="delete-passcode"
-            value={passcode}
-            onChange={e => setPasscode(e.target.value)}
-            placeholder="Enter passcode"
-            className="mt-2 border-destructive/50"
-          />
+          <Label htmlFor="delete-passcode" className="text-destructive">Confirm user deletion:</Label>
           <div className="flex gap-2 mt-2">
             <Button type="button" variant="destructive" onClick={handleDelete}>
               Confirm Delete
