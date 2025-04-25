@@ -11,7 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import EditUserDialog from "./EditUserDialog";
-import { Edit, Plus } from "lucide-react"; 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Edit, Plus, Trash2 } from "lucide-react"; 
 import { useToast } from "@/components/ui/use-toast";
 
 interface Company {
@@ -60,6 +61,9 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     status: 'active',
     role: 'member'
   });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const { toast } = useToast();
   
   const [paymentDetails, setPaymentDetails] = useState({
@@ -82,24 +86,35 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     setLoadingUsers(true);
     console.log("Fetching users for company ID:", company.id);
     
-    const { data, error } = await supabase
-      .from("user_signups")
-      .select("*")
-      .eq("company_id", company.id);
+    try {
+      const { data, error } = await supabase
+        .from("user_signups")
+        .select("*")
+        .eq("company_id", company.id);
 
-    if (error) {
-      console.error("Error fetching company users:", error);
+      if (error) {
+        console.error("Error fetching company users:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load users for this company",
+          variant: "destructive"
+        });
+        setUsers([]);
+      } else {
+        console.log("Fetched users:", data);
+        setUsers(data || []);
+      }
+    } catch (err) {
+      console.error("Exception when fetching users:", err);
       toast({
         title: "Error",
-        description: "Failed to load users for this company",
+        description: "An unexpected error occurred when fetching users",
         variant: "destructive"
       });
       setUsers([]);
-    } else {
-      console.log("Fetched users:", data);
-      setUsers(data as UserSignup[]);
+    } finally {
+      setLoadingUsers(false);
     }
-    setLoadingUsers(false);
   }
 
   async function fetchPayments() {
@@ -321,6 +336,47 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
   };
 
+  const handleDeleteCompany = async () => {
+    if (deletePassword !== "admin123") {
+      setDeleteError("Incorrect password");
+      return;
+    }
+    
+    try {
+      // First delete all users associated with this company
+      const { error: usersDeleteError } = await supabase
+        .from("user_signups")
+        .delete()
+        .eq("company_id", company.id);
+      
+      if (usersDeleteError) throw usersDeleteError;
+      
+      // Then delete the company
+      const { error: companyDeleteError } = await supabase
+        .from("companies")
+        .delete()
+        .eq("id", company.id);
+      
+      if (companyDeleteError) throw companyDeleteError;
+      
+      toast({
+        title: "Success",
+        description: "Company and all associated users deleted successfully"
+      });
+      
+      setDeleteDialogOpen(false);
+      onClose();
+      onSave(); // Refresh the companies list
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete company",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
       <DialogHeader>
@@ -402,7 +458,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
             <div>
               <Label>Created At</Label>
               <Input
-                value={formData.created_at ? formatDate(new Date(formData.created_at)) : "N/A"}
+                value={formData.created_at ? formatDate(formData.created_at) : "N/A"}
                 readOnly
                 disabled
               />
@@ -444,7 +500,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
                       <TableCell>{user.email}</TableCell>
                       <TableCell className="capitalize">{user.role || 'member'}</TableCell>
                       <TableCell className="capitalize">{user.status || 'active'}</TableCell>
-                      <TableCell>{user.signupdate ? formatDate(new Date(user.signupdate)) : 'N/A'}</TableCell>
+                      <TableCell>{user.signupdate ? formatDate(user.signupdate) : 'N/A'}</TableCell>
                       <TableCell className="text-right">
                         <Button
                           variant="ghost"
@@ -545,7 +601,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
                 <TableBody>
                   {payments.map(payment => (
                     <TableRow key={payment.id}>
-                      <TableCell>{formatDate(new Date(payment.payment_date))}</TableCell>
+                      <TableCell>{formatDate(payment.payment_date)}</TableCell>
                       <TableCell>{payment.amount}</TableCell>
                       <TableCell className="capitalize">{payment.status}</TableCell>
                       <TableCell>{payment.payment_method} {payment.last4 ? `(••••${payment.last4})` : ''}</TableCell>
@@ -562,13 +618,22 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         </TabsContent>
       </Tabs>
 
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={onClose}>
-          Cancel
+      <div className="flex justify-between gap-3 pt-4 border-t">
+        <Button 
+          variant="destructive" 
+          onClick={() => setDeleteDialogOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <Trash2 className="h-4 w-4" /> Delete Company
         </Button>
-        <Button onClick={handleSaveCompany}>
-          Save Changes
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSaveCompany}>
+            Save Changes
+          </Button>
+        </div>
       </div>
 
       {/* Edit User Dialog */}
@@ -668,6 +733,53 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Company Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Company</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this company? This action will also delete all associated users and cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="py-4">
+            <Label htmlFor="deletePassword">
+              Enter password to confirm deletion
+            </Label>
+            <Input
+              id="deletePassword"
+              type="password"
+              value={deletePassword}
+              onChange={(e) => {
+                setDeletePassword(e.target.value);
+                setDeleteError("");
+              }}
+              placeholder="Enter 'admin123' to confirm"
+              className="mt-2"
+            />
+            {deleteError && (
+              <p className="text-sm text-destructive mt-1">{deleteError}</p>
+            )}
+          </div>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => {
+              setDeletePassword("");
+              setDeleteError("");
+            }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteCompany}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

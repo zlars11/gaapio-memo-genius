@@ -79,8 +79,13 @@ export function FirmSignupsTable() {
         setFilteredFirmSignups([]);
       } else {
         console.log("Fetched firm signups:", data);
-        setFirmSignups(data as FirmSignup[] || []);
-        setFilteredFirmSignups(data as FirmSignup[] || []);
+        // Convert to FirmSignup type with required company field
+        const firmData = (data || []).map(item => ({
+          ...item,
+          company: item.company || "Unknown Company", // Ensure company is not null/undefined
+        })) as FirmSignup[];
+        setFirmSignups(firmData);
+        setFilteredFirmSignups(firmData);
       }
     } catch (err) {
       console.error("Exception when fetching firm signups:", err);
