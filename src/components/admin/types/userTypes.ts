@@ -6,7 +6,7 @@ export interface UserSignup {
   email: string;
   phone?: string;
   company?: string;
-  company_id?: string; // Added this field to support company relationship
+  company_id?: string;
   plan: string;
   status?: string;
   amount?: string;
@@ -17,9 +17,9 @@ export interface UserSignup {
   expDate?: string;
   cvv?: string;
   role?: string;
-  is_active?: boolean; // Added this field that was missing
-  type?: string; // Added this field that might be used elsewhere
-  notes?: string; // Added notes field
+  is_active?: boolean;
+  type?: string;
+  notes?: string;
 }
 
 export interface UserSignupRowProps {
