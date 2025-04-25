@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import EditUserDialog from "./EditUserDialog";
+import { Edit } from "lucide-react"; // Add this import for the Edit icon
 
 interface Company {
   id: string;
