@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from "@/components/ui/use-toast";
@@ -13,8 +13,8 @@ const protectedPaths = ['/admin'];
 export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isAuthorized, setIsAuthorized] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -28,13 +28,16 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
           const { data: { session } } = await supabase.auth.getSession();
           
           if (!session) {
-            throw new Error('Authentication required');
+            console.log('No session found, redirecting to login');
+            setIsLoading(false);
+            navigate('/login', { replace: true });
+            return;
           }
 
           // Check if user has admin role using the has_role RPC function
           const { data, error } = await supabase.rpc('has_role', {
-            user_id: session.user.id,
-            role: 'admin'
+            _user_id: session.user.id,
+            _role: 'admin'
           });
 
           if (error) {
@@ -48,6 +51,7 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
           }
 
           setIsAuthorized(true);
+          setIsLoading(false);
         } catch (error: any) {
           console.error('Auth error:', error);
           toast({
@@ -59,11 +63,10 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
           // Redirect to login if not authenticated, home if authenticated but not authorized
           const { data: { session } } = await supabase.auth.getSession();
           if (!session) {
-            navigate('/signup', { replace: true });
+            navigate('/login', { replace: true });
           } else {
             navigate('/', { replace: true });
           }
-        } finally {
           setIsLoading(false);
         }
       };
@@ -75,14 +78,17 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
         async (event, session) => {
           if (!session) {
             setIsAuthorized(false);
-            navigate('/', { replace: true });
+            if (requiresAuth) {
+              navigate('/login', { replace: true });
+            }
           } else {
             // Recheck admin status on auth changes
             try {
               const { data } = await supabase.rpc('has_role', {
-                user_id: session.user.id,
-                role: 'admin'
+                _user_id: session.user.id,
+                _role: 'admin'
               });
+              
               setIsAuthorized(!!data);
               
               if (!data && protectedPaths.some(path => location.pathname.startsWith(path))) {
@@ -91,6 +97,9 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
             } catch (error) {
               console.error('Auth change error:', error);
               setIsAuthorized(false);
+              if (requiresAuth) {
+                navigate('/', { replace: true });
+              }
             }
           }
         }

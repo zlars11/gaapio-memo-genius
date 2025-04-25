@@ -16,21 +16,21 @@ export function AdminNavLink() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           setIsAdmin(false);
+          setIsLoading(false);
           return;
         }
 
         const { data, error } = await supabase.rpc('has_role', {
-          user_id: session.user.id,
-          role: 'admin'
+          _user_id: session.user.id,
+          _role: 'admin'
         });
 
         if (error) {
           console.error('Error checking admin role:', error);
           setIsAdmin(false);
-          return;
+        } else {
+          setIsAdmin(!!data);
         }
-
-        setIsAdmin(!!data);
       } catch (error) {
         console.error('Error in admin check:', error);
         setIsAdmin(false);
