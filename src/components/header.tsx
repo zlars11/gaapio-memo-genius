@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ export function Header() {
   const [ctaTo, setCtaTo] = useState("#waitlist");
   const [isClient, setIsClient] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsClient(true);
@@ -44,6 +45,9 @@ export function Header() {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Don't show CTA on admin page
+  const shouldShowCta = isClient && !isLoggedIn && !location.pathname.startsWith('/admin');
 
   return (
     <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
@@ -84,6 +88,11 @@ export function Header() {
           </Link>
           {/* CTA+Theme toggle: right aligned */}
           <div className="flex items-center ml-2 space-x-2">
+            {shouldShowCta && (
+              <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
+                <Link to={ctaTo}>{ctaText}</Link>
+              </Button>
+            )}
             {isClient && isLoggedIn && (
               <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
                 <Link to="/" onClick={() => supabase.auth.signOut()}>Logout</Link>
