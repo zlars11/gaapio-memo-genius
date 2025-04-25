@@ -69,15 +69,22 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       console.log("Fetched users:", data);
       // Normalize the data to ensure all required fields are present
       const normalizedUsers = data?.map(user => ({
-        ...user,
-        notes: user.notes || "", // Default to empty string if notes is undefined
-        role: user.role || "member", // Default role if undefined
-        term: user.term || "annual", // Default term if undefined
-        type: user.type || "user", // Default type if undefined
-        amount: user.amount || "0.00", // Ensure amount is present
-        phone: user.phone || "", // Ensure phone is present
-        status: user.status || "active", // Ensure status is present
-        company: user.company || company.name, // Ensure company name is present
+        id: user.id,
+        firstname: user.firstname || "",
+        lastname: user.lastname || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        company: user.company || company.name,
+        company_id: user.company_id || company.id,
+        plan: user.plan || company.plan,
+        status: user.status || "active",
+        amount: user.amount || "0.00",
+        signupdate: user.signupdate || new Date().toISOString(),
+        term: user.term || "annual",
+        role: user.role || "member",
+        is_active: user.is_active ?? true,
+        type: user.type || "user",
+        notes: user.notes || "",
       })) || [];
       
       setUsers(normalizedUsers);
@@ -115,23 +122,23 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
-      // Ensure all required fields are present
       const userToCreate = {
-        ...newUser,
-        // Set defaults for required fields if they're not provided
-        amount: newUser.amount || "0.00",
-        company: newUser.company || company.name,
-        email: newUser.email,
+        id: newUser.id,
         firstname: newUser.firstname,
         lastname: newUser.lastname,
+        email: newUser.email,
         phone: newUser.phone || "",
+        company: newUser.company || company.name,
+        company_id: company.id,
         plan: newUser.plan || company.plan,
-        signupdate: new Date().toISOString(),
-        type: "user",
         status: newUser.status || "active",
+        amount: newUser.amount || "0.00",
+        signupdate: new Date().toISOString(),
+        term: newUser.term || "annual",
+        role: newUser.role || "member",
         is_active: true,
-        company_id: company.id, // Ensure company_id is set correctly
-        notes: newUser.notes || "", // Ensure notes has a default value
+        type: "user",
+        notes: newUser.notes || "",
       };
 
       console.log("Creating new user:", userToCreate);
@@ -169,10 +176,10 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   };
 
   const handleEditUser = (user: User) => {
-    // Ensure the user object has all required properties before editing
-    const normalizedUser: User = {
+    // Normalize the user data before setting it for editing
+    const normalizedUser = {
       ...user,
-      notes: user.notes || "", // Default to empty string if notes is undefined
+      notes: user.notes || "",
       role: user.role || "member",
       term: user.term || "annual",
       type: user.type || "user",
@@ -181,6 +188,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       status: user.status || "active",
       company: user.company || company.name,
     };
+    
     setEditUser(normalizedUser);
     setUserDialogOpen(true);
   };
