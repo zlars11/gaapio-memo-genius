@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,19 @@ export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // If logged in, redirect to admin
+        navigate('/admin');
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -30,13 +43,26 @@ export default function Login() {
 
       if (error) throw error;
 
-      // Optional: Check for admin role if needed
       if (data.user) {
+        // Check if user has admin role
+        console.log('Checking admin role for:', data.user.id);
+        const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
+          user_id: data.user.id,
+          role: 'admin'
+        });
+        console.log('Admin check result:', { isAdmin, roleError });
+
+        if (roleError) throw roleError;
+
+        if (!isAdmin) {
+          throw new Error('You do not have permission to access the admin area');
+        }
+
         toast({
           title: "Login Successful",
           description: "Welcome back!",
         });
-        navigate('/');
+        navigate('/admin');
       }
     } catch (error: any) {
       toast({
@@ -56,8 +82,8 @@ export default function Login() {
         <ResponsiveContainer>
           <Card className="w-full max-w-md mx-auto">
             <CardHeader>
-              <CardTitle>Login to Your Account</CardTitle>
-              <CardDescription>Enter your email and password to access your account</CardDescription>
+              <CardTitle>Admin Login</CardTitle>
+              <CardDescription>Enter your credentials to access the admin panel</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-4">
@@ -95,11 +121,6 @@ export default function Login() {
                 </Button>
               </form>
             </CardContent>
-            <CardFooter>
-              <p className="text-sm text-muted-foreground">
-                Don't have an account? <Button variant="link" onClick={() => navigate('/signup')}>Sign Up</Button>
-              </p>
-            </CardFooter>
           </Card>
         </ResponsiveContainer>
       </main>

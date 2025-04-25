@@ -84,23 +84,10 @@ export function Header() {
           </Link>
           {/* CTA+Theme toggle: right aligned */}
           <div className="flex items-center ml-2 space-x-2">
-            {isClient && (
-              <>
-                {!isLoggedIn ? (
-                  <>
-                    <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
-                      <Link to="/login">Login</Link>
-                    </Button>
-                    <Button size="sm" asChild variant="outline" className="text-base py-2 px-5">
-                      <Link to="/signup">Sign Up</Link>
-                    </Button>
-                  </>
-                ) : (
-                  <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
-                    <Link to="/" onClick={() => supabase.auth.signOut()}>Logout</Link>
-                  </Button>
-                )}
-              </>
+            {isClient && isLoggedIn && (
+              <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
+                <Link to="/" onClick={() => supabase.auth.signOut()}>Logout</Link>
+              </Button>
             )}
             <span>
               <ThemeToggle />
