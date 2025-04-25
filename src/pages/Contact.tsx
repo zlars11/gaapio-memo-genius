@@ -34,7 +34,8 @@ export default function Contact() {
             notes: firmData.message || firmData.notes || "",
             plan: "enterprise", // Default plan for firms
             type: "firm",
-            status: "lead" // Set status as lead for new firm signups
+            status: "lead", // Set status as lead for new firm signups
+            amount: "0.00" // Adding the required amount field with a default value
           }
         ]);
 
