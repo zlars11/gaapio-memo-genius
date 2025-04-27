@@ -1,14 +1,14 @@
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 interface DeleteCompanyDialogProps {
   deletePassword: string;
   deleteError: string;
   onClose: () => void;
   onConfirm: () => void;
-  onPasswordChange: (password: string) => void;
+  onPasswordChange: (value: string) => void;
 }
 
 export function DeleteCompanyDialog({
@@ -23,40 +23,28 @@ export function DeleteCompanyDialog({
       <AlertDialogHeader>
         <AlertDialogTitle>Delete Company</AlertDialogTitle>
         <AlertDialogDescription>
-          Are you sure you want to delete this company? This action will also delete all associated users and cannot be undone.
+          This action is irreversible. Please enter the admin password to confirm.
         </AlertDialogDescription>
       </AlertDialogHeader>
-      
       <div className="py-4">
-        <Label htmlFor="deletePassword">
-          Enter password to confirm deletion
-        </Label>
         <Input
-          id="deletePassword"
           type="password"
+          placeholder="Admin password"
           value={deletePassword}
           onChange={(e) => onPasswordChange(e.target.value)}
-          placeholder="Enter 'admin123' to confirm"
-          className="mt-2"
+          className={deleteError ? "border-red-500" : ""}
         />
         {deleteError && (
-          <p className="text-sm text-destructive mt-1">{deleteError}</p>
+          <p className="text-sm text-red-500 mt-1">{deleteError}</p>
         )}
       </div>
-      
       <AlertDialogFooter>
-        <AlertDialogCancel onClick={() => {
-          onPasswordChange("");
-          onClose();
-        }}>
+        <Button variant="outline" onClick={onClose}>
           Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction 
-          onClick={onConfirm}
-          className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-        >
-          Delete
-        </AlertDialogAction>
+        </Button>
+        <Button variant="destructive" onClick={onConfirm}>
+          Delete Company
+        </Button>
       </AlertDialogFooter>
     </AlertDialogContent>
   );

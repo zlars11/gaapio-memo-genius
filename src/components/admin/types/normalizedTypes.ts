@@ -1,5 +1,11 @@
 
-// This ensures we have a consistent normalized user type across components
+export interface PaymentDetailsState {
+  cardNumber: string;
+  expDate: string;
+  cvv: string;
+  cardNumberLast4?: string;
+}
+
 export interface NormalizedUser {
   id: string;
   firstname: string;
@@ -17,11 +23,4 @@ export interface NormalizedUser {
   is_active: boolean;
   type: string;
   notes: string;
-}
-
-export interface PaymentDetailsState {
-  cardNumber: string;
-  expDate: string;
-  cvv: string;
-  cardNumberLast4?: string;
 }

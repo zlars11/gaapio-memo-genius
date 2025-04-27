@@ -1,10 +1,10 @@
 
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 import { Company } from "../types/companyTypes";
 import { NormalizedUser, PaymentDetailsState } from "../types/normalizedTypes";
 import { User } from "../types/userTypes";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
 
 export function useCompanyDialog(company: Company, onSave: () => void) {
   const [formData, setFormData] = useState<Partial<Company>>({...company});
@@ -35,7 +35,6 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
     type: 'user'
   });
 
-  // Helper function to normalize user data
   const normalizeUser = (user: User): NormalizedUser => ({
     id: user.id,
     firstname: user.firstname || "",

@@ -40,6 +40,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     setDeleteDialogOpen,
     setDeletePassword,
     setDeleteError,
+    setNewUser,
     normalizeUser,
     fetchUsers,
     handleInputChange,
