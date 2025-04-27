@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,14 +46,14 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
     >
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="firstName">First Name</Label>
-          <Input id="firstName" {...infoForm.register("firstName", { required: true })} disabled={isLoading} />
-          {infoForm.formState.errors.firstName && <p className="text-red-500 text-xs mt-1">First name is required</p>}
+          <Label htmlFor="first_name">First Name</Label>
+          <Input id="first_name" {...infoForm.register("first_name", { required: true })} disabled={isLoading} />
+          {infoForm.formState.errors.first_name && <p className="text-red-500 text-xs mt-1">First name is required</p>}
         </div>
         <div>
-          <Label htmlFor="lastName">Last Name</Label>
-          <Input id="lastName" {...infoForm.register("lastName", { required: true })} disabled={isLoading} />
-          {infoForm.formState.errors.lastName && <p className="text-red-500 text-xs mt-1">Last name is required</p>}
+          <Label htmlFor="last_name">Last Name</Label>
+          <Input id="last_name" {...infoForm.register("last_name", { required: true })} disabled={isLoading} />
+          {infoForm.formState.errors.last_name && <p className="text-red-500 text-xs mt-1">Last name is required</p>}
         </div>
       </div>
       <div>

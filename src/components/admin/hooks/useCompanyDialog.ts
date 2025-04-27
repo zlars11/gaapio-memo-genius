@@ -1,71 +1,77 @@
 
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { Company } from "../types/companyTypes";
-import { NormalizedUser } from "../types/normalizedTypes";
-import { User } from "../types/userTypes";
+import { useState, ChangeEvent } from 'react';
+import { User } from '@/components/admin/types/userTypes';
 
-export function useCompanyDialog(company: Company, onSave: () => void) {
-  const [formData, setFormData] = useState<Partial<Company>>({...company});
+export type NormalizedUser = User;
+
+export interface Company {
+  id: string;
+  name: string;
+  plan: string;
+  status: string;
+  amount: number;
+  billing_frequency?: string;
+  stripe_customer_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useCompanyDialog(company: Partial<Company>) {
+  const [formData, setFormData] = useState<Partial<Company>>({
+    ...company
+  });
+
   const [users, setUsers] = useState<NormalizedUser[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [editUser, setEditUser] = useState<NormalizedUser | null>(null);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
+  const [editUser, setEditUser] = useState<NormalizedUser | null>(null);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteError, setDeleteError] = useState("");
-  const { toast } = useToast();
 
-  const [newUser, setNewUser] = useState<Partial<User>>({
-    company_id: company.id,
-    company: company.name,
-    user_type: 'user',
-    status: 'active'
-  });
-
-  const normalizeUser = (user: any): NormalizedUser => ({
-    id: user.id,
-    first_name: user.first_name || "",
-    last_name: user.last_name || "",
-    email: user.email || "",
-    phone: user.phone || "",
-    company_id: user.company_id || company.id,
-    user_type: user.user_type || "user",
-    status: user.status || "active",
-    created_at: user.created_at || new Date().toISOString(),
-    updated_at: user.updated_at || new Date().toISOString()
-  });
-
-  const fetchUsers = async () => {
-    setLoadingUsers(true);
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("company_id", company.id);
-
-      if (error) throw error;
-      
-      const normalizedUsers = data ? data.map(normalizeUser) : [];
-      setUsers(normalizedUsers);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load users",
-        variant: "destructive"
-      });
-      setUsers([]);
-    } finally {
-      setLoadingUsers(false);
-    }
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handlePlanChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      plan: e.target.value
+    }));
+  };
+
+  const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      status: e.target.value
+    }));
+  };
+
+  const handleBillingFrequencyChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      billing_frequency: e.target.value
+    }));
+  };
+
+  const openUserDialog = (user: NormalizedUser) => {
+    setEditUser(user);
+    setUserDialogOpen(true);
+  };
+
+  const closeUserDialog = () => {
+    setUserDialogOpen(false);
+    setEditUser(null);
+  };
+
+  const openCreateUserDialog = () => {
+    setCreateUserDialogOpen(true);
+  };
+
+  const closeCreateUserDialog = () => {
+    setCreateUserDialogOpen(false);
   };
 
   return {
@@ -75,21 +81,13 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
     editUser,
     userDialogOpen,
     createUserDialogOpen,
-    deleteDialogOpen,
-    deletePassword,
-    deleteError,
-    newUser,
-    setFormData,
-    setUsers,
-    setEditUser,
-    setUserDialogOpen,
-    setCreateUserDialogOpen,
-    setDeleteDialogOpen,
-    setDeletePassword,
-    setDeleteError,
-    setNewUser,
-    normalizeUser,
-    fetchUsers,
-    handleInputChange
+    handleInputChange,
+    handlePlanChange,
+    handleStatusChange,
+    handleBillingFrequencyChange,
+    openUserDialog,
+    closeUserDialog,
+    openCreateUserDialog,
+    closeCreateUserDialog
   };
 }

@@ -35,7 +35,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
   function handleSave() {
     const saveData = { 
       ...user,
-      ...fields, 
+      ...fields,
       plan, 
       term, 
       status: status as 'active' | 'inactive',

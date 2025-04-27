@@ -4,8 +4,8 @@ import { Label } from "@/components/ui/label";
 
 interface UserInfoFormProps {
   fields: {
-    firstname: string;
-    lastname: string;
+    first_name: string;
+    last_name: string;
     email: string;
     phone: string;
     company: string;
@@ -38,12 +38,12 @@ export function UserInfoForm({
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="firstname">First Name</Label>
-        <Input id="firstname" name="firstname" value={fields.firstname} onChange={onChange} placeholder="First Name" />
+        <Label htmlFor="first_name">First Name</Label>
+        <Input id="first_name" name="first_name" value={fields.first_name} onChange={onChange} placeholder="First Name" />
       </div>
       <div>
-        <Label htmlFor="lastname">Last Name</Label>
-        <Input id="lastname" name="lastname" value={fields.lastname} onChange={onChange} placeholder="Last Name" />
+        <Label htmlFor="last_name">Last Name</Label>
+        <Input id="last_name" name="last_name" value={fields.last_name} onChange={onChange} placeholder="Last Name" />
       </div>
       <div>
         <Label htmlFor="email">Email</Label>
