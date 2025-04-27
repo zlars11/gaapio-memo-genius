@@ -13,10 +13,10 @@ interface ContactFormProps {
 }
 
 interface ContactFormValues {
-  firstname: string;
-  lastname: string;
-  email: string;
+  first_name: string;
+  last_name: string;
   company: string;
+  email: string;
   phone: string;
   message: string;
 }
@@ -36,48 +36,86 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Store in Supabase contact_submissions table
-      const { error } = await supabase.from("contact_submissions").insert({
-        firstname: data.firstname,
-        lastname: data.lastname,
-        email: data.email,
-        company: data.company,
-        phone: data.phone,
-        message: data.message,
-      });
+      // Begin transaction to create company and user
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (error) throw new Error(error.message);
+      // Normalize company name
+      const normalizedCompanyName = data.company.toLowerCase().trim();
+      
+      // First check if company exists
+      const { data: existingCompany, error: companyCheckError } = await supabase
+        .from("companies")
+        .select("id")
+        .eq("name", normalizedCompanyName)
+        .single();
 
-      // If an onSubmitSuccess callback was provided (e.g., for firm signups),
-      // call it with the form data with preserved firstname and lastname fields
-      if (onSubmitSuccess) {
-        // Create a properly structured object that ensures firstname and lastname 
-        // are explicitly set as top-level properties for the database
-        const firmData = {
-          // These fields are required for database insertion
-          firstname: data.firstname,
-          lastname: data.lastname,
+      if (companyCheckError && companyCheckError.code !== 'PGRST116') {
+        throw new Error(companyCheckError.message);
+      }
+
+      if (existingCompany) {
+        toast({
+          title: "Company already exists",
+          description: "This company is already registered in our system.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create company first
+      const { data: companyData, error: companyError } = await supabase
+        .from("companies")
+        .insert([{
+          name: normalizedCompanyName,
+          plan: "firms",
+          amount: 0,
+          status: "active",
+          billing_frequency: "annual"
+        }])
+        .select()
+        .single();
+
+      if (companyError) throw companyError;
+
+      // Then create contact submission
+      const { error: contactError } = await supabase
+        .from("contact_submissions")
+        .insert([{
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email: data.email,
+          company: normalizedCompanyName,
+          phone: data.phone,
+          message: data.message
+        }]);
+
+      if (contactError) throw contactError;
+
+      // Create user record
+      const { error: userError } = await supabase
+        .from("users")
+        .insert([{
+          first_name: data.first_name,
+          last_name: data.last_name,
           email: data.email,
           phone: data.phone,
-          company: data.company,
-          message: data.message,
-          // Additional fields for Zapier formatting - using the exact field names
-          "Firm Name": data.company,
-          "Contact Name": `${data.firstname} ${data.lastname}`,
-          "Email": data.email,
-          "Phone": data.phone,
-          "Notes": data.message,
-          "Submission Date": new Date().toISOString(),
-        };
-        onSubmitSuccess(firmData);
+          company_id: companyData.id,
+          user_type: "user",
+          status: "active"
+        }]);
+
+      if (userError) throw userError;
+      
+      if (onSubmitSuccess) {
+        onSubmitSuccess({
+          ...data,
+          company_id: companyData.id
+        });
       } else {
-        // Show success message
         toast({
           title: "Message Sent",
           description: "Thank you! We'll be in touch soon.",
         });
-        
-        // Reset form
         reset();
       }
     } catch (error: any) {
@@ -96,30 +134,43 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="firstname">First Name</Label>
+          <Label htmlFor="first_name">First Name</Label>
           <Input 
-            id="firstname"
+            id="first_name"
             placeholder="First name"
-            {...register("firstname", { required: "First name is required" })}
-            aria-invalid={errors.firstname ? "true" : "false"}
+            {...register("first_name", { required: "First name is required" })}
+            aria-invalid={errors.first_name ? "true" : "false"}
           />
-          {errors.firstname && (
-            <p className="text-sm text-red-500">{errors.firstname.message}</p>
+          {errors.first_name && (
+            <p className="text-sm text-red-500">{errors.first_name.message}</p>
           )}
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="lastname">Last Name</Label>
+          <Label htmlFor="last_name">Last Name</Label>
           <Input 
-            id="lastname"
+            id="last_name"
             placeholder="Last name"
-            {...register("lastname", { required: "Last name is required" })}
-            aria-invalid={errors.lastname ? "true" : "false"}
+            {...register("last_name", { required: "Last name is required" })}
+            aria-invalid={errors.last_name ? "true" : "false"}
           />
-          {errors.lastname && (
-            <p className="text-sm text-red-500">{errors.lastname.message}</p>
+          {errors.last_name && (
+            <p className="text-sm text-red-500">{errors.last_name.message}</p>
           )}
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="company">Company</Label>
+        <Input
+          id="company"
+          placeholder="Your company name"
+          {...register("company", { required: "Company is required" })}
+          aria-invalid={errors.company ? "true" : "false"}
+        />
+        {errors.company && (
+          <p className="text-sm text-red-500">{errors.company.message}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -139,19 +190,6 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
         />
         {errors.email && (
           <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="company">Company</Label>
-        <Input
-          id="company"
-          placeholder="Your company name"
-          {...register("company", { required: "Company is required" })}
-          aria-invalid={errors.company ? "true" : "false"}
-        />
-        {errors.company && (
-          <p className="text-sm text-red-500">{errors.company.message}</p>
         )}
       </div>
 

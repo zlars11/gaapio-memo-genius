@@ -44,37 +44,58 @@ export type Database = {
       }
       companies: {
         Row: {
+          amount: number
+          billing_contact: string | null
           billing_email: string | null
-          created_at: string | null
-          custom_terms: Json | null
+          billing_frequency: string | null
+          created_at: string
           id: string
+          industry: string | null
+          logo_url: string | null
           name: string
+          notes: string | null
           plan: string
-          status: string | null
+          signup_date: string
+          status: string
           stripe_customer_id: string | null
-          user_limit: number | null
+          trial_end_date: string | null
+          updated_at: string
         }
         Insert: {
+          amount: number
+          billing_contact?: string | null
           billing_email?: string | null
-          created_at?: string | null
-          custom_terms?: Json | null
+          billing_frequency?: string | null
+          created_at?: string
           id?: string
+          industry?: string | null
+          logo_url?: string | null
           name: string
+          notes?: string | null
           plan: string
-          status?: string | null
+          signup_date?: string
+          status: string
           stripe_customer_id?: string | null
-          user_limit?: number | null
+          trial_end_date?: string | null
+          updated_at?: string
         }
         Update: {
+          amount?: number
+          billing_contact?: string | null
           billing_email?: string | null
-          created_at?: string | null
-          custom_terms?: Json | null
+          billing_frequency?: string | null
+          created_at?: string
           id?: string
+          industry?: string | null
+          logo_url?: string | null
           name?: string
+          notes?: string | null
           plan?: string
-          status?: string | null
+          signup_date?: string
+          status?: string
           stripe_customer_id?: string | null
-          user_limit?: number | null
+          trial_end_date?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -142,15 +163,7 @@ export type Database = {
           status?: string | null
           token?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "invitations_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -178,62 +191,44 @@ export type Database = {
       }
       users: {
         Row: {
-          amount: string
-          company: string
           company_id: string | null
+          created_at: string
           email: string
-          firstname: string
+          first_name: string
           id: string
-          is_active: boolean | null
-          lastname: string
-          notes: string | null
-          phone: string
-          plan: string
-          role: string | null
-          signupdate: string
+          last_name: string
+          phone: string | null
           status: string
-          term: string | null
-          type: string
+          updated_at: string
+          user_type: string
         }
         Insert: {
-          amount: string
-          company: string
           company_id?: string | null
+          created_at?: string
           email: string
-          firstname: string
+          first_name: string
           id?: string
-          is_active?: boolean | null
-          lastname: string
-          notes?: string | null
-          phone: string
-          plan: string
-          role?: string | null
-          signupdate?: string
-          status?: string
-          term?: string | null
-          type?: string
+          last_name: string
+          phone?: string | null
+          status: string
+          updated_at?: string
+          user_type: string
         }
         Update: {
-          amount?: string
-          company?: string
           company_id?: string | null
+          created_at?: string
           email?: string
-          firstname?: string
+          first_name?: string
           id?: string
-          is_active?: boolean | null
-          lastname?: string
-          notes?: string | null
-          phone?: string
-          plan?: string
-          role?: string | null
-          signupdate?: string
+          last_name?: string
+          phone?: string | null
           status?: string
-          term?: string | null
-          type?: string
+          updated_at?: string
+          user_type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_signups_company_id_fkey"
+            foreignKeyName: "users_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
