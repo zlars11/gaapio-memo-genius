@@ -13,6 +13,7 @@ import { DeleteCompanyDialog } from "./dialogs/DeleteCompanyDialog";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { useCompanyDialog } from "./hooks/useCompanyDialog";
 import { Company } from "./types/companyTypes";
+import { NormalizedUser } from "./types/normalizedTypes";
 
 interface EditCompanyDialogProps {
   company: Company;
@@ -52,7 +53,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
   }, [company.id]);
 
   const handleCreateUser = async () => {
-    if (!newUser.firstname || !newUser.lastname || !newUser.email) {
+    if (!newUser.first_name || !newUser.last_name || !newUser.email) {
       toast({
         title: "Validation Error",
         description: "Please fill out all required fields",
@@ -62,20 +63,15 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
-      const userToCreate = normalizeUser({
-        id: newUser.id || "",
-        firstname: newUser.firstname,
-        lastname: newUser.lastname,
-        email: newUser.email,
+      const userToCreate = {
+        first_name: newUser.first_name || "",
+        last_name: newUser.last_name || "",
+        email: newUser.email || "",
         phone: newUser.phone || "",
-        company: newUser.company || company.name,
         company_id: company.id,
-        plan: newUser.plan || company.plan,
-        status: newUser.status || "active",
-        amount: newUser.amount || "0.00",
-        is_active: true,
-        type: "user"
-      });
+        user_type: newUser.user_type || "user",
+        status: newUser.status || "active"
+      };
 
       const { error } = await supabase
         .from("users")
@@ -105,11 +101,12 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       const updateData: any = {
         name: formData.name,
         plan: formData.plan,
-        user_limit: formData.user_limit,
-        billing_email: formData.billing_email,
         status: formData.status,
-        billing_first_name: formData.billing_first_name,
-        billing_last_name: formData.billing_last_name
+        billing_contact: formData.billing_contact,
+        billing_email: formData.billing_email,
+        billing_frequency: formData.billing_frequency,
+        notes: formData.notes,
+        industry: formData.industry
       };
       
       if (paymentDetails.cardNumber && paymentDetails.cardNumber !== "") {
@@ -144,11 +141,18 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
   };
 
-  const handleSaveUser = async (updatedUser: any) => {
+  const handleSaveUser = async (updatedUser: NormalizedUser) => {
     try {
       const { error } = await supabase
         .from("users")
-        .update(updatedUser)
+        .update({
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          user_type: updatedUser.user_type,
+          status: updatedUser.status
+        })
         .eq("id", updatedUser.id);
 
       if (error) throw error;

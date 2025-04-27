@@ -81,8 +81,8 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       const { error: contactError } = await supabase
         .from("contact_submissions")
         .insert([{
-          first_name: data.first_name,
-          last_name: data.last_name,
+          firstname: data.first_name,
+          lastname: data.last_name,
           email: data.email,
           company: normalizedCompanyName,
           phone: data.phone,

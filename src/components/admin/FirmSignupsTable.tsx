@@ -51,8 +51,8 @@ export function FirmSignupsTable() {
       const filtered = firmSignups.filter(
         (firm) =>
           (firm.company || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (firm.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (firm.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (firm.first_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (firm.last_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (firm.email || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredFirmSignups(filtered);
@@ -65,9 +65,9 @@ export function FirmSignupsTable() {
       console.log("Fetching firm signups...");
       const { data, error } = await supabase
         .from("users")
-        .select("*")
-        .eq("type", "firm")
-        .order("signupdate", { ascending: false });
+        .select("*, companies(*)")
+        .eq("user_type", "user")
+        .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Error fetching firm signups:", error);
@@ -80,23 +80,22 @@ export function FirmSignupsTable() {
         setFilteredFirmSignups([]);
       } else {
         console.log("Fetched firm signups:", data);
-        const firmData = (data || []).map(item => ({
-          ...item,
-          id: item.id || "",
-          amount: item.amount || "0.00",
-          company: item.company || "Unknown Company",
-          email: item.email || "",
-          firstname: item.firstname || "",
-          lastname: item.lastname || "",
-          phone: item.phone || "",
-          plan: item.plan || "firms",
-          status: item.status || "lead",
-          signupdate: item.signupdate || new Date().toISOString(),
-          term: item.term || "annual",
-          type: item.type || "firm",
-          notes: item.notes || "",
-          is_active: item.is_active !== false
-        })) as FirmSignup[];
+        const firmData = (data || [])
+          .filter(item => item.companies?.plan === 'firm')
+          .map(item => ({
+            id: item.id || "",
+            first_name: item.first_name || "",
+            last_name: item.last_name || "",
+            email: item.email || "",
+            phone: item.phone || "",
+            company_id: item.company_id || "",
+            company: item.companies?.name || "",
+            user_type: item.user_type || "user",
+            status: item.status || "active",
+            created_at: item.created_at || new Date().toISOString(),
+            updated_at: item.updated_at || new Date().toISOString(),
+            notes: ""
+          })) as FirmSignup[];
         
         setFirmSignups(firmData);
         setFilteredFirmSignups(firmData);
@@ -124,14 +123,11 @@ export function FirmSignupsTable() {
     setEditingFirm(firm);
     setFormData({
       company: firm.company,
-      firstname: firm.firstname,
-      lastname: firm.lastname,
+      first_name: firm.first_name,
+      last_name: firm.last_name,
       email: firm.email,
       phone: firm.phone,
-      notes: firm.notes,
-      cardNumber: firm.cardNumber,
-      expDate: firm.expDate,
-      cvv: firm.cvv,
+      notes: firm.notes
     });
     setIsDialogOpen(true);
   };
@@ -143,15 +139,10 @@ export function FirmSignupsTable() {
       const { error } = await supabase
         .from("users")
         .update({
-          company: formData.company,
-          firstname: formData.firstname,
-          lastname: formData.lastname,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
           email: formData.email,
-          phone: formData.phone,
-          notes: formData.notes,
-          cardNumber: formData.cardNumber,
-          expDate: formData.expDate,
-          cvv: formData.cvv,
+          phone: formData.phone
         })
         .eq("id", editingFirm.id);
 
@@ -200,7 +191,6 @@ export function FirmSignupsTable() {
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Plan</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>

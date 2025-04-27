@@ -10,20 +10,7 @@ import { Edit } from "lucide-react";
 import { EditCompanyDialog } from "./EditCompanyDialog";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-
-interface Company {
-  id: string;
-  name: string;
-  plan: string;
-  user_limit: number | null;
-  billing_email: string | null;
-  status: string | null;
-  created_at: string | null;
-  billing_first_name?: string | null;
-  billing_last_name?: string | null;
-  cardNumberLast4?: string | null;
-  expDate?: string | null;
-}
+import { Company } from "./types/companyTypes";
 
 export function CompaniesTable() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -58,8 +45,9 @@ export function CompaniesTable() {
         setFilteredCompanies([]);
       } else {
         console.log("Fetched companies:", data);
-        setCompanies(data as Company[]);
-        setFilteredCompanies(data as Company[]);
+        const typedCompanies = data as unknown as Company[];
+        setCompanies(typedCompanies);
+        setFilteredCompanies(typedCompanies);
       }
     } catch (err) {
       console.error("Exception when fetching companies:", err);
@@ -117,13 +105,6 @@ export function CompaniesTable() {
       accessorKey: "plan" as keyof Company,
       cell: (item: Company) => (
         <span className="capitalize">{item.plan}</span>
-      ),
-    },
-    {
-      header: "User Limit",
-      accessorKey: "user_limit" as keyof Company,
-      cell: (item: Company) => (
-        <span>{item.user_limit || "Unlimited"}</span>
       ),
     },
     {

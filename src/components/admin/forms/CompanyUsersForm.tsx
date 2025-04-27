@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -7,12 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
-type User = Database["public"]["Tables"]["users"]["Row"];
 import EditUserDialog from "../EditUserDialog";
 import { formatDate } from "@/lib/utils";
+import { User } from "../types/userTypes";
+import { NormalizedUser } from "../types/normalizedTypes";
 
 interface CompanyUsersFormProps {
-  users: User[];
+  users: NormalizedUser[];
   companyId: string;
   companyName: string;
   companyPlan: string;
@@ -23,10 +25,10 @@ interface CompanyUsersFormProps {
   newUser: Partial<User>;
   setNewUser: (user: Partial<User> | ((prev: Partial<User>) => Partial<User>)) => void;
   handleCreateUser: () => void;
-  handleEditUser: (user: User) => void;
-  handleSaveUser: (user: User) => void;
+  handleEditUser: (user: NormalizedUser) => void;
+  handleSaveUser: (user: NormalizedUser) => void;
   handleDeleteUser: (userId: string) => void;
-  editUser: User | null;
+  editUser: NormalizedUser | null;
   userDialogOpen: boolean;
   setUserDialogOpen: (open: boolean) => void;
 }
@@ -51,20 +53,20 @@ export function CompanyUsersForm({
   setUserDialogOpen,
 }: CompanyUsersFormProps) {
   const [formErrors, setFormErrors] = useState<{
-    firstname?: string;
-    lastname?: string;
+    first_name?: string;
+    last_name?: string;
     email?: string;
   }>({});
 
   const validateForm = () => {
     const errors: {
-      firstname?: string;
-      lastname?: string;
+      first_name?: string;
+      last_name?: string;
       email?: string;
     } = {};
     
-    if (!newUser.firstname) errors.firstname = "First name is required";
-    if (!newUser.lastname) errors.lastname = "Last name is required";
+    if (!newUser.first_name) errors.first_name = "First name is required";
+    if (!newUser.last_name) errors.last_name = "Last name is required";
     
     if (!newUser.email) {
       errors.email = "Email is required";
@@ -115,20 +117,20 @@ export function CompanyUsersForm({
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
+              <TableHead>User Type</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Sign-up Date</TableHead>
+              <TableHead>Created</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map(user => (
               <TableRow key={user.id}>
-                <TableCell>{`${user.firstname || ''} ${user.lastname || ''}`}</TableCell>
+                <TableCell>{`${user.first_name || ''} ${user.last_name || ''}`}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell className="capitalize">{user.role || 'member'}</TableCell>
+                <TableCell className="capitalize">{user.user_type || 'user'}</TableCell>
                 <TableCell className="capitalize">{user.status || 'active'}</TableCell>
-                <TableCell>{user.signupdate ? formatDate(user.signupdate) : 'N/A'}</TableCell>
+                <TableCell>{user.created_at ? formatDate(user.created_at) : 'N/A'}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
@@ -158,27 +160,27 @@ export function CompanyUsersForm({
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstname">First Name <span className="text-red-500">*</span></Label>
+                <Label htmlFor="first_name">First Name <span className="text-red-500">*</span></Label>
                 <Input
-                  id="firstname"
-                  value={newUser.firstname || ''}
-                  onChange={(e) => handleChange('firstname', e.target.value)}
-                  className={formErrors.firstname ? "border-red-500" : ""}
+                  id="first_name"
+                  value={newUser.first_name || ''}
+                  onChange={(e) => handleChange('first_name', e.target.value)}
+                  className={formErrors.first_name ? "border-red-500" : ""}
                 />
-                {formErrors.firstname && (
-                  <p className="text-xs text-red-500">{formErrors.firstname}</p>
+                {formErrors.first_name && (
+                  <p className="text-xs text-red-500">{formErrors.first_name}</p>
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastname">Last Name <span className="text-red-500">*</span></Label>
+                <Label htmlFor="last_name">Last Name <span className="text-red-500">*</span></Label>
                 <Input
-                  id="lastname"
-                  value={newUser.lastname || ''}
-                  onChange={(e) => handleChange('lastname', e.target.value)}
-                  className={formErrors.lastname ? "border-red-500" : ""}
+                  id="last_name"
+                  value={newUser.last_name || ''}
+                  onChange={(e) => handleChange('last_name', e.target.value)}
+                  className={formErrors.last_name ? "border-red-500" : ""}
                 />
-                {formErrors.lastname && (
-                  <p className="text-xs text-red-500">{formErrors.lastname}</p>
+                {formErrors.last_name && (
+                  <p className="text-xs text-red-500">{formErrors.last_name}</p>
                 )}
               </div>
             </div>
@@ -204,17 +206,18 @@ export function CompanyUsersForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="user_type">User Type</Label>
               <Select
-                value={newUser.role || 'member'}
-                onValueChange={(value) => handleChange('role', value)}
+                value={newUser.user_type || 'user'}
+                onValueChange={(value) => handleChange('user_type', value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a role" />
+                  <SelectValue placeholder="Select user type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="member">Member</SelectItem>
+                  <SelectItem value="approver">Approver</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -236,8 +239,6 @@ export function CompanyUsersForm({
             {/* Hidden fields with company info */}
             <input type="hidden" name="company_id" value={companyId} />
             <input type="hidden" name="company" value={companyName} />
-            <input type="hidden" name="plan" value={companyPlan} />
-            <input type="hidden" name="is_active" value="true" />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCreateUserDialogOpen(false)}>

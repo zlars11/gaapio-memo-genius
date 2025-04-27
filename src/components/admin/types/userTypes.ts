@@ -1,25 +1,16 @@
 
 export interface User {
   id: string;
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  phone: string;
-  company: string;
-  company_id: string;
-  plan: string;
-  status: string;
-  amount: string;
-  signupdate?: string;
-  term?: string;
-  cardNumber?: string;
-  cardNumberLast4?: string;
-  expDate?: string;
-  cvv?: string;
-  role?: string;
-  is_active: boolean;
-  type?: string;
-  notes?: string;
+  phone?: string;
+  company_id?: string;
+  company?: string;
+  user_type: 'user' | 'approver' | 'admin';
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserRowProps {

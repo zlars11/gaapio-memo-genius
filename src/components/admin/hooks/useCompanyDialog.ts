@@ -28,30 +28,21 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
   const [newUser, setNewUser] = useState<Partial<User>>({
     company_id: company.id,
     company: company.name,
-    plan: company.plan,
-    status: 'active',
-    role: 'member',
-    is_active: true,
-    type: 'user'
+    user_type: 'user',
+    status: 'active'
   });
 
-  const normalizeUser = (user: User): NormalizedUser => ({
+  const normalizeUser = (user: any): NormalizedUser => ({
     id: user.id,
-    firstname: user.firstname || "",
-    lastname: user.lastname || "",
+    first_name: user.first_name || "",
+    last_name: user.last_name || "",
     email: user.email || "",
     phone: user.phone || "",
-    company: user.company || company.name,
     company_id: user.company_id || company.id,
-    plan: user.plan || company.plan,
+    user_type: user.user_type || "user",
     status: user.status || "active",
-    amount: user.amount || "0.00",
-    signupdate: user.signupdate || new Date().toISOString(),
-    term: user.term || "annual",
-    role: user.role || "member",
-    is_active: user.is_active ?? true,
-    type: user.type || "user",
-    notes: user.notes || "",
+    created_at: user.created_at || new Date().toISOString(),
+    updated_at: user.updated_at || new Date().toISOString()
   });
 
   const fetchUsers = async () => {
@@ -64,7 +55,7 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
 
       if (error) throw error;
       
-      const normalizedUsers = (data || []).map(normalizeUser);
+      const normalizedUsers = data ? data.map(normalizeUser) : [];
       setUsers(normalizedUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
