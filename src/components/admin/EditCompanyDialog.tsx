@@ -1,11 +1,9 @@
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Company } from "./types/companyTypes";
-import { User } from "./types/userTypes";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { CompanyDetailsForm } from "./forms/CompanyDetailsForm";
@@ -13,6 +11,8 @@ import { CompanyUsersForm } from "./forms/CompanyUsersForm";
 import { CompanyBillingForm } from "./forms/CompanyBillingForm";
 import { DeleteCompanyDialog } from "./dialogs/DeleteCompanyDialog";
 import { AlertDialog } from "@/components/ui/alert-dialog";
+import { useCompanyDialog } from "./hooks/useCompanyDialog";
+import { Company } from "./types/companyTypes";
 
 interface EditCompanyDialogProps {
   company: Company;
@@ -20,120 +20,35 @@ interface EditCompanyDialogProps {
   onClose: () => void;
 }
 
-// Define a normalized user type with all required fields to ensure consistency
-interface NormalizedUser {
-  id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  company: string;
-  company_id: string;
-  plan: string;
-  status: string;
-  amount: string;
-  signupdate: string;
-  term: string;
-  role: string;
-  is_active: boolean;
-  type: string;
-  notes: string;
-}
-
 export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialogProps) {
-  const [formData, setFormData] = useState<Partial<Company>>({...company});
-  const [users, setUsers] = useState<NormalizedUser[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [editUser, setEditUser] = useState<NormalizedUser | null>(null);
-  const [userDialogOpen, setUserDialogOpen] = useState(false);
-  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
-  const [newUser, setNewUser] = useState<Partial<User>>({
-    company_id: company.id,
-    company: company.name,
-    plan: company.plan,
-    status: 'active',
-    role: 'member',
-    is_active: true,
-    type: 'user'
-  });
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteError, setDeleteError] = useState("");
   const { toast } = useToast();
-  
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: "",
-    expDate: formData.expDate || "",
-    cvv: "",
-    cardNumberLast4: company.cardNumberLast4
-  });
-
-  // Helper function to normalize a user from Supabase
-  const normalizeUser = (user: User): NormalizedUser => ({
-    id: user.id,
-    firstname: user.firstname || "",
-    lastname: user.lastname || "",
-    email: user.email || "",
-    phone: user.phone || "",
-    company: user.company || company.name,
-    company_id: user.company_id || company.id,
-    plan: user.plan || company.plan,
-    status: user.status || "active",
-    amount: user.amount || "0.00",
-    signupdate: user.signupdate || new Date().toISOString(),
-    term: user.term || "annual",
-    role: user.role || "member",
-    is_active: user.is_active ?? true,
-    type: user.type || "user",
-    notes: user.notes || "",
-  });
+  const {
+    formData,
+    users,
+    loadingUsers,
+    editUser,
+    userDialogOpen,
+    createUserDialogOpen,
+    deleteDialogOpen,
+    deletePassword,
+    deleteError,
+    paymentDetails,
+    newUser,
+    setEditUser,
+    setUserDialogOpen,
+    setCreateUserDialogOpen,
+    setDeleteDialogOpen,
+    setDeletePassword,
+    setDeleteError,
+    normalizeUser,
+    fetchUsers,
+    handleInputChange,
+    handlePaymentChange
+  } = useCompanyDialog(company, onSave);
 
   useEffect(() => {
     fetchUsers();
   }, [company.id]);
-
-  async function fetchUsers() {
-    setLoadingUsers(true);
-    try {
-      console.log("Fetching users for company_id:", company.id);
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("company_id", company.id);
-
-      if (error) {
-        console.error("Error fetching users:", error);
-        throw error;
-      }
-      
-      console.log("Fetched users:", data);
-      
-      // Normalize all users with the helper function
-      const normalizedUsers = (data || []).map(normalizeUser);
-      
-      setUsers(normalizedUsers);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load users",
-        variant: "destructive"
-      });
-      setUsers([]);
-    } finally {
-      setLoadingUsers(false);
-    }
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPaymentDetails(prev => ({ ...prev, [name]: value }));
-  };
 
   const handleCreateUser = async () => {
     if (!newUser.firstname || !newUser.lastname || !newUser.email) {
@@ -146,7 +61,6 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
 
     try {
-      // Create a normalized user from the newUser partial data
       const userToCreate = normalizeUser({
         id: newUser.id || "",
         firstname: newUser.firstname,
@@ -160,9 +74,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         amount: newUser.amount || "0.00",
         is_active: true,
         type: "user"
-      } as User);
+      });
 
-      console.log("Creating new user:", userToCreate);
       const { error } = await supabase
         .from("users")
         .insert([userToCreate]);
@@ -175,84 +88,12 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       });
       
       setCreateUserDialogOpen(false);
-      setNewUser({
-        company_id: company.id,
-        company: company.name,
-        plan: company.plan,
-        status: 'active',
-        role: 'member',
-        is_active: true,
-        type: 'user'
-      });
-      
       await fetchUsers();
     } catch (error: any) {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
         description: `Failed to create user: ${error.message || "Unknown error"}`,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleEditUser = (user: User) => {
-    // Normalize the user using our helper function
-    const normalizedUser = normalizeUser(user);
-    setEditUser(normalizedUser);
-    setUserDialogOpen(true);
-  };
-
-  const handleSaveUser = async (updatedUser: User) => {
-    try {
-      // Normalize the user data before saving to ensure all required fields are present
-      const normalizedUser = normalizeUser(updatedUser);
-      
-      const { error } = await supabase
-        .from("users")
-        .update(normalizedUser)
-        .eq("id", normalizedUser.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "User updated successfully"
-      });
-      
-      await fetchUsers();
-      setUserDialogOpen(false);
-    } catch (error) {
-      console.error("Error updating user:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update user",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from("users")
-        .delete()
-        .eq("id", userId);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "User deleted successfully"
-      });
-      
-      await fetchUsers();
-      setUserDialogOpen(false);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete user",
         variant: "destructive"
       });
     }
@@ -309,7 +150,6 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
     
     try {
-      // First delete all users associated with this company
       const { error: usersDeleteError } = await supabase
         .from("users")
         .delete()
@@ -317,7 +157,6 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       
       if (usersDeleteError) throw usersDeleteError;
       
-      // Then delete the company
       const { error: companyDeleteError } = await supabase
         .from("companies")
         .delete()
@@ -332,7 +171,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       
       setDeleteDialogOpen(false);
       onClose();
-      onSave(); // Refresh the companies list
+      onSave();
     } catch (error) {
       console.error("Error deleting company:", error);
       toast({
@@ -376,9 +215,10 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
             newUser={newUser}
             setNewUser={setNewUser}
             handleCreateUser={handleCreateUser}
-            handleEditUser={handleEditUser}
-            handleSaveUser={handleSaveUser}
-            handleDeleteUser={handleDeleteUser}
+            handleEditUser={(user) => {
+              setEditUser(normalizeUser(user));
+              setUserDialogOpen(true);
+            }}
             editUser={editUser}
             userDialogOpen={userDialogOpen}
             setUserDialogOpen={setUserDialogOpen}
@@ -413,7 +253,6 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
         </div>
       </div>
 
-      {/* Delete Company Dialog */}
       <AlertDialog open={deleteDialogOpen}>
         <DeleteCompanyDialog
           deletePassword={deletePassword}
