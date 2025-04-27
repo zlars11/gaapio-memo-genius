@@ -1,1 +1,26 @@
+
+# This is a Supabase config file - it lives at supabase/config.toml
+# It is used by the Supabase CLI to configure your project
+
 project_id = "bxojxrcerefklsrqkmrs"
+
+[api]
+enabled = true
+port = 8080
+
+[db]
+enabled = true
+port = 5432
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+
+[realtime]
+enabled = true
+
+[functions.signup]
+verify_jwt = false

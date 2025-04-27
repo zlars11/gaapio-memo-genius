@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Table, TableCaption } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,13 +43,11 @@ export function UserSignupsTable() {
       const { error } = await supabase
         .from("users")
         .update({
-          firstname: updatedUser.firstname,
-          lastname: updatedUser.lastname,
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
           email: updatedUser.email,
           phone: updatedUser.phone,
           company: updatedUser.company,
-          plan: updatedUser.plan,
-          term: updatedUser.term,
           status: updatedUser.status
         })
         .eq("id", updatedUser.id);

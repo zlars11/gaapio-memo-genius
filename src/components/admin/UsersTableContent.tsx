@@ -24,7 +24,7 @@ export function UsersTableContent({
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Sign-up Date</TableHead>
-          <TableHead>Plan</TableHead>
+          <TableHead>User Type</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>

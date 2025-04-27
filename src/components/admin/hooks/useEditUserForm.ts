@@ -1,10 +1,11 @@
+
 import { useState } from "react";
 import { validateCardNumber, validateExpiryDate, validateCVV, formatCardNumber, formatExpiryDate } from "@/utils/cardValidation";
 import { User } from "../types/userTypes";
 
 interface FormFields {
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   company: string;
@@ -17,23 +18,23 @@ interface PaymentDetails {
 }
 
 export function useEditUserForm(user: User) {
-  const [plan, setPlan] = useState(user.plan || "emerging");
-  const [term, setTerm] = useState(user.term || "annual");
-  const [status, setStatus] = useState(user.status || "active");
+  const [plan, setPlan] = useState<string>("emerging");
+  const [term, setTerm] = useState<string>("annual");
+  const [status, setStatus] = useState<"active" | "inactive">(user.status || "active");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const [fields, setFields] = useState<FormFields>({
-    firstname: user.firstname || "",
-    lastname: user.lastname || "",
+    first_name: user.first_name || "",
+    last_name: user.last_name || "",
     email: user.email || "",
     phone: user.phone || "",
     company: user.company || "",
   });
   
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
-    cardNumber: user.cardNumber ? maskCardNumber(user.cardNumber) : "",
-    expDate: user.expDate || "",
-    cvv: user.cvv ? "•••" : ""
+    cardNumber: "",
+    expDate: "",
+    cvv: ""
   });
   
   const [cardFieldsModified, setCardFieldsModified] = useState({

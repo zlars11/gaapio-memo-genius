@@ -51,18 +51,18 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       ...fields, 
       plan, 
       term, 
-      status,
+      status: status as 'active' | 'inactive',
       _csrf: csrfToken
     };
     
     if (cardFieldsModified.cardNumber && paymentDetails.cardNumber !== "•••" && paymentDetails.cardNumber !== "") {
-      const last4 = paymentDetails.cardNumber.replace(/\s/g, '').slice(-4);
-      saveData.cardNumberLast4 = last4;
-      delete saveData.cardNumber;
+      // Instead of storing card data directly, we'll handle this via Stripe later
+      saveData.cardData = 'REDACTED';
     }
     
     if (cardFieldsModified.expDate && paymentDetails.expDate !== "") {
-      saveData.expDate = paymentDetails.expDate;
+      // Similarly, we'll handle expiration dates via Stripe later
+      saveData.expData = 'REDACTED';
     }
     
     delete saveData.cvv;
@@ -90,7 +90,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
           onChange={handleFieldChange}
           onPlanChange={(e) => setPlan(e.target.value)}
           onTermChange={(e) => setTerm(e.target.value)}
-          onStatusChange={(e) => setStatus(e.target.value)}
+          onStatusChange={(e) => setStatus(e.target.value as 'active' | 'inactive')}
           PLAN_OPTIONS={PLAN_OPTIONS}
           TERM_OPTIONS={TERM_OPTIONS}
           STATUS_OPTIONS={STATUS_OPTIONS}

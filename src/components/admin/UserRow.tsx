@@ -12,11 +12,11 @@ interface UserRowProps {
 export function UserRow({ user, onEdit }: UserRowProps) {
   return (
     <TableRow key={user.id}>
-      <TableCell>{`${user.firstname || ''} ${user.lastname || ''}`.trim()}</TableCell>
+      <TableCell>{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</TableCell>
       <TableCell>{user.email}</TableCell>
       <TableCell>{user.phone}</TableCell>
-      <TableCell>{user.signupdate ? new Date(user.signupdate).toLocaleDateString() : 'N/A'}</TableCell>
-      <TableCell>{user.plan}</TableCell>
+      <TableCell>{user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</TableCell>
+      <TableCell>{user.user_type}</TableCell>
       <TableCell>
         <Button
           variant="outline"

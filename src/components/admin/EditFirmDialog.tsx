@@ -25,9 +25,9 @@ export function EditFirmDialog({
   onSave,
 }: EditFirmDialogProps) {
   const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: formData.cardNumber || '',
-    expDate: formData.expDate || '',
-    cvv: formData.cvv || ''
+    cardNumber: '',
+    expDate: '',
+    cvv: ''
   });
   
   const [validation, setValidation] = useState({
@@ -40,9 +40,9 @@ export function EditFirmDialog({
 
   useEffect(() => {
     setPaymentDetails({
-      cardNumber: formData.cardNumber || '',
-      expDate: formData.expDate || '',
-      cvv: formData.cvv || ''
+      cardNumber: '',
+      expDate: '',
+      cvv: ''
     });
   }, [formData]);
   
@@ -72,16 +72,6 @@ export function EditFirmDialog({
     }
     
     setPaymentDetails({ ...paymentDetails, [name]: formattedValue });
-    
-    // Update the main form data
-    const syntheticEvent = {
-      target: {
-        name,
-        value: formattedValue
-      }
-    } as React.ChangeEvent<HTMLInputElement>;
-    
-    onInputChange(syntheticEvent);
   };
   
   const handleSaveClick = () => {
@@ -107,20 +97,20 @@ export function EditFirmDialog({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label htmlFor="firstname">First Name</Label>
+              <Label htmlFor="first_name">First Name</Label>
               <Input
-                id="firstname"
-                name="firstname"
-                value={formData.firstname || ''}
+                id="first_name"
+                name="first_name"
+                value={formData.first_name || ''}
                 onChange={onInputChange}
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="lastname">Last Name</Label>
+              <Label htmlFor="last_name">Last Name</Label>
               <Input
-                id="lastname"
-                name="lastname"
-                value={formData.lastname || ''}
+                id="last_name"
+                name="last_name"
+                value={formData.last_name || ''}
                 onChange={onInputChange}
               />
             </div>

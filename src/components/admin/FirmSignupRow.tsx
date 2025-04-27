@@ -8,11 +8,11 @@ export function FirmSignupRow({ signup, onEdit }: FirmSignupRowProps) {
   return (
     <TableRow key={signup.id}>
       <TableCell>{signup.company}</TableCell>
-      <TableCell>{`${signup.firstname || ''} ${signup.lastname || ''}`.trim()}</TableCell>
+      <TableCell>{`${signup.first_name || ''} ${signup.last_name || ''}`.trim()}</TableCell>
       <TableCell>{signup.email}</TableCell>
       <TableCell>{signup.phone}</TableCell>
-      <TableCell>{signup.signupdate ? new Date(signup.signupdate).toLocaleDateString() : 'N/A'}</TableCell>
-      <TableCell>{signup.plan}</TableCell>
+      <TableCell>{signup.created_at ? new Date(signup.created_at).toLocaleDateString() : 'N/A'}</TableCell>
+      <TableCell>{signup.user_type}</TableCell>
       <TableCell>
         <Button
           variant="outline"
