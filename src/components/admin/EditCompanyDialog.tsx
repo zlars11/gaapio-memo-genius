@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { CompanyDetailsForm } from "./forms/CompanyDetailsForm";
 import { CompanyUsersForm } from "./forms/CompanyUsersForm";
-import { Company } from "./types/companyTypes";
+import { Company, CompanyPlan } from "./types/companyTypes";
 import { User } from "./types/userTypes";
 import { useCompanyDialog } from "./hooks/useCompanyDialog";
 
@@ -87,14 +87,14 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
 
         <TabsContent value="users">
           <CompanyUsersForm
-            users={users}
+            users={users as User[]}
             companyId={company.id}
             companyName={company.name}
             companyPlan={company.plan}
             loadingUsers={loadingUsers}
             createUserDialogOpen={createUserDialogOpen}
             setCreateUserDialogOpen={setCreateUserDialogOpen}
-            editUser={editUser}
+            editUser={editUser as User}
             userDialogOpen={userDialogOpen}
             setUserDialogOpen={setUserDialogOpen}
             setEditUser={setEditUser}

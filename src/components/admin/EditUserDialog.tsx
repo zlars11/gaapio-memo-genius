@@ -45,11 +45,9 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     onSave(saveData);
   }
 
-  const handleUserTypeChange = (value: string) => {
+  const handleUserTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     // Ensure we only accept valid user types
-    const userType = value === 'user' || value === 'approver' || value === 'admin' 
-      ? (value as 'user' | 'approver' | 'admin') 
-      : 'user';
+    const userType = e.target.value as 'user' | 'approver' | 'admin';
     
     // Update the field correctly with the validated type
     handleFieldChange({
@@ -78,7 +76,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
           onPlanChange={(e) => setPlan(e.target.value)}
           onTermChange={(e) => setTerm(e.target.value)}
           onStatusChange={(e) => setStatus(e.target.value as 'active' | 'inactive')}
-          onUserTypeChange={(e) => handleUserTypeChange(e.target.value)}
+          onUserTypeChange={handleUserTypeChange}
           PLAN_OPTIONS={PLAN_OPTIONS}
           TERM_OPTIONS={TERM_OPTIONS}
           STATUS_OPTIONS={STATUS_OPTIONS}

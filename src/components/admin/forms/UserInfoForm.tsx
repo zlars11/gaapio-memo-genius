@@ -17,6 +17,7 @@ interface UserInfoFormProps {
   onPlanChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onTermChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onStatusChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onUserTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   PLAN_OPTIONS: Array<{ value: string; label: string; }>;
   TERM_OPTIONS: Array<{ value: string; label: string; }>;
   STATUS_OPTIONS: Array<{ value: string; label: string; }>;
@@ -31,6 +32,7 @@ export function UserInfoForm({
   onPlanChange,
   onTermChange,
   onStatusChange,
+  onUserTypeChange,
   PLAN_OPTIONS,
   TERM_OPTIONS,
   STATUS_OPTIONS,
