@@ -12,3 +12,10 @@ export interface Company {
   updated_at: string;
   user_limit?: number | null;
 }
+
+export interface CompanyDetailsFormProps {
+  formData: Partial<Company>;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onPlanChange: (value: CompanyPlan) => void;
+  onStatusChange: (value: "active" | "inactive") => void;
+}

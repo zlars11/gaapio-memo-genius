@@ -2,7 +2,6 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { CreditCard } from "lucide-react";
-import { PaymentDetails } from "../types/companyTypes";
 
 interface CompanyBillingFormProps {
   formData: {
@@ -10,16 +9,12 @@ interface CompanyBillingFormProps {
     billing_last_name?: string | null;
     billing_email?: string | null;
   };
-  paymentDetails: PaymentDetails;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onPaymentChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function CompanyBillingForm({
   formData,
-  paymentDetails,
   onInputChange,
-  onPaymentChange,
 }: CompanyBillingFormProps) {
   return (
     <div className="space-y-6">
@@ -61,43 +56,9 @@ export function CompanyBillingForm({
           <span className="text-sm font-semibold">Payment Details</span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <Label htmlFor="cardNumber">Card Number</Label>
-            <Input
-              id="cardNumber"
-              name="cardNumber"
-              placeholder={paymentDetails.cardNumberLast4 ? `•••• •••• •••• ${paymentDetails.cardNumberLast4}` : "•••• •••• •••• ••••"}
-              value={paymentDetails.cardNumber}
-              onChange={onPaymentChange}
-              className="font-mono"
-            />
-          </div>
-          <div>
-            <Label htmlFor="expDate">Expiration Date</Label>
-            <Input
-              id="expDate"
-              name="expDate"
-              placeholder="MM/YY"
-              value={paymentDetails.expDate || ""}
-              onChange={onPaymentChange}
-              className="font-mono"
-              maxLength={5}
-            />
-          </div>
-          <div>
-            <Label htmlFor="cvv">CVV</Label>
-            <Input
-              id="cvv"
-              name="cvv"
-              placeholder="•••"
-              value={paymentDetails.cvv}
-              onChange={onPaymentChange}
-              className="font-mono"
-              maxLength={4}
-            />
-          </div>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Payment details have been moved to the Stripe integration. Users will be redirected to Stripe Checkout for secure payment processing.
+        </p>
       </div>
     </div>
   );

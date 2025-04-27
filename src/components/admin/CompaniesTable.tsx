@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -70,8 +69,8 @@ export function CompaniesTable() {
       const filtered = companies.filter(
         (company) =>
           company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          company.plan.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (company.billing_email || "").toLowerCase().includes(searchQuery.toLowerCase())
+          company.plan.toLowerCase().includes(searchQuery.toLowerCase())
+          // Removed billing_email reference
       );
       setFilteredCompanies(filtered);
     }
@@ -152,7 +151,7 @@ export function CompaniesTable() {
       <CardContent>
         <div className="mb-4">
           <Input
-            placeholder="Search by company name, plan, or email..."
+            placeholder="Search by company name or plan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-md"

@@ -1,16 +1,20 @@
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Company } from "../types/companyTypes";
+import { Company, CompanyPlan } from "../types/companyTypes";
 
 interface CompanyDetailsFormProps {
   formData: Partial<Company>;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onPlanChange: (value: CompanyPlan) => void;
+  onStatusChange: (value: "active" | "inactive") => void;
 }
 
 export function CompanyDetailsForm({
   formData,
   onInputChange,
+  onPlanChange,
+  onStatusChange,
 }: CompanyDetailsFormProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -19,7 +23,7 @@ export function CompanyDetailsForm({
         <Input
           id="name"
           name="name"
-          value={formData.name}
+          value={formData.name || ""}
           onChange={onInputChange}
         />
       </div>
@@ -29,14 +33,14 @@ export function CompanyDetailsForm({
         <select
           id="plan"
           name="plan"
-          value={formData.plan}
-          onChange={onInputChange}
+          value={formData.plan || "emerging"}
+          onChange={(e) => onPlanChange(e.target.value as CompanyPlan)}
           className="w-full border rounded px-3 py-2 bg-background text-foreground"
         >
-          <option value="free">Free</option>
-          <option value="basic">Basic</option>
-          <option value="premium">Premium</option>
+          <option value="emerging">Emerging</option>
+          <option value="mid-market">Mid-Market</option>
           <option value="enterprise">Enterprise</option>
+          <option value="firm">Firm</option>
         </select>
       </div>
 
@@ -58,13 +62,23 @@ export function CompanyDetailsForm({
           id="status"
           name="status"
           value={formData.status || "active"}
-          onChange={onInputChange}
+          onChange={(e) => onStatusChange(e.target.value as "active" | "inactive")}
           className="w-full border rounded px-3 py-2 bg-background text-foreground"
         >
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
-          <option value="suspended">Suspended</option>
         </select>
+      </div>
+
+      <div>
+        <Label htmlFor="amount">Amount</Label>
+        <Input
+          id="amount"
+          name="amount"
+          type="number"
+          value={formData.amount || 0}
+          onChange={onInputChange}
+        />
       </div>
 
       <div>
