@@ -143,6 +143,58 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     }
   };
 
+  const handleSaveUser = async (updatedUser: any) => {
+    try {
+      const { error } = await supabase
+        .from("users")
+        .update(updatedUser)
+        .eq("id", updatedUser.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "User updated successfully"
+      });
+
+      await fetchUsers();
+      setUserDialogOpen(false);
+    } catch (error: any) {
+      console.error("Error updating user:", error);
+      toast({
+        title: "Error",
+        description: `Failed to update user: ${error.message || "Unknown error"}`,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from("users")
+        .delete()
+        .eq("id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "User deleted successfully"
+      });
+
+      await fetchUsers();
+      setUserDialogOpen(false);
+    } catch (error: any) {
+      console.error("Error deleting user:", error);
+      toast({
+        title: "Error",
+        description: `Failed to delete user: ${error.message || "Unknown error"}`,
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleDeleteCompany = async () => {
     if (deletePassword !== "admin123") {
       setDeleteError("Incorrect password");
@@ -219,6 +271,8 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
               setEditUser(normalizeUser(user));
               setUserDialogOpen(true);
             }}
+            handleSaveUser={handleSaveUser}
+            handleDeleteUser={handleDeleteUser}
             editUser={editUser}
             userDialogOpen={userDialogOpen}
             setUserDialogOpen={setUserDialogOpen}
