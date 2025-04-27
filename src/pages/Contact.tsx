@@ -14,11 +14,12 @@ export default function Contact() {
       // First, try to create the company
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
-        .insert([{
+        .insert({
           name: data.company,
           plan: "firms",
-          status: "active"
-        }])
+          status: "active",
+          amount: 0
+        })
         .select()
         .single();
 
@@ -37,22 +38,15 @@ export default function Contact() {
       // Then create the user record
       const { error: userError } = await supabase
         .from("users")
-        .insert([
-          {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email,
-            phone: data.phone || "",
-            company: data.company,
-            company_id: companyData.id,
-            notes: data.message || "",
-            plan: "firms",
-            type: "firm",
-            status: "lead",
-            amount: "0.00",
-            is_active: true
-          }
-        ]);
+        .insert({
+          first_name: data.firstname,
+          last_name: data.lastname,
+          email: data.email,
+          phone: data.phone || "",
+          company_id: companyData.id,
+          user_type: "user",
+          status: "active"
+        });
 
       if (userError) throw userError;
       

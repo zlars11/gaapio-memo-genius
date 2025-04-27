@@ -1,7 +1,6 @@
 
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { UserInfoForm } from "./forms/UserInfoForm";
-import { PaymentDetailsForm } from "./forms/PaymentDetailsForm";
 import { DeleteUserConfirmDialog } from "./dialogs/DeleteUserConfirmDialog";
 import { useEditUserForm } from "./hooks/useEditUserForm";
 import { PLAN_OPTIONS, TERM_OPTIONS, STATUS_OPTIONS } from "./constants/userDialogOptions";
@@ -28,24 +27,12 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     status,
     setStatus,
     fields,
-    paymentDetails,
-    validation,
-    showValidation,
-    setShowValidation,
-    cardFieldsModified,
     showDeleteConfirm,
     setShowDeleteConfirm,
-    handleFieldChange,
-    handlePaymentChange
+    handleFieldChange
   } = useEditUserForm(user);
 
   function handleSave() {
-    setShowValidation(true);
-    
-    if (!validation.cardNumberValid || !validation.expDateValid || !validation.cvvValid) {
-      return;
-    }
-    
     const saveData = { 
       ...user,
       ...fields, 
@@ -55,18 +42,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       _csrf: csrfToken
     };
     
-    if (cardFieldsModified.cardNumber && paymentDetails.cardNumber !== "•••" && paymentDetails.cardNumber !== "") {
-      // Instead of storing card data directly, we'll handle this via Stripe later
-      saveData.cardData = 'REDACTED';
-    }
-    
-    if (cardFieldsModified.expDate && paymentDetails.expDate !== "") {
-      // Similarly, we'll handle expiration dates via Stripe later
-      saveData.expData = 'REDACTED';
-    }
-    
-    delete saveData.cvv;
-    
+    // Remove any legacy fields that might cause type errors
     onSave(saveData);
   }
 
@@ -75,7 +51,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       <DialogHeader className="mb-4">
         <DialogTitle>Edit User</DialogTitle>
         <DialogDescription>
-          Update user information and payment details.
+          Update user information.
         </DialogDescription>
       </DialogHeader>
 
@@ -94,13 +70,6 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
           PLAN_OPTIONS={PLAN_OPTIONS}
           TERM_OPTIONS={TERM_OPTIONS}
           STATUS_OPTIONS={STATUS_OPTIONS}
-        />
-        
-        <PaymentDetailsForm 
-          paymentDetails={paymentDetails}
-          onPaymentChange={handlePaymentChange}
-          validation={validation}
-          showValidation={showValidation}
         />
 
         <div className="flex gap-3 mt-8 justify-between">

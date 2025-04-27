@@ -1,13 +1,11 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { PaymentDetailsForm } from "./forms/PaymentDetailsForm";
 import { FirmSignup } from "./types/userTypes";
-import { validateCardNumber, validateExpiryDate, validateCVV, formatCardNumber, formatExpiryDate } from "@/utils/cardValidation";
 
 interface EditFirmDialogProps {
   isOpen: boolean;
@@ -24,62 +22,9 @@ export function EditFirmDialog({
   onInputChange,
   onSave,
 }: EditFirmDialogProps) {
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: '',
-    expDate: '',
-    cvv: ''
-  });
-  
-  const [validation, setValidation] = useState({
-    cardNumberValid: true,
-    expDateValid: true,
-    cvvValid: true
-  });
-  
-  const [showValidation, setShowValidation] = useState(false);
-
-  useEffect(() => {
-    setPaymentDetails({
-      cardNumber: '',
-      expDate: '',
-      cvv: ''
-    });
-  }, [formData]);
-  
-  useEffect(() => {
-    // Update validation state
-    setValidation({
-      cardNumberValid: paymentDetails.cardNumber.trim() === '' || validateCardNumber(paymentDetails.cardNumber),
-      expDateValid: paymentDetails.expDate.trim() === '' || validateExpiryDate(paymentDetails.expDate),
-      cvvValid: paymentDetails.cvv.trim() === '' || validateCVV(paymentDetails.cvv)
-    });
-  }, [paymentDetails]);
-  
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    let formattedValue = value;
-    
-    if (name === "cardNumber") {
-      formattedValue = formatCardNumber(value);
-    }
-    
-    if (name === "expDate") {
-      formattedValue = formatExpiryDate(value);
-    }
-    
-    if (name === "cvv") {
-      formattedValue = value.replace(/\D/g, '').slice(0, 4);
-    }
-    
-    setPaymentDetails({ ...paymentDetails, [name]: formattedValue });
-  };
   
   const handleSaveClick = () => {
-    setShowValidation(true);
-    
-    if (validation.cardNumberValid && validation.expDateValid && validation.cvvValid) {
-      onSave();
-    }
+    onSave();
   };
 
   return (
@@ -147,13 +92,6 @@ export function EditFirmDialog({
               rows={3}
             />
           </div>
-          
-          <PaymentDetailsForm 
-            paymentDetails={paymentDetails}
-            validation={validation}
-            onPaymentChange={handlePaymentChange}
-            showValidation={showValidation}
-          />
           
           <div className="flex justify-end gap-2 pt-4">
             <Button

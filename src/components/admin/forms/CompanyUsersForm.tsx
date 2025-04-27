@@ -256,7 +256,7 @@ export function CompanyUsersForm({
         {editUser && (
           <DialogContent className="sm:max-w-[600px]">
             <EditUserDialog
-              user={editUser}
+              user={editUser as User}
               onSave={handleSaveUser}
               onDelete={() => handleDeleteUser(editUser.id)}
               onClose={() => setUserDialogOpen(false)}

@@ -77,16 +77,13 @@ function getFirmSignupZapierWebhookUrl() {
 // Helper to match DB column names, updated to include plan, term, and amount
 function mapUserToDb(info: any) {
   return {
-    firstname: info.firstName,
-    lastname: info.lastName,
+    first_name: info.firstName,
+    last_name: info.lastName,
     email: info.email,
     phone: info.phone,
-    company: info.company,
-    plan: info.plan || "emerging",
-    term: info.term || "annual",
-    amount: info.amount,
-    signupdate: new Date().toISOString(),
-    status: info.status || "active",
+    company_id: info.company_id,
+    user_type: info.user_type || "user",
+    status: "active"
   };
 }
 
@@ -136,32 +133,45 @@ export default function SignUp() {
 
   // Helper: insert into Supabase user_signups table
   async function createUserSignup(info: any) {
-    const dbInfo = mapUserToDb({ ...info, term: info.term || "annual" }); // safest default
+    const dbInfo = mapUserToDb({ 
+      ...info, 
+      user_type: "user" 
+    });
     const { data, error } = await supabase.from("users").insert([dbInfo]);
     if (error) throw new Error(error.message);
     return data;
   }
 
-  // Helper: Create firm signup in Supabase - ensuring firstname/lastname are properly set
+  // Helper: Create firm signup in Supabase - ensuring first_name/last_name are properly set
   async function createFirmSignup(info: any) {
-    // Explicitly ensure firstname and lastname are set properly
-    // This is critical because the database has not-null constraints on these fields
-    const firmData = {
-      type: "firm",
-      company: info.company,
-      firstname: info.firstName || info.firstname || "", // Ensure it's never null
-      lastname: info.lastName || info.lastname || "",    // Ensure it's never null
+    // First create the company
+    const { data: companyData, error: companyError } = await supabase
+      .from("companies")
+      .insert({
+        name: info.company,
+        plan: "firms",
+        status: "active",
+        amount: 0
+      })
+      .select()
+      .single();
+      
+    if (companyError) throw new Error(companyError.message);
+    
+    // Then create the user
+    const userData = {
+      first_name: info.firstName || info.firstname || "", 
+      last_name: info.lastName || info.lastname || "",    
       email: info.email,
       phone: info.phone,
-      amount: "Contact Sales", 
-      status: "active",
-      signupdate: new Date().toISOString(),
-      plan: "firms"
+      company_id: companyData.id,
+      user_type: "user",
+      status: "active"
     };
     
-    console.log("Creating firm signup with data:", firmData); // Add logging to debug
+    console.log("Creating firm signup with data:", userData);
     
-    const { data, error } = await supabase.from("users").insert([firmData]);
+    const { data, error } = await supabase.from("users").insert([userData]);
     if (error) throw new Error(error.message);
     return data;
   }
@@ -258,9 +268,34 @@ export default function SignUp() {
 
     setTimeout(async () => {
       setPaymentInfo(paymentData);
-      // Save user info with term=annual
+      // First create company
       try {
-        await createUserSignup({ ...userInfo, term: "annual" });
+        const { data: companyData, error: companyError } = await supabase
+          .from("companies")
+          .insert({
+            name: userInfo.company,
+            plan: selectedPlan,
+            status: "active",
+            amount: 0, // We'll handle this with Stripe later
+            billing_frequency: "annual"
+          })
+          .select()
+          .single();
+          
+        if (companyError) throw companyError;
+        
+        // Then create user
+        const userData = {
+          first_name: userInfo.firstName,
+          last_name: userInfo.lastName,
+          email: userInfo.email,
+          phone: userInfo.phone,
+          company_id: companyData.id,
+          user_type: "user",
+          status: "active"
+        };
+        
+        await supabase.from("users").insert([userData]);
       } catch (err: any) {
         setIsLoading(false);
         toast({ title: "Submission failed", description: err.message, variant: "destructive" });

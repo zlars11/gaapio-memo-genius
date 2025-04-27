@@ -47,7 +47,6 @@ export function UserSignupsTable() {
           last_name: updatedUser.last_name,
           email: updatedUser.email,
           phone: updatedUser.phone,
-          company: updatedUser.company,
           status: updatedUser.status
         })
         .eq("id", updatedUser.id);

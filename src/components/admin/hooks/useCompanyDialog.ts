@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Company } from "../types/companyTypes";
-import { NormalizedUser, PaymentDetailsState } from "../types/normalizedTypes";
+import { NormalizedUser } from "../types/normalizedTypes";
 import { User } from "../types/userTypes";
 
 export function useCompanyDialog(company: Company, onSave: () => void) {
@@ -17,13 +17,6 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const { toast } = useToast();
-
-  const [paymentDetails, setPaymentDetails] = useState<PaymentDetailsState>({
-    cardNumber: "",
-    expDate: formData.expDate || "",
-    cvv: "",
-    cardNumberLast4: company.cardNumberLast4
-  });
 
   const [newUser, setNewUser] = useState<Partial<User>>({
     company_id: company.id,
@@ -75,11 +68,6 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPaymentDetails(prev => ({ ...prev, [name]: value }));
-  };
-
   return {
     formData,
     users,
@@ -90,7 +78,6 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
     deleteDialogOpen,
     deletePassword,
     deleteError,
-    paymentDetails,
     newUser,
     setFormData,
     setUsers,
@@ -100,11 +87,9 @@ export function useCompanyDialog(company: Company, onSave: () => void) {
     setDeleteDialogOpen,
     setDeletePassword,
     setDeleteError,
-    setPaymentDetails,
     setNewUser,
     normalizeUser,
     fetchUsers,
-    handleInputChange,
-    handlePaymentChange
+    handleInputChange
   };
 }

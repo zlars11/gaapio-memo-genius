@@ -27,9 +27,3 @@ export interface FirmSignupRowProps {
   signup: FirmSignup;
   onEdit: (signup: FirmSignup) => void;
 }
-
-export interface CardValidation {
-  cardNumberValid: boolean;
-  expDateValid: boolean;
-  cvvValid: boolean;
-}

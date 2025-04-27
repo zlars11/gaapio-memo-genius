@@ -42,13 +42,13 @@ export async function createCompany(
   
   const { data, error } = await supabase
     .from("companies")
-    .insert([{
+    .insert({
       name: normalizedName,
       plan,
       amount: 0,
       status: "active",
       billing_frequency: "annual"
-    }])
+    })
     .select()
     .single();
     
@@ -80,7 +80,7 @@ export async function createUser({
 }): Promise<string> {
   const { data, error } = await supabase
     .from("users")
-    .insert([{
+    .insert({
       first_name,
       last_name,
       email,
@@ -88,7 +88,7 @@ export async function createUser({
       company_id,
       user_type,
       status: "active"
-    }])
+    })
     .select()
     .single();
     
