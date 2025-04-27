@@ -1,30 +1,17 @@
 
 import { useState, ChangeEvent } from 'react';
-import { User } from '@/components/admin/types/userTypes';
-
-export type NormalizedUser = User;
-
-export interface Company {
-  id: string;
-  name: string;
-  plan: string;
-  status: string;
-  amount: number;
-  billing_frequency?: string;
-  stripe_customer_id?: string;
-  created_at: string;
-  updated_at: string;
-}
+import { Company, CompanyPlan } from '../types/companyTypes';
+import { User } from '../types/userTypes';
 
 export function useCompanyDialog(company: Partial<Company>) {
   const [formData, setFormData] = useState<Partial<Company>>({
     ...company
   });
 
-  const [users, setUsers] = useState<NormalizedUser[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [userDialogOpen, setUserDialogOpen] = useState(false);
-  const [editUser, setEditUser] = useState<NormalizedUser | null>(null);
+  const [editUser, setEditUser] = useState<User | null>(null);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,43 +22,18 @@ export function useCompanyDialog(company: Partial<Company>) {
     }));
   };
 
-  const handlePlanChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handlePlanChange = (value: CompanyPlan) => {
     setFormData(prev => ({
       ...prev,
-      plan: e.target.value
+      plan: value
     }));
   };
 
-  const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = (value: 'active' | 'inactive') => {
     setFormData(prev => ({
       ...prev,
-      status: e.target.value
+      status: value
     }));
-  };
-
-  const handleBillingFrequencyChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      billing_frequency: e.target.value
-    }));
-  };
-
-  const openUserDialog = (user: NormalizedUser) => {
-    setEditUser(user);
-    setUserDialogOpen(true);
-  };
-
-  const closeUserDialog = () => {
-    setUserDialogOpen(false);
-    setEditUser(null);
-  };
-
-  const openCreateUserDialog = () => {
-    setCreateUserDialogOpen(true);
-  };
-
-  const closeCreateUserDialog = () => {
-    setCreateUserDialogOpen(false);
   };
 
   return {
@@ -84,10 +46,8 @@ export function useCompanyDialog(company: Partial<Company>) {
     handleInputChange,
     handlePlanChange,
     handleStatusChange,
-    handleBillingFrequencyChange,
-    openUserDialog,
-    closeUserDialog,
-    openCreateUserDialog,
-    closeCreateUserDialog
+    setUserDialogOpen,
+    setCreateUserDialogOpen,
+    setEditUser
   };
 }
