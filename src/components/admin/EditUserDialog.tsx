@@ -42,7 +42,6 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       _csrf: csrfToken
     };
     
-    // Remove any legacy fields that might cause type errors
     onSave(saveData);
   }
 
