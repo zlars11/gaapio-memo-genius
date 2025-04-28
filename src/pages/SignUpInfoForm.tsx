@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,36 +78,6 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
         <Label htmlFor="company">Company</Label>
         <Input id="company" {...infoForm.register("company", { required: true })} disabled={isLoading} />
         {infoForm.formState.errors.company && <p className="text-red-500 text-xs mt-1">Company is required</p>}
-      </div>
-
-      <div>
-        <Label htmlFor="billingContact">Billing Contact</Label>
-        <Input
-          id="billingContact"
-          {...infoForm.register("billingContact", { required: true })}
-          disabled={isLoading}
-        />
-        {infoForm.formState.errors.billingContact && 
-          <p className="text-red-500 text-xs mt-1">Billing contact is required</p>
-        }
-      </div>
-
-      <div>
-        <Label htmlFor="billingEmail">Billing Email</Label>
-        <Input
-          id="billingEmail"
-          type="email"
-          {...infoForm.register("billingEmail", {
-            required: "Billing email is required",
-            pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" }
-          })}
-          disabled={isLoading}
-        />
-        {infoForm.formState.errors.billingEmail && 
-          <p className="text-red-500 text-xs mt-1">
-            {infoForm.formState.errors.billingEmail.message as string}
-          </p>
-        }
       </div>
 
       <div>

@@ -52,13 +52,13 @@ export default function SignUp() {
       plan: selectedPlan,
       term: "annual",
       amount: getPlanLabel(selectedPlan),
-      billingContact: "",
-      billingEmail: "",
     },
   });
 
   const paymentForm = useForm({
     defaultValues: {
+      billingContact: "",
+      billingEmail: "",
       cardNumber: "",
       cardExpiry: "",
       cardCvc: "",
@@ -87,16 +87,26 @@ export default function SignUp() {
         // Get the annualAmount as a number 
         const annualAmount = Number(selectedPlanObj?.annualAmount || 0);
         
+        // Make sure plan value matches valid database options (assuming the constraint matches these exact values)
+        let dbPlan = selectedPlan;
+        if (selectedPlan === "mid") {
+          dbPlan = "mid-market";
+        } else if (selectedPlan === "firms") {
+          dbPlan = "firm";
+        }
+        
+        console.log("Creating company with plan:", dbPlan);
+        
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
             name: userInfo.company,
-            plan: selectedPlan,
+            plan: dbPlan, // Use the corrected plan value
             status: "active",
             amount: annualAmount, // Pass as number, not string
             billing_frequency: "annual",
-            billing_contact: userInfo.billingContact,
-            billing_email: userInfo.billingEmail,
+            billing_contact: paymentData.billingContact, // Use billing data from payment form
+            billing_email: paymentData.billingEmail, // Use billing data from payment form
             paid_users: String(selectedPlanObj?.users || '3')
           })
           .select()
@@ -122,8 +132,8 @@ export default function SignUp() {
 
         const allData = { 
           ...userInfo, 
-          ...paymentData, 
-          plan: selectedPlan, 
+          ...paymentData,
+          plan: dbPlan, // Use corrected plan value
           term: "annual", 
           amount: getPlanLabel(selectedPlan), 
           signupDate: new Date().toISOString() 
@@ -322,7 +332,7 @@ async function createFirmSignup(formData: any) {
     .from("companies")
     .insert({
       name: formData.company,
-      plan: "firms",
+      plan: "firm",  // Updated from "firms" to match the constraint
       status: "active",
       amount: 0
     })

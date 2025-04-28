@@ -19,6 +19,41 @@ export function SignUpPaymentForm({ isLoading, paymentForm, onSubmit }: Props) {
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Payment Details</h2>
         <p className="text-muted-foreground mb-4">Please enter your payment information below.</p>
+
+        <div className="space-y-4 mb-6">
+          <div>
+            <Label htmlFor="billingContact">Billing Contact</Label>
+            <Input 
+              id="billingContact"
+              {...paymentForm.register("billingContact", { required: true })}
+              placeholder="Contact Name"
+              disabled={isLoading}
+            />
+            {paymentForm.formState.errors.billingContact && 
+              <p className="text-red-500 text-xs mt-1">Billing contact is required</p>
+            }
+          </div>
+          
+          <div>
+            <Label htmlFor="billingEmail">Billing Email</Label>
+            <Input
+              id="billingEmail"
+              type="email"
+              {...paymentForm.register("billingEmail", {
+                required: "Billing email is required",
+                pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" }
+              })}
+              placeholder="billing@example.com"
+              disabled={isLoading}
+            />
+            {paymentForm.formState.errors.billingEmail && 
+              <p className="text-red-500 text-xs mt-1">
+                {paymentForm.formState.errors.billingEmail.message as string}
+              </p>
+            }
+          </div>
+        </div>
+
         <div>
           <Label htmlFor="cardNumber">Card Number</Label>
           <Input id="cardNumber" {...paymentForm.register("cardNumber", { required: true })} placeholder="1234 5678 9012 3456" disabled={isLoading} maxLength={19} />

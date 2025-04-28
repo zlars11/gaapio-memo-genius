@@ -17,6 +17,8 @@ export function SignUpSummary({ userInfo, paymentInfo, ANNUAL_LABEL }: Props) {
       <li><span className="font-medium">Plan:</span> Annual Subscription ({ANNUAL_LABEL})</li>
       {paymentInfo && (
         <>
+          <li><span className="font-medium">Billing Contact:</span> {paymentInfo.billingContact}</li>
+          <li><span className="font-medium">Billing Email:</span> {paymentInfo.billingEmail}</li>
           <li><span className="font-medium">Card Number:</span> ••••{(paymentInfo.cardNumber || "").slice(-4)}</li>
           <li><span className="font-medium">Expiry:</span> {paymentInfo.cardExpiry}</li>
           <li><span className="font-medium">Billing Zip:</span> {paymentInfo.billingZip}</li>
