@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
@@ -90,7 +89,7 @@ export default function SignUp() {
             name: userInfo.company,
             plan: selectedPlan,
             status: "active",
-            amount: selectedPlanObj?.annualAmount || 0,
+            amount: String(selectedPlanObj?.annualAmount || 0),
             billing_frequency: "annual",
             billing_contact: userInfo.billingContact,
             billing_email: userInfo.billingEmail,
