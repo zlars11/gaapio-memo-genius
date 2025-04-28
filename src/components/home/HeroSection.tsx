@@ -88,7 +88,7 @@ export const HeroSection = memo(function HeroSection() {
             )}
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="#how-it-works" onClick={scrollToHowItWorks}>See How It Works</a>
+            <a href="#demo" onClick={scrollToHowItWorks}>See a demo</a>
           </Button>
         </div>
         <div className="animate-fade-up" style={{ animationDelay: "300ms" }}>

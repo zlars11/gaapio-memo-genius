@@ -72,7 +72,7 @@ export function DemoRequestForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="firstName"
@@ -123,13 +123,13 @@ export function DemoRequestForm() {
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input required type="tel" {...field} />
+                <Input required type="tel" inputMode="tel" autoComplete="tel" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
+        
         <FormField
           control={form.control}
           name="notes"
@@ -143,8 +143,13 @@ export function DemoRequestForm() {
             </FormItem>
           )}
         />
-
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        
+        <Button 
+          type="submit" 
+          className="w-full" 
+          size="lg"
+          disabled={isLoading}
+        >
           {isLoading ? "Submitting..." : "Request Demo"}
         </Button>
       </form>
