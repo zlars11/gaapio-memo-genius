@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -11,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 
 export default function Admin() {
   const [showWaitlistTab, setShowWaitlistTab] = useState(true);
@@ -103,6 +103,7 @@ export default function Admin() {
             {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="firms">Firms</TabsTrigger>
+            <TabsTrigger value="demos">Demo Requests</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
@@ -130,6 +131,9 @@ export default function Admin() {
                 description="Receive a webhook trigger when a new firm signs up."
               />
             </div>
+          </TabsContent>
+          <TabsContent value="demos">
+            <DemoRequestsTable />
           </TabsContent>
           <TabsContent value="contact">
             <ContactTable />
