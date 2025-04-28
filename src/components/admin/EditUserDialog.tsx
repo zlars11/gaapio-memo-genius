@@ -78,6 +78,20 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     setStatus(value as 'active' | 'inactive');
   };
 
+  const handlePlanChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // For plan, we need to validate it's a user type value
+    const value = e.target.value;
+    
+    // Strictly validate the value is one of the allowed user types
+    if (value !== 'admin' && value !== 'approver' && value !== 'user') {
+      console.warn('Invalid user type provided:', value);
+      return;
+    }
+    
+    // Cast to the specific union type
+    setPlan(value as 'user' | 'approver' | 'admin');
+  };
+
   return (
     <div className="relative">
       <DialogHeader className="mb-4">
@@ -96,7 +110,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
           term={term}
           status={status}
           onChange={handleFieldChange}
-          onPlanChange={(e) => setPlan(e.target.value)}
+          onPlanChange={handlePlanChange}
           onTermChange={(e) => setTerm(e.target.value)}
           onStatusChange={handleStatusChange}
           onUserTypeChange={handleUserTypeChange}
