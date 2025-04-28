@@ -46,8 +46,12 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
   }
 
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // Ensure we only accept valid user types
-    const userType = e.target.value as 'user' | 'approver' | 'admin';
+    // Validate and ensure we only accept valid user types
+    const value = e.target.value;
+    // Strictly type cast to one of the allowed values
+    const userType = (value === 'admin' || value === 'approver' || value === 'user') 
+      ? value as 'user' | 'approver' | 'admin' 
+      : 'user'; // Default to 'user' if an invalid value is somehow passed
     
     // Update the field correctly with the validated type
     handleFieldChange({

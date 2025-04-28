@@ -10,6 +10,7 @@ import { CompanyUsersForm } from "./forms/CompanyUsersForm";
 import { Company, CompanyPlan } from "./types/companyTypes";
 import { User } from "./types/userTypes";
 import { useCompanyDialog } from "./hooks/useCompanyDialog";
+import { NormalizedUser } from "./types/normalizedTypes";
 
 interface EditCompanyDialogProps {
   company: Company;
@@ -87,14 +88,14 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
 
         <TabsContent value="users">
           <CompanyUsersForm
-            users={users as User[]}
+            users={users as NormalizedUser[]}
             companyId={company.id}
             companyName={company.name}
             companyPlan={company.plan}
             loadingUsers={loadingUsers}
             createUserDialogOpen={createUserDialogOpen}
             setCreateUserDialogOpen={setCreateUserDialogOpen}
-            editUser={editUser as User}
+            editUser={editUser as NormalizedUser | null}
             userDialogOpen={userDialogOpen}
             setUserDialogOpen={setUserDialogOpen}
             setEditUser={setEditUser}

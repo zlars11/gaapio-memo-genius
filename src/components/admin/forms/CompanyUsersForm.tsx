@@ -12,25 +12,27 @@ import EditUserDialog from "../EditUserDialog";
 import { formatDate } from "@/lib/utils";
 import { User } from "../types/userTypes";
 import { NormalizedUser } from "../types/normalizedTypes";
+import { Dispatch, SetStateAction } from "react";
 
 interface CompanyUsersFormProps {
   users: NormalizedUser[];
   companyId: string;
   companyName: string;
   companyPlan: string;
-  onUserUpdate: () => void;
+  onUserUpdate?: () => void;
   loadingUsers?: boolean;
   createUserDialogOpen: boolean;
   setCreateUserDialogOpen: (open: boolean) => void;
-  newUser: Partial<User>;
-  setNewUser: (user: Partial<User> | ((prev: Partial<User>) => Partial<User>)) => void;
-  handleCreateUser: () => void;
-  handleEditUser: (user: NormalizedUser) => void;
-  handleSaveUser: (user: NormalizedUser) => void;
-  handleDeleteUser: (userId: string) => void;
+  newUser?: Partial<User>;
+  setNewUser?: (user: Partial<User> | ((prev: Partial<User>) => Partial<User>)) => void;
+  handleCreateUser?: () => void;
+  handleEditUser?: (user: NormalizedUser) => void;
+  handleSaveUser?: (user: NormalizedUser) => void;
+  handleDeleteUser?: (userId: string) => void;
   editUser: NormalizedUser | null;
   userDialogOpen: boolean;
   setUserDialogOpen: (open: boolean) => void;
+  setEditUser: Dispatch<SetStateAction<NormalizedUser | null>>;
 }
 
 export function CompanyUsersForm({
@@ -51,6 +53,7 @@ export function CompanyUsersForm({
   editUser,
   userDialogOpen,
   setUserDialogOpen,
+  setEditUser,
 }: CompanyUsersFormProps) {
   const [formErrors, setFormErrors] = useState<{
     first_name?: string;
