@@ -54,6 +54,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       return;
     }
     
+    // Cast to the specific union type
     const userType = value as 'user' | 'approver' | 'admin';
     
     handleFieldChange({
