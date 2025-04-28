@@ -19,6 +19,13 @@ export function useDemoRequestForm() {
     },
   });
 
+  const getDemoWebhookUrl = () => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("demoRequestWebhookUrl") || "";
+    }
+    return "";
+  };
+
   const onSubmit = async (data: DemoRequestFormData) => {
     setIsLoading(true);
     try {
@@ -33,6 +40,39 @@ export function useDemoRequestForm() {
         });
 
       if (error) throw error;
+
+      // Try to trigger Zapier webhook if URL is set
+      const webhookUrl = getDemoWebhookUrl();
+      if (webhookUrl) {
+        try {
+          console.log("Triggering Zapier webhook for demo request:", webhookUrl);
+          
+          // Format data with field names for Zapier
+          const zapierData = {
+            "Name": `${data.firstName} ${data.lastName}`,
+            "Email": data.email,
+            "Phone": data.phone,
+            "Notes": data.notes || "",
+            "Submission Date": new Date().toISOString(),
+            "Source": "Demo Request Form"
+          };
+
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            mode: "no-cors",
+            body: JSON.stringify(zapierData),
+          });
+          console.log("Zapier webhook triggered successfully");
+        } catch (err) {
+          console.error("Error triggering Zapier webhook:", err);
+          // Don't throw error here as the form submission was successful
+        }
+      } else {
+        console.log("No Zapier webhook URL configured for demo requests");
+      }
 
       toast({
         title: "Demo request submitted",
