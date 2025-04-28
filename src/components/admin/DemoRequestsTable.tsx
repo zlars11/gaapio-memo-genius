@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,18 @@ import { DeleteDemoConfirmDialog } from "./dialogs/DeleteDemoConfirmDialog";
 
 interface DemoRequest extends DemoRequestFormData {
   id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Interface representing the database schema structure
+interface DemoRequestRow {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  notes: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -44,13 +56,26 @@ export function DemoRequestsTable() {
       setRequests([]);
       setFilteredRequests([]);
     } else {
-      setRequests(data);
-      setFilteredRequests(data);
+      // Map from database schema to our frontend model
+      const mappedData = (data as DemoRequestRow[]).map(row => ({
+        id: row.id,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        email: row.email,
+        phone: row.phone,
+        notes: row.notes || "",
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }));
+      
+      setRequests(mappedData);
+      setFilteredRequests(mappedData);
     }
     setLoading(false);
   };
 
-  useState(() => {
+  // Fix: Using useEffect instead of useState
+  useEffect(() => {
     fetchDemoRequests();
   }, []);
 
