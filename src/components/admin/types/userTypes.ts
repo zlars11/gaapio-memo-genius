@@ -21,6 +21,7 @@ export interface UserRowProps {
 export interface FirmSignup extends User {
   company: string;
   notes?: string;
+  plan?: string; // Adding the plan property that was missing
 }
 
 export interface FirmSignupRowProps {

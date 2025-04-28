@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -26,7 +25,10 @@ export function EditFirmDialog({
   const handleSaveClick = () => {
     // Ensure plan is set to "firm" before saving
     if (formData && formData.plan === "firms") {
-      formData.plan = "firm";
+      // Create a new object with the updated plan to avoid type errors
+      const updatedFormData = { ...formData, plan: "firm" };
+      // Update the original formData object by copying properties
+      Object.assign(formData, updatedFormData);
     }
     onSave();
   };
