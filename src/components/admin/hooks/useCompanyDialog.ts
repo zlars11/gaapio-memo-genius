@@ -35,6 +35,7 @@ export function useCompanyDialog(company: Partial<Company>) {
         user_type: user.user_type as 'user' | 'approver' | 'admin'
       })) || [];
       
+      // We now set users with the properly typed array
       setUsers(typedUsers as User[]);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -50,10 +51,19 @@ export function useCompanyDialog(company: Partial<Company>) {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Convert string values to numbers for number fields
+    if (name === 'user_limit' || name === 'amount') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value === '' ? null : Number(value)
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handlePlanChange = (value: CompanyPlan) => {
@@ -82,10 +92,10 @@ export function useCompanyDialog(company: Partial<Company>) {
       }
 
       // Make sure all required fields are present before inserting
-      if (!newUser.email || !newUser.first_name || !newUser.last_name) {
+      if (!newUser.email || !newUser.first_name || !newUser.last_name || !newUser.user_type) {
         toast({
           title: "Error",
-          description: "Email, first name, and last name are required",
+          description: "Email, first name, last name, and user type are required",
           variant: "destructive"
         });
         return;
@@ -98,7 +108,7 @@ export function useCompanyDialog(company: Partial<Company>) {
         last_name: newUser.last_name,
         phone: newUser.phone || null,
         status: newUser.status || "active",
-        user_type: newUser.user_type || "user"
+        user_type: newUser.user_type
       };
 
       const { error } = await supabase
