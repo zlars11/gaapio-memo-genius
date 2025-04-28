@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
@@ -83,13 +84,16 @@ export default function SignUp() {
       try {
         const selectedPlanObj = getPlanObject(selectedPlan);
         
+        // Get the annualAmount as a number 
+        const annualAmount = Number(selectedPlanObj?.annualAmount || 0);
+        
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
             name: userInfo.company,
             plan: selectedPlan,
             status: "active",
-            amount: String(selectedPlanObj?.annualAmount || 0),
+            amount: annualAmount, // Pass as number, not string
             billing_frequency: "annual",
             billing_contact: userInfo.billingContact,
             billing_email: userInfo.billingEmail,
