@@ -16,6 +16,23 @@ export function CompanyDetailsForm({
   onPlanChange,
   onStatusChange,
 }: CompanyDetailsFormProps) {
+  // Handle number inputs separately to ensure proper type conversion
+  const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const numberValue = value === '' ? null : Number(value);
+    
+    const event = {
+      ...e,
+      target: {
+        ...e.target,
+        name,
+        value: numberValue
+      }
+    } as React.ChangeEvent<HTMLInputElement>;
+    
+    onInputChange(event);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -50,8 +67,8 @@ export function CompanyDetailsForm({
           id="user_limit"
           name="user_limit"
           type="number"
-          value={formData.user_limit || ""}
-          onChange={onInputChange}
+          value={formData.user_limit === null ? '' : formData.user_limit}
+          onChange={handleNumberInputChange}
           placeholder="Leave empty for unlimited"
         />
       </div>
@@ -77,7 +94,7 @@ export function CompanyDetailsForm({
           name="amount"
           type="number"
           value={formData.amount || 0}
-          onChange={onInputChange}
+          onChange={handleNumberInputChange}
         />
       </div>
 

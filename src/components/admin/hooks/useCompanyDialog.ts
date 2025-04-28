@@ -28,7 +28,14 @@ export function useCompanyDialog(company: Partial<Company>) {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setUsers(data || []);
+      
+      // Ensure we cast the user_type field to the correct type
+      const typedUsers = data?.map(user => ({
+        ...user,
+        user_type: user.user_type as 'user' | 'approver' | 'admin'
+      })) || [];
+      
+      setUsers(typedUsers as User[]);
     } catch (err) {
       console.error("Error fetching users:", err);
       toast({
@@ -74,9 +81,22 @@ export function useCompanyDialog(company: Partial<Company>) {
         return;
       }
 
+      // Make sure all required fields are present before inserting
+      if (!newUser.email || !newUser.first_name || !newUser.last_name) {
+        toast({
+          title: "Error",
+          description: "Email, first name, and last name are required",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const userData = {
-        ...newUser,
         company_id: company.id,
+        email: newUser.email,
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        phone: newUser.phone || null,
         status: newUser.status || "active",
         user_type: newUser.user_type || "user"
       };
