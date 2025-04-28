@@ -1,109 +1,47 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
-import { supabase } from "@/integrations/supabase/client";
+import { ContactForm } from "@/components/contact/ContactForm";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import { useSignupFlow } from "@/hooks/useSignupFlow";
 import { SignUpInfoForm } from "./SignUpInfoForm";
 import { SignUpPaymentForm } from "./SignUpPaymentForm";
 import { SignUpSummary } from "./SignUpSummary";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SignupSuccess } from "@/components/signup/SignupSuccess";
+import { PlanTabs } from "@/components/signup/PlanTabs";
+import { PLAN_FEATURES, getPlanObject, getPlanLabel } from "@/constants/planConfig";
+import { useForm } from "react-hook-form";
+import { supabase } from "@/integrations/supabase/client";
 
-// PLAN CONFIGURATION
-const PLANS = [
-  {
-    id: "emerging",
-    label: "Emerging",
-    price: 200,
-    annualAmount: 2400,
-    users: 3,
-    description: "Up to 3 users",
-    display: "$200/month <span class='text-sm font-normal'>(Paid Annually)</span>"
-  },
-  {
-    id: "mid",
-    label: "Mid-Market",
-    price: 300,
-    annualAmount: 3600,
-    users: 6,
-    description: "Up to 6 users",
-    display: "$300/month <span class='text-sm font-normal'>(Paid Annually)</span>"
-  },
-  {
-    id: "enterprise",
-    label: "Enterprise",
-    price: 500,
-    annualAmount: 6000,
-    users: "Unlimited",
-    description: "Unlimited users",
-    display: "$500/month <span class='text-sm font-normal'>(Paid Annually)</span>"
-  },
-  {
-    id: "firms",
-    label: "Firms",
-    price: null,
-    annualAmount: null,
-    users: null,
-    description: "Contact Sales",
-    display: "Contact Sales"
-  },
-];
-
-const PLAN_FEATURES = [
-  "Unlimited AI-generated memos",
-  "Free premium templates",
-  "Team collaboration tools",
-];
-
-// Helper functions to get Zapier webhook URLs from localStorage
-function getUserSignupZapierWebhookUrl() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("userSignupWebhookUrl") || "";
-  }
-  return "";
-}
-
-// New helper function to get firm signup webhook URL
-function getFirmSignupZapierWebhookUrl() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("firmSignupWebhookUrl") || "";
-  }
-  return "";
-}
-
-// Helper to match DB column names, updated to include plan, term, and amount
-function mapUserToDb(info: any) {
-  return {
-    first_name: info.firstName,
-    last_name: info.lastName,
-    email: info.email,
-    phone: info.phone,
-    company_id: info.company_id,
-    user_type: info.user_type || "user",
-    status: "active"
-  };
+// Firm Contact Form Component
+function FirmContactForm({ onSuccess }: { onSuccess: (data: any) => void }) {
+  return <ContactForm onSubmitSuccess={onSuccess} />;
 }
 
 export default function SignUp() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [paymentInfo, setPaymentInfo] = useState<any>(null);
-  const [showInfoForm, setShowInfoForm] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("emerging");
-  const [selectedTerm, setSelectedTerm] = useState("annual");
-  const [showFirmContact, setShowFirmContact] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    isLoading,
+    setIsLoading,
+    step,
+    setStep,
+    userInfo,
+    setUserInfo,
+    paymentInfo,
+    setPaymentInfo,
+    showInfoForm,
+    selectedPlan,
+    showFirmContact,
+    navigate,
+    toast,
+    handlePlanChange,
+    handleBackFromPayment,
+    handleSubscribeClick,
+  } = useSignupFlow();
 
-  // First form: user's details - force plan & term
+  // Form initialization
   const infoForm = useForm({
     defaultValues: {
       firstName: "",
@@ -112,12 +50,13 @@ export default function SignUp() {
       phone: "",
       company: "",
       plan: selectedPlan,
-      term: "annual", // <--- ensure annual as default
+      term: "annual",
       amount: getPlanLabel(selectedPlan),
+      billingContact: "",
+      billingEmail: "",
     },
   });
 
-  // Payment form for step 2
   const paymentForm = useForm({
     defaultValues: {
       cardNumber: "",
@@ -127,142 +66,8 @@ export default function SignUp() {
     },
   });
 
-  function getPlanObject(planId: string) {
-    return PLANS.find(p => p.id === planId) || PLANS[0];
-  }
-  function getPlanLabel(planId: string) {
-    const plan = getPlanObject(planId);
-    return plan ? plan.display : "Contact Sales";
-  }
-
-  // Helper: insert into Supabase user_signups table
-  async function createUserSignup(info: any) {
-    const dbInfo = mapUserToDb({ 
-      ...info, 
-      user_type: "user" 
-    });
-    const { data, error } = await supabase.from("users").insert([dbInfo]);
-    if (error) throw new Error(error.message);
-    return data;
-  }
-
-  // Helper: Create firm signup in Supabase - ensuring first_name/last_name are properly set
-  async function createFirmSignup(info: any) {
-    // First create the company
-    const { data: companyData, error: companyError } = await supabase
-      .from("companies")
-      .insert({
-        name: info.company,
-        plan: "firms",
-        status: "active",
-        amount: 0
-      })
-      .select()
-      .single();
-      
-    if (companyError) throw new Error(companyError.message);
-    
-    // Then create the user
-    const userData = {
-      first_name: info.firstName || info.firstname || "", 
-      last_name: info.lastName || info.lastname || "",    
-      email: info.email,
-      phone: info.phone,
-      company_id: companyData.id,
-      user_type: "user",
-      status: "active"
-    };
-    
-    console.log("Creating firm signup with data:", userData);
-    
-    const { data, error } = await supabase.from("users").insert([userData]);
-    if (error) throw new Error(error.message);
-    return data;
-  }
-
-  // Helper: Trigger zapier with all form data
-  async function triggerZapier(allData: any, isFirm: boolean = false) {
-    // Fetch dynamically from localStorage (set by admin panel)
-    const ZAPIER_WEBHOOK_URL = isFirm ? 
-      getFirmSignupZapierWebhookUrl() : 
-      getUserSignupZapierWebhookUrl();
-
-    if (!ZAPIER_WEBHOOK_URL) {
-      toast({
-        title: "Zapier not configured",
-        description: `No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups. Please set it in the Admin panel.`,
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    try {
-      console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
-      
-      // Format data to match Zapier email template field names
-      const formattedData = isFirm ? {
-        "Firm Name": allData.company,
-        "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
-        "Email": allData.email,
-        "Phone": allData.phone,
-        "Notes": allData.message || "",
-        "Submission Date": new Date().toISOString(),
-      } : allData;
-      
-      await fetch(ZAPIER_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        mode: "no-cors",
-        body: JSON.stringify(formattedData),
-      });
-      console.log("Zapier webhook triggered successfully");
-    } catch (err) {
-      console.error("Error triggering Zapier webhook:", err);
-      // Ignore non-blocking errors (no-cors)
-    }
-  }
-
-  // PLAN SELECTOR HANDLER
-  const handlePlanChange = (planId: string) => {
-    setSelectedPlan(planId);
-    infoForm.setValue("plan", planId);
-    infoForm.setValue("term", "annual"); // Hard set every plan change
-
-    if (planId === "firms") {
-      setShowFirmContact(true);
-      setShowInfoForm(false);
-    } else {
-      setShowFirmContact(false);
-      setShowInfoForm(false);
-    }
-    setStep(1);
-
-    const selectedPlan = PLANS.find(p => p.id === planId);
-    if (selectedPlan) {
-      infoForm.setValue("amount", selectedPlan.annualAmount);
-    }
-  };
-
-  // TERM SELECTOR HANDLER (not used in UI, but keep for future-proofing)
-  const handleTermChange = (term: string) => {
-    setSelectedTerm(term);
-    infoForm.setValue("term", term || "annual");
-  };
-
-  // STEP 1: Show pricing/plan selector
-  const handleSubscribeClick = () => {
-    setShowInfoForm(true);
-  };
-
-  // Back button handler for step 2
-  const handleBackFromPayment = () => {
-    setStep(1);
-    setPaymentInfo(null);
-  };
-
-  // STEP 1.5: User info form submit
+  // Form submission handlers
   const onInfoSubmit = (data: any) => {
-    // ALWAYS force annual
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -271,32 +76,31 @@ export default function SignUp() {
     }, 300);
   };
 
-  // STEP 2: Payment info form submit
   const onPaymentSubmit = async (paymentData: any) => {
     setIsLoading(true);
-
+    
     setTimeout(async () => {
       setPaymentInfo(paymentData);
       try {
-        // First create company
+        const selectedPlanObj = getPlanObject(selectedPlan);
+        
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
             name: userInfo.company,
             plan: selectedPlan,
             status: "active",
-            amount: PLANS.find(p => p.id === selectedPlan)?.annualAmount || 0,
+            amount: selectedPlanObj?.annualAmount || 0,
             billing_frequency: "annual",
             billing_contact: userInfo.billingContact,
             billing_email: userInfo.billingEmail,
-            paid_users: PLANS.find(p => p.id === selectedPlan)?.users?.toString() || '3'
+            paid_users: String(selectedPlanObj?.users || '3')
           })
           .select()
           .single();
           
         if (companyError) throw companyError;
         
-        // Then create user with first_name and last_name
         const userData = {
           first_name: userInfo.firstName,
           last_name: userInfo.lastName,
@@ -313,8 +117,15 @@ export default function SignUp() {
 
         if (userError) throw userError;
 
-        // Send allData (user details + payment) to Zapier for notification
-        const allData = { ...userInfo, ...paymentData, plan: selectedPlan, term: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
+        const allData = { 
+          ...userInfo, 
+          ...paymentData, 
+          plan: selectedPlan, 
+          term: "annual", 
+          amount: getPlanLabel(selectedPlan), 
+          signupDate: new Date().toISOString() 
+        };
+        
         await triggerZapier(allData);
 
         setIsLoading(false);
@@ -331,20 +142,17 @@ export default function SignUp() {
           description: err.message,
           variant: "destructive"
         });
-        return;
       }
     }, 1200);
   };
 
-  // FIRM CONTACT FORM handler
-  async function handleFirmContactSuccess(formData: any) {
+  // Firm contact form handler
+  const handleFirmContactSuccess = async (formData: any) => {
     try {
-      console.log("Form data received for firm contact:", formData); // Add logging
+      console.log("Form data received for firm contact:", formData);
       
-      // Save firm signup to database - ensure data has firstname/lastname
       await createFirmSignup(formData);
       
-      // Send firm data to Zapier
       await triggerZapier({
         ...formData,
         signupDate: new Date().toISOString(),
@@ -356,196 +164,147 @@ export default function SignUp() {
         description: "We've received your information and will be in touch soon.",
       });
       
-      setShowFirmContact(false);
       setStep(3);
     } catch (error: any) {
-      console.error("Firm signup error:", error); // Better error logging
+      console.error("Firm signup error:", error);
       toast({
         title: "Submission failed",
         description: error.message,
         variant: "destructive",
       });
     }
+  };
+
+  if (step === 3) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1 pt-28 pb-16">
+          <ResponsiveContainer>
+            <SignupSuccess
+              showFirmContact={showFirmContact}
+              userInfo={userInfo}
+              paymentInfo={paymentInfo}
+              selectedPlan={selectedPlan}
+              onHomeClick={() => navigate("/")}
+            />
+          </ResponsiveContainer>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
-  // --- MAIN RENDER ---
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 pt-28 pb-16">
         <ResponsiveContainer>
-          {step === 3 ? (
-            // Success/thank you step
-            <div className="text-center py-12">
-              <div className="flex justify-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                  <Check className="h-8 w-8 text-primary" />
-                </div>
-              </div>
-              <h1 className="text-3xl font-bold mb-4">Thank You for Your Submission!</h1>
-              <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                {showFirmContact
-                  ? "Our team will contact you soon to discuss your firm's needs."
-                  : "We've sent a confirmation email with your account details. You'll be able to access your account shortly."
-                }
-              </p>
-              {!showFirmContact && (
-                <div className="mb-8">
-                  <Card className="inline-block bg-muted/40 text-left">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Your Submitted Info</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+          <div className="mb-12 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Sign Up for Gaapio</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Get started with AI-powered accounting memos on our Annual Plan.
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto my-8">
+            <PlanTabs selectedPlan={selectedPlan} onPlanChange={handlePlanChange} />
+            
+            <div>
+              {selectedPlan !== "firms" ? (
+                <>
+                  {step === 1 && !showInfoForm && (
+                    <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40 glass-morphism">
+                      <CardHeader>
+                        <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
+                        <div className="mt-4">
+                          <span className="text-4xl font-bold" dangerouslySetInnerHTML={{ __html: getPlanLabel(selectedPlan) }} />
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 text-base mb-4">
+                          <li className="flex items-center">
+                            <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                            {getPlanObject(selectedPlan).description}
+                          </li>
+                          {PLAN_FEATURES.map(f => (
+                            <li className="flex items-center" key={f}>
+                              <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                      <CardFooter>
+                        <Button
+                          size="lg"
+                          className="w-full"
+                          onClick={handleSubscribeClick}
+                          disabled={isLoading}
+                          data-testid="subscribe-now-btn"
+                        >
+                          {isLoading ? "Processing..." : "Subscribe Now"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  )}
+                  {step === 1 && showInfoForm && (
+                    <SignUpInfoForm
+                      isLoading={isLoading}
+                      infoForm={infoForm}
+                      onSubmit={onInfoSubmit}
+                      ANNUAL_LABEL={getPlanLabel(selectedPlan)}
+                      plan={selectedPlan}
+                      term="annual"
+                    />
+                  )}
+                  {step === 2 && (
+                    <>
+                      <div className="max-w-2xl mx-auto">
+                        <div className="mb-2">
+                          <Button
+                            variant="outline"
+                            className="mb-4"
+                            onClick={handleBackFromPayment}
+                            disabled={isLoading}
+                          >
+                            Back
+                          </Button>
+                        </div>
+                        <SignUpPaymentForm
+                          isLoading={isLoading}
+                          paymentForm={paymentForm}
+                          onSubmit={onPaymentSubmit}
+                        />
+                      </div>
                       {userInfo && (
-                        <SignUpSummary userInfo={userInfo} paymentInfo={paymentInfo} ANNUAL_LABEL={getPlanLabel(selectedPlan)} />
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              )}
-              <Button onClick={() => navigate("/")} size="lg">
-                Return to Homepage
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="mb-12 text-center">
-                <h1 className="text-3xl md:text-4xl font-bold mb-4">Sign Up for Gaapio</h1>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Get started with AI-powered accounting memos on our Annual Plan.
-                </p>
-              </div>
-              {/* *** PLAN SELECTOR AS TABS *** */}
-              <div className="max-w-2xl mx-auto my-8">
-                <Tabs defaultValue={selectedPlan} value={selectedPlan} onValueChange={handlePlanChange}>
-                  <TabsList className="w-full mb-4 gap-0 overflow-hidden flex justify-between glass-morphism">
-                    {PLANS.map(plan => (
-                      <TabsTrigger
-                        key={plan.id}
-                        value={plan.id}
-                        className={`
-                          w-1/4 px-0 py-3 text-base rounded-none border-0
-                          font-medium tracking-tight transition-colors
-                          border-r border-muted last:border-r-0
-                          data-[state=active]:font-semibold
-                        `}
-                        style={{
-                          minWidth: 0,
-                          minHeight: 0,
-                        }}
-                        data-testid={`plan-tab-${plan.id}`}
-                      >
-                        {plan.label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                  {/* -- CARD FOR SELECTED PLAN OR FIRMS -- */}
-                  <div>
-                    {selectedPlan !== "firms" ? (
-                      <>
-                        {step === 1 && !showInfoForm && (
-                          <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg bg-muted/40 glass-morphism">
+                        <div className="max-w-2xl mx-auto mt-4 mb-4">
+                          <Card className="bg-background">
                             <CardHeader>
-                              <CardTitle className="text-2xl">{getPlanObject(selectedPlan).label} Subscription</CardTitle>
-                              {/* Only show CardDescription except on Emerging */}
-                              {selectedPlan !== "emerging" && (
-                                <div className="mt-1 text-muted-foreground text-base">{/* no extra label */}</div>
-                              )}
-                              <div className="mt-4">
-                                <span className="text-4xl font-bold" dangerouslySetInnerHTML={{ __html: getPlanLabel(selectedPlan) }} />
-                              </div>
+                              <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
                             </CardHeader>
                             <CardContent>
-                              <ul className="space-y-2 text-base mb-4">
-                                {/* Move users at TOP */}
-                                {getPlanObject(selectedPlan).users && (
-                                  <li className="flex items-center">
-                                    <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                                    {getPlanObject(selectedPlan).description}
-                                  </li>
-                                )}
-                                {PLAN_FEATURES.map(f => (
-                                  <li className="flex items-center" key={f}>
-                                    <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                                    {f}
-                                  </li>
-                                ))}
-                              </ul>
+                              <SignUpSummary userInfo={userInfo} ANNUAL_LABEL={getPlanLabel(selectedPlan)} />
                             </CardContent>
-                            <CardFooter>
-                              <Button
-                                size="lg"
-                                className="w-full"
-                                type="button"
-                                onClick={handleSubscribeClick}
-                                disabled={isLoading}
-                                data-testid="subscribe-now-btn"
-                              >
-                                {isLoading ? "Processing..." : "Subscribe Now"}
-                              </Button>
-                            </CardFooter>
                           </Card>
-                        )}
-                        {step === 1 && showInfoForm && (
-                          <SignUpInfoForm
-                            isLoading={isLoading}
-                            infoForm={infoForm}
-                            onSubmit={onInfoSubmit}
-                            ANNUAL_LABEL={getPlanLabel(selectedPlan)}
-                            plan={selectedPlan}
-                            term={"annual"}
-                          />
-                        )}
-                        {step === 2 && (
-                          <div className="max-w-2xl mx-auto">
-                            <div className="mb-2">
-                              <Button
-                                variant="outline"
-                                className="mb-4"
-                                type="button"
-                                onClick={handleBackFromPayment}
-                                disabled={isLoading}
-                              >
-                                Back
-                              </Button>
-                            </div>
-                            <SignUpPaymentForm
-                              isLoading={isLoading}
-                              paymentForm={paymentForm}
-                              onSubmit={onPaymentSubmit}
-                            />
-                          </div>
-                        )}
-                        {step === 2 && userInfo && (
-                          <div className="max-w-2xl mx-auto mt-4 mb-4">
-                            <Card className="bg-background">
-                              <CardHeader>
-                                <CardTitle className="text-base font-bold">Review Your Info</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <SignUpSummary userInfo={userInfo} ANNUAL_LABEL={getPlanLabel(selectedPlan)} />
-                              </CardContent>
-                            </Card>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      // FIRMS CARD, improved card effect and overlay for both modes
-                      <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg glass-morphism">
-                        <CardHeader>
-                          <CardTitle className="text-2xl !text-foreground">Firm</CardTitle>
-                          <div className="mt-2 text-3xl font-bold !text-foreground">Contact Sales</div>
-                        </CardHeader>
-                        <CardContent>
-                          <FirmContactForm onSuccess={handleFirmContactSuccess} />
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                </Tabs>
-              </div>
-            </>
-          )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                <Card className="w-full max-w-2xl mx-auto my-6 border-primary shadow-lg glass-morphism">
+                  <CardHeader>
+                    <CardTitle className="text-2xl !text-foreground">Firm</CardTitle>
+                    <div className="mt-2 text-3xl font-bold !text-foreground">Contact Sales</div>
+                  </CardHeader>
+                  <CardContent>
+                    <FirmContactForm onSuccess={handleFirmContactSuccess} />
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
         </ResponsiveContainer>
       </main>
       <Footer />
@@ -553,8 +312,83 @@ export default function SignUp() {
   );
 }
 
-// --- FIRM CONTACT FORM COMPONENT ---
-import { ContactForm } from "@/components/contact/ContactForm";
-function FirmContactForm({ onSuccess }: { onSuccess: (data: any) => void }) {
-  return <ContactForm onSubmitSuccess={onSuccess} />;
+// Helper functions
+async function createFirmSignup(formData: any) {
+  // Create the company
+  const { data: companyData, error: companyError } = await supabase
+    .from("companies")
+    .insert({
+      name: formData.company,
+      plan: "firms",
+      status: "active",
+      amount: 0
+    })
+    .select()
+    .single();
+    
+  if (companyError) throw companyError;
+  
+  // Then create the user
+  const userData = {
+    first_name: formData.firstName || formData.firstname || "", 
+    last_name: formData.lastName || formData.lastname || "",    
+    email: formData.email,
+    phone: formData.phone,
+    company_id: companyData.id,
+    user_type: "user",
+    status: "active"
+  };
+  
+  const { error: userError } = await supabase
+    .from("users")
+    .insert([userData]);
+    
+  if (userError) throw userError;
+}
+
+async function triggerZapier(allData: any, isFirm: boolean = false) {
+  const ZAPIER_WEBHOOK_URL = isFirm ? 
+    getFirmSignupZapierWebhookUrl() : 
+    getUserSignupZapierWebhookUrl();
+
+  if (!ZAPIER_WEBHOOK_URL) {
+    throw new Error(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
+  }
+  
+  try {
+    console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
+    
+    const formattedData = isFirm ? {
+      "Firm Name": allData.company,
+      "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
+      "Email": allData.email,
+      "Phone": allData.phone,
+      "Notes": allData.message || "",
+      "Submission Date": new Date().toISOString(),
+    } : allData;
+    
+    await fetch(ZAPIER_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      body: JSON.stringify(formattedData),
+    });
+    console.log("Zapier webhook triggered successfully");
+  } catch (err) {
+    console.error("Error triggering Zapier webhook:", err);
+  }
+}
+
+function getUserSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userSignupWebhookUrl") || "";
+  }
+  return "";
+}
+
+function getFirmSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("firmSignupWebhookUrl") || "";
+  }
+  return "";
 }
