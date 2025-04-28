@@ -54,6 +54,7 @@ export type Database = {
           logo_url: string | null
           name: string
           notes: string | null
+          paid_users: string | null
           plan: string
           signup_date: string
           status: string
@@ -72,6 +73,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           notes?: string | null
+          paid_users?: string | null
           plan: string
           signup_date?: string
           status: string
@@ -90,6 +92,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           notes?: string | null
+          paid_users?: string | null
           plan?: string
           signup_date?: string
           status?: string

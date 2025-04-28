@@ -20,24 +20,27 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const PLANS = [
   {
     id: "emerging",
-    label: "Emerging", // Removed "Annual"
+    label: "Emerging",
     price: 200,
+    annualAmount: 2400,
     users: 3,
     description: "Up to 3 users",
-    display: "$200/month <span class='text-sm font-normal'>(Paid Annually)</span>" // Added span for styling
+    display: "$200/month <span class='text-sm font-normal'>(Paid Annually)</span>"
   },
   {
     id: "mid",
-    label: "Mid-Market", // Removed "Annual"
+    label: "Mid-Market",
     price: 300,
+    annualAmount: 3600,
     users: 6,
     description: "Up to 6 users",
     display: "$300/month <span class='text-sm font-normal'>(Paid Annually)</span>"
   },
   {
     id: "enterprise",
-    label: "Enterprise", // Removed "Annual"
+    label: "Enterprise",
     price: 500,
+    annualAmount: 6000,
     users: "Unlimited",
     description: "Unlimited users",
     display: "$500/month <span class='text-sm font-normal'>(Paid Annually)</span>"
@@ -46,6 +49,7 @@ const PLANS = [
     id: "firms",
     label: "Firms",
     price: null,
+    annualAmount: null,
     users: null,
     description: "Contact Sales",
     display: "Contact Sales"
@@ -232,6 +236,11 @@ export default function SignUp() {
       setShowInfoForm(false);
     }
     setStep(1);
+
+    const selectedPlan = PLANS.find(p => p.id === planId);
+    if (selectedPlan) {
+      infoForm.setValue("amount", selectedPlan.annualAmount);
+    }
   };
 
   // TERM SELECTOR HANDLER (not used in UI, but keep for future-proofing)
@@ -268,23 +277,26 @@ export default function SignUp() {
 
     setTimeout(async () => {
       setPaymentInfo(paymentData);
-      // First create company
       try {
+        // First create company
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
             name: userInfo.company,
             plan: selectedPlan,
             status: "active",
-            amount: 0, // We'll handle this with Stripe later
-            billing_frequency: "annual"
+            amount: PLANS.find(p => p.id === selectedPlan)?.annualAmount || 0,
+            billing_frequency: "annual",
+            billing_contact: userInfo.billingContact,
+            billing_email: userInfo.billingEmail,
+            paid_users: PLANS.find(p => p.id === selectedPlan)?.users?.toString() || '3'
           })
           .select()
           .single();
           
         if (companyError) throw companyError;
         
-        // Then create user
+        // Then create user with first_name and last_name
         const userData = {
           first_name: userInfo.firstName,
           last_name: userInfo.lastName,
@@ -295,24 +307,32 @@ export default function SignUp() {
           status: "active"
         };
         
-        await supabase.from("users").insert([userData]);
+        const { error: userError } = await supabase
+          .from("users")
+          .insert([userData]);
+
+        if (userError) throw userError;
+
+        // Send allData (user details + payment) to Zapier for notification
+        const allData = { ...userInfo, ...paymentData, plan: selectedPlan, term: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
+        await triggerZapier(allData);
+
+        setIsLoading(false);
+        setStep(3);
+
+        toast({
+          title: "Thank you for subscribing to Gaapio!",
+          description: "We've received your info. You'll receive a confirmation soon.",
+        });
       } catch (err: any) {
         setIsLoading(false);
-        toast({ title: "Submission failed", description: err.message, variant: "destructive" });
+        toast({
+          title: "Error",
+          description: err.message,
+          variant: "destructive"
+        });
         return;
       }
-
-      // Send allData (user details + payment) to Zapier for notification
-      const allData = { ...userInfo, ...paymentData, plan: selectedPlan, term: "annual", amount: getPlanLabel(selectedPlan), signupDate: new Date().toISOString() };
-      await triggerZapier(allData);
-
-      setIsLoading(false);
-      setStep(3);
-
-      toast({
-        title: "Thank you for subscribing to Gaapio!",
-        description: "We've received your info. You'll receive a confirmation soon.",
-      });
     }, 1200);
   };
 
