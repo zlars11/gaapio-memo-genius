@@ -1,9 +1,10 @@
-
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -66,28 +67,32 @@ export default function Contact() {
   };
 
   return (
-    <div className="py-16 min-h-screen">
-      <ResponsiveContainer className="max-w-3xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
-        
-        <p className="text-lg text-muted-foreground mb-8">
-          Have questions or want to learn more about our platform? Contact us using the form below
-          and a member of our team will get back to you as soon as possible.
-        </p>
-        
-        {isSubmitted ? (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center shadow-sm">
-            <h3 className="text-xl font-semibold text-green-800 mb-2">Thank You!</h3>
-            <p className="text-green-700">
-              Your submission has been received. A representative will reach out to you shortly.
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white border rounded-lg p-8 shadow-sm">
-            <ContactForm onSubmitSuccess={handleFirmSignupSubmit} />
-          </div>
-        )}
-      </ResponsiveContainer>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 py-16">
+        <ResponsiveContainer className="max-w-3xl">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
+          
+          <p className="text-lg text-muted-foreground mb-8">
+            Have questions or want to learn more about our platform? Contact us using the form below
+            and a member of our team will get back to you as soon as possible.
+          </p>
+          
+          {isSubmitted ? (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center shadow-sm">
+              <h3 className="text-xl font-semibold text-green-800 mb-2">Thank You!</h3>
+              <p className="text-green-700">
+                Your submission has been received. A representative will reach out to you shortly.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-card border rounded-lg p-8 shadow-sm">
+              <ContactForm onSubmitSuccess={handleFirmSignupSubmit} />
+            </div>
+          )}
+        </ResponsiveContainer>
+      </main>
+      <Footer />
     </div>
   );
 }
