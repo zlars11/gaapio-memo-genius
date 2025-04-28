@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Company, CompanyPlan, CompanyDetailsFormProps } from "../types/companyTypes";
@@ -8,20 +9,12 @@ export function CompanyDetailsForm({
   onPlanChange,
   onStatusChange,
 }: CompanyDetailsFormProps) {
-  // Handle number inputs separately to ensure proper type conversion
+  // Handle number inputs to ensure proper string conversion
   const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    // We'll pass the original event but modify the handler logic instead of 
-    // trying to create a synthetic event with a number value
-    onInputChange({
-      ...e,
-      target: {
-        ...e.target,
-        // Keep value as string in the event but treat it specially in the handler
-        value: value
-      }
-    });
+    // Pass the original event to the parent handler
+    onInputChange(e);
   };
 
   return (

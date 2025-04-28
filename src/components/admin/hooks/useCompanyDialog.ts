@@ -52,11 +52,17 @@ export function useCompanyDialog(company: Partial<Company>) {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // Convert string values to numbers for number fields
-    if (name === 'user_limit' || name === 'amount') {
+    // Handle special cases for numeric fields
+    if (name === 'amount') {
       setFormData(prev => ({
         ...prev,
-        [name]: value === '' ? null : Number(value)
+        [name]: value === '' ? 0 : Number(value)
+      }));
+    } else if (name === 'user_limit') {
+      setFormData(prev => ({
+        ...prev,
+        // Store user_limit as string (empty string will be converted to null later)
+        [name]: value === '' ? null : value
       }));
     } else {
       setFormData(prev => ({

@@ -10,7 +10,7 @@ export interface Company {
   status: 'active' | 'inactive';
   created_at: string;
   updated_at: string;
-  user_limit?: number | null;
+  user_limit?: string | null;
   billing_contact?: string | null;
   billing_email?: string | null;
   billing_frequency?: string | null;
