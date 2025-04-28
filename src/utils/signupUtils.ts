@@ -7,7 +7,7 @@ export async function createFirmSignup(formData: any) {
     .from("companies")
     .insert({
       name: formData.company,
-      plan: "firm",  // Updated from "firms" to match the constraint
+      plan: "firm",  // Using "firm" to match the database constraint
       status: "active",
       amount: 0
     })
@@ -48,7 +48,7 @@ export async function handleSignup(formData: any): Promise<{
     if (dbPlan === "mid") {
       dbPlan = "mid-market";
     } else if (dbPlan === "firms") {
-      dbPlan = "firm";
+      dbPlan = "firm";  // Changed from "firms" to "firm"
     }
     
     // Create the company

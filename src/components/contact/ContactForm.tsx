@@ -62,12 +62,12 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
         return;
       }
 
-      // Create company first
+      // Create company first - using 'firm' instead of 'firms' to match the database constraint
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .insert([{
           name: normalizedCompanyName,
-          plan: "firms",
+          plan: "firm", // Changed from "firms" to "firm" to match the database constraint
           amount: 0,
           status: "active",
           billing_frequency: "annual"

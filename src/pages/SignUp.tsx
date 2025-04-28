@@ -87,7 +87,7 @@ export default function SignUp() {
         if (selectedPlan === "mid") {
           dbPlan = "mid-market";
         } else if (selectedPlan === "firms") {
-          dbPlan = "firm";
+          dbPlan = "firm"; // Changed from "firms" to "firm" to match the database constraint
         }
         
         console.log("Creating company with plan:", dbPlan);
