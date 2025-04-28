@@ -21,21 +21,25 @@ export function useDemoRequestForm() {
 
   const getDemoWebhookUrl = () => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("demoRequestWebhookUrl") || "";
+      const url = localStorage.getItem("demoRequestWebhookUrl") || "";
+      console.log("Retrieved webhook URL from localStorage:", url);
+      return url;
     }
     return "";
   };
 
   const onSubmit = async (data: DemoRequestFormData) => {
     setIsLoading(true);
+    console.log("Form submitted with data:", data);
+    
     try {
       // First, trigger Zapier webhook if URL is set
       const webhookUrl = getDemoWebhookUrl();
       
       if (webhookUrl) {
+        console.log("Attempting to trigger Zapier webhook:", webhookUrl);
+        
         try {
-          console.log("Triggering Zapier webhook for demo request:", webhookUrl);
-          
           // Format data with field names for Zapier
           const zapierData = {
             "Name": `${data.firstName} ${data.lastName}`,
@@ -46,25 +50,33 @@ export function useDemoRequestForm() {
             "Source": "Demo Request Form"
           };
 
-          // Use the fetch API to trigger the webhook
+          console.log("Sending data to Zapier:", zapierData);
+
+          // Use the fetch API to trigger the webhook with better error handling
           const zapierResponse = await fetch(webhookUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            mode: "no-cors",
+            mode: "no-cors", // Required for cross-origin requests
             body: JSON.stringify(zapierData),
+          }).catch(err => {
+            console.error("Fetch error:", err);
+            throw err;
           });
           
-          console.log("Zapier webhook triggered with response:", zapierResponse);
+          console.log("Zapier webhook request completed");
+          // Cannot check status with mode: "no-cors" but log what we can
+          console.log("Response type:", zapierResponse?.type);
         } catch (err) {
           console.error("Error triggering Zapier webhook:", err);
           // Don't throw error here as we still want to save to the database
         }
       } else {
-        console.log("No Zapier webhook URL configured for demo requests");
+        console.warn("No Zapier webhook URL configured for demo requests");
       }
 
+      console.log("Saving to database...");
       // Then, save to database
       const { error } = await supabase
         .from("demo_requests")
@@ -76,8 +88,12 @@ export function useDemoRequestForm() {
           notes: data.notes,
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
 
+      console.log("Demo request saved successfully");
       toast({
         title: "Demo request submitted",
         description: "Thank you for your interest! We'll be in touch soon.",
@@ -85,6 +101,7 @@ export function useDemoRequestForm() {
       
       form.reset();
     } catch (error: any) {
+      console.error("Form submission error:", error);
       toast({
         title: "Error",
         description: error.message,
