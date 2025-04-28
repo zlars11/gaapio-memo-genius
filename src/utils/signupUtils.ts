@@ -1,161 +1,82 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
-/**
- * Normalizes a company name (lowercase and trimmed)
- */
-export function normalizeCompanyName(name: string): string {
-  return name.trim().toLowerCase();
-}
-
-/**
- * Checks if a company exists by name
- */
-export async function checkCompanyExists(companyName: string): Promise<{ exists: boolean; id?: string }> {
-  const normalizedName = normalizeCompanyName(companyName);
-  
-  const { data, error } = await supabase
-    .from("companies")
-    .select("id")
-    .ilike("name", normalizedName)
-    .single();
-    
-  if (error && error.code !== 'PGRST116') {
-    console.error("Error checking company:", error);
-    throw new Error(error.message);
-  }
-  
-  return {
-    exists: !!data,
-    id: data?.id
-  };
-}
-
-/**
- * Creates a new company
- */
-export async function createCompany(
-  companyName: string, 
-  plan: 'emerging' | 'mid-market' | 'enterprise' | 'firm' = 'emerging'
-): Promise<string> {
-  const normalizedName = normalizeCompanyName(companyName);
-  
-  const { data, error } = await supabase
+export async function createFirmSignup(formData: any) {
+  // Create the company
+  const { data: companyData, error: companyError } = await supabase
     .from("companies")
     .insert({
-      name: normalizedName,
-      plan,
-      amount: 0,
+      name: formData.company,
+      plan: "firm",  // Updated from "firms" to match the constraint
       status: "active",
-      billing_frequency: "annual"
+      amount: 0
     })
     .select()
     .single();
     
-  if (error) {
-    console.error("Error creating company:", error);
-    throw new Error(error.message);
-  }
+  if (companyError) throw companyError;
   
-  return data.id;
-}
-
-/**
- * Creates a new user linked to a company
- */
-export async function createUser({
-  first_name,
-  last_name,
-  email,
-  phone,
-  company_id,
-  user_type = 'user'
-}: {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone?: string;
-  company_id: string;
-  user_type?: 'user' | 'approver' | 'admin';
-}): Promise<string> {
-  const { data, error } = await supabase
+  // Then create the user
+  const userData = {
+    first_name: formData.firstName || formData.firstname || "", 
+    last_name: formData.lastName || formData.lastname || "",    
+    email: formData.email,
+    phone: formData.phone,
+    company_id: companyData.id,
+    user_type: "user",
+    status: "active"
+  };
+  
+  const { error: userError } = await supabase
     .from("users")
-    .insert({
-      first_name,
-      last_name,
-      email,
-      phone: phone || "",
-      company_id,
-      user_type,
-      status: "active"
-    })
-    .select()
-    .single();
+    .insert([userData]);
     
-  if (error) {
-    console.error("Error creating user:", error);
-    throw new Error(error.message);
-  }
-  
-  return data.id;
+  if (userError) throw userError;
 }
 
-/**
- * Handles the complete signup process in a transaction-like manner
- */
-export async function handleSignup({
-  first_name,
-  last_name,
-  company,
-  email,
-  phone,
-  user_type = 'user',
-  plan = 'emerging'
-}: {
-  first_name: string;
-  last_name: string;
-  company: string;
-  email: string;
-  phone: string;
-  user_type?: 'user' | 'approver' | 'admin';
-  plan?: 'emerging' | 'mid-market' | 'enterprise' | 'firm';
-}): Promise<{ success: boolean; company_id?: string; user_id?: string; error?: string }> {
-  try {
-    // Normalize company name
-    const normalizedCompanyName = normalizeCompanyName(company);
-    
-    // Check if company exists
-    const { exists, id: existingCompanyId } = await checkCompanyExists(normalizedCompanyName);
-    
-    // Get or create company
-    let company_id: string;
-    if (exists && existingCompanyId) {
-      company_id = existingCompanyId;
-    } else {
-      company_id = await createCompany(normalizedCompanyName, plan);
-    }
-    
-    // Create user
-    const user_id = await createUser({
-      first_name,
-      last_name,
-      email,
-      phone,
-      company_id,
-      user_type
-    });
-    
-    return {
-      success: true,
-      company_id,
-      user_id
-    };
-    
-  } catch (error: any) {
-    console.error("Signup error:", error);
-    return {
-      success: false,
-      error: error.message || "An unknown error occurred during signup"
-    };
+export async function triggerZapier(allData: any, isFirm: boolean = false) {
+  const ZAPIER_WEBHOOK_URL = isFirm ? 
+    getFirmSignupZapierWebhookUrl() : 
+    getUserSignupZapierWebhookUrl();
+
+  if (!ZAPIER_WEBHOOK_URL) {
+    throw new Error(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
   }
+  
+  try {
+    console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
+    
+    const formattedData = isFirm ? {
+      "Firm Name": allData.company,
+      "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
+      "Email": allData.email,
+      "Phone": allData.phone,
+      "Notes": allData.message || "",
+      "Submission Date": new Date().toISOString(),
+    } : allData;
+    
+    await fetch(ZAPIER_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      body: JSON.stringify(formattedData),
+    });
+    console.log("Zapier webhook triggered successfully");
+  } catch (err) {
+    console.error("Error triggering Zapier webhook:", err);
+  }
+}
+
+export function getUserSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("userSignupWebhookUrl") || "";
+  }
+  return "";
+}
+
+export function getFirmSignupZapierWebhookUrl() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("firmSignupWebhookUrl") || "";
+  }
+  return "";
 }
