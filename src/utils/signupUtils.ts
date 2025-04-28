@@ -34,6 +34,78 @@ export async function createFirmSignup(formData: any) {
   if (userError) throw userError;
 }
 
+export async function handleSignup(formData: any): Promise<{
+  success: boolean;
+  error?: string;
+  company_id?: string;
+  user_id?: string;
+}> {
+  try {
+    console.log("Handling signup with data:", formData);
+    
+    // Make sure plan value matches valid database options
+    let dbPlan = formData.plan || "emerging";
+    if (dbPlan === "mid") {
+      dbPlan = "mid-market";
+    } else if (dbPlan === "firms") {
+      dbPlan = "firm";
+    }
+    
+    // Create the company
+    const { data: companyData, error: companyError } = await supabase
+      .from("companies")
+      .insert({
+        name: formData.company,
+        plan: dbPlan,
+        status: "active",
+        amount: formData.amount || 0,
+        billing_frequency: formData.term || "annual",
+      })
+      .select()
+      .single();
+      
+    if (companyError) {
+      console.error("Company creation error:", companyError);
+      return { success: false, error: companyError.message };
+    }
+    
+    // Then create the user
+    const userData = {
+      first_name: formData.first_name || formData.firstName || "",
+      last_name: formData.last_name || formData.lastName || "",
+      email: formData.email,
+      phone: formData.phone || "",
+      company_id: companyData.id,
+      user_type: formData.user_type || "user",
+      status: "active"
+    };
+    
+    const { data: userResult, error: userError } = await supabase
+      .from("users")
+      .insert([userData])
+      .select()
+      .single();
+    
+    if (userError) {
+      console.error("User creation error:", userError);
+      return { success: false, error: userError.message };
+    }
+    
+    return { 
+      success: true, 
+      company_id: companyData.id, 
+      user_id: userResult.id 
+    };
+    
+  } catch (err: any) {
+    console.error("Signup error:", err);
+    return { 
+      success: false, 
+      error: err.message || "An unexpected error occurred during signup"
+    };
+  }
+}
+
 export async function triggerZapier(allData: any, isFirm: boolean = false) {
   const ZAPIER_WEBHOOK_URL = isFirm ? 
     getFirmSignupZapierWebhookUrl() : 
