@@ -51,12 +51,6 @@ export const HeroSection = memo(function HeroSection() {
     };
   }, []);
 
-  const scrollToHowItWorks = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const section = document.getElementById('how-it-works');
-    section?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
       {/* Background Memo Image - More Transparent */}
@@ -84,22 +78,15 @@ export const HeroSection = memo(function HeroSection() {
             {isClient && showSignUp ? (
               <Link to="/signup">Sign Up Now</Link>
             ) : (
-              <a href="#waitlist">Join the Waitlist</a>
+              <Link to="/contact">See a demo</Link>
             )}
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="#demo" onClick={scrollToHowItWorks}>See a demo</a>
+            <Link to="/contact">Request a demo</Link>
           </Button>
         </div>
         <div className="animate-fade-up" style={{ animationDelay: "300ms" }}>
-          <a 
-            href="#how-it-works" 
-            onClick={scrollToHowItWorks}
-            aria-label="Scroll down to learn more"
-            className="inline-block focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full"
-          >
-            <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow" aria-hidden="true" />
-          </a>
+          <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow" aria-hidden="true" />
         </div>
       </div>
     </section>
