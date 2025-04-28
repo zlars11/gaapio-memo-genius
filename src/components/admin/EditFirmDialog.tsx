@@ -24,6 +24,10 @@ export function EditFirmDialog({
 }: EditFirmDialogProps) {
   
   const handleSaveClick = () => {
+    // Ensure plan is set to "firm" before saving
+    if (formData && formData.plan === "firms") {
+      formData.plan = "firm";
+    }
     onSave();
   };
 

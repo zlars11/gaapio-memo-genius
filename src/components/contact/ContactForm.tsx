@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface ContactFormProps {
   onSubmitSuccess?: (data: any) => void;
+  planType?: string; // Add a prop to specify the plan type
 }
 
 interface ContactFormValues {
@@ -21,7 +22,7 @@ interface ContactFormValues {
   message: string;
 }
 
-export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
+export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   
@@ -62,12 +63,12 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
         return;
       }
 
-      // Create company first - using 'firm' instead of 'firms' to match the database constraint
+      // Create company first - using the planType prop to ensure we use the correct plan value
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .insert([{
           name: normalizedCompanyName,
-          plan: "firm", // Changed from "firms" to "firm" to match the database constraint
+          plan: planType, // Use the planType prop instead of hardcoding "firm"
           amount: 0,
           status: "active",
           billing_frequency: "annual"

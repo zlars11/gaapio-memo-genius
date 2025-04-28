@@ -6,5 +6,6 @@ interface FirmContactFormProps {
 }
 
 export function FirmContactForm({ onSuccess }: FirmContactFormProps) {
-  return <ContactForm onSubmitSuccess={onSuccess} />;
+  // Ensure we're passing the correct plan value to ContactForm
+  return <ContactForm onSubmitSuccess={onSuccess} planType="firm" />;
 }

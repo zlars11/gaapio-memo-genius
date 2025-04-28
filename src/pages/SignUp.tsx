@@ -165,10 +165,16 @@ export default function SignUp() {
     try {
       console.log("Form data received for firm contact:", formData);
       
-      await createFirmSignup(formData);
+      // Ensure formData has the correct plan before passing it to createFirmSignup
+      const updatedFormData = {
+        ...formData,
+        plan: "firm" // Make sure to use "firm" instead of "firms"
+      };
+      
+      await createFirmSignup(updatedFormData);
       
       await triggerZapier({
-        ...formData,
+        ...updatedFormData,
         signupDate: new Date().toISOString(),
         type: "firm"
       }, true);
