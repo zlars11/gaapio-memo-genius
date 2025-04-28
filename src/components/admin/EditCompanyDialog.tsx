@@ -59,7 +59,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
           plan: formData.plan,
           status: formData.status,
           amount: formData.amount,
-          user_limit: formData.user_limit, // This will be a number now
+          user_limit: formData.user_limit === '' ? null : formData.user_limit,
           billing_contact: formData.billing_contact,
           billing_email: formData.billing_email,
           billing_frequency: formData.billing_frequency

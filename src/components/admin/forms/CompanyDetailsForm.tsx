@@ -1,14 +1,7 @@
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Company, CompanyPlan } from "../types/companyTypes";
-
-interface CompanyDetailsFormProps {
-  formData: Partial<Company>;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  onPlanChange: (value: CompanyPlan) => void;
-  onStatusChange: (value: "active" | "inactive") => void;
-}
+import { Company, CompanyPlan, CompanyDetailsFormProps } from "../types/companyTypes";
 
 export function CompanyDetailsForm({
   formData,
@@ -19,18 +12,15 @@ export function CompanyDetailsForm({
   // Handle number inputs separately to ensure proper type conversion
   const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const numberValue = value === '' ? null : Number(value);
     
-    const event = {
+    // Create a new event with a properly typed value
+    onInputChange({
       ...e,
       target: {
         ...e.target,
-        name,
-        value: numberValue
+        value: value === '' ? null : Number(value)
       }
-    } as React.ChangeEvent<HTMLInputElement>;
-    
-    onInputChange(event);
+    } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>);
   };
 
   return (
