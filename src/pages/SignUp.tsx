@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
@@ -93,6 +92,12 @@ export default function SignUp() {
         
         console.log("Creating company with plan:", dbPlan);
         
+        // Get user limit as string (handle "Unlimited" for enterprise)
+        let userLimit: string | null = String(selectedPlanObj?.users || '3');
+        if (userLimit === "Unlimited") {
+          userLimit = null; // Store as null for unlimited users
+        }
+        
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
@@ -103,7 +108,7 @@ export default function SignUp() {
             billing_frequency: "annual",
             billing_contact: paymentData.billingContact, // Use billing data from payment form
             billing_email: paymentData.billingEmail, // Use billing data from payment form
-            paid_users: String(selectedPlanObj?.users || '3')
+            user_limit: userLimit  // Use correct column name with proper string value
           })
           .select()
           .single();
