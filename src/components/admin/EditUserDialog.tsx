@@ -54,10 +54,12 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
       return;
     }
     
+    const userType = value as 'user' | 'approver' | 'admin';
+    
     handleFieldChange({
       target: { 
         name: 'user_type', 
-        value: value as 'user' | 'approver' | 'admin'
+        value: userType
       }
     } as React.ChangeEvent<HTMLInputElement>);
   };
