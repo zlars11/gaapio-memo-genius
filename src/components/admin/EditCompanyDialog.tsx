@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { CompanyDetailsForm } from "./forms/CompanyDetailsForm";
 import { CompanyUsersForm } from "./forms/CompanyUsersForm";
+import { CompanyBillingForm } from "./forms/CompanyBillingForm";
 import { Company, CompanyPlan } from "./types/companyTypes";
 import { User } from "./types/userTypes";
 import { useCompanyDialog } from "./hooks/useCompanyDialog";
@@ -32,8 +33,22 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
     handleStatusChange,
     setEditUser,
     setUserDialogOpen,
-    setCreateUserDialogOpen
+    setCreateUserDialogOpen,
+    fetchUsers,
+    newUser,
+    setNewUser,
+    handleCreateUser,
+    handleEditUser,
+    handleSaveUser,
+    handleDeleteUser
   } = useCompanyDialog(company);
+
+  // Fetch users when the dialog opens
+  useEffect(() => {
+    if (company.id) {
+      fetchUsers(company.id);
+    }
+  }, [company.id]);
 
   const handleSaveCompany = async () => {
     try {
@@ -43,7 +58,11 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
           name: formData.name,
           plan: formData.plan,
           status: formData.status,
-          amount: formData.amount
+          amount: formData.amount,
+          user_limit: formData.user_limit,
+          billing_contact: formData.billing_contact,
+          billing_email: formData.billing_email,
+          billing_frequency: formData.billing_frequency
         })
         .eq("id", company.id);
 
@@ -74,6 +93,7 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
       <Tabs defaultValue="details" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="details">Company Details</TabsTrigger>
+          <TabsTrigger value="billing">Billing</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
         </TabsList>
 
@@ -83,6 +103,14 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
             onInputChange={handleInputChange}
             onPlanChange={handlePlanChange}
             onStatusChange={handleStatusChange}
+          />
+        </TabsContent>
+        
+        <TabsContent value="billing">
+          <CompanyBillingForm 
+            formData={formData} 
+            onInputChange={handleInputChange}
+            companyId={company.id}
           />
         </TabsContent>
 
@@ -95,10 +123,16 @@ export function EditCompanyDialog({ company, onSave, onClose }: EditCompanyDialo
             loadingUsers={loadingUsers}
             createUserDialogOpen={createUserDialogOpen}
             setCreateUserDialogOpen={setCreateUserDialogOpen}
+            newUser={newUser}
+            setNewUser={setNewUser}
+            handleCreateUser={handleCreateUser}
             editUser={editUser as NormalizedUser | null}
             userDialogOpen={userDialogOpen}
             setUserDialogOpen={setUserDialogOpen}
             setEditUser={setEditUser}
+            handleEditUser={handleEditUser}
+            handleSaveUser={handleSaveUser}
+            handleDeleteUser={handleDeleteUser}
           />
         </TabsContent>
       </Tabs>

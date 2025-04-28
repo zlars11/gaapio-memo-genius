@@ -60,17 +60,17 @@ export function UserInfoForm({
         <Input id="company" name="company" value={fields.company} onChange={onChange} placeholder="Company" />
       </div>
       <div>
-        <Label htmlFor="plan">Plan</Label>
+        <Label htmlFor="user_type">User Type</Label>
         <select 
-          id="plan" 
-          name="plan" 
+          id="user_type" 
+          name="user_type" 
           value={plan} 
-          onChange={onPlanChange}
+          onChange={onUserTypeChange}
           className="w-full border rounded px-3 py-2 bg-background text-foreground"
         >
-          {PLAN_OPTIONS.map(opt => (
-            <option value={opt.value} key={opt.value}>{opt.label}</option>
-          ))}
+          <option value="admin">Admin</option>
+          <option value="approver">Approver</option>
+          <option value="user">User</option>
         </select>
       </div>
       <div>

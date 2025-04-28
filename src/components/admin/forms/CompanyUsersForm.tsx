@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit } from "lucide-react";
-import { Database } from "@/integrations/supabase/types";
 import EditUserDialog from "../EditUserDialog";
 import { formatDate } from "@/lib/utils";
 import { User } from "../types/userTypes";
@@ -19,16 +18,15 @@ interface CompanyUsersFormProps {
   companyId: string;
   companyName: string;
   companyPlan: string;
-  onUserUpdate?: () => void;
   loadingUsers?: boolean;
   createUserDialogOpen: boolean;
   setCreateUserDialogOpen: (open: boolean) => void;
   newUser?: Partial<User>;
   setNewUser?: (user: Partial<User> | ((prev: Partial<User>) => Partial<User>)) => void;
   handleCreateUser?: () => void;
-  handleEditUser?: (user: NormalizedUser) => void;
-  handleSaveUser?: (user: NormalizedUser) => void;
-  handleDeleteUser?: (userId: string) => void;
+  handleEditUser: (user: NormalizedUser) => void;
+  handleSaveUser: (user: User) => void;
+  handleDeleteUser: (userId: string) => void;
   editUser: NormalizedUser | null;
   userDialogOpen: boolean;
   setUserDialogOpen: (open: boolean) => void;
@@ -40,13 +38,12 @@ export function CompanyUsersForm({
   companyId,
   companyName,
   companyPlan,
-  onUserUpdate,
   loadingUsers = false,
   createUserDialogOpen,
   setCreateUserDialogOpen,
-  newUser,
-  setNewUser,
-  handleCreateUser,
+  newUser = {},
+  setNewUser = () => {},
+  handleCreateUser = () => {},
   handleEditUser,
   handleSaveUser,
   handleDeleteUser,
@@ -88,7 +85,6 @@ export function CompanyUsersForm({
   };
 
   const handleChange = (name: string, value: string) => {
-    // Fix the setState call by correctly using the functional update pattern
     setNewUser((prev) => {
       return { ...prev, [name]: value };
     });
@@ -133,7 +129,7 @@ export function CompanyUsersForm({
                 <TableCell>{user.email}</TableCell>
                 <TableCell className="capitalize">{user.user_type || 'user'}</TableCell>
                 <TableCell className="capitalize">{user.status || 'active'}</TableCell>
-                <TableCell>{user.created_at ? formatDate(user.created_at) : 'N/A'}</TableCell>
+                <TableCell>{user.created_at ? formatDate(new Date(user.created_at)) : 'N/A'}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"

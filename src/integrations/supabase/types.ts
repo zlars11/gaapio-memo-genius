@@ -54,13 +54,13 @@ export type Database = {
           logo_url: string | null
           name: string
           notes: string | null
-          paid_users: string | null
           plan: string
           signup_date: string
           status: string
           stripe_customer_id: string | null
           trial_end_date: string | null
           updated_at: string
+          user_limit: string | null
         }
         Insert: {
           amount: number
@@ -73,13 +73,13 @@ export type Database = {
           logo_url?: string | null
           name: string
           notes?: string | null
-          paid_users?: string | null
           plan: string
           signup_date?: string
           status: string
           stripe_customer_id?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          user_limit?: string | null
         }
         Update: {
           amount?: number
@@ -92,13 +92,13 @@ export type Database = {
           logo_url?: string | null
           name?: string
           notes?: string | null
-          paid_users?: string | null
           plan?: string
           signup_date?: string
           status?: string
           stripe_customer_id?: string | null
           trial_end_date?: string | null
           updated_at?: string
+          user_limit?: string | null
         }
         Relationships: []
       }

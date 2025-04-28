@@ -11,6 +11,10 @@ export interface Company {
   created_at: string;
   updated_at: string;
   user_limit?: number | null;
+  billing_contact?: string | null;
+  billing_email?: string | null;
+  billing_frequency?: string | null;
+  stripe_customer_id?: string | null;
 }
 
 export interface CompanyDetailsFormProps {

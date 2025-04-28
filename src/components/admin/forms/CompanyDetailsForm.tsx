@@ -82,6 +82,42 @@ export function CompanyDetailsForm({
       </div>
 
       <div>
+        <Label htmlFor="billing_frequency">Billing Frequency</Label>
+        <select
+          id="billing_frequency"
+          name="billing_frequency"
+          value={formData.billing_frequency || "annual"}
+          onChange={onInputChange}
+          className="w-full border rounded px-3 py-2 bg-background text-foreground"
+        >
+          <option value="annual">Annual</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+        </select>
+      </div>
+
+      <div>
+        <Label htmlFor="billing_contact">Billing Contact</Label>
+        <Input
+          id="billing_contact"
+          name="billing_contact"
+          value={formData.billing_contact || ""}
+          onChange={onInputChange}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="billing_email">Billing Email</Label>
+        <Input
+          id="billing_email"
+          name="billing_email"
+          type="email"
+          value={formData.billing_email || ""}
+          onChange={onInputChange}
+        />
+      </div>
+
+      <div>
         <Label>Created At</Label>
         <Input
           value={formData.created_at ? new Date(formData.created_at).toLocaleDateString() : "N/A"}
