@@ -65,6 +65,19 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    
+    // Strictly validate status value
+    if (value !== 'active' && value !== 'inactive') {
+      console.warn('Invalid status provided:', value);
+      return;
+    }
+    
+    // Cast to the specific union type
+    setStatus(value as 'active' | 'inactive');
+  };
+
   return (
     <div className="relative">
       <DialogHeader className="mb-4">
@@ -85,7 +98,7 @@ export default function EditUserDialog({ user, onSave, onDelete, onClose }: Edit
           onChange={handleFieldChange}
           onPlanChange={(e) => setPlan(e.target.value)}
           onTermChange={(e) => setTerm(e.target.value)}
-          onStatusChange={(e) => setStatus(e.target.value as 'active' | 'inactive')}
+          onStatusChange={handleStatusChange}
           onUserTypeChange={handleUserTypeChange}
           PLAN_OPTIONS={PLAN_OPTIONS}
           TERM_OPTIONS={TERM_OPTIONS}
