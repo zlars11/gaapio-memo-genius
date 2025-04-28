@@ -29,20 +29,9 @@ export function useDemoRequestForm() {
   const onSubmit = async (data: DemoRequestFormData) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from("demo_requests")
-        .insert({
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          notes: data.notes,
-        });
-
-      if (error) throw error;
-
-      // Try to trigger Zapier webhook if URL is set
+      // First, trigger Zapier webhook if URL is set
       const webhookUrl = getDemoWebhookUrl();
+      
       if (webhookUrl) {
         try {
           console.log("Triggering Zapier webhook for demo request:", webhookUrl);
@@ -57,7 +46,8 @@ export function useDemoRequestForm() {
             "Source": "Demo Request Form"
           };
 
-          await fetch(webhookUrl, {
+          // Use the fetch API to trigger the webhook
+          const zapierResponse = await fetch(webhookUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -65,14 +55,28 @@ export function useDemoRequestForm() {
             mode: "no-cors",
             body: JSON.stringify(zapierData),
           });
-          console.log("Zapier webhook triggered successfully");
+          
+          console.log("Zapier webhook triggered with response:", zapierResponse);
         } catch (err) {
           console.error("Error triggering Zapier webhook:", err);
-          // Don't throw error here as the form submission was successful
+          // Don't throw error here as we still want to save to the database
         }
       } else {
         console.log("No Zapier webhook URL configured for demo requests");
       }
+
+      // Then, save to database
+      const { error } = await supabase
+        .from("demo_requests")
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          notes: data.notes,
+        });
+
+      if (error) throw error;
 
       toast({
         title: "Demo request submitted",
