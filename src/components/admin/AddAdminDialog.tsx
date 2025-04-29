@@ -44,19 +44,21 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       let userId: string | null = null;
       
       // Check if user exists by email in auth
-      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers({
-        page: 1,
-        perPage: 1,
-        filters: {
-          email: newAdminEmail.toLowerCase(),
-        },
-      });
+      // Instead of using filters which isn't supported in the type definitions,
+      // we'll get the users and filter them manually
+      const { data: usersData, error: authError } = await supabase.auth.admin.listUsers();
       
       if (authError) {
         console.error("Error checking user in auth:", authError);
-      } else if (users && users.length > 0) {
-        userId = users[0].id;
-        console.log("Found user in auth:", userId);
+      } else if (usersData) {
+        const matchingUser = usersData.users.find(
+          user => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
+        );
+        
+        if (matchingUser) {
+          userId = matchingUser.id;
+          console.log("Found user in auth:", userId);
+        }
       }
       
       // If not found in auth, check in users table
