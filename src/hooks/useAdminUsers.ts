@@ -256,7 +256,11 @@ export function useAdminUsers() {
         // Add admin role for current user
         const { error: insertError } = await supabase
           .from('user_roles')
-          .insert({ user_id: session.user.id, role: 'admin' });
+          .insert({ 
+            user_id: session.user.id, 
+            role: 'admin',
+            metadata: {} // Initialize with empty metadata
+          });
         
         if (insertError) {
           console.error("Error adding admin role:", insertError);
