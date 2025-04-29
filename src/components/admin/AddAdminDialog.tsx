@@ -14,6 +14,12 @@ interface AddAdminDialogProps {
   onSuccess: () => void;
 }
 
+// Define an interface for the user structure we get from Supabase auth
+interface SupabaseAuthUser {
+  id: string;
+  email?: string | null;
+}
+
 export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialogProps) {
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -52,7 +58,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         console.error("Error checking user in auth:", authError);
       } else if (usersData) {
         const matchingUser = usersData.users.find(
-          user => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
+          (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
         );
         
         if (matchingUser) {
