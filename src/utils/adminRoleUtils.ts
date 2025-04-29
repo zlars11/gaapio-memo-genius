@@ -30,9 +30,15 @@ export async function checkAdminRole(userId: string): Promise<boolean> {
 /**
  * Adds admin role to a user
  * @param userId The user ID to add admin role to
+ * @param firstName First name to set in metadata (optional)
+ * @param lastName Last name to set in metadata (optional)
  * @returns Promise resolving to success status
  */
-export async function addAdminRole(userId: string): Promise<boolean> {
+export async function addAdminRole(
+  userId: string, 
+  firstName?: string, 
+  lastName?: string
+): Promise<boolean> {
   try {
     // Check if role already exists
     const { data: existingRole, error: checkError } = await supabase
@@ -49,8 +55,33 @@ export async function addAdminRole(userId: string): Promise<boolean> {
     
     if (existingRole) {
       console.log("Admin role already exists:", existingRole);
+      
+      // If the role exists but we want to update the name, do it here
+      if (firstName || lastName) {
+        const { error: updateError } = await supabase
+          .from('user_roles')
+          .update({ 
+            metadata: { 
+              first_name: firstName || null,
+              last_name: lastName || null,
+              updated_at: new Date().toISOString()
+            } 
+          })
+          .eq('id', existingRole.id);
+          
+        if (updateError) {
+          console.error("Error updating admin name:", updateError);
+          return false;
+        }
+      }
+      
       return true;
     }
+    
+    // Add admin role for user with name metadata if provided
+    const metadata = {};
+    if (firstName) metadata['first_name'] = firstName;
+    if (lastName) metadata['last_name'] = lastName;
     
     // Add admin role for user
     const { error: insertError } = await supabase
@@ -58,7 +89,10 @@ export async function addAdminRole(userId: string): Promise<boolean> {
       .insert({ 
         user_id: userId, 
         role: 'admin',
-        metadata: {} // Initialize with empty metadata
+        metadata: {
+          ...metadata,
+          created_at: new Date().toISOString()
+        }
       });
     
     if (insertError) {

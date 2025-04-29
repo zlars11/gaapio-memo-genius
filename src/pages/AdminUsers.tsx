@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,10 +31,11 @@ export default function AdminUsers() {
     fetchAdmins
   } = useAdminUsers();
 
-  // Wrapper function to handle the return type mismatch
-  const handleSaveName = async (firstName: string, lastName: string) => {
-    await handleUpdateName(firstName, lastName);
-  };
+  // Ensure admin list is loaded on mount and whenever currentUserDisplayed changes
+  useEffect(() => {
+    console.log("AdminUsers: Fetching admins on component mount");
+    fetchAdmins();
+  }, [currentUserDisplayed]); // Add dependency to re-fetch when currentUserDisplayed changes
 
   return (
     <AdminPageGuard>

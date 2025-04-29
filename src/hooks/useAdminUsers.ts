@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCurrentAdmin } from "@/hooks/useCurrentAdmin";
 import { useFetchAdmins } from "@/hooks/useFetchAdmins";
 import { useAdminActions } from "@/hooks/useAdminActions";
@@ -24,7 +24,8 @@ export function useAdminUsers() {
     setAdmins
   } = useFetchAdmins(currentUser);
 
-  const fetchAdminsAndUpdateStatus = async () => {
+  const fetchAdminsAndUpdateStatus = useCallback(async () => {
+    console.log("Fetching admins and updating status");
     const result = await fetchAdmins();
     if (result && 'isCurrentUserDisplayed' in result) {
       setCurrentUser(prev => ({
@@ -33,7 +34,7 @@ export function useAdminUsers() {
       }));
     }
     return result;
-  };
+  }, [fetchAdmins, setCurrentUser]);
 
   const {
     removing,
@@ -50,10 +51,21 @@ export function useAdminUsers() {
     return await updateName(firstName, lastName, currentUser.id);
   };
 
+  // Handle fixing current user's admin status
+  const handleFixCurrentUserAdmin = async () => {
+    const success = await fixAdminStatus();
+    if (success) {
+      // After fixing admin status, refresh the admin list
+      await fetchAdminsAndUpdateStatus();
+    }
+    return success;
+  };
+
   // Load admin users on mount
   useEffect(() => {
+    console.log("useAdminUsers: Initial fetch of admin users");
     fetchAdminsAndUpdateStatus();
-  }, []);
+  }, [fetchAdminsAndUpdateStatus]);
 
   const loading = currentUserLoading || adminsLoading;
   const fetchError = currentUserError || adminsError;
@@ -71,7 +83,7 @@ export function useAdminUsers() {
     nameDialogOpen,
     setNameDialogOpen,
     handleRemoveAdmin,
-    handleFixCurrentUserAdmin: fixAdminStatus,
+    handleFixCurrentUserAdmin,
     handleUpdateName,
     fetchAdmins: fetchAdminsAndUpdateStatus,
   };

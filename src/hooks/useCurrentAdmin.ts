@@ -86,7 +86,12 @@ export function useCurrentAdmin() {
     try {
       console.log("Fixing admin status for user:", currentUser.id);
       
-      const success = await addAdminRole(currentUser.id);
+      // Add default name for Zack Larsen when fixing admin status
+      const firstName = "Zack";
+      const lastName = "Larsen";
+      
+      // Add admin role with the user's name
+      const success = await addAdminRole(currentUser.id, firstName, lastName);
       
       if (success) {
         toast({
