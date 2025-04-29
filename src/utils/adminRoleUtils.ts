@@ -81,6 +81,9 @@ export async function addAdminRole(
         return false;
       }
       
+      // Also ensure the user exists in the users table
+      await ensureUserInUsersTable(userId, firstName, lastName);
+      
       return true;
     }
     
@@ -107,48 +110,75 @@ export async function addAdminRole(
       return false;
     }
     
-    // Also add user to users table if not already there
-    try {
-      // First check if user already exists in users table
-      const { data: existingUser, error: checkUserError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('id', userId)
-        .maybeSingle();
-        
-      if (checkUserError) {
-        console.error("Error checking if user exists:", checkUserError);
-      }
-      
-      // Only insert if user doesn't exist
-      if (!existingUser) {
-        const email = await getUserEmail(userId);
-        console.log("Got email for user:", email);
-        
-        const { error: userInsertError } = await supabase
-          .from('users')
-          .insert({
-            id: userId,
-            email: email || 'unknown@email.com',
-            first_name: firstName,
-            last_name: lastName,
-            status: 'active',
-            user_type: 'admin'
-          });
-        
-        if (userInsertError) {
-          console.error("Error adding user record:", userInsertError);
-          // Continue anyway, this is just a helper record
-        }
-      }
-    } catch (userInsertErr) {
-      console.error("Failed to add user record:", userInsertErr);
-      // Continue anyway, the main user_roles record was created
-    }
+    // Ensure user exists in users table
+    await ensureUserInUsersTable(userId, firstName, lastName);
     
     return true;
   } catch (error) {
     console.error("Error adding admin role:", error);
+    return false;
+  }
+}
+
+/**
+ * Helper function to ensure user exists in users table
+ */
+async function ensureUserInUsersTable(userId: string, firstName: string, lastName: string): Promise<boolean> {
+  try {
+    // First check if user already exists in users table
+    const { data: existingUser, error: checkUserError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', userId)
+      .maybeSingle();
+      
+    if (checkUserError) {
+      console.error("Error checking if user exists:", checkUserError);
+    }
+    
+    const email = await getUserEmail(userId);
+    console.log("Got email for user:", email);
+    
+    if (!existingUser) {
+      // Only insert if user doesn't exist
+      const { error: userInsertError } = await supabase
+        .from('users')
+        .insert({
+          id: userId,
+          email: email || 'unknown@email.com',
+          first_name: firstName,
+          last_name: lastName,
+          status: 'active',
+          user_type: 'admin'
+        });
+      
+      if (userInsertError) {
+        console.error("Error adding user record:", userInsertError);
+        // Continue anyway, this is just a helper record
+        return false;
+      }
+    } else {
+      // User exists, update their info to ensure it's current
+      const { error: userUpdateError } = await supabase
+        .from('users')
+        .update({
+          email: email || existingUser.email || 'unknown@email.com',
+          first_name: firstName,
+          last_name: lastName,
+          status: 'active',
+          user_type: 'admin'
+        })
+        .eq('id', userId);
+      
+      if (userUpdateError) {
+        console.error("Error updating user record:", userUpdateError);
+        return false;
+      }
+    }
+    
+    return true;
+  } catch (userInsertErr) {
+    console.error("Failed to add/update user record:", userInsertErr);
     return false;
   }
 }

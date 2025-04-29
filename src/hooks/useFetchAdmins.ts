@@ -129,6 +129,14 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       }
       
       console.log(`Processed ${adminUsers.length} admin users:`, adminUsers);
+      
+      // Sort admins by created_at date (newest first)
+      adminUsers.sort((a, b) => {
+        const dateA = new Date(a.created_at || 0).getTime();
+        const dateB = new Date(b.created_at || 0).getTime();
+        return dateB - dateA;
+      });
+      
       setAdmins(adminUsers);
       
       return {

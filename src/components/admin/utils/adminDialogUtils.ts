@@ -39,7 +39,7 @@ export async function findUserByEmail(email: string): Promise<string | null> {
       const { data, error } = await supabase.auth.admin.listUsers({
         // Use query parameters if available, otherwise will fetch all users
         page: 1,
-        perPage: 10
+        perPage: 100 // Increase this to have a higher chance of finding the user
       });
       
       if (!error && data?.users) {
@@ -255,12 +255,30 @@ export function useAdminDialogActions() {
       const isAlreadyAdmin = await checkExistingAdminRole(userId);
       
       if (isAlreadyAdmin) {
-        toast({
-          title: "Already an admin",
-          description: "This user already has admin privileges.",
-          variant: "destructive",
-        });
-        return { success: false, needsUserCreation: false };
+        console.log("User is already an admin, attempting to update metadata and ensure visibility");
+        
+        // User is already an admin, but might not be showing in the list
+        // Let's update or add their metadata to make sure they appear in the list
+        const success = await addAdminRole(
+          userId, 
+          values.firstName || "Admin", 
+          values.lastName || "User"
+        );
+        
+        if (success) {
+          toast({
+            title: "Admin updated",
+            description: `${values.email} was already an admin. We've updated their information.`,
+          });
+          return { success: true, needsUserCreation: false };
+        } else {
+          toast({
+            title: "Already an admin",
+            description: "This user already has admin privileges, but we couldn't update their information.",
+            variant: "destructive",
+          });
+          return { success: false, needsUserCreation: false };
+        }
       }
       
       console.log("Adding admin role to user");
