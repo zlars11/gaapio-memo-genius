@@ -36,6 +36,9 @@ export default function Login() {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login for:", email);
+      
+      // First try to sign in
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -55,19 +58,32 @@ export default function Login() {
         if (roleError) throw roleError;
 
         if (!isAdmin) {
-          throw new Error('You do not have permission to access the admin area');
+          await supabase.auth.signOut(); // Sign out if not admin
+          throw new Error('You do not have permission to access the admin area. Please contact an administrator.');
         }
 
+        // Success!
         toast({
           title: "Login Successful",
-          description: "Welcome back!",
+          description: "Welcome to the admin area!",
         });
         navigate('/admin');
       }
     } catch (error: any) {
+      console.error("Login error:", error);
+      
+      // Provide a more user-friendly error message
+      let errorMessage = "Unable to login. Please try again.";
+      
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = "Incorrect email or password. Please try again.";
+      } else if (error.message.includes('permission')) {
+        errorMessage = "You don't have permission to access the admin area.";
+      }
+      
       toast({
         title: "Login Failed",
-        description: error.message || "Unable to login. Please try again.",
+        description: error.message || errorMessage,
         variant: "destructive"
       });
     } finally {

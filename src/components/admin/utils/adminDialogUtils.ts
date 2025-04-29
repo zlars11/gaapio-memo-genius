@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
@@ -96,21 +97,36 @@ export async function findUserByEmail(email: string): Promise<string | null> {
 export async function checkExistingAdminRole(userId: string): Promise<boolean> {
   try {
     console.log("Checking if user already has admin role:", userId);
-    const { data: existingRole, error: roleCheckError } = await supabase
-      .from('user_roles')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('role', 'admin')
-      .maybeSingle();
     
-    if (roleCheckError) {
-      console.error("Error checking existing role:", roleCheckError);
-      return false;
+    // Use direct RPC call to the has_role function for more reliable check
+    const { data: hasRoleResult, error: hasRoleError } = await supabase.rpc('has_role', {
+      user_id: userId,
+      role: 'admin'
+    });
+    
+    if (hasRoleError) {
+      console.error("Error checking role with RPC:", hasRoleError);
+      
+      // Fall back to direct table check if RPC fails
+      const { data: existingRole, error: roleCheckError } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      if (roleCheckError) {
+        console.error("Error checking existing role:", roleCheckError);
+        return false;
+      }
+      
+      const hasRole = !!existingRole;
+      console.log("User has admin role (via table check):", hasRole);
+      return hasRole;
     }
     
-    const hasRole = !!existingRole;
-    console.log("User has admin role:", hasRole);
-    return hasRole;
+    console.log("User has admin role (via RPC):", !!hasRoleResult);
+    return !!hasRoleResult;
   } catch (error) {
     console.error("Role check error:", error);
     return false;
@@ -125,6 +141,16 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
 export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<boolean> {
   try {
     console.log("Creating new user with admin role:", values.email);
+    
+    // Before attempting to create the user, check if they already exist
+    const existingUserId = await findUserByEmail(values.email);
+    
+    if (existingUserId) {
+      console.log("User already exists, adding admin role:", existingUserId);
+      // User exists, just add admin role
+      const success = await addAdminRole(existingUserId, values.firstName, values.lastName);
+      return success;
+    }
     
     // Try using signUp API first which can be called with anon key
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({

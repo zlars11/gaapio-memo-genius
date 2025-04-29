@@ -122,11 +122,14 @@ export async function addAdminRole(
       
       // Only insert if user doesn't exist
       if (!existingUser) {
+        const email = await getUserEmail(userId);
+        console.log("Got email for user:", email);
+        
         const { error: userInsertError } = await supabase
           .from('users')
           .insert({
             id: userId,
-            email: await getUserEmail(userId) || 'unknown@email.com',
+            email: email || 'unknown@email.com',
             first_name: firstName,
             last_name: lastName,
             status: 'active',

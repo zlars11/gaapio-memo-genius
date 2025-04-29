@@ -32,6 +32,13 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         firstName: "",
         lastName: "",
       });
+    } else {
+      // Set default values for Jace
+      setFormValues({
+        email: "jacewchambers@gmail.com",
+        firstName: "Jace",
+        lastName: "Chambers",
+      });
     }
     onOpenChange(open);
   };
@@ -104,17 +111,6 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       setAdding(false);
     }
   };
-
-  // Check current route and populate default values for Jace
-  React.useEffect(() => {
-    if (open) {
-      setFormValues({
-        email: "jacewchambers@gmail.com",
-        firstName: "Jace",
-        lastName: "Chambers",
-      });
-    }
-  }, [open]);
 
   return (
     <>
