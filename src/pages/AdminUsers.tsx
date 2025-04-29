@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, UserPlus, UserX, RefreshCw } from "lucide-react";
+import { Loader2, UserPlus, UserX, RefreshCw, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface AdminUser {
   id: string;
@@ -25,15 +26,32 @@ export default function AdminUsers() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [removing, setRemoving] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [currentUserIsAdmin, setCurrentUserIsAdmin] = useState(false);
+  const [currentUserDisplayed, setCurrentUserDisplayed] = useState(false);
   const { toast } = useToast();
 
-  // Fixed fetch admin users function
+  // Comprehensive fetch for admin users - ensures all users with admin privileges are displayed
   const fetchAdmins = async () => {
     try {
       setLoading(true);
       console.log("Fetching admin users...");
       
-      // First, get all user IDs with admin role
+      // Get the current user to check if they're in the results
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUserId = session?.user?.id;
+      
+      if (currentUserId) {
+        // Check if current user has admin role using the same RPC function used by security
+        const { data: isAdmin, error: roleCheckError } = await supabase.rpc('has_role', {
+          user_id: currentUserId,
+          role: 'admin'
+        });
+        
+        console.log("Current user admin status:", { isAdmin, error: roleCheckError });
+        setCurrentUserIsAdmin(!!isAdmin);
+      }
+      
+      // Get all entries from user_roles for admin role
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -47,13 +65,19 @@ export default function AdminUsers() {
       console.log("Admin roles retrieved:", roleData);
       
       if (!roleData || roleData.length === 0) {
-        console.log("No admin users found");
+        console.log("No admin users found in user_roles table");
         setAdmins([]);
+        setCurrentUserDisplayed(false);
         return;
       }
       
       // Extract user IDs from role data
       const adminUserIds = roleData.map(role => role.user_id);
+      
+      // Check if current user is in the admin list
+      if (currentUserId) {
+        setCurrentUserDisplayed(adminUserIds.includes(currentUserId));
+      }
       
       // Then fetch user details for those IDs
       const { data: userData, error: userError } = await supabase
@@ -67,6 +91,14 @@ export default function AdminUsers() {
       }
       
       console.log("User data retrieved:", userData);
+      
+      // Check for any discrepancy in data
+      if (userData && adminUserIds.length !== userData.length) {
+        console.warn("Discrepancy detected: Some admin users don't have corresponding user entries", {
+          roleIds: adminUserIds,
+          userIds: userData.map(u => u.id)
+        });
+      }
       
       setAdmins(userData || []);
     } catch (error) {
@@ -197,10 +229,94 @@ export default function AdminUsers() {
     fetchAdmins();
   }, []);
 
+  // Handle the case where current user has admin access but isn't in the list
+  const handleFixCurrentUserAdmin = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast({
+          title: "Not authenticated",
+          description: "You need to be logged in to perform this action.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Get the current user details
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id, email')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (userError || !userData) {
+        console.error("Error fetching current user:", userError);
+        toast({
+          title: "User lookup failed",
+          description: "Could not find your user details in the system.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Add admin role
+      const { error: insertError } = await supabase
+        .from('user_roles')
+        .insert({ user_id: session.user.id, role: 'admin' });
+      
+      if (insertError) {
+        // Check if it's a unique constraint violation (user already has admin role)
+        if (insertError.code === '23505') {
+          toast({
+            title: "Already an admin",
+            description: "Your user is already in the admin role table. Refreshing data..."
+          });
+        } else {
+          throw insertError;
+        }
+      } else {
+        toast({
+          title: "Admin role fixed",
+          description: "You've been properly added to the admin users list.",
+        });
+      }
+      
+      // Refresh the list
+      fetchAdmins();
+      
+    } catch (error) {
+      console.error("Error fixing admin status:", error);
+      toast({
+        title: "Failed to fix admin status",
+        description: "An error occurred while trying to update your admin status.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <AdminPageGuard>
       <div className="max-w-6xl mx-auto py-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-8">Admin User Management</h1>
+        
+        {currentUserIsAdmin && !currentUserDisplayed && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Security Issue Detected</AlertTitle>
+            <AlertDescription>
+              You have admin access but aren't listed in the admin users table. This is a security risk.
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="ml-4" 
+                onClick={handleFixCurrentUserAdmin}
+              >
+                Fix My Admin Status
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
