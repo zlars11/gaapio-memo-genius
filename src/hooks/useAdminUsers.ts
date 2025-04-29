@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -79,13 +80,12 @@ export function useAdminUsers() {
         console.log("No current user session found");
       }
       
-      // DIRECT QUERY APPROACH: Query user_roles and auth.users tables directly
-      console.log("Fetching admin users directly from auth and user_roles tables");
+      // Query user_roles table directly
+      console.log("Fetching admin users from user_roles");
       
-      // First, get all admin role user IDs
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-        .select('user_id')
+        .select('user_id, created_at, metadata')
         .eq('role', 'admin');
       
       if (roleError) {
@@ -117,13 +117,13 @@ export function useAdminUsers() {
         setCurrentUserDisplayed(isCurrentUserInList);
       }
       
-      // DIRECT AUTH QUERY: Get user details from auth.users table
+      // Get user details from auth.users table
       console.log("Fetching user details from auth");
       const adminUsers: AdminUser[] = [];
       
-      // We need to query auth.users for each admin user individually
-      for (const userId of adminUserIds) {
+      for (const roleEntry of roleData) {
         try {
+          const userId = roleEntry.user_id;
           const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
           
           if (authError) {
@@ -134,23 +134,19 @@ export function useAdminUsers() {
           if (authUser?.user) {
             console.log(`Found auth user ${userId}:`, authUser.user.email);
             
-            // Get additional user details from public.users table if it exists
-            const { data: userData, error: userError } = await supabase
-              .from('users')
-              .select('first_name, last_name')
-              .eq('id', userId)
-              .maybeSingle();
+            // Use metadata from user_roles if available, otherwise use empty values
+            const metadata = roleEntry.metadata || {};
             
             adminUsers.push({
               id: userId,
               email: authUser.user.email || 'No email',
-              first_name: userData?.first_name || null,
-              last_name: userData?.last_name || null,
-              created_at: authUser.user.created_at
+              first_name: metadata?.first_name || null,
+              last_name: metadata?.last_name || null,
+              created_at: roleEntry.created_at || authUser.user.created_at
             });
           }
         } catch (error) {
-          console.error(`Error processing auth user ${userId}:`, error);
+          console.error(`Error processing auth user ${roleEntry.user_id}:`, error);
         }
       }
       
@@ -295,60 +291,46 @@ export function useAdminUsers() {
         throw new Error("No user ID available");
       }
       
-      console.log("Updating name for user:", currentUserId);
+      console.log("Updating name for admin user:", currentUserId);
       console.log("New name values:", { firstName, lastName });
       
-      // Try to find the user in the users table
-      const { data: existingUser, error: checkError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('id', currentUserId)
+      // Find the specific user role entry
+      const { data: existingRole, error: checkError } = await supabase
+        .from('user_roles')
+        .select('id, metadata')
+        .eq('user_id', currentUserId)
+        .eq('role', 'admin')
         .maybeSingle();
         
       if (checkError) {
-        console.error("Error checking if user exists:", checkError);
-        throw new Error("Failed to check if your user record exists");
+        console.error("Error checking if admin role exists:", checkError);
+        throw new Error("Failed to find your admin record");
       }
       
-      console.log("Existing user check result:", existingUser);
+      if (!existingRole) {
+        console.error("Admin role not found for user:", currentUserId);
+        throw new Error("You don't appear to have an admin role assigned");
+      }
       
-      let result;
+      console.log("Existing role entry:", existingRole);
       
-      if (existingUser) {
-        // Update existing user record
-        console.log("Updating existing user record");
-        result = await supabase
-          .from('users')
-          .update({
+      // Update metadata on the user_roles entry with name information
+      const { error: updateError } = await supabase
+        .from('user_roles')
+        .update({
+          metadata: {
+            ...existingRole.metadata,
             first_name: firstName,
             last_name: lastName,
             updated_at: new Date().toISOString()
-          })
-          .eq('id', currentUserId);
-      } else {
-        // Create new user record - include all required fields
-        console.log("Creating new user record");
-        result = await supabase
-          .from('users')
-          .insert({
-            id: currentUserId,
-            first_name: firstName,
-            last_name: lastName,
-            email: currentUserEmail || '',
-            user_type: 'admin',
-            status: 'active',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-      }
+          }
+        })
+        .eq('id', existingRole.id);
       
-      // Check for errors in the result
-      if (result.error) {
-        console.error("Error saving user data:", result.error);
-        throw new Error(result.error.message || "Failed to save user data");
+      if (updateError) {
+        console.error("Error updating admin user name:", updateError);
+        throw updateError;
       }
-      
-      console.log("User data saved successfully:", result);
       
       toast({
         title: "Name updated",
