@@ -202,8 +202,8 @@ async function getUserEmail(userId: string): Promise<string | null> {
     
     // Try to get from auth
     try {
-      // Use proper typing for auth response
-      const { data, error } = await supabase.auth.admin.getUserById(userId) as unknown as SupabaseAuthResponse;
+      // Properly type the Supabase auth response
+      const { data, error } = await supabase.auth.admin.getUserById(userId) as SupabaseAuthResponse;
       
       if (!error && data && data.user) {
         // Now properly typed, so TypeScript knows email exists
