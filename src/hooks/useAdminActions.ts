@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { removeAdminRole, updateAdminName } from "@/utils/adminRoleUtils";
 import { AdminUser } from "@/types/adminTypes";
 
-export function useAdminActions(onUpdate: () => Promise<void>) {
+export function useAdminActions(onUpdate: () => Promise<any>) {
   const [removing, setRemoving] = useState<string | null>(null);
   const [updatingName, setUpdatingName] = useState(false);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
