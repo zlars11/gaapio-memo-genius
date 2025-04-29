@@ -64,10 +64,14 @@ export function useAdminUsers() {
 
   // Load admin users on mount only once
   useEffect(() => {
-    console.log("useAdminUsers: Initial fetch of admin users");
-    fetchAdminsAndUpdateStatus();
-    // Intentionally empty dependency array to run only once on mount
-  }, []);
+    // Delay the initial fetch slightly to ensure auth state is ready
+    const timer = setTimeout(() => {
+      console.log("useAdminUsers: Initial fetch of admin users (with delay)");
+      fetchAdminsAndUpdateStatus();
+    }, 300); // Short delay to allow auth to initialize
+    
+    return () => clearTimeout(timer);
+  }, [fetchAdminsAndUpdateStatus]);
 
   const loading = currentUserLoading || adminsLoading;
   const fetchError = currentUserError || adminsError;

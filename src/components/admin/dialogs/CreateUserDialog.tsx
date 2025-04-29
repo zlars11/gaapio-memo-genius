@@ -60,6 +60,18 @@ export function CreateUserDialog({
     }
   };
 
+  // Update form when defaultValues change
+  React.useEffect(() => {
+    if (open) {
+      form.reset({
+        email: defaultValues.email,
+        firstName: defaultValues.firstName,
+        lastName: defaultValues.lastName,
+        password: ""
+      });
+    }
+  }, [open, defaultValues, form]);
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>

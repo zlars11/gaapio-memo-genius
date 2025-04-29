@@ -42,15 +42,22 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       setAdding(true);
       setFormValues(values); // Store values in case we need to create a user
       
+      console.log("Handling add admin with values:", values);
       const result = await handleAddAdminRole(values);
+      console.log("Add admin role result:", result);
       
       if (result.success) {
+        toast({
+          title: "Admin added",
+          description: `${values.email} has been granted admin privileges.`,
+        });
         handleOpenChange(false);
         onSuccess(); // Refresh the list
         return;
       }
       
       if (result.needsUserCreation) {
+        console.log("User needs to be created first");
         setCreateUserDialogOpen(true);
       }
       
@@ -100,7 +107,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
 
   // Check current route and populate default values for Jace
   React.useEffect(() => {
-    if (open && window.location.pathname.includes("/admin")) {
+    if (open) {
       setFormValues({
         email: "jacewchambers@gmail.com",
         firstName: "Jace",

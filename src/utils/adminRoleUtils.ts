@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -106,10 +107,67 @@ export async function addAdminRole(
       return false;
     }
     
+    // Also add user to users table if not already there
+    try {
+      const { error: userInsertError } = await supabase
+        .from('users')
+        .insert({
+          id: userId,
+          email: await getUserEmail(userId) || 'unknown@email.com',
+          first_name: firstName,
+          last_name: lastName,
+          status: 'active',
+          user_type: 'admin'
+        })
+        .onConflict('id')
+        .ignore();
+      
+      if (userInsertError) {
+        console.error("Error adding user record:", userInsertError);
+        // Continue anyway, this is just a helper record
+      }
+    } catch (userInsertErr) {
+      console.error("Failed to add user record:", userInsertErr);
+      // Continue anyway, the main user_roles record was created
+    }
+    
     return true;
   } catch (error) {
     console.error("Error adding admin role:", error);
     return false;
+  }
+}
+
+/**
+ * Helper function to get user email from user ID
+ */
+async function getUserEmail(userId: string): Promise<string | null> {
+  try {
+    // First try the users table
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('email')
+      .eq('id', userId)
+      .maybeSingle();
+    
+    if (!userError && userData?.email) {
+      return userData.email;
+    }
+    
+    // Try to get from auth
+    try {
+      const { data, error } = await supabase.auth.admin.getUserById(userId);
+      if (!error && data.user?.email) {
+        return data.user.email;
+      }
+    } catch (authError) {
+      console.error("Error getting user email from auth:", authError);
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error getting user email:", error);
+    return null;
   }
 }
 
@@ -193,6 +251,25 @@ export async function updateAdminName(
     if (updateError) {
       console.error("Error updating admin user name:", updateError);
       return false;
+    }
+    
+    // Also update users table if the record exists
+    try {
+      const { error: userUpdateError } = await supabase
+        .from('users')
+        .update({
+          first_name: firstName,
+          last_name: lastName
+        })
+        .eq('id', userId);
+      
+      if (userUpdateError) {
+        console.error("Error updating user record:", userUpdateError);
+        // Continue anyway, the main user_roles record was updated
+      }
+    } catch (userUpdateErr) {
+      console.error("Failed to update user record:", userUpdateErr);
+      // Continue anyway
     }
     
     return true;

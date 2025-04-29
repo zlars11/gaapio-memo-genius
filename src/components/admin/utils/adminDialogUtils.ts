@@ -18,6 +18,8 @@ export interface SupabaseAuthUser {
  */
 export async function findUserByEmail(email: string): Promise<string | null> {
   try {
+    console.log("Searching for user with email:", email);
+    
     // Check in users table first (easier for most implementations)
     const { data: userData, error: userError } = await supabase
       .from('users')
@@ -30,50 +32,43 @@ export async function findUserByEmail(email: string): Promise<string | null> {
       return userData.id;
     }
     
-    // If not found in users table, try auth.admin API
+    // If not found in users table, check auth directly
     try {
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      const { data: { user }, error: authError } = await supabase.auth.admin.getUserByEmail(email);
       
-      if (!authError && authUsers && authUsers.users) {
-        const matchingUser = authUsers.users.find(
-          (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === email.toLowerCase()
-        );
-        
-        if (matchingUser) {
-          console.log("Found user in auth:", matchingUser.id);
-          return matchingUser.id;
-        }
+      if (!authError && user) {
+        console.log("Found user in auth:", user.id);
+        return user.id;
       }
-      
-      // Try alternative method - using signUp with existing email should fail with user exists error
-      const { error } = await supabase.auth.signUp({
+    } catch (authApiError) {
+      console.log("Unable to use admin API, falling back to other methods:", authApiError);
+    }
+    
+    // Try alternative methods if admin API fails
+    try {
+      // Try to sign in with dummy password to check if user exists
+      const { error } = await supabase.auth.signInWithPassword({
         email: email,
-        password: 'temporaryPassword123', // This won't be used if user exists
+        password: 'temp_password_for_check_only',
       });
       
-      if (error && error.message.includes('already registered')) {
-        // User exists, let's try to get their ID a different way
-        console.log("User exists based on signup attempt");
+      if (error && error.message.includes('Invalid login credentials')) {
+        // User exists but password is wrong (which is what we want to check)
+        console.log("User exists based on failed login attempt");
         
-        // One final attempt - fetch all users and filter manually
-        const { data: { users }, error: fetchError } = await supabase.auth.admin.listUsers();
-        
-        if (!fetchError && users) {
-          const matchingUser = users.find(
-            (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === email.toLowerCase()
-          );
-          
-          if (matchingUser) {
-            console.log("Found user ID through direct fetch:", matchingUser.id);
-            return matchingUser.id;
-          }
+        // Get the current session to find the user
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          console.log("Got user ID from session:", session.user.id);
+          return session.user.id;
         }
       }
-    } catch (authListError) {
-      console.error("Auth admin API error:", authListError);
+    } catch (loginCheckError) {
+      console.log("Login check method failed:", loginCheckError);
     }
     
     // User not found
+    console.log("User not found with email:", email);
     return null;
   } catch (error) {
     console.error("Error during user existence check:", error);
@@ -88,6 +83,7 @@ export async function findUserByEmail(email: string): Promise<string | null> {
  */
 export async function checkExistingAdminRole(userId: string): Promise<boolean> {
   try {
+    console.log("Checking if user already has admin role:", userId);
     const { data: existingRole, error: roleCheckError } = await supabase
       .from('user_roles')
       .select('id')
@@ -100,7 +96,9 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
       return false;
     }
     
-    return !!existingRole;
+    const hasRole = !!existingRole;
+    console.log("User has admin role:", hasRole);
+    return hasRole;
   } catch (error) {
     console.error("Role check error:", error);
     return false;
@@ -132,34 +130,44 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
       console.error("Error creating user with signUp:", signUpError);
       
       // Fall back to admin.createUser if available
-      const { data, error } = await supabase.auth.admin.createUser({
-        email: values.email,
-        password: values.password,
-        email_confirm: true,
-        user_metadata: {
-          first_name: values.firstName,
-          last_name: values.lastName
+      try {
+        const { data, error } = await supabase.auth.admin.createUser({
+          email: values.email,
+          password: values.password,
+          email_confirm: true,
+          user_metadata: {
+            first_name: values.firstName,
+            last_name: values.lastName
+          }
+        });
+        
+        if (error || !data.user) {
+          console.error("Error creating user with admin API:", error);
+          return false;
         }
-      });
-      
-      if (error || !data.user) {
-        console.error("Error creating user with admin API:", error);
+        
+        console.log("User created via admin API:", data.user.id);
+        
+        // Add admin role to the newly created user
+        const roleAdded = await addAdminRole(data.user.id, values.firstName, values.lastName);
+        console.log("Admin role added:", roleAdded);
+        return roleAdded;
+      } catch (adminApiError) {
+        console.error("Admin API error:", adminApiError);
         return false;
       }
-      
-      console.log("User created via admin API:", data.user.id);
-      
-      // Add admin role to the newly created user
-      return await addAdminRole(data.user.id, values.firstName, values.lastName);
     } 
     
     if (signUpData && signUpData.user) {
       console.log("User created via signUp:", signUpData.user.id);
       
       // Add admin role to the newly created user
-      return await addAdminRole(signUpData.user.id, values.firstName, values.lastName);
+      const roleAdded = await addAdminRole(signUpData.user.id, values.firstName, values.lastName);
+      console.log("Admin role added:", roleAdded);
+      return roleAdded;
     }
     
+    console.error("Failed to create user, no error but no user returned");
     return false;
   } catch (error) {
     console.error("Error in createUserAccount:", error);
@@ -186,7 +194,7 @@ export function useAdminDialogActions() {
     } else {
       toast({
         title: "Failed to create admin user",
-        description: "The user account was created but we couldn't assign admin privileges.",
+        description: "The user account may have been created but we couldn't assign admin privileges.",
         variant: "destructive",
       });
       return false;
@@ -195,13 +203,16 @@ export function useAdminDialogActions() {
   
   const handleAddAdminRole = async (values: AddAdminFormValues) => {
     try {
+      console.log("Finding user by email:", values.email);
       // First check if user exists
       const userId = await findUserByEmail(values.email);
       
       if (!userId) {
+        console.log("User not found, needs to be created");
         return { success: false, needsUserCreation: true };
       }
       
+      console.log("User found, checking if already admin");
       // Check if user is already an admin
       const isAlreadyAdmin = await checkExistingAdminRole(userId);
       
@@ -214,6 +225,7 @@ export function useAdminDialogActions() {
         return { success: false, needsUserCreation: false };
       }
       
+      console.log("Adding admin role to user");
       // Add admin role to user with name metadata
       const success = await addAdminRole(
         userId, 

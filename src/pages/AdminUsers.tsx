@@ -31,20 +31,6 @@ export default function AdminUsers() {
     fetchAdmins
   } = useAdminUsers();
 
-  // Function to check and potentially add Jace as admin
-  const handleCheckAndAddJace = () => {
-    if (!loading && admins.length > 0) {
-      const jaceEmail = "jacewchambers@gmail.com";
-      const isJaceAlreadyAdmin = admins.some(
-        admin => admin.email.toLowerCase() === jaceEmail.toLowerCase()
-      );
-      
-      if (!isJaceAlreadyAdmin) {
-        setAddDialogOpen(true);
-      }
-    }
-  };
-
   return (
     <AdminPageGuard>
       <div className="max-w-6xl mx-auto py-8">
@@ -84,13 +70,6 @@ export default function AdminUsers() {
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add Admin
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleCheckAndAddJace}
-                disabled={loading}
-              >
-                Add Jace
               </Button>
             </div>
           </CardHeader>
