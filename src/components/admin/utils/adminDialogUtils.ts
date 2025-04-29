@@ -33,15 +33,25 @@ export async function findUserByEmail(email: string): Promise<string | null> {
     }
     
     // If not found in users table, check auth directly
+    // getUserByEmail doesn't exist on auth.admin, so we need to use different approaches
     try {
-      const { data: { user }, error: authError } = await supabase.auth.admin.getUserByEmail(email);
+      // Try listing users and filtering by email
+      const { data, error } = await supabase.auth.admin.listUsers({
+        // Use query parameters if available, otherwise will fetch all users
+        page: 1,
+        perPage: 10
+      });
       
-      if (!authError && user) {
-        console.log("Found user in auth:", user.id);
-        return user.id;
+      if (!error && data?.users) {
+        // Find user with matching email
+        const user = data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+        if (user) {
+          console.log("Found user via auth list:", user.id);
+          return user.id;
+        }
       }
     } catch (authApiError) {
-      console.log("Unable to use admin API, falling back to other methods:", authApiError);
+      console.log("Unable to use admin list API, falling back to other methods:", authApiError);
     }
     
     // Try alternative methods if admin API fails

@@ -109,22 +109,34 @@ export async function addAdminRole(
     
     // Also add user to users table if not already there
     try {
-      const { error: userInsertError } = await supabase
+      // First check if user already exists in users table
+      const { data: existingUser, error: checkUserError } = await supabase
         .from('users')
-        .insert({
-          id: userId,
-          email: await getUserEmail(userId) || 'unknown@email.com',
-          first_name: firstName,
-          last_name: lastName,
-          status: 'active',
-          user_type: 'admin'
-        })
-        .onConflict('id')
-        .ignore();
+        .select('id')
+        .eq('id', userId)
+        .maybeSingle();
+        
+      if (checkUserError) {
+        console.error("Error checking if user exists:", checkUserError);
+      }
       
-      if (userInsertError) {
-        console.error("Error adding user record:", userInsertError);
-        // Continue anyway, this is just a helper record
+      // Only insert if user doesn't exist
+      if (!existingUser) {
+        const { error: userInsertError } = await supabase
+          .from('users')
+          .insert({
+            id: userId,
+            email: await getUserEmail(userId) || 'unknown@email.com',
+            first_name: firstName,
+            last_name: lastName,
+            status: 'active',
+            user_type: 'admin'
+          });
+        
+        if (userInsertError) {
+          console.error("Error adding user record:", userInsertError);
+          // Continue anyway, this is just a helper record
+        }
       }
     } catch (userInsertErr) {
       console.error("Failed to add user record:", userInsertErr);
