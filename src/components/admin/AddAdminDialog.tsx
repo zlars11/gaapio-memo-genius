@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -187,16 +187,18 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
                 // User exists, let's try to get their ID a different way
                 console.log("User exists based on signup attempt");
                 
-                // One final attempt - fetch user by email directly if available
-                const { data: { users }, error: fetchError } = await supabase.auth.admin.listUsers({
-                  filters: {
-                    email: values.email
-                  }
-                });
+                // One final attempt - fetch all users and filter manually
+                const { data: { users }, error: fetchError } = await supabase.auth.admin.listUsers();
                 
-                if (!fetchError && users && users.length > 0) {
-                  userId = users[0].id;
-                  console.log("Found user ID through direct fetch:", userId);
+                if (!fetchError && users) {
+                  const matchingUser = users.find(
+                    (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === values.email.toLowerCase()
+                  );
+                  
+                  if (matchingUser) {
+                    userId = matchingUser.id;
+                    console.log("Found user ID through direct fetch:", userId);
+                  }
                 }
               }
             } else if (authUsers && authUsers.users) {
