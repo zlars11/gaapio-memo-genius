@@ -53,15 +53,15 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         console.log("Is current user in admin list:", isCurrentUserInList);
       }
       
-      // Get user details from auth.users table using RPC function
+      // Get user details from users table and auth.users
       const adminUsers: AdminUser[] = [];
       
       for (const roleEntry of roleData) {
         try {
           const userId = roleEntry.user_id;
           
-          // Use auth.users with signups to get user email
-          const { data: authUsers, error: authError } = await supabase
+          // Use users table to get user email
+          const { data: userData, error: userError } = await supabase
             .from('users')
             .select('email')
             .eq('id', userId)
@@ -69,27 +69,38 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
           
           let userEmail = null;
           
-          if (authError) {
-            console.error(`Error fetching user ${userId} from users table:`, authError);
-          } else if (authUsers) {
-            userEmail = authUsers.email;
+          if (userError) {
+            console.error(`Error fetching user ${userId} from users table:`, userError);
+          } else if (userData) {
+            userEmail = userData.email;
             console.log(`Found user ${userId} in users table:`, userEmail);
           }
           
           // If email not found in users table, try to get from auth directly
           if (!userEmail) {
             try {
-              const { data, error } = await supabase.auth.admin.getUserById(userId);
-              if (error) {
-                console.error(`Error fetching auth user ${userId}:`, error);
-              } else if (data?.user) {
-                userEmail = data.user.email;
+              const { data: authUserData, error: authUserError } = await supabase.auth.admin.getUserById(userId);
+              
+              if (authUserError) {
+                console.error(`Error fetching auth user ${userId}:`, authUserError);
+              } else if (authUserData?.user) {
+                userEmail = authUserData.user.email;
                 console.log(`Found auth user ${userId}:`, userEmail);
               }
-            } catch (err) {
-              console.error(`Error accessing auth admin API for ${userId}:`, err);
-              // Continue to next user if this one fails
+            } catch (authErr) {
+              console.error(`Error accessing auth admin API for ${userId}:`, authErr);
+              
+              // If this is the current user and we know their email, use it
+              if (currentUser.id === userId && currentUser.email) {
+                userEmail = currentUser.email;
+                console.log(`Using current user email for ${userId}:`, userEmail);
+              }
             }
+          }
+          
+          if (!userEmail && currentUser.id === userId && currentUser.email) {
+            userEmail = currentUser.email;
+            console.log(`Using current user email for ${userId}:`, userEmail);
           }
           
           if (!userEmail) {
@@ -97,20 +108,23 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
             continue;
           }
           
-          // Check if metadata is an object and has the required properties
+          // Extract name from metadata
           const metadata = typeof roleEntry.metadata === 'object' && roleEntry.metadata !== null 
             ? roleEntry.metadata 
             : {};
           
+          const firstName = metadata && 'first_name' in metadata ? metadata.first_name as string : null;
+          const lastName = metadata && 'last_name' in metadata ? metadata.last_name as string : null;
+          
           adminUsers.push({
             id: userId,
-            email: userEmail || 'No email',
-            first_name: metadata && 'first_name' in metadata ? metadata.first_name as string || null : null,
-            last_name: metadata && 'last_name' in metadata ? metadata.last_name as string || null : null,
+            email: userEmail,
+            first_name: firstName,
+            last_name: lastName,
             created_at: roleEntry.created_at
           });
         } catch (error) {
-          console.error(`Error processing auth user ${roleEntry.user_id}:`, error);
+          console.error(`Error processing admin user ${roleEntry.user_id}:`, error);
         }
       }
       
@@ -129,7 +143,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser.id]); // Only depend on currentUser.id
+  }, [currentUser.id, currentUser.email]); 
 
   return {
     loading,

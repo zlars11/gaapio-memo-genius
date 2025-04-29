@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -30,14 +29,14 @@ export async function checkAdminRole(userId: string): Promise<boolean> {
 /**
  * Adds admin role to a user
  * @param userId The user ID to add admin role to
- * @param firstName First name to set in metadata (optional)
- * @param lastName Last name to set in metadata (optional)
+ * @param firstName First name to set in metadata (required)
+ * @param lastName Last name to set in metadata (required)
  * @returns Promise resolving to success status
  */
 export async function addAdminRole(
   userId: string, 
-  firstName?: string, 
-  lastName?: string
+  firstName: string, 
+  lastName: string
 ): Promise<boolean> {
   try {
     console.log("Adding admin role with name data:", { userId, firstName, lastName });
@@ -59,40 +58,37 @@ export async function addAdminRole(
       console.log("Admin role already exists:", existingRole);
       
       // If the role exists but we want to update the name, do it here
-      if (firstName || lastName) {
-        // Get current metadata to preserve any other fields
-        const currentMetadata = typeof existingRole.metadata === 'object' && existingRole.metadata !== null 
-          ? existingRole.metadata 
-          : {};
+      // Get current metadata to preserve any other fields
+      const currentMetadata = typeof existingRole.metadata === 'object' && existingRole.metadata !== null 
+        ? existingRole.metadata 
+        : {};
+      
+      const { error: updateError } = await supabase
+        .from('user_roles')
+        .update({ 
+          metadata: { 
+            ...currentMetadata,
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: new Date().toISOString()
+          } 
+        })
+        .eq('id', existingRole.id);
         
-        const { error: updateError } = await supabase
-          .from('user_roles')
-          .update({ 
-            metadata: { 
-              ...currentMetadata,
-              first_name: firstName || null,
-              last_name: lastName || null,
-              updated_at: new Date().toISOString()
-            } 
-          })
-          .eq('id', existingRole.id);
-          
-        if (updateError) {
-          console.error("Error updating admin name:", updateError);
-          return false;
-        }
+      if (updateError) {
+        console.error("Error updating admin name:", updateError);
+        return false;
       }
       
       return true;
     }
     
-    // Prepare metadata object
-    const metadata: Record<string, any> = {
-      created_at: new Date().toISOString()
+    // Prepare metadata object - always include first and last name
+    const metadata = {
+      created_at: new Date().toISOString(),
+      first_name: firstName,
+      last_name: lastName
     };
-    
-    if (firstName) metadata.first_name = firstName;
-    if (lastName) metadata.last_name = lastName;
     
     console.log("Creating new admin role with metadata:", metadata);
     

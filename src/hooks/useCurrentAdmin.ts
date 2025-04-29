@@ -93,7 +93,7 @@ export function useCurrentAdmin() {
 
   // Use a stable reference for the fixAdminStatus function
   const fixAdminStatus = useCallback(async () => {
-    if (!currentUser.id) {
+    if (!currentUser.id || !currentUser.email) {
       toast({
         title: "Not authenticated",
         description: "You need to be logged in to perform this action.",
@@ -105,9 +105,17 @@ export function useCurrentAdmin() {
     try {
       console.log("Fixing admin status for user:", currentUser.id);
       
-      // Add default name for admin when fixing admin status
-      const firstName = "Admin";
-      const lastName = "User";
+      // Get user metadata if available
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      // Extract name from user metadata or use defaults
+      let firstName = "Admin";
+      let lastName = "User";
+      
+      if (user && user.user_metadata) {
+        firstName = (user.user_metadata.first_name as string) || firstName;
+        lastName = (user.user_metadata.last_name as string) || lastName;
+      }
       
       // Add admin role with the user's name
       const success = await addAdminRole(currentUser.id, firstName, lastName);
@@ -135,7 +143,7 @@ export function useCurrentAdmin() {
       });
       return false;
     }
-  }, [currentUser.id, toast]);
+  }, [currentUser.id, currentUser.email, toast]);
 
   return {
     currentUser,

@@ -35,8 +35,8 @@ const addAdminFormSchema = z.object({
 // Create a separate schema for the create user form that requires a password
 const createUserFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
 
@@ -82,52 +82,100 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
     try {
       setAdding(true);
       
-      // Create the user in Supabase auth
-      const { data, error } = await supabase.auth.admin.createUser({
+      // Instead of using auth.admin API which might require higher privileges,
+      // try using signUp API first which can be called with anon key
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
-        email_confirm: true, // Auto-confirm email
-        user_metadata: {
-          first_name: values.firstName,
-          last_name: values.lastName
+        options: {
+          data: {
+            first_name: values.firstName,
+            last_name: values.lastName
+          }
         }
       });
       
-      if (error) {
-        console.error("Error creating user:", error);
+      if (signUpError) {
+        console.error("Error creating user with signUp:", signUpError);
+        
+        // Fall back to admin.createUser if available
+        try {
+          const { data, error } = await supabase.auth.admin.createUser({
+            email: values.email,
+            password: values.password,
+            email_confirm: true,
+            user_metadata: {
+              first_name: values.firstName,
+              last_name: values.lastName
+            }
+          });
+          
+          if (error) {
+            console.error("Error creating user with admin API:", error);
+            toast({
+              title: "Failed to create user",
+              description: error.message || "User not allowed. You may need to create the user in the Supabase dashboard.",
+              variant: "destructive",
+            });
+            return;
+          }
+          
+          if (!data.user) {
+            toast({
+              title: "Failed to create user",
+              description: "User creation returned no data.",
+              variant: "destructive",
+            });
+            return;
+          }
+          
+          // Add admin role to the newly created user with name data
+          const success = await addAdminRole(data.user.id, values.firstName, values.lastName);
+          
+          if (!success) {
+            toast({
+              title: "User created but admin role not added",
+              description: "The user account was created but we couldn't assign admin privileges.",
+              variant: "destructive",
+            });
+            return;
+          }
+          
+          toast({
+            title: "Admin user created",
+            description: `${values.email} has been created and granted admin access.`,
+          });
+          
+        } catch (adminError) {
+          console.error("Error in admin user creation:", adminError);
+          toast({
+            title: "Failed to create user",
+            description: "You might need to create this user in the Supabase dashboard first.",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else if (signUpData && signUpData.user) {
+        // User created successfully via signUp
+        console.log("User created via signUp:", signUpData.user);
+        
+        // Add admin role to the newly created user
+        const success = await addAdminRole(signUpData.user.id, values.firstName, values.lastName);
+        
+        if (!success) {
+          toast({
+            title: "User created but admin role not added",
+            description: "The user account was created but we couldn't assign admin privileges.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         toast({
-          title: "Failed to create user",
-          description: error.message || "An error occurred while creating the user account.",
-          variant: "destructive",
+          title: "Admin user created",
+          description: `${values.email} has been created and granted admin access.`,
         });
-        return;
       }
-      
-      if (!data.user) {
-        toast({
-          title: "Failed to create user",
-          description: "User creation returned no data.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Add admin role to the newly created user
-      const success = await addAdminRole(data.user.id, values.firstName || "", values.lastName || "");
-      
-      if (!success) {
-        toast({
-          title: "User created but admin role not added",
-          description: "The user account was created but we couldn't assign admin privileges.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      toast({
-        title: "Admin user created",
-        description: `${values.email} has been created and granted admin access.`,
-      });
       
       setCreateUserDialogOpen(false);
       form.reset();
@@ -222,11 +270,11 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       if (!userId) {
-        // User doesn't exist - prepare create user form and open dialog
+        // User doesn't exist - prepare create user form with firstName and lastName already filled in
         createUserForm.reset({
           email: values.email,
-          firstName: values.firstName,
-          lastName: values.lastName,
+          firstName: values.firstName || "",
+          lastName: values.lastName || "",
           password: "",
         });
         
@@ -262,8 +310,12 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         // Continue flow - we'll try to add the role anyway
       }
       
-      // Add admin role to user with name metadata
-      const success = await addAdminRole(userId, values.firstName || "", values.lastName || "");
+      // Add admin role to user with name metadata - ensure first and last name are passed
+      const success = await addAdminRole(
+        userId, 
+        values.firstName || "Admin", // Provide default if missing
+        values.lastName || "User"    // Provide default if missing
+      );
       
       if (!success) {
         throw new Error("Failed to grant admin privileges");
@@ -409,7 +461,43 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
                 </AlertDialogDescription>
               </AlertDialogHeader>
               
-              <div className="py-4">
+              <div className="py-4 space-y-4">
+                <FormField
+                  control={createUserForm.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="First Name" 
+                          {...field}
+                          disabled={adding}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={createUserForm.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Last Name" 
+                          {...field}
+                          disabled={adding}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
                 <FormField
                   control={createUserForm.control}
                   name="password"
