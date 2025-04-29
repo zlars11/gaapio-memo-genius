@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -23,9 +22,9 @@ interface CreateUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultValues: {
-    email: string;
-    firstName: string;
-    lastName: string;
+    email: string;  // Required field
+    firstName: string;  // Required field
+    lastName: string;   // Required field
   };
   isLoading: boolean;
   onSubmit: (values: CreateUserFormValues) => Promise<void>;
@@ -43,9 +42,9 @@ export function CreateUserDialog({
   const form = useForm<CreateUserFormValues>({
     resolver: zodResolver(createUserFormSchema),
     defaultValues: {
-      email: defaultValues.email || "",
-      firstName: defaultValues.firstName || "",
-      lastName: defaultValues.lastName || "",
+      email: defaultValues.email,
+      firstName: defaultValues.firstName,
+      lastName: defaultValues.lastName,
       password: "",
     },
   });

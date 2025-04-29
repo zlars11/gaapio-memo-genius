@@ -113,7 +113,11 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
             onSubmit={handleAddAdmin}
             onCancel={() => handleOpenChange(false)}
             isLoading={adding}
-            defaultValues={formValues}
+            defaultValues={{
+              email: formValues.email,
+              firstName: formValues.firstName || "",
+              lastName: formValues.lastName || "",
+            }}
           />
         </DialogContent>
       </Dialog>

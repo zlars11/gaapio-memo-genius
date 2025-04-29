@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -23,7 +22,7 @@ interface AddAdminFormProps {
   onCancel: () => void;
   isLoading: boolean;
   defaultValues?: {
-    email: string;
+    email: string; // Note: This is required now
     firstName?: string;
     lastName?: string;
   };
