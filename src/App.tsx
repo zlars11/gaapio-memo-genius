@@ -1,3 +1,4 @@
+
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,8 +19,9 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const ASC606Pitfalls = lazy(() => import("./pages/ASC606Pitfalls"));
 const AIAccounting = lazy(() => import("./pages/AIAccounting"));
 const Admin = lazy(() => import("./pages/Admin"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers")); // Added this line
 const SignUp = lazy(() => import("./pages/SignUp"));
-const Login = lazy(() => import("./pages/Login")); // Add this line
+const Login = lazy(() => import("./pages/Login")); 
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -64,8 +66,9 @@ const App = () => (
               <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
               <Route path="/ssa" element={<SubscriptionAgreement />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/users" element={<AdminUsers />} /> {/* Added this line */}
               <Route path="/signup" element={<SignUp />} />
-              <Route path="/login" element={<Login />} /> {/* Add this line */}
+              <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
