@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -9,7 +10,7 @@ import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users } from "lucide-react";
+import { Loader2, Users, RefreshCw } from "lucide-react";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -100,12 +101,14 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
-          <Button asChild variant="outline">
-            <Link to="/admin/users">
-              <Users className="h-4 w-4 mr-2" />
-              Manage Admin Users
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link to="/admin/users">
+                <Users className="h-4 w-4 mr-2" />
+                Manage Admin Users
+              </Link>
+            </Button>
+          </div>
         </div>
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="mb-8">

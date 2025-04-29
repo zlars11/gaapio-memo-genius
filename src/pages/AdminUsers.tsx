@@ -27,44 +27,46 @@ export default function AdminUsers() {
   const [adding, setAdding] = useState(false);
   const { toast } = useToast();
 
-  // Fetch admin users
+  // Improved fetch admin users function
   const fetchAdmins = async () => {
     try {
       setLoading(true);
+      console.log("Fetching admin users...");
       
-      // Get all users with admin role
-      const { data: roleData, error: roleError } = await supabase
+      // Get all users with admin role using a direct join query
+      const { data, error } = await supabase
         .from('user_roles')
         .select(`
           user_id,
-          created_at
+          users:user_id (
+            id,
+            first_name,
+            last_name,
+            email,
+            created_at
+          )
         `)
         .eq('role', 'admin');
       
-      if (roleError) throw roleError;
-      
-      // No admin users found
-      if (!roleData || roleData.length === 0) {
-        setAdmins([]);
-        return;
+      if (error) {
+        console.error("Error fetching admins:", error);
+        throw error;
       }
       
-      // Get user details for each admin
-      const adminDetails: AdminUser[] = [];
+      console.log("Admin data retrieved:", data);
       
-      for (const role of roleData) {
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('id, email, first_name, last_name, created_at')
-          .eq('id', role.user_id)
-          .single();
+      // Extract user details from the join result
+      if (data && data.length > 0) {
+        const adminsData = data
+          .map(item => item.users)
+          .filter(user => user !== null) as AdminUser[];
         
-        if (!userError && userData) {
-          adminDetails.push(userData as AdminUser);
-        }
+        console.log("Processed admin users:", adminsData);
+        setAdmins(adminsData);
+      } else {
+        console.log("No admin users found");
+        setAdmins([]);
       }
-      
-      setAdmins(adminDetails);
     } catch (error) {
       console.error("Error fetching admins:", error);
       toast({
