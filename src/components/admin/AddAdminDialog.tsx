@@ -68,15 +68,23 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
 
   // Handle creating a new user and making them an admin
   const handleCreateUserAccount = async (values: CreateUserFormValues) => {
+    console.log("Adding user with admin role:", values);
     try {
       setAdding(true);
       
       const success = await handleCreateUserWithAdminRole(values);
+      console.log("User creation result:", success);
       
       if (success) {
         setCreateUserDialogOpen(false);
         handleOpenChange(false);
         onSuccess(); // Refresh the list
+        toast({
+          title: "Success",
+          description: `Created user ${values.email} and added admin privileges.`,
+        });
+      } else {
+        throw new Error("Failed to create user with admin role.");
       }
     } catch (error: any) {
       console.error("Error in createUserAccount:", error);

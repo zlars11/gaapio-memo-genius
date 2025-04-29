@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -49,11 +50,21 @@ export function CreateUserDialog({
     },
   });
 
+  // Handle form submission
+  const handleSubmit = async (values: CreateUserFormValues) => {
+    console.log("CreateUserDialog - Form submitted with values:", values);
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      console.error("Error in CreateUserDialog submit handler:", error);
+    }
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <AlertDialogHeader>
               <AlertDialogTitle>Create New User</AlertDialogTitle>
               <AlertDialogDescription>
@@ -121,11 +132,7 @@ export function CreateUserDialog({
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isLoading} type="button">Cancel</AlertDialogCancel>
               <AlertDialogAction 
-                onClick={(e) => {
-                  // Prevent default to let the form submission handle it
-                  e.preventDefault();
-                  form.handleSubmit(onSubmit)();
-                }}
+                type="submit"
                 disabled={isLoading}
               >
                 {isLoading ? (

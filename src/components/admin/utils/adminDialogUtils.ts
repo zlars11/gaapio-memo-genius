@@ -114,6 +114,8 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
  */
 export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<boolean> {
   try {
+    console.log("Creating new user with admin role:", values.email);
+    
     // Try using signUp API first which can be called with anon key
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: values.email,
@@ -145,11 +147,15 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
         return false;
       }
       
+      console.log("User created via admin API:", data.user.id);
+      
       // Add admin role to the newly created user
       return await addAdminRole(data.user.id, values.firstName, values.lastName);
     } 
     
     if (signUpData && signUpData.user) {
+      console.log("User created via signUp:", signUpData.user.id);
+      
       // Add admin role to the newly created user
       return await addAdminRole(signUpData.user.id, values.firstName, values.lastName);
     }
@@ -168,6 +174,7 @@ export function useAdminDialogActions() {
   const { toast } = useToast();
   
   const handleCreateUserWithAdminRole = async (values: CreateUserFormValues) => {
+    console.log("handleCreateUserWithAdminRole called with:", values);
     const success = await createUserWithAdminRole(values);
     
     if (success) {
