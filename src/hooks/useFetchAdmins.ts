@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser } from "@/types/adminTypes";
@@ -61,10 +60,10 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         try {
           const userId = roleEntry.user_id;
           
-          // Use users table to get user email
+          // Use users table to get user email - now explicitly selecting email
           const { data: userData, error: userError } = await supabase
             .from('users')
-            .select('email')
+            .select('id, email')
             .eq('id', userId)
             .maybeSingle();
           
@@ -72,7 +71,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
           
           if (userError) {
             console.error(`Error fetching user ${userId} from users table:`, userError);
-          } else if (userData) {
+          } else if (userData && userData.email) {
             userEmail = userData.email;
             console.log(`Found user ${userId} in users table:`, userEmail);
           }

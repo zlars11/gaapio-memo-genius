@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { SupabaseAuthUser, SupabaseAuthResponse } from "@/types/supabaseTypes";
 
@@ -191,7 +192,7 @@ async function getUserEmail(userId: string): Promise<string | null> {
     // First try the users table
     const { data: userData, error: userError } = await supabase
       .from('users')
-      .select('email')
+      .select('id, email')  // Explicitly select email field
       .eq('id', userId)
       .maybeSingle();
     
@@ -202,11 +203,10 @@ async function getUserEmail(userId: string): Promise<string | null> {
     // Try to get from auth
     try {
       // Use proper typing for auth response
-      const response: SupabaseAuthResponse = await supabase.auth.admin.getUserById(userId);
-      const { data, error } = response;
+      const { data, error } = await supabase.auth.admin.getUserById(userId) as unknown as SupabaseAuthResponse;
       
       if (!error && data && data.user) {
-        // Properly typed now, so TypeScript knows email exists
+        // Now properly typed, so TypeScript knows email exists
         const userEmail = data.user.email;
         
         // Add defensive check for email
