@@ -135,13 +135,16 @@ export function useAdminUsers() {
             console.log(`Found auth user ${userId}:`, authUser.user.email);
             
             // Use metadata from user_roles if available, otherwise use empty values
-            const metadata = roleEntry.metadata || {};
+            // Check if metadata is an object and has the required properties
+            const metadata = typeof roleEntry.metadata === 'object' && roleEntry.metadata !== null 
+              ? roleEntry.metadata 
+              : {};
             
             adminUsers.push({
               id: userId,
               email: authUser.user.email || 'No email',
-              first_name: metadata?.first_name || null,
-              last_name: metadata?.last_name || null,
+              first_name: metadata && 'first_name' in metadata ? metadata.first_name as string || null : null,
+              last_name: metadata && 'last_name' in metadata ? metadata.last_name as string || null : null,
               created_at: roleEntry.created_at || authUser.user.created_at
             });
           }
@@ -318,12 +321,17 @@ export function useAdminUsers() {
       
       console.log("Existing role entry:", existingRole);
       
+      // Ensure metadata is an object before updating
+      const currentMetadata = typeof existingRole.metadata === 'object' && existingRole.metadata !== null 
+        ? existingRole.metadata 
+        : {};
+      
       // Update metadata on the user_roles entry with name information
       const { error: updateError } = await supabase
         .from('user_roles')
         .update({
           metadata: {
-            ...existingRole.metadata,
+            ...currentMetadata,
             first_name: firstName,
             last_name: lastName,
             updated_at: new Date().toISOString()
