@@ -128,9 +128,9 @@ async function ensureUserInUsersTable(userId: string, firstName: string, lastNam
   try {
     // First check if user already exists in users table
     const { data: existingUser, error: checkUserError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('id', userId)
+      .from("users")
+      .select("id")
+      .eq("id", userId)
       .maybeSingle();
       
     if (checkUserError) {
@@ -143,7 +143,7 @@ async function ensureUserInUsersTable(userId: string, firstName: string, lastNam
     if (!existingUser) {
       // Only insert if user doesn't exist
       const { error: userInsertError } = await supabase
-        .from('users')
+        .from("users")
         .insert({
           id: userId,
           email: email || 'unknown@email.com',
@@ -161,7 +161,7 @@ async function ensureUserInUsersTable(userId: string, firstName: string, lastNam
     } else {
       // User exists, update their info to ensure it's current
       const { error: userUpdateError } = await supabase
-        .from('users')
+        .from("users")
         .update({
           email: email || existingUser.email || 'unknown@email.com',
           first_name: firstName,

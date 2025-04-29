@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { triggerZapier } from "@/utils/signupUtils";
 
 interface ContactFormProps {
   onSubmitSuccess?: (data: any) => void;
@@ -37,11 +37,27 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
     setIsSubmitting(true);
     
     try {
+      // Clean form data
+      const cleanedData = {
+        first_name: data.first_name.trim(),
+        last_name: data.last_name.trim(),
+        company: data.company.trim(),
+        email: data.email.trim(),
+        phone: data.phone.trim(),
+        message: data.message.trim()
+      };
+      
+      // Validate form data
+      if (!cleanedData.first_name || !cleanedData.last_name || 
+          !cleanedData.company || !cleanedData.email) {
+        throw new Error("Please fill in all required fields");
+      }
+      
       // Begin transaction to create company and user
       const { data: { session } } = await supabase.auth.getSession();
       
       // Normalize company name
-      const normalizedCompanyName = data.company.toLowerCase().trim();
+      const normalizedCompanyName = cleanedData.company.toLowerCase().trim();
       
       // First check if company exists
       const { data: existingCompany, error: companyCheckError } = await supabase
@@ -82,12 +98,12 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
       const { error: contactError } = await supabase
         .from("contact_submissions")
         .insert([{
-          firstname: data.first_name,
-          lastname: data.last_name,
-          email: data.email,
+          firstname: cleanedData.first_name,
+          lastname: cleanedData.last_name,
+          email: cleanedData.email,
           company: normalizedCompanyName,
-          phone: data.phone,
-          message: data.message
+          phone: cleanedData.phone,
+          message: cleanedData.message
         }]);
 
       if (contactError) throw contactError;
@@ -96,10 +112,10 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
       const { error: userError } = await supabase
         .from("users")
         .insert([{
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email: data.email,
-          phone: data.phone,
+          first_name: cleanedData.first_name,
+          last_name: cleanedData.last_name,
+          email: cleanedData.email,
+          phone: cleanedData.phone,
           company_id: companyData.id,
           user_type: "user",
           status: "active"
@@ -107,9 +123,25 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
 
       if (userError) throw userError;
       
+      // Trigger Zapier webhook
+      const zapierData = {
+        "Firm Name": cleanedData.company,
+        "Contact Name": `${cleanedData.first_name} ${cleanedData.last_name}`,
+        "Email": cleanedData.email,
+        "Phone": cleanedData.phone,
+        "Message": cleanedData.message,
+        "Submission Date": new Date().toISOString(),
+      };
+      
+      // Queue webhook without awaiting (don't block user experience)
+      triggerZapier(zapierData, true).catch(err => {
+        console.error("Error queueing webhook:", err);
+        // Don't block form submission if webhook fails
+      });
+      
       if (onSubmitSuccess) {
         onSubmitSuccess({
-          ...data,
+          ...cleanedData,
           company_id: companyData.id
         });
       } else {

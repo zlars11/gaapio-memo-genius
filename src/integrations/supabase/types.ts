@@ -299,6 +299,39 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_outbox: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          payload: Json
+          retry_count: number
+          status: string
+          target_url: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload: Json
+          retry_count?: number
+          status?: string
+          target_url: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload?: Json
+          retry_count?: number
+          status?: string
+          target_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -307,6 +340,10 @@ export type Database = {
       has_role: {
         Args: { user_id: string; role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
+      }
+      queue_webhook: {
+        Args: { payload_data: Json; webhook_url: string }
+        Returns: string
       }
     }
     Enums: {

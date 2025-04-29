@@ -82,7 +82,18 @@ export default function SignUp() {
         // Get the annualAmount as a number 
         const annualAmount = Number(selectedPlanObj?.annualAmount || 0);
         
-        // Make sure plan value matches valid database options (assuming the constraint matches these exact values)
+        // Clean and validate form data
+        const trimmedCompany = userInfo.company.trim();
+        const trimmedFirstName = userInfo.firstName.trim();
+        const trimmedLastName = userInfo.lastName.trim();
+        const trimmedEmail = userInfo.email.trim();
+        const trimmedPhone = userInfo.phone ? userInfo.phone.trim() : "";
+        
+        if (!trimmedCompany || !trimmedFirstName || !trimmedLastName || !trimmedEmail) {
+          throw new Error("Missing required signup information");
+        }
+        
+        // Make sure plan value matches valid database options
         let dbPlan = selectedPlan;
         if (selectedPlan === "mid") {
           dbPlan = "mid-market";
@@ -98,16 +109,17 @@ export default function SignUp() {
           userLimit = null; // Store as null for unlimited users
         }
         
+        // Create the company record
         const { data: companyData, error: companyError } = await supabase
           .from("companies")
           .insert({
-            name: userInfo.company,
+            name: trimmedCompany,
             plan: dbPlan, // Use the corrected plan value
             status: "active",
             amount: annualAmount, // Pass as number, not string
             billing_frequency: "annual",
-            billing_contact: paymentData.billingContact, // Use billing data from payment form
-            billing_email: paymentData.billingEmail, // Use billing data from payment form
+            billing_contact: paymentData.billingContact.trim(), // Use billing data from payment form
+            billing_email: paymentData.billingEmail.trim(), // Use billing data from payment form
             user_limit: userLimit  // Use correct column name with proper string value
           })
           .select()
@@ -115,11 +127,12 @@ export default function SignUp() {
           
         if (companyError) throw companyError;
         
+        // Create the user record
         const userData = {
-          first_name: userInfo.firstName,
-          last_name: userInfo.lastName,
-          email: userInfo.email,
-          phone: userInfo.phone,
+          first_name: trimmedFirstName,
+          last_name: trimmedLastName,
+          email: trimmedEmail,
+          phone: trimmedPhone,
           company_id: companyData.id,
           user_type: "user",
           status: "active"
@@ -131,16 +144,21 @@ export default function SignUp() {
 
         if (userError) throw userError;
 
+        // Prepare Zapier data
         const allData = { 
           ...userInfo, 
           ...paymentData,
-          plan: dbPlan, // Use corrected plan value
+          plan: dbPlan, // Use corrected plan value 
           term: "annual", 
           amount: getPlanLabel(selectedPlan), 
           signupDate: new Date().toISOString() 
         };
         
-        await triggerZapier(allData);
+        // Trigger Zapier webhook asynchronously (don't await)
+        triggerZapier(allData).catch(err => {
+          console.error("Error queuing Zapier webhook:", err);
+          // Don't block user signup flow if webhook fails
+        });
 
         setIsLoading(false);
         setStep(3);
@@ -165,19 +183,25 @@ export default function SignUp() {
     try {
       console.log("Form data received for firm contact:", formData);
       
-      // Ensure formData has the correct plan before passing it to createFirmSignup
-      const updatedFormData = {
+      // Clean form data
+      const cleanedFormData = {
         ...formData,
+        company: formData.company.trim(),
+        first_name: formData.first_name.trim(),
+        last_name: formData.last_name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone ? formData.phone.trim() : "",
+        message: formData.message ? formData.message.trim() : "",
         plan: "firm" // Make sure to use "firm" instead of "firms"
       };
       
-      await createFirmSignup(updatedFormData);
+      // Validate form data
+      if (!cleanedFormData.company || !cleanedFormData.first_name || 
+          !cleanedFormData.last_name || !cleanedFormData.email) {
+        throw new Error("Missing required fields");
+      }
       
-      await triggerZapier({
-        ...updatedFormData,
-        signupDate: new Date().toISOString(),
-        type: "firm"
-      }, true);
+      await createFirmSignup(cleanedFormData);
       
       toast({
         title: "Thank you for your interest!",

@@ -2,36 +2,62 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export async function createFirmSignup(formData: any) {
-  // Create the company
-  const { data: companyData, error: companyError } = await supabase
-    .from("companies")
-    .insert({
-      name: formData.company,
-      plan: "firm",  // Using "firm" to match the database constraint
-      status: "active",
-      amount: 0
-    })
-    .select()
-    .single();
+  try {
+    // Clean inputs
+    const companyName = formData.company.trim();
+    const firstName = (formData.firstName || formData.firstname || "").trim();
+    const lastName = (formData.lastName || formData.lastname || "").trim();
+    const email = formData.email.trim();
+    const phone = formData.phone ? formData.phone.trim() : "";
     
-  if (companyError) throw companyError;
-  
-  // Then create the user
-  const userData = {
-    first_name: formData.firstName || formData.firstname || "", 
-    last_name: formData.lastName || formData.lastname || "",    
-    email: formData.email,
-    phone: formData.phone,
-    company_id: companyData.id,
-    user_type: "user",
-    status: "active"
-  };
-  
-  const { error: userError } = await supabase
-    .from("users")
-    .insert([userData]);
+    // Validate inputs
+    if (!companyName || !firstName || !lastName || !email) {
+      throw new Error("Missing required fields");
+    }
     
-  if (userError) throw userError;
+    // Create the company
+    const { data: companyData, error: companyError } = await supabase
+      .from("companies")
+      .insert({
+        name: companyName,
+        plan: "firm",  // Using "firm" to match the database constraint
+        status: "active",
+        amount: 0
+      })
+      .select()
+      .single();
+      
+    if (companyError) throw companyError;
+    
+    // Then create the user
+    const userData = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      phone: phone,
+      company_id: companyData.id,
+      user_type: "user",
+      status: "active"
+    };
+    
+    const { error: userError } = await supabase
+      .from("users")
+      .insert([userData]);
+      
+    if (userError) throw userError;
+
+    // Queue the webhook
+    await triggerZapier({
+      ...formData,
+      signupDate: new Date().toISOString(),
+      type: "firm"
+    }, true);
+    
+    return { success: true, company_id: companyData.id };
+  } catch (error: any) {
+    console.error("Error in createFirmSignup:", error);
+    throw error;
+  }
 }
 
 export async function handleSignup(formData: any): Promise<{
@@ -42,6 +68,18 @@ export async function handleSignup(formData: any): Promise<{
 }> {
   try {
     console.log("Handling signup with data:", formData);
+    
+    // Clean inputs
+    const companyName = formData.company.trim();
+    const firstName = (formData.first_name || formData.firstName || "").trim();
+    const lastName = (formData.last_name || formData.lastName || "").trim();
+    const email = formData.email.trim();
+    const phone = formData.phone ? formData.phone.trim() : "";
+    
+    // Validate inputs
+    if (!companyName || !firstName || !lastName || !email) {
+      return { success: false, error: "Missing required fields" };
+    }
     
     // Make sure plan value matches valid database options
     let dbPlan = formData.plan || "emerging";
@@ -55,7 +93,7 @@ export async function handleSignup(formData: any): Promise<{
     const { data: companyData, error: companyError } = await supabase
       .from("companies")
       .insert({
-        name: formData.company,
+        name: companyName,
         plan: dbPlan,
         status: "active",
         amount: formData.amount || 0,
@@ -71,10 +109,10 @@ export async function handleSignup(formData: any): Promise<{
     
     // Then create the user
     const userData = {
-      first_name: formData.first_name || formData.firstName || "",
-      last_name: formData.last_name || formData.lastName || "",
-      email: formData.email,
-      phone: formData.phone || "",
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      phone: phone,
       company_id: companyData.id,
       user_type: formData.user_type || "user",
       status: "active"
@@ -90,6 +128,12 @@ export async function handleSignup(formData: any): Promise<{
       console.error("User creation error:", userError);
       return { success: false, error: userError.message };
     }
+    
+    // Queue webhook - don't await for immediate response
+    triggerZapier(formData).catch(err => {
+      console.error("Error queuing webhook:", err);
+      // Error handled by webhook system, don't block user signup
+    });
     
     return { 
       success: true, 
@@ -107,18 +151,20 @@ export async function handleSignup(formData: any): Promise<{
 }
 
 export async function triggerZapier(allData: any, isFirm: boolean = false) {
-  const ZAPIER_WEBHOOK_URL = isFirm ? 
-    getFirmSignupZapierWebhookUrl() : 
-    getUserSignupZapierWebhookUrl();
-
-  if (!ZAPIER_WEBHOOK_URL) {
-    throw new Error(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
-  }
-  
   try {
-    console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, ZAPIER_WEBHOOK_URL);
+    const webhookUrl = isFirm ? 
+      getFirmSignupZapierWebhookUrl() : 
+      getUserSignupZapierWebhookUrl();
+
+    if (!webhookUrl) {
+      console.warn(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
+      return;
+    }
     
-    const formattedData = isFirm ? {
+    console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, webhookUrl);
+    
+    // Format data
+    const payload = isFirm ? {
       "Firm Name": allData.company,
       "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
       "Email": allData.email,
@@ -127,15 +173,23 @@ export async function triggerZapier(allData: any, isFirm: boolean = false) {
       "Submission Date": new Date().toISOString(),
     } : allData;
     
-    await fetch(ZAPIER_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors",
-      body: JSON.stringify(formattedData),
+    // Call the queue-webhook edge function
+    const { error } = await supabase.functions.invoke('queue-webhook', {
+      body: {
+        payload,
+        target_url: webhookUrl
+      }
     });
-    console.log("Zapier webhook triggered successfully");
+    
+    if (error) {
+      console.error("Error queuing webhook:", error);
+      // Don't block the signup process, log error only
+    } else {
+      console.log("Webhook queued successfully");
+    }
   } catch (err) {
     console.error("Error triggering Zapier webhook:", err);
+    // Don't block the signup process, log error only
   }
 }
 

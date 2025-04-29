@@ -1,16 +1,24 @@
 
-# This is a Supabase config file - it lives at supabase/config.toml
-# It is used by the Supabase CLI to configure your project
-
 project_id = "bxojxrcerefklsrqkmrs"
 
 [api]
 enabled = true
-port = 8080
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
 
 [db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
 enabled = true
-port = 5432
+port = 54323
+api_url = "http://localhost"
+
+[inbucket]
+enabled = true
+port = 54324
 
 [storage]
 enabled = true
@@ -19,8 +27,16 @@ enabled = true
 enabled = true
 site_url = "http://localhost:3000"
 
-[realtime]
+[analytics]
 enabled = true
 
-[functions.signup]
+[experimental]
+event_hook_logging = true
+
+# Configure the process-webhooks function
+[functions.process-webhooks]
 verify_jwt = false
+
+# Configure the queue-webhook function
+[functions.queue-webhook]
+verify_jwt = true

@@ -19,36 +19,53 @@ export const WaitlistForm = memo(function WaitlistForm() {
     setIsLoading(true);
 
     try {
+      // Clean form data
+      const trimmedEmail = email.trim();
+      const trimmedName = name.trim();
+      const trimmedCompany = company.trim();
+      
+      // Validate form data
+      if (!trimmedEmail || !trimmedName) {
+        toast({
+          title: "Missing information",
+          description: "Please provide your name and email.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       // Submit to Supabase table (waitlist_submissions)
-      await (supabase as any)
+      await supabase
         .from("waitlist_submissions")
         .insert([
           {
-            email,
-            name,
-            company,
+            email: trimmedEmail,
+            name: trimmedName,
+            company: trimmedCompany,
             date: new Date().toISOString(),
           },
         ]);
 
       // Format data with exact field names for Zapier
       const zapierData = {
-        "Email": email,
-        "Name": name,
-        "Company": company,
+        "Email": trimmedEmail,
+        "Name": trimmedName,
+        "Company": trimmedCompany,
         "Source": "Waitlist Form",
         "Submission Date": new Date().toISOString(),
         "Destination": "zacklarsen11@gmail.com",
       };
 
-      // Send to Zapier with formatted field names
-      await fetch(ZAPIER_WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors",
-        body: JSON.stringify(zapierData),
+      // Queue webhook via edge function
+      await supabase.functions.invoke('queue-webhook', {
+        body: {
+          payload: zapierData,
+          target_url: ZAPIER_WEBHOOK_URL
+        }
+      }).catch(err => {
+        console.error("Error queuing webhook:", err);
+        // Don't block the form submission if the webhook fails
       });
 
       toast({
