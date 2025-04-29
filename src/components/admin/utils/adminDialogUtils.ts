@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
@@ -43,8 +42,11 @@ export async function findUserByEmail(email: string): Promise<string | null> {
       });
       
       if (!error && data?.users) {
-        // Find user with matching email
-        const user = data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+        // Find user with matching email - with proper typing
+        const user = data.users.find((u: SupabaseAuthUser) => 
+          u.email?.toLowerCase() === email.toLowerCase()
+        );
+        
         if (user) {
           console.log("Found user via auth list:", user.id);
           return user.id;
