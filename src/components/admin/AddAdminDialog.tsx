@@ -121,7 +121,11 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       <CreateUserDialog 
         open={createUserDialogOpen} 
         onOpenChange={setCreateUserDialogOpen}
-        defaultValues={formValues}
+        defaultValues={{
+          email: formValues.email || "",
+          firstName: formValues.firstName || "",
+          lastName: formValues.lastName || ""
+        }}
         isLoading={adding}
         onSubmit={handleCreateUserAccount}
       />
