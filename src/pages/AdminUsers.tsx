@@ -31,6 +31,11 @@ export default function AdminUsers() {
     fetchAdmins
   } = useAdminUsers();
 
+  // Wrapper function to handle the return type mismatch
+  const handleSaveName = async (firstName: string, lastName: string) => {
+    await handleUpdateName(firstName, lastName);
+  };
+
   return (
     <AdminPageGuard>
       <div className="max-w-6xl mx-auto py-8">

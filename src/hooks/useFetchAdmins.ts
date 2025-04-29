@@ -4,12 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminUser } from "@/types/adminTypes";
 import { CurrentAdminUser } from "@/hooks/useCurrentAdmin";
 
+interface FetchAdminsResult {
+  success: boolean;
+  isCurrentUserDisplayed: boolean;
+}
+
 export function useFetchAdmins(currentUser: CurrentAdminUser) {
   const [loading, setLoading] = useState(false);
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAdmins = async () => {
+  const fetchAdmins = async (): Promise<FetchAdminsResult> => {
     try {
       setLoading(true);
       setError(null);
@@ -27,7 +32,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         console.error("Error fetching admin roles:", roleError);
         setError("Failed to fetch admin roles");
         setAdmins([]);
-        return false;
+        return { success: false, isCurrentUserDisplayed: false };
       }
       
       console.log(`Found ${roleData?.length || 0} admin role records:`, roleData);
@@ -35,7 +40,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       if (!roleData || roleData.length === 0) {
         console.log("No admin users found");
         setAdmins([]);
-        return true;
+        return { success: true, isCurrentUserDisplayed: false };
       }
       
       // Extract user IDs from the role data
@@ -87,15 +92,10 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       console.log(`Processed ${adminUsers.length} admin users:`, adminUsers);
       setAdmins(adminUsers);
       
-      // Update current user displayed status
-      if (currentUser.id) {
-        return {
-          success: true,
-          isCurrentUserDisplayed: isCurrentUserInList
-        };
-      }
-      
-      return { success: true, isCurrentUserDisplayed: false };
+      return {
+        success: true,
+        isCurrentUserDisplayed: isCurrentUserInList
+      };
     } catch (error) {
       console.error("Unexpected error in fetchAdmins:", error);
       setError("An unexpected error occurred while fetching admin users");

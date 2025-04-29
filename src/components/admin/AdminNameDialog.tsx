@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface AdminNameDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (firstName: string, lastName: string) => Promise<void>;
+  onSave: (firstName: string, lastName: string) => Promise<boolean>;
   isLoading: boolean;
 }
 
@@ -42,7 +42,10 @@ export function AdminNameDialog({
         return;
       }
       
-      await onSave(firstName.trim(), lastName.trim());
+      const success = await onSave(firstName.trim(), lastName.trim());
+      if (!success) {
+        setError("Failed to save your name");
+      }
     } catch (err: any) {
       setError(err.message || "Failed to save your name");
     }

@@ -32,6 +32,7 @@ export function useAdminUsers() {
         displayedInList: result.isCurrentUserDisplayed
       }));
     }
+    return result;
   };
 
   const {
@@ -44,7 +45,7 @@ export function useAdminUsers() {
   } = useAdminActions(fetchAdminsAndUpdateStatus);
 
   // Handle updating name with the current user ID
-  const handleUpdateName = async (firstName: string, lastName: string) => {
+  const handleUpdateName = async (firstName: string, lastName: string): Promise<boolean> => {
     if (!currentUser.id) return false;
     return await updateName(firstName, lastName, currentUser.id);
   };
