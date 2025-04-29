@@ -1,6 +1,13 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
+// Define proper interface for Supabase auth user to fix type error
+interface SupabaseAuthUser {
+  id: string;
+  email?: string | null;
+  // Add other properties if needed
+}
+
 /**
  * Checks if a user has admin role
  * @param userId The user ID to check
@@ -201,9 +208,16 @@ async function getUserEmail(userId: string): Promise<string | null> {
     
     // Try to get from auth
     try {
+      // Fix type error here with proper typing
       const { data, error } = await supabase.auth.admin.getUserById(userId);
-      if (!error && data.user?.email) {
-        return data.user.email;
+      
+      // Add proper type checking and casting
+      if (!error && data && data.user) {
+        // Cast to our interface to fix the type error
+        const user = data.user as SupabaseAuthUser;
+        if (user.email) {
+          return user.email;
+        }
       }
     } catch (authError) {
       console.error("Error getting user email from auth:", authError);
