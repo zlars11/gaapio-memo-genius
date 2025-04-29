@@ -19,6 +19,9 @@ export function useAdminUsers() {
   const [currentUserDisplayed, setCurrentUserDisplayed] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [updatingName, setUpdatingName] = useState(false);
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Get the current user's session
@@ -34,6 +37,7 @@ export function useAdminUsers() {
       if (session?.user) {
         console.log("Current user found:", session.user.email);
         setCurrentUserEmail(session.user.email);
+        setCurrentUserId(session.user.id);
       } else {
         console.log("No current user session found");
       }
@@ -283,6 +287,91 @@ export function useAdminUsers() {
     }
   };
 
+  // Update current user's name
+  const handleUpdateName = async (firstName: string, lastName: string) => {
+    try {
+      setUpdatingName(true);
+      
+      if (!currentUserId) {
+        throw new Error("No user ID available");
+      }
+      
+      // Check if user exists in the users table
+      const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', currentUserId)
+        .maybeSingle();
+        
+      if (checkError) {
+        console.error("Error checking if user exists:", checkError);
+        throw new Error("Failed to check if your user record exists");
+      }
+      
+      if (existingUser) {
+        // Update existing user record
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({
+            first_name: firstName,
+            last_name: lastName,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentUserId);
+          
+        if (updateError) {
+          console.error("Error updating user:", updateError);
+          throw new Error("Failed to update your name");
+        }
+      } else {
+        // Create new user record
+        const { error: insertError } = await supabase
+          .from('users')
+          .insert({
+            id: currentUserId,
+            first_name: firstName,
+            last_name: lastName,
+            email: currentUserEmail || '',
+            user_type: 'admin',
+            status: 'active'
+          });
+          
+        if (insertError) {
+          console.error("Error creating user:", insertError);
+          throw new Error("Failed to create your user record");
+        }
+      }
+      
+      toast({
+        title: "Name updated",
+        description: "Your name has been updated successfully.",
+      });
+      
+      // Update local state
+      setAdmins(admins.map(admin => {
+        if (admin.id === currentUserId) {
+          return {
+            ...admin,
+            first_name: firstName,
+            last_name: lastName
+          };
+        }
+        return admin;
+      }));
+      
+      setNameDialogOpen(false);
+    } catch (error: any) {
+      console.error("Error updating name:", error);
+      toast({
+        title: "Failed to update name",
+        description: error.message || "An error occurred while trying to update your name.",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingName(false);
+    }
+  };
+
   // Load admin users on mount
   useEffect(() => {
     fetchAdmins();
@@ -296,8 +385,13 @@ export function useAdminUsers() {
     currentUserDisplayed,
     fetchError,
     currentUserEmail,
+    currentUserId,
+    updatingName,
+    nameDialogOpen,
+    setNameDialogOpen,
     handleRemoveAdmin,
     handleFixCurrentUserAdmin,
+    handleUpdateName,
     fetchAdmins,
   };
 }

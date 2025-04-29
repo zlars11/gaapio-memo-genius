@@ -1,22 +1,43 @@
 
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Loader2, UserX } from "lucide-react";
+import { Loader2, UserX, UserCog } from "lucide-react";
 import { AdminUser } from "@/hooks/useAdminUsers";
 
 interface AdminUserRowProps {
   admin: AdminUser;
   isRemoving: boolean;
   onRemove: () => void;
+  isCurrentUser: boolean;
+  onUpdateName?: () => void;
 }
 
-export function AdminUserRow({ admin, isRemoving, onRemove }: AdminUserRowProps) {
+export function AdminUserRow({ 
+  admin, 
+  isRemoving, 
+  onRemove, 
+  isCurrentUser,
+  onUpdateName 
+}: AdminUserRowProps) {
+  const hasName = admin.first_name || admin.last_name;
+  
   return (
     <TableRow key={admin.id}>
       <TableCell>
-        {admin.first_name || admin.last_name 
+        {hasName 
           ? `${admin.first_name || ''} ${admin.last_name || ''}`.trim() 
           : 'N/A'}
+        {isCurrentUser && !hasName && onUpdateName && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-2"
+            onClick={onUpdateName}
+          >
+            <UserCog className="h-4 w-4 mr-1" />
+            Update Name
+          </Button>
+        )}
       </TableCell>
       <TableCell>{admin.email}</TableCell>
       <TableCell>

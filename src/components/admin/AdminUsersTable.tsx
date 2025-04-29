@@ -8,10 +8,19 @@ interface AdminUsersTableProps {
   loading: boolean;
   admins: AdminUser[];
   removing: string | null;
+  currentUserId: string | null;
   onRemoveAdmin: (adminId: string) => void;
+  onUpdateName?: () => void;
 }
 
-export function AdminUsersTable({ loading, admins, removing, onRemoveAdmin }: AdminUsersTableProps) {
+export function AdminUsersTable({ 
+  loading, 
+  admins, 
+  removing, 
+  currentUserId,
+  onRemoveAdmin,
+  onUpdateName 
+}: AdminUsersTableProps) {
   return (
     <Table>
       <TableCaption>All users with admin access</TableCaption>
@@ -38,6 +47,8 @@ export function AdminUsersTable({ loading, admins, removing, onRemoveAdmin }: Ad
               admin={admin}
               isRemoving={removing === admin.id}
               onRemove={() => onRemoveAdmin(admin.id)}
+              isCurrentUser={admin.id === currentUserId}
+              onUpdateName={admin.id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
             />
           ))
         ) : (

@@ -9,6 +9,7 @@ import { AdminUsersTable } from "@/components/admin/AdminUsersTable";
 import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
 import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
+import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 
 export default function AdminUsers() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -20,8 +21,13 @@ export default function AdminUsers() {
     currentUserDisplayed,
     fetchError,
     currentUserEmail,
+    currentUserId,
+    updatingName,
+    nameDialogOpen,
+    setNameDialogOpen,
     handleRemoveAdmin,
     handleFixCurrentUserAdmin,
+    handleUpdateName,
     fetchAdmins
   } = useAdminUsers();
 
@@ -64,7 +70,9 @@ export default function AdminUsers() {
               loading={loading} 
               admins={admins} 
               removing={removing}
+              currentUserId={currentUserId}
               onRemoveAdmin={handleRemoveAdmin}
+              onUpdateName={() => setNameDialogOpen(true)}
             />
           </CardContent>
         </Card>
@@ -74,6 +82,13 @@ export default function AdminUsers() {
         open={addDialogOpen} 
         onOpenChange={setAddDialogOpen} 
         onSuccess={fetchAdmins}
+      />
+
+      <AdminNameDialog
+        open={nameDialogOpen}
+        onOpenChange={setNameDialogOpen}
+        onSave={handleUpdateName}
+        isLoading={updatingName}
       />
     </AdminPageGuard>
   );
