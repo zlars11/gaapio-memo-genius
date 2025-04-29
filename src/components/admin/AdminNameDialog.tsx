@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AdminNameDialogProps {
   open: boolean;
@@ -28,10 +30,22 @@ export function AdminNameDialog({
 }: AdminNameDialogProps) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSave(firstName, lastName);
+    setError(null);
+    
+    try {
+      if (!firstName.trim() || !lastName.trim()) {
+        setError("Both first and last name are required");
+        return;
+      }
+      
+      await onSave(firstName.trim(), lastName.trim());
+    } catch (err: any) {
+      setError(err.message || "Failed to save your name");
+    }
   };
 
   return (
@@ -44,6 +58,12 @@ export function AdminNameDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="firstName" className="text-right">

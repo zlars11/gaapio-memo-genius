@@ -296,7 +296,10 @@ export function useAdminUsers() {
         throw new Error("No user ID available");
       }
       
-      // Check if user exists in the users table
+      console.log("Updating name for user:", currentUserId);
+      console.log("New name values:", { firstName, lastName });
+      
+      // Try to find the user in the users table
       const { data: existingUser, error: checkError } = await supabase
         .from('users')
         .select('id')
@@ -308,9 +311,14 @@ export function useAdminUsers() {
         throw new Error("Failed to check if your user record exists");
       }
       
+      console.log("Existing user check result:", existingUser);
+      
+      let result;
+      
       if (existingUser) {
         // Update existing user record
-        const { error: updateError } = await supabase
+        console.log("Updating existing user record");
+        result = await supabase
           .from('users')
           .update({
             first_name: firstName,
@@ -318,14 +326,10 @@ export function useAdminUsers() {
             updated_at: new Date().toISOString()
           })
           .eq('id', currentUserId);
-          
-        if (updateError) {
-          console.error("Error updating user:", updateError);
-          throw new Error("Failed to update your name");
-        }
       } else {
-        // Create new user record
-        const { error: insertError } = await supabase
+        // Create new user record - include all required fields
+        console.log("Creating new user record");
+        result = await supabase
           .from('users')
           .insert({
             id: currentUserId,
@@ -333,14 +337,19 @@ export function useAdminUsers() {
             last_name: lastName,
             email: currentUserEmail || '',
             user_type: 'admin',
-            status: 'active'
+            status: 'active',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           });
-          
-        if (insertError) {
-          console.error("Error creating user:", insertError);
-          throw new Error("Failed to create your user record");
-        }
       }
+      
+      // Check for errors in the result
+      if (result.error) {
+        console.error("Error saving user data:", result.error);
+        throw new Error(result.error.message || "Failed to save user data");
+      }
+      
+      console.log("User data saved successfully:", result);
       
       toast({
         title: "Name updated",
