@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { addAdminRole } from "@/utils/adminRoleUtils";
 
 interface AddAdminDialogProps {
   open: boolean;
@@ -15,8 +16,16 @@ interface AddAdminDialogProps {
 
 export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialogProps) {
   const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [adding, setAdding] = useState(false);
   const { toast } = useToast();
+
+  const resetForm = () => {
+    setNewAdminEmail("");
+    setFirstName("");
+    setLastName("");
+  };
 
   const handleAddAdmin = async () => {
     if (!newAdminEmail || !newAdminEmail.includes('@')) {
@@ -31,19 +40,42 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
     try {
       setAdding(true);
       
-      // Check if user exists by email
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', newAdminEmail)
-        .maybeSingle();
+      // First check if user exists in auth
+      let userId: string | null = null;
       
-      if (userError) {
-        console.error("Error checking user existence:", userError);
-        throw new Error("Failed to check if user exists");
+      // Check if user exists by email in auth
+      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers({
+        page: 1,
+        perPage: 1,
+        filters: {
+          email: newAdminEmail.toLowerCase(),
+        },
+      });
+      
+      if (authError) {
+        console.error("Error checking user in auth:", authError);
+      } else if (users && users.length > 0) {
+        userId = users[0].id;
+        console.log("Found user in auth:", userId);
       }
       
-      if (!userData) {
+      // If not found in auth, check in users table
+      if (!userId) {
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('id')
+          .ilike('email', newAdminEmail)
+          .maybeSingle();
+        
+        if (userError) {
+          console.error("Error checking user existence:", userError);
+        } else if (userData) {
+          userId = userData.id;
+          console.log("Found user in users table:", userId);
+        }
+      }
+      
+      if (!userId) {
         toast({
           title: "User not found",
           description: "No user with this email exists in the system. They need to sign up first.",
@@ -56,7 +88,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       const { data: existingRole, error: roleCheckError } = await supabase
         .from('user_roles')
         .select('id')
-        .eq('user_id', userData.id)
+        .eq('user_id', userId)
         .eq('role', 'admin')
         .maybeSingle();
       
@@ -74,13 +106,10 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         return;
       }
       
-      // Add admin role to user
-      const { error: insertError } = await supabase
-        .from('user_roles')
-        .insert({ user_id: userData.id, role: 'admin' });
+      // Add admin role to user with name metadata
+      const success = await addAdminRole(userId, firstName, lastName);
       
-      if (insertError) {
-        console.error("Error adding admin role:", insertError);
+      if (!success) {
         throw new Error("Failed to grant admin privileges");
       }
       
@@ -89,7 +118,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         description: `${newAdminEmail} has been granted admin access.`,
       });
       
-      setNewAdminEmail("");
+      resetForm();
       onOpenChange(false);
       onSuccess(); // Refresh the list
       
@@ -111,22 +140,37 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         <DialogHeader>
           <DialogTitle>Add New Admin</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
-          <p className="text-sm mb-4">
+        <div className="py-4 space-y-4">
+          <p className="text-sm mb-2">
             Enter the email of a user who should receive admin privileges.
             The user must already have an account in the system.
           </p>
           <Input 
-            placeholder="user@example.com" 
+            placeholder="Email (e.g., user@example.com)" 
             value={newAdminEmail} 
             onChange={(e) => setNewAdminEmail(e.target.value)}
+            disabled={adding}
+          />
+          <Input 
+            placeholder="First Name" 
+            value={firstName} 
+            onChange={(e) => setFirstName(e.target.value)}
+            disabled={adding}
+          />
+          <Input 
+            placeholder="Last Name" 
+            value={lastName} 
+            onChange={(e) => setLastName(e.target.value)}
             disabled={adding}
           />
         </div>
         <DialogFooter>
           <Button 
             variant="outline" 
-            onClick={() => onOpenChange(false)}
+            onClick={() => {
+              resetForm();
+              onOpenChange(false);
+            }}
             disabled={adding}
           >
             Cancel

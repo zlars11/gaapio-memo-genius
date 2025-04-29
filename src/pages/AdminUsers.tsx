@@ -35,7 +35,32 @@ export default function AdminUsers() {
   useEffect(() => {
     console.log("AdminUsers: Fetching admins on component mount");
     fetchAdmins();
-  }, [currentUserDisplayed]); // Add dependency to re-fetch when currentUserDisplayed changes
+  }, []); // Remove dependency to prevent re-fetching loop
+
+  // Initialize adding Jace Chambers as admin on component mount
+  useEffect(() => {
+    const addJaceAsAdmin = async () => {
+      try {
+        // Check if Jace is already an admin before trying to add
+        const jaceEmail = "jacewchambers@gmail.com";
+        const isJaceAlreadyAdmin = admins.some(
+          admin => admin.email.toLowerCase() === jaceEmail.toLowerCase()
+        );
+        
+        if (!isJaceAlreadyAdmin && !loading && admins.length > 0) {
+          // Open the dialog to add Jace
+          setAddDialogOpen(true);
+        }
+      } catch (error) {
+        console.error("Error checking for Jace in admin list:", error);
+      }
+    };
+    
+    // Wait until admins are loaded before checking
+    if (!loading && admins.length > 0) {
+      addJaceAsAdmin();
+    }
+  }, [admins, loading]);
 
   return (
     <AdminPageGuard>

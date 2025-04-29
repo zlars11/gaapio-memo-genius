@@ -20,12 +20,10 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       setError(null);
       console.log("Fetching admin users - started");
       
-      // Query user_roles table directly
-      console.log("Fetching admin users from user_roles");
-      
+      // Query user_roles table directly with metadata for names
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-        .select('user_id, created_at, metadata')
+        .select('user_id, created_at, metadata, id')
         .eq('role', 'admin');
       
       if (roleError) {
@@ -54,36 +52,60 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         console.log("Is current user in admin list:", isCurrentUserInList);
       }
       
-      // Get user details from auth.users table
-      console.log("Fetching user details from auth");
+      // Get user details from auth.users table using RPC function
       const adminUsers: AdminUser[] = [];
       
       for (const roleEntry of roleData) {
         try {
           const userId = roleEntry.user_id;
-          const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
+          
+          // Use auth.users with signups to get user email
+          const { data: authUsers, error: authError } = await supabase
+            .from('users')
+            .select('email')
+            .eq('id', userId)
+            .maybeSingle();
+          
+          let userEmail = null;
           
           if (authError) {
-            console.error(`Error fetching auth user ${userId}:`, authError);
+            console.error(`Error fetching user ${userId} from users table:`, authError);
+          } else if (authUsers) {
+            userEmail = authUsers.email;
+            console.log(`Found user ${userId} in users table:`, userEmail);
+          }
+          
+          // If email not found in users table, try to get from auth directly
+          if (!userEmail) {
+            const { data, error } = await supabase.auth.admin.getUserById(userId);
+            if (error) {
+              console.error(`Error fetching auth user ${userId}:`, error);
+              continue;
+            }
+            
+            if (data?.user) {
+              userEmail = data.user.email;
+              console.log(`Found auth user ${userId}:`, userEmail);
+            }
+          }
+          
+          if (!userEmail) {
+            console.error(`Could not find email for user ${userId}`);
             continue;
           }
           
-          if (authUser?.user) {
-            console.log(`Found auth user ${userId}:`, authUser.user.email);
-            
-            // Check if metadata is an object and has the required properties
-            const metadata = typeof roleEntry.metadata === 'object' && roleEntry.metadata !== null 
-              ? roleEntry.metadata 
-              : {};
-            
-            adminUsers.push({
-              id: userId,
-              email: authUser.user.email || 'No email',
-              first_name: metadata && 'first_name' in metadata ? metadata.first_name as string || null : null,
-              last_name: metadata && 'last_name' in metadata ? metadata.last_name as string || null : null,
-              created_at: roleEntry.created_at || authUser.user.created_at
-            });
-          }
+          // Check if metadata is an object and has the required properties
+          const metadata = typeof roleEntry.metadata === 'object' && roleEntry.metadata !== null 
+            ? roleEntry.metadata 
+            : {};
+          
+          adminUsers.push({
+            id: userId,
+            email: userEmail || 'No email',
+            first_name: metadata && 'first_name' in metadata ? metadata.first_name as string || null : null,
+            last_name: metadata && 'last_name' in metadata ? metadata.last_name as string || null : null,
+            created_at: roleEntry.created_at
+          });
         } catch (error) {
           console.error(`Error processing auth user ${roleEntry.user_id}:`, error);
         }
