@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser } from "@/types/adminTypes";
 import { CurrentAdminUser } from "@/hooks/useCurrentAdmin";
@@ -14,7 +14,8 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAdmins = async (): Promise<FetchAdminsResult> => {
+  // Use a stable reference for the fetchAdmins function
+  const fetchAdmins = useCallback(async (): Promise<FetchAdminsResult> => {
     try {
       setLoading(true);
       setError(null);
@@ -77,15 +78,17 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
           
           // If email not found in users table, try to get from auth directly
           if (!userEmail) {
-            const { data, error } = await supabase.auth.admin.getUserById(userId);
-            if (error) {
-              console.error(`Error fetching auth user ${userId}:`, error);
-              continue;
-            }
-            
-            if (data?.user) {
-              userEmail = data.user.email;
-              console.log(`Found auth user ${userId}:`, userEmail);
+            try {
+              const { data, error } = await supabase.auth.admin.getUserById(userId);
+              if (error) {
+                console.error(`Error fetching auth user ${userId}:`, error);
+              } else if (data?.user) {
+                userEmail = data.user.email;
+                console.log(`Found auth user ${userId}:`, userEmail);
+              }
+            } catch (err) {
+              console.error(`Error accessing auth admin API for ${userId}:`, err);
+              // Continue to next user if this one fails
             }
           }
           
@@ -126,7 +129,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser.id]); // Only depend on currentUser.id
 
   return {
     loading,

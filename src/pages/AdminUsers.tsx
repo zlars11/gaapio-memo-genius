@@ -1,15 +1,15 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, UserPlus } from "lucide-react";
-import { useAdminUsers } from "@/hooks/useAdminUsers";
 import { AdminUsersTable } from "@/components/admin/AdminUsersTable";
 import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
 import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
+import { useAdminUsers } from "@/hooks/useAdminUsers";
 
 export default function AdminUsers() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -31,36 +31,19 @@ export default function AdminUsers() {
     fetchAdmins
   } = useAdminUsers();
 
-  // Ensure admin list is loaded on mount and whenever currentUserDisplayed changes
-  useEffect(() => {
-    console.log("AdminUsers: Fetching admins on component mount");
-    fetchAdmins();
-  }, []); // Remove dependency to prevent re-fetching loop
-
-  // Initialize adding Jace Chambers as admin on component mount
-  useEffect(() => {
-    const addJaceAsAdmin = async () => {
-      try {
-        // Check if Jace is already an admin before trying to add
-        const jaceEmail = "jacewchambers@gmail.com";
-        const isJaceAlreadyAdmin = admins.some(
-          admin => admin.email.toLowerCase() === jaceEmail.toLowerCase()
-        );
-        
-        if (!isJaceAlreadyAdmin && !loading && admins.length > 0) {
-          // Open the dialog to add Jace
-          setAddDialogOpen(true);
-        }
-      } catch (error) {
-        console.error("Error checking for Jace in admin list:", error);
-      }
-    };
-    
-    // Wait until admins are loaded before checking
+  // Function to check and potentially add Jace as admin
+  const handleCheckAndAddJace = () => {
     if (!loading && admins.length > 0) {
-      addJaceAsAdmin();
+      const jaceEmail = "jacewchambers@gmail.com";
+      const isJaceAlreadyAdmin = admins.some(
+        admin => admin.email.toLowerCase() === jaceEmail.toLowerCase()
+      );
+      
+      if (!isJaceAlreadyAdmin) {
+        setAddDialogOpen(true);
+      }
     }
-  }, [admins, loading]);
+  };
 
   return (
     <AdminPageGuard>
@@ -87,12 +70,27 @@ export default function AdminUsers() {
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={fetchAdmins} title="Refresh admin list">
-                <RefreshCw className="h-4 w-4" />
+              <Button 
+                variant="outline" 
+                onClick={fetchAdmins} 
+                title="Refresh admin list"
+                disabled={loading}
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
-              <Button onClick={() => setAddDialogOpen(true)}>
+              <Button 
+                onClick={() => setAddDialogOpen(true)}
+                disabled={loading}
+              >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add Admin
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleCheckAndAddJace}
+                disabled={loading}
+              >
+                Add Jace
               </Button>
             </div>
           </CardHeader>

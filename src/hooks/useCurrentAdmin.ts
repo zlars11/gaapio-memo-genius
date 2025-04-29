@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { checkAdminRole, addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +22,10 @@ export function useCurrentAdmin() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Load current user info only once on mount
   useEffect(() => {
+    let isMounted = true;
+    
     const loadCurrentUserStatus = async () => {
       try {
         setLoading(true);
@@ -33,18 +36,22 @@ export function useCurrentAdmin() {
         
         if (sessionError) {
           console.error("Error getting session:", sessionError);
-          setError("Failed to fetch your session information");
+          if (isMounted) {
+            setError("Failed to fetch your session information");
+          }
           return;
         }
         
         if (!session?.user) {
           console.log("No current user session found");
-          setCurrentUser({
-            id: null,
-            email: null,
-            isAdmin: false,
-            displayedInList: false
-          });
+          if (isMounted) {
+            setCurrentUser({
+              id: null,
+              email: null,
+              isAdmin: false,
+              displayedInList: false
+            });
+          }
           return;
         }
         
@@ -56,24 +63,36 @@ export function useCurrentAdmin() {
         // Check if user has admin role
         const isAdmin = await checkAdminRole(userId);
         
-        setCurrentUser({
-          id: userId,
-          email: userEmail,
-          isAdmin,
-          displayedInList: false // Will be updated when admin list is fetched
-        });
+        if (isMounted) {
+          setCurrentUser({
+            id: userId,
+            email: userEmail,
+            isAdmin,
+            displayedInList: false // Will be updated when admin list is fetched
+          });
+        }
       } catch (e) {
         console.error("Unexpected error in loadCurrentUserStatus:", e);
-        setError("An unexpected error occurred while checking your admin status");
+        if (isMounted) {
+          setError("An unexpected error occurred while checking your admin status");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadCurrentUserStatus();
+    
+    // Cleanup function to prevent state updates if component unmounts
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const fixAdminStatus = async () => {
+  // Use a stable reference for the fixAdminStatus function
+  const fixAdminStatus = useCallback(async () => {
     if (!currentUser.id) {
       toast({
         title: "Not authenticated",
@@ -86,9 +105,9 @@ export function useCurrentAdmin() {
     try {
       console.log("Fixing admin status for user:", currentUser.id);
       
-      // Add default name for Zack Larsen when fixing admin status
-      const firstName = "Zack";
-      const lastName = "Larsen";
+      // Add default name for admin when fixing admin status
+      const firstName = "Admin";
+      const lastName = "User";
       
       // Add admin role with the user's name
       const success = await addAdminRole(currentUser.id, firstName, lastName);
@@ -116,7 +135,7 @@ export function useCurrentAdmin() {
       });
       return false;
     }
-  };
+  }, [currentUser.id, toast]);
 
   return {
     currentUser,

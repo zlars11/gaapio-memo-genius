@@ -27,6 +27,14 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
   const [adding, setAdding] = useState(false);
   const { toast } = useToast();
 
+  // Reset form when dialog opens/closes
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      resetForm();
+    }
+    onOpenChange(open);
+  };
+
   const resetForm = () => {
     setNewAdminEmail("");
     setFirstName("");
@@ -50,25 +58,8 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       let userId: string | null = null;
       
       // Check if user exists by email in auth
-      // Instead of using filters which isn't supported in the type definitions,
-      // we'll get the users and filter them manually
-      const { data: usersData, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        console.error("Error checking user in auth:", authError);
-      } else if (usersData) {
-        const matchingUser = usersData.users.find(
-          (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
-        );
-        
-        if (matchingUser) {
-          userId = matchingUser.id;
-          console.log("Found user in auth:", userId);
-        }
-      }
-      
-      // If not found in auth, check in users table
-      if (!userId) {
+      try {
+        // Check in users table first (easier for most implementations)
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('id')
@@ -81,6 +72,32 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
           userId = userData.id;
           console.log("Found user in users table:", userId);
         }
+        
+        // If not found in users table, try auth.admin API
+        if (!userId) {
+          try {
+            const { data: usersData, error: authError } = await supabase.auth.admin.listUsers();
+            
+            if (authError) {
+              console.error("Error checking user in auth:", authError);
+            } else if (usersData) {
+              const matchingUser = usersData.users.find(
+                (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
+              );
+              
+              if (matchingUser) {
+                userId = matchingUser.id;
+                console.log("Found user in auth:", userId);
+              }
+            }
+          } catch (authListError) {
+            console.error("Auth admin API error:", authListError);
+            // Continue flow - we'll check if userId was found by other means
+          }
+        }
+      } catch (checkError) {
+        console.error("Error during user existence check:", checkError);
+        // Continue with the flow - we'll handle not finding the user below
       }
       
       if (!userId) {
@@ -93,25 +110,30 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       // Check if user is already an admin
-      const { data: existingRole, error: roleCheckError } = await supabase
-        .from('user_roles')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      if (roleCheckError) {
-        console.error("Error checking existing role:", roleCheckError);
-        throw new Error("Failed to check existing admin role");
-      }
-      
-      if (existingRole) {
-        toast({
-          title: "Already an admin",
-          description: "This user already has admin privileges.",
-          variant: "destructive",
-        });
-        return;
+      try {
+        const { data: existingRole, error: roleCheckError } = await supabase
+          .from('user_roles')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('role', 'admin')
+          .maybeSingle();
+        
+        if (roleCheckError) {
+          console.error("Error checking existing role:", roleCheckError);
+          throw new Error("Failed to check existing admin role");
+        }
+        
+        if (existingRole) {
+          toast({
+            title: "Already an admin",
+            description: "This user already has admin privileges.",
+            variant: "destructive",
+          });
+          return;
+        }
+      } catch (roleError) {
+        console.error("Role check error:", roleError);
+        // Continue flow - we'll try to add the role anyway
       }
       
       // Add admin role to user with name metadata
@@ -142,8 +164,24 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
     }
   };
 
+  // Populate default values if the dialog is for adding Jace
+  const populateJace = () => {
+    if (open && newAdminEmail === "" && firstName === "" && lastName === "") {
+      if (window.location.pathname === "/admin/users") {
+        setNewAdminEmail("jacewchambers@gmail.com");
+        setFirstName("Jace");
+        setLastName("Chambers");
+      }
+    }
+  };
+  
+  // Call populateJace when dialog opens
+  if (open) {
+    populateJace();
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Admin</DialogTitle>

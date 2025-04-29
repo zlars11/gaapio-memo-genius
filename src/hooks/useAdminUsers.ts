@@ -24,6 +24,7 @@ export function useAdminUsers() {
     setAdmins
   } = useFetchAdmins(currentUser);
 
+  // Use a stable reference for the fetchAdminsAndUpdateStatus function
   const fetchAdminsAndUpdateStatus = useCallback(async () => {
     console.log("Fetching admins and updating status");
     const result = await fetchAdmins();
@@ -61,11 +62,12 @@ export function useAdminUsers() {
     return success;
   };
 
-  // Load admin users on mount
+  // Load admin users on mount only once
   useEffect(() => {
     console.log("useAdminUsers: Initial fetch of admin users");
     fetchAdminsAndUpdateStatus();
-  }, [fetchAdminsAndUpdateStatus]);
+    // Intentionally empty dependency array to run only once on mount
+  }, []);
 
   const loading = currentUserLoading || adminsLoading;
   const fetchError = currentUserError || adminsError;
