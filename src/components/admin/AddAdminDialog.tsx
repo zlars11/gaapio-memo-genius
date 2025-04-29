@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface AddAdminDialogProps {
   open: boolean;
@@ -24,7 +25,9 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
   const [adding, setAdding] = useState(false);
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
   const { toast } = useToast();
 
   // Reset form when dialog opens/closes
@@ -39,6 +42,84 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
     setNewAdminEmail("");
     setFirstName("");
     setLastName("");
+    setPassword("");
+  };
+
+  const createUserAccount = async () => {
+    if (!newAdminEmail || !password) {
+      toast({
+        title: "Missing information",
+        description: "Email and password are required to create a user.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setAdding(true);
+      
+      // Create the user in Supabase auth
+      const { data, error } = await supabase.auth.admin.createUser({
+        email: newAdminEmail,
+        password: password,
+        email_confirm: true, // Auto-confirm email
+        user_metadata: {
+          first_name: firstName,
+          last_name: lastName
+        }
+      });
+      
+      if (error) {
+        console.error("Error creating user:", error);
+        toast({
+          title: "Failed to create user",
+          description: error.message || "An error occurred while creating the user account.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!data.user) {
+        toast({
+          title: "Failed to create user",
+          description: "User creation returned no data.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Add admin role to the newly created user
+      const success = await addAdminRole(data.user.id, firstName, lastName);
+      
+      if (!success) {
+        toast({
+          title: "User created but admin role not added",
+          description: "The user account was created but we couldn't assign admin privileges.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      toast({
+        title: "Admin user created",
+        description: `${newAdminEmail} has been created and granted admin access.`,
+      });
+      
+      setCreateUserDialogOpen(false);
+      resetForm();
+      onOpenChange(false);
+      onSuccess(); // Refresh the list
+      
+    } catch (error: any) {
+      console.error("Error in createUserAccount:", error);
+      toast({
+        title: "Failed to create admin user",
+        description: error.message || "An error occurred while creating the admin user.",
+        variant: "destructive",
+      });
+    } finally {
+      setAdding(false);
+    }
   };
 
   const handleAddAdmin = async () => {
@@ -101,11 +182,9 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       if (!userId) {
-        toast({
-          title: "User not found",
-          description: "No user with this email exists in the system. They need to sign up first.",
-          variant: "destructive",
-        });
+        // User doesn't exist - offer to create them
+        setCreateUserDialogOpen(true);
+        setAdding(false);
         return;
       }
       
@@ -181,61 +260,100 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Admin</DialogTitle>
-        </DialogHeader>
-        <div className="py-4 space-y-4">
-          <p className="text-sm mb-2">
-            Enter the email of a user who should receive admin privileges.
-            The user must already have an account in the system.
-          </p>
-          <Input 
-            placeholder="Email (e.g., user@example.com)" 
-            value={newAdminEmail} 
-            onChange={(e) => setNewAdminEmail(e.target.value)}
-            disabled={adding}
-          />
-          <Input 
-            placeholder="First Name" 
-            value={firstName} 
-            onChange={(e) => setFirstName(e.target.value)}
-            disabled={adding}
-          />
-          <Input 
-            placeholder="Last Name" 
-            value={lastName} 
-            onChange={(e) => setLastName(e.target.value)}
-            disabled={adding}
-          />
-        </div>
-        <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              resetForm();
-              onOpenChange(false);
-            }}
-            disabled={adding}
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleAddAdmin}
-            disabled={adding}
-          >
-            {adding ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Adding...
-              </>
-            ) : (
-              'Add Admin'
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Admin</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <p className="text-sm mb-2">
+              Enter the email of a user who should receive admin privileges.
+              The user must already have an account in the system.
+            </p>
+            <Input 
+              placeholder="Email (e.g., user@example.com)" 
+              value={newAdminEmail} 
+              onChange={(e) => setNewAdminEmail(e.target.value)}
+              disabled={adding}
+            />
+            <Input 
+              placeholder="First Name" 
+              value={firstName} 
+              onChange={(e) => setFirstName(e.target.value)}
+              disabled={adding}
+            />
+            <Input 
+              placeholder="Last Name" 
+              value={lastName} 
+              onChange={(e) => setLastName(e.target.value)}
+              disabled={adding}
+            />
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                resetForm();
+                onOpenChange(false);
+              }}
+              disabled={adding}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddAdmin}
+              disabled={adding}
+            >
+              {adding ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Adding...
+                </>
+              ) : (
+                'Add Admin'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Create New User</AlertDialogTitle>
+            <AlertDialogDescription>
+              No user with email {newAdminEmail} was found. Would you like to create this user and make them an admin?
+              Enter a password for the new user.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <Input 
+              placeholder="Password" 
+              type="password"
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={adding}
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={adding}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={createUserAccount}
+              disabled={adding}
+            >
+              {adding ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Creating...
+                </>
+              ) : (
+                'Create User & Add as Admin'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
