@@ -1,0 +1,303 @@
+
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  created_at: string;
+}
+
+export function useAdminUsers() {
+  const [loading, setLoading] = useState(true);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [removing, setRemoving] = useState<string | null>(null);
+  const [currentUserIsAdmin, setCurrentUserIsAdmin] = useState(false);
+  const [currentUserDisplayed, setCurrentUserDisplayed] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  // Get the current user's session
+  const getCurrentUserSession = async () => {
+    try {
+      console.log("Getting current user session");
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error getting session:", error);
+        return null;
+      }
+      
+      if (session?.user) {
+        console.log("Current user found:", session.user.email);
+        setCurrentUserEmail(session.user.email);
+      } else {
+        console.log("No current user session found");
+      }
+      
+      return session;
+    } catch (e) {
+      console.error("Unexpected error in getCurrentUserSession:", e);
+      return null;
+    }
+  };
+
+  // Fetch admin users
+  const fetchAdmins = async () => {
+    try {
+      setLoading(true);
+      setFetchError(null);
+      console.log("Fetching admin users - started");
+      
+      // Get current user's session first
+      const session = await getCurrentUserSession();
+      const currentUserId = session?.user?.id;
+      
+      if (currentUserId) {
+        console.log("Current user ID:", currentUserId);
+        
+        // Check if user has admin role using the RPC function
+        const { data: isAdmin, error: roleCheckError } = await supabase.rpc('has_role', {
+          user_id: currentUserId,
+          role: 'admin'
+        });
+        
+        if (roleCheckError) {
+          console.error("Error checking admin status:", roleCheckError);
+          setFetchError("Failed to verify your admin status");
+        } else {
+          console.log("Current user admin check result:", isAdmin);
+          setCurrentUserIsAdmin(!!isAdmin);
+        }
+      } else {
+        console.log("No current user session found");
+      }
+      
+      // DIRECT QUERY APPROACH: Query user_roles and auth.users tables directly
+      console.log("Fetching admin users directly from auth and user_roles tables");
+      
+      // First, get all admin role user IDs
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'admin');
+      
+      if (roleError) {
+        console.error("Error fetching admin roles:", roleError);
+        setFetchError("Failed to fetch admin roles");
+        setAdmins([]);
+        setLoading(false);
+        return;
+      }
+      
+      console.log(`Found ${roleData?.length || 0} admin role records:`, roleData);
+      
+      if (!roleData || roleData.length === 0) {
+        console.log("No admin users found");
+        setAdmins([]);
+        setCurrentUserDisplayed(false);
+        setLoading(false);
+        return;
+      }
+      
+      // Extract user IDs from the role data
+      const adminUserIds = roleData.map(role => role.user_id);
+      console.log("Admin user IDs:", adminUserIds);
+      
+      // Check if current user is in admin list
+      if (currentUserId) {
+        const isCurrentUserInList = adminUserIds.includes(currentUserId);
+        console.log("Is current user in admin list:", isCurrentUserInList);
+        setCurrentUserDisplayed(isCurrentUserInList);
+      }
+      
+      // DIRECT AUTH QUERY: Get user details from auth.users table
+      console.log("Fetching user details from auth");
+      const adminUsers: AdminUser[] = [];
+      
+      // We need to query auth.users for each admin user individually
+      for (const userId of adminUserIds) {
+        try {
+          const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
+          
+          if (authError) {
+            console.error(`Error fetching auth user ${userId}:`, authError);
+            continue;
+          }
+          
+          if (authUser?.user) {
+            console.log(`Found auth user ${userId}:`, authUser.user.email);
+            
+            // Get additional user details from public.users table if it exists
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('first_name, last_name')
+              .eq('id', userId)
+              .maybeSingle();
+            
+            adminUsers.push({
+              id: userId,
+              email: authUser.user.email || 'No email',
+              first_name: userData?.first_name || null,
+              last_name: userData?.last_name || null,
+              created_at: authUser.user.created_at
+            });
+          }
+        } catch (error) {
+          console.error(`Error processing auth user ${userId}:`, error);
+        }
+      }
+      
+      console.log(`Processed ${adminUsers.length} admin users:`, adminUsers);
+      setAdmins(adminUsers);
+      
+      // FALLBACK: If current user should be admin but isn't in the list, add them manually
+      if (currentUserIsAdmin && currentUserId && !adminUsers.some(admin => admin.id === currentUserId)) {
+        console.log("Current user is admin but not in list, adding manually");
+        
+        if (session?.user) {
+          const currentAdmin: AdminUser = {
+            id: currentUserId,
+            email: session.user.email || 'Current user',
+            first_name: null,
+            last_name: null,
+            created_at: session.user.created_at || new Date().toISOString()
+          };
+          
+          setAdmins(prev => [currentAdmin, ...prev]);
+          setCurrentUserDisplayed(true);
+        }
+      }
+      
+      console.log("Admin users fetch completed");
+    } catch (error) {
+      console.error("Unexpected error in fetchAdmins:", error);
+      setFetchError("An unexpected error occurred while fetching admin users");
+      setAdmins([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle removing an admin
+  const handleRemoveAdmin = async (adminId: string) => {
+    try {
+      setRemoving(adminId);
+      
+      // Delete the user_role entry directly
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', adminId)
+        .eq('role', 'admin');
+      
+      if (error) {
+        console.error("Error removing admin role:", error);
+        throw error;
+      }
+      
+      toast({
+        title: "Admin removed",
+        description: "Admin privileges have been revoked from this user.",
+      });
+      
+      // Refresh admin list
+      fetchAdmins();
+      
+    } catch (error: any) {
+      console.error("Error in handleRemoveAdmin:", error);
+      toast({
+        title: "Failed to remove admin",
+        description: error.message || "An error occurred while trying to remove admin privileges.",
+        variant: "destructive",
+      });
+    } finally {
+      setRemoving(null);
+    }
+  };
+
+  // Fix current user's admin status
+  const handleFixCurrentUserAdmin = async () => {
+    try {
+      const session = await getCurrentUserSession();
+      if (!session?.user) {
+        toast({
+          title: "Not authenticated",
+          description: "You need to be logged in to perform this action.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Fixing admin status for user:", session.user.id);
+
+      // Force add admin role for current user
+      const { data: existingRole, error: checkError } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("Error checking existing role:", checkError);
+        throw new Error("Failed to check your current admin status");
+      }
+
+      if (existingRole) {
+        console.log("Admin role entry already exists:", existingRole);
+        toast({
+          title: "Admin role exists in database",
+          description: "Your admin role is already properly set in the database. Refreshing data to ensure you appear in the list."
+        });
+      } else {
+        // Add admin role for current user
+        const { error: insertError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: session.user.id, role: 'admin' });
+        
+        if (insertError) {
+          console.error("Error adding admin role:", insertError);
+          throw new Error("Failed to add you to the admin users list");
+        }
+        
+        toast({
+          title: "Admin role fixed",
+          description: "You've been properly added to the admin users list.",
+        });
+      }
+      
+      // Always refresh after attempting the fix
+      fetchAdmins();
+      
+    } catch (error: any) {
+      console.error("Error fixing admin status:", error);
+      toast({
+        title: "Failed to fix admin status",
+        description: error.message || "An error occurred while trying to update your admin status.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Load admin users on mount
+  useEffect(() => {
+    fetchAdmins();
+  }, []);
+
+  return {
+    loading,
+    admins,
+    removing,
+    currentUserIsAdmin,
+    currentUserDisplayed,
+    fetchError,
+    currentUserEmail,
+    handleRemoveAdmin,
+    handleFixCurrentUserAdmin,
+    fetchAdmins,
+  };
+}
