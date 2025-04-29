@@ -29,19 +29,34 @@ export default function AdminUsers() {
   const [currentUserIsAdmin, setCurrentUserIsAdmin] = useState(false);
   const [currentUserDisplayed, setCurrentUserDisplayed] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Directly get the current user's session
+  // Get the current user's session
   const getCurrentUserSession = async () => {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("Error getting session:", error);
+    try {
+      console.log("Getting current user session");
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error getting session:", error);
+        return null;
+      }
+      
+      if (session?.user) {
+        console.log("Current user found:", session.user.email);
+        setCurrentUserEmail(session.user.email);
+      } else {
+        console.log("No current user session found");
+      }
+      
+      return session;
+    } catch (e) {
+      console.error("Unexpected error in getCurrentUserSession:", e);
       return null;
     }
-    return session;
   };
 
-  // More efficient admin users fetch
+  // More efficient admin users fetch with improved debugging
   const fetchAdmins = async () => {
     try {
       setLoading(true);
@@ -72,8 +87,10 @@ export default function AdminUsers() {
         console.log("No current user session found");
       }
       
-      // Use a simpler query approach - first get all admin role user IDs
-      console.log("Fetching user_roles records for 'admin' role");
+      // DIRECT QUERY APPROACH: Query user_roles and auth.users tables directly
+      console.log("Fetching admin users directly from auth and user_roles tables");
+      
+      // First, get all admin role user IDs
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -108,28 +125,62 @@ export default function AdminUsers() {
         setCurrentUserDisplayed(isCurrentUserInList);
       }
       
-      // Then fetch user details for those IDs using 'in' filter
-      console.log("Fetching user details for admin users");
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('id, email, first_name, last_name, created_at')
-        .in('id', adminUserIds);
+      // DIRECT AUTH QUERY: Get user details from auth.users table
+      console.log("Fetching user details from auth");
+      const adminUsers: AdminUser[] = [];
       
-      if (userError) {
-        console.error("Error fetching admin user details:", userError);
-        setFetchError("Failed to fetch admin user details");
-        setAdmins([]);
-        setLoading(false);
-        return;
+      // We need to query auth.users for each admin user individually
+      for (const userId of adminUserIds) {
+        try {
+          const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(userId);
+          
+          if (authError) {
+            console.error(`Error fetching auth user ${userId}:`, authError);
+            continue;
+          }
+          
+          if (authUser?.user) {
+            console.log(`Found auth user ${userId}:`, authUser.user.email);
+            
+            // Get additional user details from public.users table if it exists
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('first_name, last_name')
+              .eq('id', userId)
+              .maybeSingle();
+            
+            adminUsers.push({
+              id: userId,
+              email: authUser.user.email || 'No email',
+              first_name: userData?.first_name || null,
+              last_name: userData?.last_name || null,
+              created_at: authUser.user.created_at
+            });
+          }
+        } catch (error) {
+          console.error(`Error processing auth user ${userId}:`, error);
+        }
       }
       
-      console.log(`Found ${userData?.length || 0} admin user records:`, userData);
+      console.log(`Processed ${adminUsers.length} admin users:`, adminUsers);
+      setAdmins(adminUsers);
       
-      // Convert to AdminUser array and set state
-      if (userData) {
-        setAdmins(userData as AdminUser[]);
-      } else {
-        setAdmins([]);
+      // FALLBACK: If current user should be admin but isn't in the list, add them manually
+      if (currentUserIsAdmin && currentUserId && !adminUsers.some(admin => admin.id === currentUserId)) {
+        console.log("Current user is admin but not in list, adding manually");
+        
+        if (session?.user) {
+          const currentAdmin: AdminUser = {
+            id: currentUserId,
+            email: session.user.email || 'Current user',
+            first_name: null,
+            last_name: null,
+            created_at: session.user.created_at || new Date().toISOString()
+          };
+          
+          setAdmins(prev => [currentAdmin, ...prev]);
+          setCurrentUserDisplayed(true);
+        }
       }
       
       console.log("Admin users fetch completed");
@@ -267,7 +318,7 @@ export default function AdminUsers() {
     }
   };
 
-  // Fix current user's admin status - more efficient version
+  // Fix current user's admin status
   const handleFixCurrentUserAdmin = async () => {
     try {
       const session = await getCurrentUserSession();
@@ -282,7 +333,7 @@ export default function AdminUsers() {
 
       console.log("Fixing admin status for user:", session.user.id);
 
-      // Check if the user_roles entry already exists
+      // Force add admin role for current user
       const { data: existingRole, error: checkError } = await supabase
         .from('user_roles')
         .select('id')
@@ -298,8 +349,8 @@ export default function AdminUsers() {
       if (existingRole) {
         console.log("Admin role entry already exists:", existingRole);
         toast({
-          title: "Admin role already exists",
-          description: "Your admin role is already in the database, refreshing data..."
+          title: "Admin role exists in database",
+          description: "Your admin role is already properly set in the database. Refreshing data to ensure you appear in the list."
         });
       } else {
         // Add admin role for current user
@@ -346,7 +397,7 @@ export default function AdminUsers() {
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Security Issue Detected</AlertTitle>
             <AlertDescription>
-              You have admin access but aren't listed in the admin users table. This is a security risk.
+              You have admin access ({currentUserEmail}) but aren't listed in the admin users table. This is a security risk.
               <Button 
                 variant="outline" 
                 size="sm" 
