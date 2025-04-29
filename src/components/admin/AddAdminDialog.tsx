@@ -8,6 +8,10 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 interface AddAdminDialogProps {
   open: boolean;
@@ -21,51 +25,71 @@ interface SupabaseAuthUser {
   email?: string | null;
 }
 
+// Create a form schema for adding an admin
+const addAdminFormSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+
+// Create a separate schema for the create user form that requires a password
+const createUserFormSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+});
+
+type AddAdminFormValues = z.infer<typeof addAdminFormSchema>;
+type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
+
 export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialogProps) {
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
   const [adding, setAdding] = useState(false);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  // Reset form when dialog opens/closes
+  // Main form for adding admin
+  const form = useForm<AddAdminFormValues>({
+    resolver: zodResolver(addAdminFormSchema),
+    defaultValues: {
+      email: "",
+      firstName: "",
+      lastName: "",
+    },
+  });
+
+  // Separate form for creating user
+  const createUserForm = useForm<CreateUserFormValues>({
+    resolver: zodResolver(createUserFormSchema),
+    defaultValues: {
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+    },
+  });
+
+  // Reset forms when dialog opens/closes
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      resetForm();
+      form.reset();
+      createUserForm.reset();
     }
     onOpenChange(open);
   };
 
-  const resetForm = () => {
-    setNewAdminEmail("");
-    setFirstName("");
-    setLastName("");
-    setPassword("");
-  };
-
-  const createUserAccount = async () => {
-    if (!newAdminEmail || !password) {
-      toast({
-        title: "Missing information",
-        description: "Email and password are required to create a user.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const createUserAccount = async (values: CreateUserFormValues) => {
     try {
       setAdding(true);
       
       // Create the user in Supabase auth
       const { data, error } = await supabase.auth.admin.createUser({
-        email: newAdminEmail,
-        password: password,
+        email: values.email,
+        password: values.password,
         email_confirm: true, // Auto-confirm email
         user_metadata: {
-          first_name: firstName,
-          last_name: lastName
+          first_name: values.firstName,
+          last_name: values.lastName
         }
       });
       
@@ -89,7 +113,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       // Add admin role to the newly created user
-      const success = await addAdminRole(data.user.id, firstName, lastName);
+      const success = await addAdminRole(data.user.id, values.firstName || "", values.lastName || "");
       
       if (!success) {
         toast({
@@ -102,11 +126,11 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       
       toast({
         title: "Admin user created",
-        description: `${newAdminEmail} has been created and granted admin access.`,
+        description: `${values.email} has been created and granted admin access.`,
       });
       
       setCreateUserDialogOpen(false);
-      resetForm();
+      form.reset();
       onOpenChange(false);
       onSuccess(); // Refresh the list
       
@@ -122,16 +146,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
     }
   };
 
-  const handleAddAdmin = async () => {
-    if (!newAdminEmail || !newAdminEmail.includes('@')) {
-      toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleAddAdmin = async (values: AddAdminFormValues) => {
     try {
       setAdding(true);
       
@@ -144,7 +159,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         const { data: userData, error: userError } = await supabase
           .from('users')
           .select('id')
-          .ilike('email', newAdminEmail)
+          .ilike('email', values.email)
           .maybeSingle();
         
         if (userError) {
@@ -157,13 +172,36 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         // If not found in users table, try auth.admin API
         if (!userId) {
           try {
-            const { data: usersData, error: authError } = await supabase.auth.admin.listUsers();
+            // Try to find user using the available methods
+            const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
             
             if (authError) {
               console.error("Error checking user in auth:", authError);
-            } else if (usersData) {
-              const matchingUser = usersData.users.find(
-                (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === newAdminEmail.toLowerCase()
+              // Try alternative method - using signUp with existing email should fail with user exists error
+              const { error } = await supabase.auth.signUp({
+                email: values.email,
+                password: 'temporaryPassword123', // This won't be used if user exists
+              });
+              
+              if (error && error.message.includes('already registered')) {
+                // User exists, let's try to get their ID a different way
+                console.log("User exists based on signup attempt");
+                
+                // One final attempt - fetch user by email directly if available
+                const { data: { users }, error: fetchError } = await supabase.auth.admin.listUsers({
+                  filters: {
+                    email: values.email
+                  }
+                });
+                
+                if (!fetchError && users && users.length > 0) {
+                  userId = users[0].id;
+                  console.log("Found user ID through direct fetch:", userId);
+                }
+              }
+            } else if (authUsers && authUsers.users) {
+              const matchingUser = authUsers.users.find(
+                (user: SupabaseAuthUser) => user.email && user.email.toLowerCase() === values.email.toLowerCase()
               );
               
               if (matchingUser) {
@@ -182,7 +220,14 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       if (!userId) {
-        // User doesn't exist - offer to create them
+        // User doesn't exist - prepare create user form and open dialog
+        createUserForm.reset({
+          email: values.email,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          password: "",
+        });
+        
         setCreateUserDialogOpen(true);
         setAdding(false);
         return;
@@ -216,7 +261,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       // Add admin role to user with name metadata
-      const success = await addAdminRole(userId, firstName, lastName);
+      const success = await addAdminRole(userId, values.firstName || "", values.lastName || "");
       
       if (!success) {
         throw new Error("Failed to grant admin privileges");
@@ -224,10 +269,10 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       
       toast({
         title: "Admin added",
-        description: `${newAdminEmail} has been granted admin access.`,
+        description: `${values.email} has been granted admin access.`,
       });
       
-      resetForm();
+      form.reset();
       onOpenChange(false);
       onSuccess(); // Refresh the list
       
@@ -244,20 +289,15 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
   };
 
   // Populate default values if the dialog is for adding Jace
-  const populateJace = () => {
-    if (open && newAdminEmail === "" && firstName === "" && lastName === "") {
-      if (window.location.pathname === "/admin/users") {
-        setNewAdminEmail("jacewchambers@gmail.com");
-        setFirstName("Jace");
-        setLastName("Chambers");
+  React.useEffect(() => {
+    if (open && !form.formState.isDirty) {
+      if (window.location.pathname.includes("/admin")) {
+        form.setValue("email", "jacewchambers@gmail.com");
+        form.setValue("firstName", "Jace");
+        form.setValue("lastName", "Chambers");
       }
     }
-  };
-  
-  // Call populateJace when dialog opens
-  if (open) {
-    populateJace();
-  }
+  }, [open, form]);
 
   return (
     <>
@@ -266,92 +306,150 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
           <DialogHeader>
             <DialogTitle>Add New Admin</DialogTitle>
           </DialogHeader>
-          <div className="py-4 space-y-4">
-            <p className="text-sm mb-2">
-              Enter the email of a user who should receive admin privileges.
-              The user must already have an account in the system.
-            </p>
-            <Input 
-              placeholder="Email (e.g., user@example.com)" 
-              value={newAdminEmail} 
-              onChange={(e) => setNewAdminEmail(e.target.value)}
-              disabled={adding}
-            />
-            <Input 
-              placeholder="First Name" 
-              value={firstName} 
-              onChange={(e) => setFirstName(e.target.value)}
-              disabled={adding}
-            />
-            <Input 
-              placeholder="Last Name" 
-              value={lastName} 
-              onChange={(e) => setLastName(e.target.value)}
-              disabled={adding}
-            />
-          </div>
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                resetForm();
-                onOpenChange(false);
-              }}
-              disabled={adding}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleAddAdmin}
-              disabled={adding}
-            >
-              {adding ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Adding...
-                </>
-              ) : (
-                'Add Admin'
-              )}
-            </Button>
-          </DialogFooter>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleAddAdmin)} className="space-y-4 py-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Email (e.g., user@example.com)" 
+                        {...field}
+                        disabled={adding}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="First Name" 
+                        {...field}
+                        value={field.value || ""}
+                        disabled={adding}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Last Name" 
+                        {...field}
+                        value={field.value || ""}
+                        disabled={adding}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter className="pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    form.reset();
+                    onOpenChange(false);
+                  }}
+                  disabled={adding}
+                  type="button"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={adding}
+                >
+                  {adding ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Adding...
+                    </>
+                  ) : (
+                    'Add Admin'
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
       <AlertDialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Create New User</AlertDialogTitle>
-            <AlertDialogDescription>
-              No user with email {newAdminEmail} was found. Would you like to create this user and make them an admin?
-              Enter a password for the new user.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="py-4">
-            <Input 
-              placeholder="Password" 
-              type="password"
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={adding}
-            />
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={adding}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={createUserAccount}
-              disabled={adding}
-            >
-              {adding ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Creating...
-                </>
-              ) : (
-                'Create User & Add as Admin'
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <Form {...createUserForm}>
+            <form onSubmit={createUserForm.handleSubmit(createUserAccount)}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Create New User</AlertDialogTitle>
+                <AlertDialogDescription>
+                  No user with email {createUserForm.getValues().email} was found. Create this user and make them an admin?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              
+              <div className="py-4">
+                <FormField
+                  control={createUserForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Password" 
+                          type="password"
+                          {...field}
+                          disabled={adding}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={adding} type="button">Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={(e) => {
+                    // Prevent default to let the form submission handle it
+                    e.preventDefault();
+                    createUserForm.handleSubmit(createUserAccount)();
+                  }}
+                  disabled={adding}
+                >
+                  {adding ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Create User & Add as Admin'
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </Form>
         </AlertDialogContent>
       </AlertDialog>
     </>
