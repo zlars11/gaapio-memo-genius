@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, UserPlus, UserX } from "lucide-react";
+import { Loader2, UserPlus, UserX, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface AdminUser {
@@ -27,46 +27,48 @@ export default function AdminUsers() {
   const [adding, setAdding] = useState(false);
   const { toast } = useToast();
 
-  // Improved fetch admin users function
+  // Fixed fetch admin users function
   const fetchAdmins = async () => {
     try {
       setLoading(true);
       console.log("Fetching admin users...");
       
-      // Get all users with admin role using a direct join query
-      const { data, error } = await supabase
+      // First, get all user IDs with admin role
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          users:user_id (
-            id,
-            first_name,
-            last_name,
-            email,
-            created_at
-          )
-        `)
+        .select('user_id')
         .eq('role', 'admin');
       
-      if (error) {
-        console.error("Error fetching admins:", error);
-        throw error;
+      if (roleError) {
+        console.error("Error fetching admin roles:", roleError);
+        throw roleError;
       }
       
-      console.log("Admin data retrieved:", data);
+      console.log("Admin roles retrieved:", roleData);
       
-      // Extract user details from the join result
-      if (data && data.length > 0) {
-        const adminsData = data
-          .map(item => item.users)
-          .filter(user => user !== null) as AdminUser[];
-        
-        console.log("Processed admin users:", adminsData);
-        setAdmins(adminsData);
-      } else {
+      if (!roleData || roleData.length === 0) {
         console.log("No admin users found");
         setAdmins([]);
+        return;
       }
+      
+      // Extract user IDs from role data
+      const adminUserIds = roleData.map(role => role.user_id);
+      
+      // Then fetch user details for those IDs
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('id, email, first_name, last_name, created_at')
+        .in('id', adminUserIds);
+      
+      if (userError) {
+        console.error("Error fetching admin users:", userError);
+        throw userError;
+      }
+      
+      console.log("User data retrieved:", userData);
+      
+      setAdmins(userData || []);
     } catch (error) {
       console.error("Error fetching admins:", error);
       toast({
@@ -207,10 +209,15 @@ export default function AdminUsers() {
                 Manage users with access to the admin portal
               </CardDescription>
             </div>
-            <Button onClick={() => setAddDialogOpen(true)}>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add Admin
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={fetchAdmins} title="Refresh admin list">
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+              <Button onClick={() => setAddDialogOpen(true)}>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add Admin
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <Table>
