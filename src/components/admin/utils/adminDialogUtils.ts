@@ -1,15 +1,9 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { AddAdminFormValues } from "../forms/AddAdminForm";
 import { CreateUserFormValues } from "../dialogs/CreateUserDialog";
-
-// Define an interface for the user structure we get from Supabase auth
-export interface SupabaseAuthUser {
-  id: string;
-  email?: string | null;
-}
+import { SupabaseAuthUser } from "@/types/supabaseTypes";
 
 /**
  * Finds a user by email address using various methods
@@ -43,7 +37,7 @@ export async function findUserByEmail(email: string): Promise<string | null> {
       });
       
       if (!error && data?.users) {
-        // Find user with matching email - with proper typing
+        // Find user with matching email with proper typing
         const user = data.users.find((u: SupabaseAuthUser) => 
           u.email?.toLowerCase() === email.toLowerCase()
         );

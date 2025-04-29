@@ -1,8 +1,8 @@
-
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser } from "@/types/adminTypes";
 import { CurrentAdminUser } from "@/hooks/useCurrentAdmin";
+import { SupabaseAuthUser } from "@/types/supabaseTypes";
 
 interface FetchAdminsResult {
   success: boolean;
@@ -84,7 +84,9 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
               if (authUserError) {
                 console.error(`Error fetching auth user ${userId}:`, authUserError);
               } else if (authUserData?.user) {
-                userEmail = authUserData.user.email;
+                // Properly typed access to user email
+                const authUser = authUserData.user as SupabaseAuthUser;
+                userEmail = authUser.email || null;
                 console.log(`Found auth user ${userId}:`, userEmail);
               }
             } catch (authErr) {

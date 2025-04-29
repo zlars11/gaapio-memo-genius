@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { checkAdminRole, addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
+import { SupabaseAuthUser } from "@/types/supabaseTypes";
 
 export interface CurrentAdminUser {
   id: string | null;
@@ -106,15 +107,20 @@ export function useCurrentAdmin() {
       console.log("Fixing admin status for user:", currentUser.id);
       
       // Get user metadata if available
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      const { data, error: userError } = await supabase.auth.getUser();
       
       // Extract name from user metadata or use defaults
       let firstName = "Admin";
       let lastName = "User";
       
-      if (user && user.user_metadata) {
-        firstName = (user.user_metadata.first_name as string) || firstName;
-        lastName = (user.user_metadata.last_name as string) || lastName;
+      if (!userError && data?.user) {
+        // Properly typed access to user metadata
+        const user = data.user as SupabaseAuthUser;
+        
+        if (user.user_metadata) {
+          firstName = (user.user_metadata.first_name as string) || firstName;
+          lastName = (user.user_metadata.last_name as string) || lastName;
+        }
       }
       
       // Add admin role with the user's name
