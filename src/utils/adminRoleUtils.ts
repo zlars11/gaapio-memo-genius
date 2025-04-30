@@ -50,7 +50,9 @@ export async function addAdminRole(
             first_name: firstName,
             last_name: lastName,
             updated_at: new Date().toISOString()
-          } 
+          },
+          first_name: firstName,
+          last_name: lastName
         })
         .eq('id', existingRole.id);
         
@@ -78,7 +80,9 @@ export async function addAdminRole(
       .insert({ 
         user_id: userId, 
         role: 'admin',
-        metadata
+        metadata,
+        first_name: firstName,
+        last_name: lastName
       });
     
     if (insertError) {
@@ -166,7 +170,9 @@ export async function updateAdminName(
           first_name: firstName,
           last_name: lastName,
           updated_at: new Date().toISOString()
-        }
+        },
+        first_name: firstName,
+        last_name: lastName
       })
       .eq('id', existingRole.id);
     
