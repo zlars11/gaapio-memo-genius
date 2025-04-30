@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser, AdminFormValues } from "@/types/adminTypes";
 import { ensureUserInUsersTable, getUserEmail } from "@/utils/adminUtils";
@@ -8,14 +9,14 @@ import { ensureUserInUsersTable, getUserEmail } from "@/utils/adminUtils";
  * @param firstName First name to set (required)
  * @param lastName Last name to set (required)
  * @param email Email to set (required)
- * @returns Promise resolving to success status
+ * @returns Promise resolving to success status and error message if any
  */
 export async function addAdminRole(
   userId: string, 
   firstName: string, 
   lastName: string,
   email: string
-): Promise<boolean> {
+): Promise<{success: boolean, error?: string}> {
   try {
     console.log("Adding admin role:", { userId, firstName, lastName, email });
     
@@ -29,7 +30,7 @@ export async function addAdminRole(
     
     if (checkError) {
       console.error("Error checking existing role:", checkError);
-      return false;
+      return { success: false, error: checkError.message };
     }
     
     if (existingRole) {
@@ -47,13 +48,13 @@ export async function addAdminRole(
         
       if (updateError) {
         console.error("Error updating admin name:", updateError);
-        return false;
+        return { success: false, error: updateError.message };
       }
       
       // Ensure user exists in users table
       await ensureUserInUsersTable(userId, firstName, lastName, email);
       
-      return true;
+      return { success: true };
     }
     
     // Add admin role for user
@@ -69,16 +70,16 @@ export async function addAdminRole(
     
     if (insertError) {
       console.error("Error adding admin role:", insertError);
-      return false;
+      return { success: false, error: insertError.message };
     }
     
     // Ensure user exists in users table
     await ensureUserInUsersTable(userId, firstName, lastName, email);
     
-    return true;
-  } catch (error) {
+    return { success: true };
+  } catch (error: any) {
     console.error("Error adding admin role:", error);
-    return false;
+    return { success: false, error: error.message || "Unknown error" };
   }
 }
 

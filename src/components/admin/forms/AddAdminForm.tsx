@@ -22,7 +22,7 @@ interface AddAdminFormProps {
   onCancel: () => void;
   isLoading: boolean;
   defaultValues?: {
-    email: string; // Note: This is required now
+    email: string;
     firstName?: string;
     lastName?: string;
   };

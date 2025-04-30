@@ -1,27 +1,57 @@
 
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 interface AdminSecurityAlertProps {
   currentUserEmail: string | null;
-  onFixStatus: () => void;
+  onFixStatus: () => Promise<boolean>;
 }
 
 export function AdminSecurityAlert({ currentUserEmail, onFixStatus }: AdminSecurityAlertProps) {
+  const [isFixing, setIsFixing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleFixStatus = async () => {
+    try {
+      setIsFixing(true);
+      setErrorMessage(null);
+      const success = await onFixStatus();
+      
+      if (!success) {
+        setErrorMessage("Failed to update admin status. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error fixing admin status:", error);
+      setErrorMessage(error.message || "An unexpected error occurred");
+    } finally {
+      setIsFixing(false);
+    }
+  };
+
   return (
-    <Alert variant="destructive" className="mb-6">
-      <AlertTriangle className="h-4 w-4" />
-      <AlertTitle>Security Issue Detected</AlertTitle>
-      <AlertDescription>
-        You have admin access ({currentUserEmail}) but aren't listed in the admin users table. This is a security risk.
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="ml-4" 
-          onClick={onFixStatus}
+    <Alert variant="warning" className="mb-6">
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Admin Status Issue</AlertTitle>
+      <AlertDescription className="mt-2">
+        <p>
+          You have admin access but aren't listed in the admin users table.
+          {currentUserEmail && ` Your email (${currentUserEmail}) should appear in the list.`}
+        </p>
+        
+        {errorMessage && (
+          <p className="text-red-500 mt-2 text-sm">{errorMessage}</p>
+        )}
+        
+        <Button
+          onClick={handleFixStatus}
+          disabled={isFixing}
+          variant="outline"
+          className="mt-2"
+          size="sm"
         >
-          Fix My Admin Status
+          {isFixing ? "Fixing..." : "Fix Now"}
         </Button>
       </AlertDescription>
     </Alert>

@@ -27,7 +27,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       
       if (roleError) {
         console.error("Error fetching admin roles:", roleError);
-        setError("Failed to fetch admin roles");
+        setError("Failed to fetch admin roles: " + roleError.message);
         setAdmins([]);
         return { success: false, isCurrentUserDisplayed: false };
       }
@@ -47,13 +47,13 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         console.log("Is current user in admin list:", isCurrentUserInList);
       }
       
-      // Convert to admin users array
+      // Convert to admin users array and handle missing names properly
       const adminUsers: AdminUser[] = adminRoles.map(role => ({
         id: role.id,
         user_id: role.user_id,
-        email: role.email,
-        first_name: role.first_name,
-        last_name: role.last_name,
+        email: role.email || 'Unknown Email',
+        first_name: role.first_name || '',
+        last_name: role.last_name || '',
         role: role.role,
         created_at: role.created_at
       }));
@@ -73,9 +73,9 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         success: true,
         isCurrentUserDisplayed: isCurrentUserInList
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Unexpected error in fetchAdmins:", error);
-      setError("An unexpected error occurred while fetching admin users");
+      setError("An unexpected error occurred while fetching admin users: " + error.message);
       setAdmins([]);
       return { success: false, isCurrentUserDisplayed: false };
     } finally {

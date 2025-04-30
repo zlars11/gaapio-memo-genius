@@ -1,8 +1,10 @@
 
+import React from 'react';
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Loader2, UserX, UserCog } from "lucide-react";
+import { Loader2, UserX } from "lucide-react";
 import { AdminUser } from "@/types/adminTypes";
+import { format } from "date-fns";
 
 interface AdminUserRowProps {
   admin: AdminUser;
@@ -19,44 +21,46 @@ export function AdminUserRow({
   isCurrentUser,
   onUpdateName 
 }: AdminUserRowProps) {
-  const hasName = admin.first_name || admin.last_name;
+  const hasName = !!(admin.first_name || admin.last_name);
+  const displayName = hasName 
+    ? `${admin.first_name || ''} ${admin.last_name || ''}`.trim() 
+    : 'No Name';
+  
+  const formattedDate = admin.created_at 
+    ? format(new Date(admin.created_at), 'MMM d, yyyy') 
+    : 'Unknown date';
   
   return (
-    <TableRow key={admin.id}>
-      <TableCell>
-        {hasName 
-          ? `${admin.first_name || ''} ${admin.last_name || ''}`.trim() 
-          : 'N/A'}
-        {isCurrentUser && !hasName && onUpdateName && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-2"
-            onClick={onUpdateName}
-          >
-            <UserCog className="h-4 w-4 mr-1" />
-            Update Name
+    <TableRow>
+      <TableCell className={hasName ? "" : "text-gray-400"}>
+        {displayName}
+        {!hasName && isCurrentUser && onUpdateName && (
+          <Button 
+            variant="link" 
+            onClick={onUpdateName} 
+            className="px-0 h-auto py-0 ml-1">
+              (Set your name)
           </Button>
         )}
       </TableCell>
-      <TableCell>{admin.email || 'N/A'}</TableCell>
-      <TableCell>
-        {new Date(admin.created_at).toLocaleDateString()}
-      </TableCell>
+      <TableCell>{admin.email || 'Unknown email'}</TableCell>
+      <TableCell>{formattedDate}</TableCell>
       <TableCell className="text-right">
-        <Button 
-          variant="destructive" 
-          size="sm" 
-          onClick={onRemove}
-          disabled={isRemoving}
-        >
-          {isRemoving ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-1" />
-          ) : (
-            <UserX className="h-4 w-4 mr-1" />
-          )}
-          Remove
-        </Button>
+        {!isCurrentUser && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRemove}
+            disabled={isRemoving}
+          >
+            {isRemoving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserX className="h-4 w-4" />
+            )}
+            <span className="sr-only">Remove admin</span>
+          </Button>
+        )}
       </TableCell>
     </TableRow>
   );

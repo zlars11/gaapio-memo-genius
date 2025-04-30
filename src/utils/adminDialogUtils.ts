@@ -58,6 +58,103 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
 }
 
 /**
+ * Find a user by email in Supabase Auth
+ */
+export async function findUserByAuthEmail(email: string): Promise<{id: string | null, exists: boolean}> {
+  try {
+    console.log("Looking for auth user with email:", email);
+    
+    // Try using the admin API to find the user
+    try {
+      const { data, error } = await supabase.auth.admin.listUsers({
+        page: 1,
+        perPage: 100
+      });
+      
+      if (error) {
+        console.error("Error searching for user in auth:", error);
+        throw error;
+      }
+      
+      if (data && data.users) {
+        const user = data.users.find(u => 
+          u.email?.toLowerCase() === email.toLowerCase()
+        );
+        
+        if (user) {
+          console.log("Found user in auth system:", user.id);
+          return { id: user.id, exists: true };
+        }
+      }
+    } catch (authApiError) {
+      console.error("Unable to use admin list API:", authApiError);
+    }
+    
+    // Fall back to findUserByEmail (which also checks the users table)
+    const userId = await findUserByEmail(email);
+    return { id: userId, exists: !!userId };
+  } catch (error) {
+    console.error("Error in findUserByAuthEmail:", error);
+    return { id: null, exists: false };
+  }
+}
+
+/**
+ * Check if a user is already in the admin_users table
+ */
+export async function checkUserInAdminTable(userId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (error) {
+      console.error("Error checking admin table:", error);
+      return false;
+    }
+    
+    return !!data;
+  } catch (error) {
+    console.error("Error checking admin table:", error);
+    return false;
+  }
+}
+
+/**
+ * Add a user directly to the admin_users table
+ */
+export async function addUserToAdminTable(
+  userId: string, 
+  email: string, 
+  firstName: string, 
+  lastName: string
+): Promise<{success: boolean, error: string | null}> {
+  try {
+    const { error } = await supabase
+      .from('admin_users')
+      .insert({
+        user_id: userId,
+        email,
+        first_name: firstName || null,
+        last_name: lastName || null,
+        role: 'admin'
+      });
+    
+    if (error) {
+      console.error("Error adding to admin table:", error);
+      return { success: false, error: error.message };
+    }
+    
+    return { success: true, error: null };
+  } catch (error: any) {
+    console.error("Exception adding to admin table:", error);
+    return { success: false, error: error.message || "Unknown error" };
+  }
+}
+
+/**
  * Find or create a user and add admin role
  */
 export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<boolean> {
@@ -66,52 +163,70 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
     
     let userId = null;
     
-    // First check if user already exists
-    userId = await findUserByEmail(values.email);
+    // First check if user already exists using our new function
+    const { id: existingUserId, exists: userExists } = await findUserByAuthEmail(values.email);
     
-    if (!userId) {
-      console.log("User doesn't exist, creating new user:", values.email);
+    if (userExists && existingUserId) {
+      console.log("User already exists, checking if already an admin:", existingUserId);
       
-      // Try using signUp API first which can be called with anon key
-      const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
-        email: values.email,
-        password: values.password,
-        email_confirm: true,
-        user_metadata: {
-          first_name: values.firstName,
-          last_name: values.lastName
-        }
-      });
+      // Check if user is already in admin_users table
+      const isAlreadyAdmin = await checkUserInAdminTable(existingUserId);
       
-      if (signUpError) {
-        console.error("Error creating user with admin API:", signUpError);
-        return false;
-      }
-      
-      if (!signUpData?.user) {
-        console.error("Failed to create user: No user returned");
-        return false;
-      }
-      
-      userId = signUpData.user.id;
-      console.log("User created via admin API:", userId);
-    } else {
-      console.log("User already exists, will check if they're already an admin:", userId);
-      
-      // Check if user is already an admin before adding the role
-      const isAlreadyAdmin = await checkExistingAdminRole(userId);
       if (isAlreadyAdmin) {
-        console.log("User is already an admin, no need to add the role again");
+        console.log("User is already an admin, no need to add again");
         return true;
       }
+      
+      // User exists but is not an admin, add them to admin_users
+      console.log("User exists but is not an admin, adding to admin_users");
+      const { success } = await addUserToAdminTable(
+        existingUserId, 
+        values.email, 
+        values.firstName, 
+        values.lastName
+      );
+      
+      return success;
     }
     
-    // Add admin role to the user
-    const roleAdded = await addAdminRole(userId, values.firstName, values.lastName, values.email);
-    console.log("Admin role added:", roleAdded);
-    return roleAdded;
+    // User doesn't exist, create them
+    console.log("User doesn't exist, creating new user:", values.email);
+    
+    // Try using admin API to create user
+    const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
+      email: values.email,
+      password: values.password,
+      email_confirm: true,
+      user_metadata: {
+        first_name: values.firstName,
+        last_name: values.lastName
+      }
+    });
+    
+    if (signUpError) {
+      console.error("Error creating user with admin API:", signUpError);
+      return false;
+    }
+    
+    if (!signUpData?.user) {
+      console.error("Failed to create user: No user returned");
+      return false;
+    }
+    
+    userId = signUpData.user.id;
+    console.log("User created via admin API:", userId);
+    
+    // Add user to admin_users table
+    const { success } = await addUserToAdminTable(
+      userId, 
+      values.email, 
+      values.firstName, 
+      values.lastName
+    );
+    
+    return success;
   } catch (error) {
-    console.error("Error in createUserAccount:", error);
+    console.error("Error in createUserWithAdminRole:", error);
     return false;
   }
 }
@@ -145,62 +260,34 @@ export function useAdminDialogActions() {
     try {
       console.log("Finding user by email:", values.email);
       
-      // First check if user exists in Auth system
-      const userId = await findUserByEmail(values.email);
+      // First check if user exists in Auth system using our improved function
+      const { id: userId, exists: userExists } = await findUserByAuthEmail(values.email);
       
-      if (!userId) {
+      if (!userExists || !userId) {
         console.log("User not found, needs to be created");
         return { success: false, needsUserCreation: true };
       }
       
-      console.log("User found, checking if already admin");
-      // Check if user is already an admin by checking admin_users table
-      const { data: existingAdminUser, error: checkError } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
+      console.log("User found in auth system, checking if already in admin_users table");
+      // Check if user is already in admin_users table
+      const isAlreadyInAdminTable = await checkUserInAdminTable(userId);
       
-      if (checkError) {
-        console.error("Error checking if user is already an admin:", checkError);
-        throw new Error("Failed to check admin status");
+      if (isAlreadyInAdminTable) {
+        console.log("User is already in admin_users table");
+        toast({
+          title: "Already an admin",
+          description: "This user already has admin privileges.",
+        });
+        return { success: true, needsUserCreation: false };
       }
       
-      if (existingAdminUser) {
-        console.log("User is already an admin, attempting to update information");
-        
-        // User is already an admin, update their information
-        const success = await addAdminRole(
-          userId, 
-          values.firstName || "Admin", 
-          values.lastName || "User",
-          values.email
-        );
-        
-        if (success) {
-          toast({
-            title: "Admin updated",
-            description: `${values.email} was already an admin. We've updated their information.`,
-          });
-          return { success: true, needsUserCreation: false };
-        } else {
-          toast({
-            title: "Already an admin",
-            description: "This user already has admin privileges, but we couldn't update their information.",
-            variant: "destructive",
-          });
-          return { success: false, needsUserCreation: false };
-        }
-      }
-      
-      console.log("Adding admin role to user");
-      // Add admin role to user with name metadata and email
-      const success = await addAdminRole(
-        userId, 
-        values.firstName || "Admin", 
-        values.lastName || "User",
-        values.email
+      console.log("User exists but is not in admin_users table, adding now");
+      // Add user to admin_users table
+      const { success, error } = await addUserToAdminTable(
+        userId,
+        values.email,
+        values.firstName || "",
+        values.lastName || ""
       );
       
       if (success) {
@@ -212,13 +299,13 @@ export function useAdminDialogActions() {
       } else {
         toast({
           title: "Failed to add admin",
-          description: "An error occurred while trying to grant admin privileges.",
+          description: error || "An error occurred while trying to grant admin privileges.",
           variant: "destructive",
         });
         return { success: false, needsUserCreation: false };
       }
     } catch (error: any) {
-      console.error("Error in handleAddAdmin:", error);
+      console.error("Error in handleAddAdminRole:", error);
       toast({
         title: "Failed to add admin",
         description: error.message || "An error occurred while trying to add the admin user.",
