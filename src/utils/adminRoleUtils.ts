@@ -21,7 +21,7 @@ export async function addAdminRole(
     // Check if role already exists
     const { data: existingRole, error: checkError } = await supabase
       .from('admin_users')
-      .select('id, metadata')
+      .select('id')
       .eq('user_id', userId)
       .eq('role', 'admin')
       .maybeSingle();
@@ -37,20 +37,10 @@ export async function addAdminRole(
     if (existingRole) {
       console.log("Admin role already exists:", existingRole);
       
-      // Get current metadata to preserve any other fields
-      const currentMetadata = typeof existingRole.metadata === 'object' && existingRole.metadata !== null 
-        ? existingRole.metadata 
-        : {};
-      
+      // Update the existing admin user with new name information
       const { error: updateError } = await supabase
         .from('admin_users')
         .update({ 
-          metadata: { 
-            ...currentMetadata,
-            first_name: firstName,
-            last_name: lastName,
-            updated_at: new Date().toISOString()
-          },
           first_name: firstName,
           last_name: lastName
         })
@@ -67,20 +57,12 @@ export async function addAdminRole(
       return true;
     }
     
-    // Prepare metadata object - always include first and last name
-    const metadata = {
-      created_at: new Date().toISOString(),
-      first_name: firstName,
-      last_name: lastName
-    };
-    
     // Add admin role for user
     const { error: insertError } = await supabase
       .from('admin_users')
       .insert({ 
         user_id: userId, 
         role: 'admin',
-        metadata,
         first_name: firstName,
         last_name: lastName
       });
@@ -141,7 +123,7 @@ export async function updateAdminName(
     // Find the specific user role entry
     const { data: existingRole, error: checkError } = await supabase
       .from('admin_users')
-      .select('id, metadata')
+      .select('id')
       .eq('user_id', userId)
       .eq('role', 'admin')
       .maybeSingle();
@@ -156,21 +138,10 @@ export async function updateAdminName(
       return false;
     }
     
-    // Ensure metadata is an object before updating
-    const currentMetadata = typeof existingRole.metadata === 'object' && existingRole.metadata !== null 
-      ? existingRole.metadata 
-      : {};
-    
-    // Update metadata on the admin_users entry with name information
+    // Update name on the admin_users entry
     const { error: updateError } = await supabase
       .from('admin_users')
       .update({
-        metadata: {
-          ...currentMetadata,
-          first_name: firstName,
-          last_name: lastName,
-          updated_at: new Date().toISOString()
-        },
         first_name: firstName,
         last_name: lastName
       })

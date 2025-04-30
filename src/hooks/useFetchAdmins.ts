@@ -24,7 +24,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       // Query admin_users table
       const { data: adminRoles, error: roleError } = await supabase
         .from('admin_users')
-        .select('id, user_id, role, created_at, metadata, first_name, last_name')
+        .select('id, user_id, role, created_at, first_name, last_name')
         .eq('role', 'admin');
       
       if (roleError) {
@@ -64,16 +64,12 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
             console.log(`Using current user email for ${userId}:`, currentUser.email);
           }
           
-          // Extract name from metadata or dedicated columns
-          const firstName = role.first_name || (role.metadata && 'first_name' in role.metadata ? role.metadata.first_name as string : null);
-          const lastName = role.last_name || (role.metadata && 'last_name' in role.metadata ? role.metadata.last_name as string : null);
-          
           adminUsers.push({
             id: role.id,
             user_id: userId,
             email: userEmail || (currentUser.id === userId ? currentUser.email : null),
-            first_name: firstName,
-            last_name: lastName,
+            first_name: role.first_name,
+            last_name: role.last_name,
             role: role.role,
             created_at: role.created_at
           });
