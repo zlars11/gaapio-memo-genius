@@ -77,9 +77,10 @@ export async function findUserByAuthEmail(email: string): Promise<{id: string | 
       }
       
       if (data && data.users) {
-        const user = data.users.find(u => 
-          u.email?.toLowerCase() === email.toLowerCase()
-        );
+        // Explicitly type the user object to avoid 'never' type issues
+        const user = data.users.find(u => {
+          return u.email?.toLowerCase() === email.toLowerCase();
+        });
         
         if (user) {
           console.log("Found user in auth system:", user.id);

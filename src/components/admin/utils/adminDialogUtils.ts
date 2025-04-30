@@ -70,7 +70,8 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
     if (existingUserId) {
       console.log("User already exists, adding admin role:", existingUserId);
       // User exists, just add admin role
-      return await addAdminRole(existingUserId, values.firstName, values.lastName, values.email);
+      const { success } = await addAdminRole(existingUserId, values.firstName, values.lastName, values.email);
+      return success;
     }
     
     // Try using signUp API first which can be called with anon key
@@ -108,9 +109,9 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
         console.log("User created via admin API:", data.user.id);
         
         // Add admin role to the newly created user
-        const roleAdded = await addAdminRole(data.user.id, values.firstName, values.lastName, values.email);
-        console.log("Admin role added:", roleAdded);
-        return roleAdded;
+        const { success } = await addAdminRole(data.user.id, values.firstName, values.lastName, values.email);
+        console.log("Admin role added:", success);
+        return success;
       } catch (adminApiError) {
         console.error("Admin API error:", adminApiError);
         return false;
@@ -121,9 +122,9 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
       console.log("User created via signUp:", signUpData.user.id);
       
       // Add admin role to the newly created user
-      const roleAdded = await addAdminRole(signUpData.user.id, values.firstName, values.lastName, values.email);
-      console.log("Admin role added:", roleAdded);
-      return roleAdded;
+      const { success } = await addAdminRole(signUpData.user.id, values.firstName, values.lastName, values.email);
+      console.log("Admin role added:", success);
+      return success;
     }
     
     console.error("Failed to create user, no error but no user returned");
@@ -180,7 +181,7 @@ export function useAdminDialogActions() {
         
         // User is already an admin, but might not be showing in the list
         // Let's update or add their information to make sure they appear in the list
-        const success = await addAdminRole(
+        const { success } = await addAdminRole(
           userId, 
           values.firstName || "Admin", 
           values.lastName || "User",
@@ -205,7 +206,7 @@ export function useAdminDialogActions() {
       
       console.log("Adding admin role to user");
       // Add admin role to user with name metadata
-      const success = await addAdminRole(
+      const { success } = await addAdminRole(
         userId, 
         values.firstName || "Admin", // Provide default if missing
         values.lastName || "User",   // Provide default if missing
