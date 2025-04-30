@@ -20,11 +20,10 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       setError(null);
       console.log("Fetching admin users");
       
-      // Query admin_users table
+      // Query admin_users table with all necessary columns
       const { data: adminRoles, error: roleError } = await supabase
         .from('admin_users')
-        .select('id, user_id, role, created_at, first_name, last_name, email')
-        .eq('role', 'admin');
+        .select('id, user_id, role, created_at, first_name, last_name, email');
       
       if (roleError) {
         console.error("Error fetching admin roles:", roleError);
@@ -49,44 +48,15 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       }
       
       // Convert to admin users array
-      const adminUsers: AdminUser[] = [];
-      
-      for (const role of adminRoles) {
-        try {
-          // Use email from admin_users table if available
-          let userEmail = role.email;
-          
-          // If email is missing, try to get from auth or current user
-          if (!userEmail) {
-            if (currentUser.id === role.user_id && currentUser.email) {
-              userEmail = currentUser.email;
-              console.log(`Using current user email for ${role.user_id}:`, currentUser.email);
-              
-              // Update the missing email in the admin_users table
-              const { error: updateError } = await supabase
-                .from('admin_users')
-                .update({ email: userEmail })
-                .eq('id', role.id);
-                
-              if (updateError) {
-                console.error(`Failed to update email for admin ${role.id}:`, updateError);
-              }
-            }
-          }
-          
-          adminUsers.push({
-            id: role.id,
-            user_id: role.user_id,
-            email: userEmail,
-            first_name: role.first_name,
-            last_name: role.last_name,
-            role: role.role,
-            created_at: role.created_at
-          });
-        } catch (error) {
-          console.error(`Error processing admin user ${role.user_id}:`, error);
-        }
-      }
+      const adminUsers: AdminUser[] = adminRoles.map(role => ({
+        id: role.id,
+        user_id: role.user_id,
+        email: role.email,
+        first_name: role.first_name,
+        last_name: role.last_name,
+        role: role.role,
+        created_at: role.created_at
+      }));
       
       console.log(`Processed ${adminUsers.length} admin users:`, adminUsers);
       
@@ -111,7 +81,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser.id, currentUser.email]); 
+  }, [currentUser.id]); 
 
   return {
     loading,

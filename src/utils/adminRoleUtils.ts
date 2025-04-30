@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser, AdminFormValues } from "@/types/adminTypes";
 import { ensureUserInUsersTable, getUserEmail } from "@/utils/adminUtils";
