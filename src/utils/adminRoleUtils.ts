@@ -6,17 +6,19 @@ import { ensureUserInUsersTable, getUserEmail } from "@/utils/adminUtils";
 /**
  * Adds admin role to a user
  * @param userId The user ID to add admin role to
- * @param firstName First name to set in metadata (required)
- * @param lastName Last name to set in metadata (required)
+ * @param firstName First name to set (required)
+ * @param lastName Last name to set (required)
+ * @param email Email to set (required)
  * @returns Promise resolving to success status
  */
 export async function addAdminRole(
   userId: string, 
   firstName: string, 
-  lastName: string
+  lastName: string,
+  email: string
 ): Promise<boolean> {
   try {
-    console.log("Adding admin role:", { userId, firstName, lastName });
+    console.log("Adding admin role:", { userId, firstName, lastName, email });
     
     // Check if role already exists
     const { data: existingRole, error: checkError } = await supabase
@@ -31,9 +33,6 @@ export async function addAdminRole(
       return false;
     }
     
-    // Get email for the user
-    const email = await getUserEmail(userId);
-    
     if (existingRole) {
       console.log("Admin role already exists:", existingRole);
       
@@ -42,7 +41,8 @@ export async function addAdminRole(
         .from('admin_users')
         .update({ 
           first_name: firstName,
-          last_name: lastName
+          last_name: lastName,
+          email: email
         })
         .eq('id', existingRole.id);
         
@@ -64,7 +64,8 @@ export async function addAdminRole(
         user_id: userId, 
         role: 'admin',
         first_name: firstName,
-        last_name: lastName
+        last_name: lastName,
+        email: email
       });
     
     if (insertError) {
@@ -108,16 +109,18 @@ export async function removeAdminRole(adminId: string): Promise<boolean> {
 }
 
 /**
- * Updates admin user name metadata
+ * Updates admin user name and email
  * @param userId User ID to update
  * @param firstName First name to set
  * @param lastName Last name to set
+ * @param email Email to update (optional)
  * @returns Promise resolving to success status
  */
 export async function updateAdminName(
   userId: string, 
   firstName: string, 
-  lastName: string
+  lastName: string,
+  email?: string
 ): Promise<boolean> {
   try {
     // Find the specific user role entry
@@ -139,12 +142,19 @@ export async function updateAdminName(
     }
     
     // Update name on the admin_users entry
+    const updateData: { first_name: string; last_name: string; email?: string } = {
+      first_name: firstName,
+      last_name: lastName
+    };
+    
+    // Add email to update if provided
+    if (email) {
+      updateData.email = email;
+    }
+    
     const { error: updateError } = await supabase
       .from('admin_users')
-      .update({
-        first_name: firstName,
-        last_name: lastName
-      })
+      .update(updateData)
       .eq('id', existingRole.id);
     
     if (updateError) {
@@ -154,12 +164,18 @@ export async function updateAdminName(
     
     // Also update users table if the record exists
     try {
+      const updateUserData: { first_name: string; last_name: string; email?: string } = {
+        first_name: firstName,
+        last_name: lastName
+      };
+      
+      if (email) {
+        updateUserData.email = email;
+      }
+      
       const { error: userUpdateError } = await supabase
-        .from('users')
-        .update({
-          first_name: firstName,
-          last_name: lastName
-        })
+        .from("users")
+        .update(updateUserData)
         .eq('id', userId);
       
       if (userUpdateError) {

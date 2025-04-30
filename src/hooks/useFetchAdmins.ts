@@ -2,7 +2,6 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser, CurrentAdminUser } from "@/types/adminTypes";
-import { getAuthUser } from "@/utils/adminUtils";
 
 interface FetchAdminsResult {
   success: boolean;
@@ -24,7 +23,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       // Query admin_users table
       const { data: adminRoles, error: roleError } = await supabase
         .from('admin_users')
-        .select('id, user_id, role, created_at, first_name, last_name')
+        .select('id, user_id, role, created_at, first_name, last_name, email')
         .eq('role', 'admin');
       
       if (roleError) {
@@ -49,25 +48,36 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         console.log("Is current user in admin list:", isCurrentUserInList);
       }
       
-      // Get user details from Auth API for each admin
+      // Convert to admin users array
       const adminUsers: AdminUser[] = [];
       
       for (const role of adminRoles) {
         try {
-          const userId = role.user_id;
+          // Use email from admin_users table if available
+          let userEmail = role.email;
           
-          // Try to get from auth directly using our utility
-          const authUser = await getAuthUser(userId);
-          const userEmail = authUser?.email || null;
-          
-          if (!userEmail && currentUser.id === userId && currentUser.email) {
-            console.log(`Using current user email for ${userId}:`, currentUser.email);
+          // If email is missing, try to get from auth or current user
+          if (!userEmail) {
+            if (currentUser.id === role.user_id && currentUser.email) {
+              userEmail = currentUser.email;
+              console.log(`Using current user email for ${role.user_id}:`, currentUser.email);
+              
+              // Update the missing email in the admin_users table
+              const { error: updateError } = await supabase
+                .from('admin_users')
+                .update({ email: userEmail })
+                .eq('id', role.id);
+                
+              if (updateError) {
+                console.error(`Failed to update email for admin ${role.id}:`, updateError);
+              }
+            }
           }
           
           adminUsers.push({
             id: role.id,
-            user_id: userId,
-            email: userEmail || (currentUser.id === userId ? currentUser.email : null),
+            user_id: role.user_id,
+            email: userEmail,
             first_name: role.first_name,
             last_name: role.last_name,
             role: role.role,

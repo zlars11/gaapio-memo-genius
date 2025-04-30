@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { removeAdminRole, updateAdminName } from "@/utils/adminRoleUtils";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useAdminActions(onUpdate: () => Promise<any>) {
   const [removing, setRemoving] = useState<string | null>(null);
@@ -45,23 +45,37 @@ export function useAdminActions(onUpdate: () => Promise<any>) {
     }
   };
 
-  const handleUpdateName = async (firstName: string, lastName: string, userId: string) => {
+  const handleUpdateName = async (firstName: string, lastName: string, email: string) => {
     try {
       setUpdatingName(true);
       
-      if (!userId) {
-        throw new Error("No user ID available");
+      if (!email) {
+        throw new Error("No email available");
       }
       
-      console.log("Updating name for admin user:", userId);
-      console.log("New name values:", { firstName, lastName });
+      console.log("Updating name for admin user with email:", email);
+      console.log("New values:", { firstName, lastName, email });
       
-      const success = await updateAdminName(userId, firstName, lastName);
+      // Find the user ID from email if needed
+      let userId = null;
+      
+      // Check if we need to find the user from auth by email
+      const { data, error } = await supabase.auth.getSession();
+      if (!error && data?.session?.user?.id) {
+        userId = data.session.user.id;
+        console.log("Got user ID from session:", userId);
+      }
+      
+      if (!userId) {
+        throw new Error("Could not determine the user ID");
+      }
+      
+      const success = await updateAdminName(userId, firstName, lastName, email);
       
       if (success) {
         toast({
-          title: "Name updated",
-          description: "Your name has been updated successfully.",
+          title: "Information updated",
+          description: "Your information has been updated successfully.",
         });
         
         // Update complete admin list
@@ -69,13 +83,13 @@ export function useAdminActions(onUpdate: () => Promise<any>) {
         setNameDialogOpen(false);
         return true;
       } else {
-        throw new Error("Failed to update name");
+        throw new Error("Failed to update information");
       }
     } catch (error: any) {
-      console.error("Error updating name:", error);
+      console.error("Error updating name and email:", error);
       toast({
-        title: "Failed to update name",
-        description: error.message || "An error occurred while trying to update your name.",
+        title: "Failed to update information",
+        description: error.message || "An error occurred while trying to update your information.",
         variant: "destructive",
       });
       return false;
