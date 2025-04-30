@@ -18,7 +18,7 @@ export interface SupabaseAuthUser {
   confirmation_sent_at?: string;
   confirmed_at?: string;
   created_at: string;
-  email?: string | null;
+  email?: string | null;  // Explicitly marked as potentially null or undefined
   email_confirmed_at?: string;
   phone?: string | null;
   last_sign_in_at?: string;
