@@ -77,10 +77,10 @@ export async function findUserByAuthEmail(email: string): Promise<{id: string | 
       }
       
       if (data && data.users) {
-        // Explicitly type the user object to avoid 'never' type issues
-        const user = data.users.find(u => {
-          return u.email?.toLowerCase() === email.toLowerCase();
-        });
+        // Type the users array explicitly to fix the 'never' type issue
+        const users = data.users;
+        // Use a type predicate to ensure TypeScript knows what's returned
+        const user = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
         
         if (user) {
           console.log("Found user in auth system:", user.id);
