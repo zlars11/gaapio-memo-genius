@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AdminFormValues } from "@/types/adminTypes";
 
 // Create a form schema for adding an admin
 const addAdminFormSchema = z.object({
@@ -15,10 +17,8 @@ const addAdminFormSchema = z.object({
   lastName: z.string().optional(),
 });
 
-export type AddAdminFormValues = z.infer<typeof addAdminFormSchema>;
-
 interface AddAdminFormProps {
-  onSubmit: (values: AddAdminFormValues) => Promise<void>;
+  onSubmit: (values: AdminFormValues) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   defaultValues?: {
@@ -29,7 +29,7 @@ interface AddAdminFormProps {
 }
 
 export function AddAdminForm({ onSubmit, onCancel, isLoading, defaultValues }: AddAdminFormProps) {
-  const form = useForm<AddAdminFormValues>({
+  const form = useForm<AdminFormValues>({
     resolver: zodResolver(addAdminFormSchema),
     defaultValues: {
       email: defaultValues?.email || "",

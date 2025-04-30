@@ -1,9 +1,8 @@
 
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminUser } from "@/types/adminTypes";
-import { CurrentAdminUser } from "@/hooks/useCurrentAdmin";
-import { SupabaseAuthUser } from "@/types/supabaseTypes";
+import { AdminUser, CurrentAdminUser } from "@/types/adminTypes";
+import { getAuthUser } from "@/utils/adminUtils";
 
 interface FetchAdminsResult {
   success: boolean;
@@ -15,17 +14,17 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Use a stable reference for the fetchAdmins function
+  // Fetch all admin users
   const fetchAdmins = useCallback(async (): Promise<FetchAdminsResult> => {
     try {
       setLoading(true);
       setError(null);
-      console.log("Fetching admin users - started");
+      console.log("Fetching admin users");
       
-      // Query user_roles table directly with metadata for names
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('user_id, created_at, metadata, id')
+      // Query admin_users table
+      const { data: adminRoles, error: roleError } = await supabase
+        .from('admin_users')
+        .select('id, user_id, role, created_at, metadata')
         .eq('role', 'admin');
       
       if (roleError) {
@@ -35,99 +34,55 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         return { success: false, isCurrentUserDisplayed: false };
       }
       
-      console.log(`Found ${roleData?.length || 0} admin role records:`, roleData);
+      console.log(`Found ${adminRoles?.length || 0} admin records:`, adminRoles);
       
-      if (!roleData || roleData.length === 0) {
+      if (!adminRoles || adminRoles.length === 0) {
         console.log("No admin users found");
         setAdmins([]);
         return { success: true, isCurrentUserDisplayed: false };
       }
       
-      // Extract user IDs from the role data
-      const adminUserIds = roleData.map(role => role.user_id);
-      console.log("Admin user IDs:", adminUserIds);
-      
       // Check if current user is in admin list
       let isCurrentUserInList = false;
       if (currentUser.id) {
-        isCurrentUserInList = adminUserIds.includes(currentUser.id);
+        isCurrentUserInList = adminRoles.some(role => role.user_id === currentUser.id);
         console.log("Is current user in admin list:", isCurrentUserInList);
       }
       
-      // Get user details from users table and auth.users
+      // Get user details from Auth API for each admin
       const adminUsers: AdminUser[] = [];
       
-      for (const roleEntry of roleData) {
+      for (const role of adminRoles) {
         try {
-          const userId = roleEntry.user_id;
+          const userId = role.user_id;
           
-          // Use users table to get user email - now explicitly selecting email
-          const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('id, email')
-            .eq('id', userId)
-            .maybeSingle();
-          
-          let userEmail = null;
-          
-          if (userError) {
-            console.error(`Error fetching user ${userId} from users table:`, userError);
-          } else if (userData && userData.email) {
-            userEmail = userData.email;
-            console.log(`Found user ${userId} in users table:`, userEmail);
-          }
-          
-          // If email not found in users table, try to get from auth directly
-          if (!userEmail) {
-            try {
-              const { data: authUserData, error: authUserError } = await supabase.auth.admin.getUserById(userId);
-              
-              if (authUserError) {
-                console.error(`Error fetching auth user ${userId}:`, authUserError);
-              } else if (authUserData?.user) {
-                // Properly typed access to user email
-                const authUser = authUserData.user as SupabaseAuthUser;
-                userEmail = authUser.email || null;
-                console.log(`Found auth user ${userId}:`, userEmail);
-              }
-            } catch (authErr) {
-              console.error(`Error accessing auth admin API for ${userId}:`, authErr);
-              
-              // If this is the current user and we know their email, use it
-              if (currentUser.id === userId && currentUser.email) {
-                userEmail = currentUser.email;
-                console.log(`Using current user email for ${userId}:`, userEmail);
-              }
-            }
-          }
+          // Try to get from auth directly using our utility
+          const authUser = await getAuthUser(userId);
+          const userEmail = authUser?.email || null;
           
           if (!userEmail && currentUser.id === userId && currentUser.email) {
-            userEmail = currentUser.email;
-            console.log(`Using current user email for ${userId}:`, userEmail);
-          }
-          
-          if (!userEmail) {
-            console.error(`Could not find email for user ${userId}`);
-            continue;
+            console.log(`Using current user email for ${userId}:`, currentUser.email);
           }
           
           // Extract name from metadata
-          const metadata = typeof roleEntry.metadata === 'object' && roleEntry.metadata !== null 
-            ? roleEntry.metadata 
+          const metadata = typeof role.metadata === 'object' && role.metadata !== null 
+            ? role.metadata 
             : {};
           
           const firstName = metadata && 'first_name' in metadata ? metadata.first_name as string : null;
           const lastName = metadata && 'last_name' in metadata ? metadata.last_name as string : null;
           
           adminUsers.push({
-            id: userId,
-            email: userEmail,
+            id: role.id,
+            user_id: userId,
+            email: userEmail || (currentUser.id === userId ? currentUser.email : null),
             first_name: firstName,
             last_name: lastName,
-            created_at: roleEntry.created_at
+            role: role.role,
+            created_at: role.created_at
           });
         } catch (error) {
-          console.error(`Error processing admin user ${roleEntry.user_id}:`, error);
+          console.error(`Error processing admin user ${role.user_id}:`, error);
         }
       }
       

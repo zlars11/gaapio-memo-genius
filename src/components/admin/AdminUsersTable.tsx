@@ -1,7 +1,7 @@
 
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
-import { AdminUser } from "@/hooks/useAdminUsers";
+import { AdminUser } from "@/types/adminTypes";
 import { AdminUserRow } from "./AdminUserRow";
 
 interface AdminUsersTableProps {
@@ -45,10 +45,10 @@ export function AdminUsersTable({
             <AdminUserRow 
               key={admin.id}
               admin={admin}
-              isRemoving={removing === admin.id}
-              onRemove={() => onRemoveAdmin(admin.id)}
-              isCurrentUser={admin.id === currentUserId}
-              onUpdateName={admin.id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
+              isRemoving={removing === admin.user_id}
+              onRemove={() => onRemoveAdmin(admin.user_id)}
+              isCurrentUser={admin.user_id === currentUserId}
+              onUpdateName={admin.user_id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
             />
           ))
         ) : (

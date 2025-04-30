@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { removeAdminRole, updateAdminName } from "@/utils/adminRoleUtils";
-import { AdminUser } from "@/types/adminTypes";
 
 export function useAdminActions(onUpdate: () => Promise<any>) {
   const [removing, setRemoving] = useState<string | null>(null);

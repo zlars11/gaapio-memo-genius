@@ -2,7 +2,7 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Loader2, UserX, UserCog } from "lucide-react";
-import { AdminUser } from "@/hooks/useAdminUsers";
+import { AdminUser } from "@/types/adminTypes";
 
 interface AdminUserRowProps {
   admin: AdminUser;
@@ -39,7 +39,7 @@ export function AdminUserRow({
           </Button>
         )}
       </TableCell>
-      <TableCell>{admin.email}</TableCell>
+      <TableCell>{admin.email || 'N/A'}</TableCell>
       <TableCell>
         {new Date(admin.created_at).toLocaleDateString()}
       </TableCell>

@@ -1,165 +1,125 @@
 
-import React from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
-// Create schema for the create user form that requires a password
-const createUserFormSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-});
-
-export type CreateUserFormValues = z.infer<typeof createUserFormSchema>;
+export interface CreateUserFormValues {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
 
 interface CreateUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  defaultValues: {
-    email: string;  // Required field
-    firstName: string;  // Required field
-    lastName: string;   // Required field
-  };
+  onCreateUser: (password: string) => Promise<boolean>;
+  pendingEmail?: string;
   isLoading: boolean;
-  onSubmit: (values: CreateUserFormValues) => Promise<void>;
+  onCancel: () => void;
 }
 
 export function CreateUserDialog({ 
   open, 
   onOpenChange, 
-  defaultValues, 
-  isLoading, 
-  onSubmit 
+  onCreateUser,
+  pendingEmail,
+  isLoading,
+  onCancel
 }: CreateUserDialogProps) {
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   
-  // Form with zod validation
-  const form = useForm<CreateUserFormValues>({
-    resolver: zodResolver(createUserFormSchema),
-    defaultValues: {
-      email: defaultValues.email,
-      firstName: defaultValues.firstName,
-      lastName: defaultValues.lastName,
-      password: "",
-    },
-  });
-
-  // Handle form submission
-  const handleSubmit = async (values: CreateUserFormValues) => {
-    console.log("CreateUserDialog - Form submitted with values:", values);
-    try {
-      await onSubmit(values);
-    } catch (error) {
-      console.error("Error in CreateUserDialog submit handler:", error);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate password
+    if (!password) {
+      setPasswordError("Password is required");
+      return;
     }
+    
+    if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
+    
+    setPasswordError("");
+    await onCreateUser(password);
   };
 
-  // Update form when defaultValues change
-  React.useEffect(() => {
-    if (open) {
-      form.reset({
-        email: defaultValues.email,
-        firstName: defaultValues.firstName,
-        lastName: defaultValues.lastName,
-        password: ""
-      });
-    }
-  }, [open, defaultValues, form]);
-
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Create New User</AlertDialogTitle>
-              <AlertDialogDescription>
-                No user with email {form.getValues().email} was found. Create this user and make them an admin?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            
-            <div className="py-4 space-y-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="First Name" 
-                        {...field}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle>Create New User</DialogTitle>
+        </DialogHeader>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                value={pendingEmail || ""}
+                disabled
+                className="bg-muted"
               />
-              
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Last Name" 
-                        {...field}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Password" 
-                        type="password"
-                        {...field}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <p className="mt-2 text-sm text-muted-foreground">
+                This user doesn't exist yet. Create a password to set up this account.
+              </p>
             </div>
             
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={isLoading} type="button">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                type="submit"
+            <div>
+              <Label htmlFor="password">
+                Password <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError("");
+                }}
+                className={passwordError ? "border-red-500" : ""}
+                placeholder="Enter password"
                 disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Creating...
-                  </>
-                ) : (
-                  'Create User & Add as Admin'
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </form>
-        </Form>
-      </AlertDialogContent>
-    </AlertDialog>
+              />
+              {passwordError && (
+                <p className="text-xs text-red-500 mt-1">{passwordError}</p>
+              )}
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Creating...
+                </>
+              ) : (
+                'Create User'
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

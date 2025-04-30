@@ -1,16 +1,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { checkAdminRole, addAdminRole } from "@/utils/adminRoleUtils";
+import { checkAdminRole } from "@/utils/adminUtils";
+import { addAdminRole } from "@/utils/adminRoleUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { SupabaseAuthUser } from "@/types/supabaseTypes";
-
-export interface CurrentAdminUser {
-  id: string | null;
-  email: string | null;
-  isAdmin: boolean;
-  displayedInList: boolean;
-}
+import { CurrentAdminUser } from "@/types/adminTypes";
 
 export function useCurrentAdmin() {
   const [currentUser, setCurrentUser] = useState<CurrentAdminUser>({
@@ -23,7 +18,7 @@ export function useCurrentAdmin() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Load current user info only once on mount
+  // Load current user info on mount
   useEffect(() => {
     let isMounted = true;
     

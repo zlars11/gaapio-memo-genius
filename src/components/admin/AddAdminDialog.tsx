@@ -1,148 +1,102 @@
 
-import React, { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CreateUserDialog, CreateUserFormValues } from "./dialogs/CreateUserDialog";
-import { AddAdminForm, AddAdminFormValues } from "./forms/AddAdminForm";
+import { AddAdminForm } from "./forms/AddAdminForm";
+import { CreateUserDialog } from "./dialogs/CreateUserDialog";
 import { useAdminDialogActions } from "./utils/adminDialogUtils";
+import { AdminFormValues } from "@/types/adminTypes";
 
 interface AddAdminDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onSuccess: () => Promise<any>;
 }
 
 export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialogProps) {
-  const [adding, setAdding] = useState(false);
-  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
-  const [formValues, setFormValues] = useState<AddAdminFormValues>({
-    email: "",
-    firstName: "",
-    lastName: "",
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [showCreateUser, setShowCreateUser] = useState(false);
+  const [pendingValues, setPendingValues] = useState<AdminFormValues | null>(null);
   
   const { handleAddAdminRole, handleCreateUserWithAdminRole } = useAdminDialogActions();
-  const { toast } = useToast();
 
-  // Reset dialog state when it opens/closes
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      setFormValues({
-        email: "",
-        firstName: "",
-        lastName: "",
-      });
-    } else {
-      // Set default values for Jace
-      setFormValues({
-        email: "jacewchambers@gmail.com",
-        firstName: "Jace",
-        lastName: "Chambers",
-      });
-    }
-    onOpenChange(open);
-  };
-
-  // Handle form submission for adding an admin
-  const handleAddAdmin = async (values: AddAdminFormValues) => {
+  // Handle adding an admin
+  const handleSubmit = async (values: AdminFormValues) => {
     try {
-      setAdding(true);
-      setFormValues(values); // Store values in case we need to create a user
+      setIsLoading(true);
       
-      console.log("Handling add admin with values:", values);
       const result = await handleAddAdminRole(values);
-      console.log("Add admin role result:", result);
       
       if (result.success) {
-        toast({
-          title: "Admin added",
-          description: `${values.email} has been granted admin privileges.`,
-        });
-        handleOpenChange(false);
-        onSuccess(); // Refresh the list
-        return;
+        // Successfully added admin role
+        await onSuccess();
+        onOpenChange(false);
+      } else if (result.needsUserCreation) {
+        // User doesn't exist, need to create first
+        setPendingValues(values);
+        setShowCreateUser(true);
       }
-      
-      if (result.needsUserCreation) {
-        console.log("User needs to be created first");
-        setCreateUserDialogOpen(true);
-      }
-      
-    } catch (error: any) {
-      console.error("Error in handleAddAdmin:", error);
-      toast({
-        title: "Failed to add admin",
-        description: error.message || "An error occurred while trying to add the admin user.",
-        variant: "destructive",
-      });
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
     } finally {
-      setAdding(false);
+      setIsLoading(false);
     }
   };
-
-  // Handle creating a new user and making them an admin
-  const handleCreateUserAccount = async (values: CreateUserFormValues) => {
-    console.log("Adding user with admin role:", values);
+  
+  // Handle user creation
+  const handleCreateUser = async (password: string) => {
+    if (!pendingValues) return false;
+    
     try {
-      setAdding(true);
+      setIsLoading(true);
       
-      const success = await handleCreateUserWithAdminRole(values);
-      console.log("User creation result:", success);
+      const success = await handleCreateUserWithAdminRole({
+        email: pendingValues.email,
+        password,
+        firstName: pendingValues.firstName || "Admin",
+        lastName: pendingValues.lastName || "User"
+      });
       
       if (success) {
-        setCreateUserDialogOpen(false);
-        handleOpenChange(false);
-        onSuccess(); // Refresh the list
-        toast({
-          title: "Success",
-          description: `Created user ${values.email} and added admin privileges.`,
-        });
-      } else {
-        throw new Error("Failed to create user with admin role.");
+        await onSuccess();
+        setShowCreateUser(false);
+        onOpenChange(false);
+        return true;
       }
-    } catch (error: any) {
-      console.error("Error in createUserAccount:", error);
-      toast({
-        title: "Failed to create admin user",
-        description: error.message || "An error occurred while creating the admin user.",
-        variant: "destructive",
-      });
+      
+      return false;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return false;
     } finally {
-      setAdding(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent>
+      <Dialog open={open && !showCreateUser} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Add New Admin</DialogTitle>
+            <DialogTitle>Add Admin User</DialogTitle>
           </DialogHeader>
-          
-          <AddAdminForm 
-            onSubmit={handleAddAdmin}
-            onCancel={() => handleOpenChange(false)}
-            isLoading={adding}
-            defaultValues={{
-              email: formValues.email,
-              firstName: formValues.firstName || "",
-              lastName: formValues.lastName || "",
-            }}
+          <AddAdminForm
+            onSubmit={handleSubmit}
+            onCancel={() => onOpenChange(false)}
+            isLoading={isLoading}
           />
         </DialogContent>
       </Dialog>
-
-      <CreateUserDialog 
-        open={createUserDialogOpen} 
-        onOpenChange={setCreateUserDialogOpen}
-        defaultValues={{
-          email: formValues.email || "",
-          firstName: formValues.firstName || "",
-          lastName: formValues.lastName || ""
+      
+      <CreateUserDialog
+        open={showCreateUser}
+        onOpenChange={setShowCreateUser}
+        onCreateUser={handleCreateUser}
+        pendingEmail={pendingValues?.email}
+        isLoading={isLoading}
+        onCancel={() => {
+          setShowCreateUser(false);
+          onOpenChange(false);
         }}
-        isLoading={adding}
-        onSubmit={handleCreateUserAccount}
       />
     </>
   );

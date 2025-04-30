@@ -5,8 +5,6 @@ import { useFetchAdmins } from "@/hooks/useFetchAdmins";
 import { useAdminActions } from "@/hooks/useAdminActions";
 import { AdminUser } from "@/types/adminTypes";
 
-export type { AdminUser };
-
 export function useAdminUsers() {
   const {
     currentUser,
@@ -24,7 +22,7 @@ export function useAdminUsers() {
     setAdmins
   } = useFetchAdmins(currentUser);
 
-  // Use a stable reference for the fetchAdminsAndUpdateStatus function
+  // Fetch admins and update display status
   const fetchAdminsAndUpdateStatus = useCallback(async () => {
     console.log("Fetching admins and updating status");
     const result = await fetchAdmins();
@@ -62,11 +60,11 @@ export function useAdminUsers() {
     return success;
   };
 
-  // Load admin users on mount only once
+  // Load admin users on mount
   useEffect(() => {
     // Delay the initial fetch slightly to ensure auth state is ready
     const timer = setTimeout(() => {
-      console.log("useAdminUsers: Initial fetch of admin users (with delay)");
+      console.log("useAdminUsers: Initial fetch of admin users");
       fetchAdminsAndUpdateStatus();
     }, 300); // Short delay to allow auth to initialize
     

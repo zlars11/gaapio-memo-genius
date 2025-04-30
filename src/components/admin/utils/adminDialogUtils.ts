@@ -1,92 +1,22 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { addAdminRole } from "@/utils/adminRoleUtils";
+import { findUserByEmail } from "@/utils/adminUtils";
 import { useToast } from "@/components/ui/use-toast";
-import { AddAdminFormValues } from "../forms/AddAdminForm";
-import { CreateUserFormValues } from "../dialogs/CreateUserDialog";
-import { SupabaseAuthUser } from "@/types/supabaseTypes";
+import { AdminFormValues } from "@/types/adminTypes";
 
 /**
- * Finds a user by email address using various methods
- * @param email Email address to search for
- * @returns User ID if found, null otherwise
+ * Interface for create user form values
  */
-export async function findUserByEmail(email: string): Promise<string | null> {
-  try {
-    console.log("Searching for user with email:", email);
-    
-    // Check in users table first (easier for most implementations)
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .ilike('email', email)
-      .maybeSingle();
-    
-    if (!userError && userData) {
-      console.log("Found user in users table:", userData.id);
-      return userData.id;
-    }
-    
-    // If not found in users table, check auth directly
-    // getUserByEmail doesn't exist on auth.admin, so we need to use different approaches
-    try {
-      // Try listing users and filtering by email
-      const { data, error } = await supabase.auth.admin.listUsers({
-        // Use query parameters if available, otherwise will fetch all users
-        page: 1,
-        perPage: 100 // Increase this to have a higher chance of finding the user
-      });
-      
-      if (!error && data?.users) {
-        // Find user with matching email with proper typing
-        const user = data.users.find((u: SupabaseAuthUser) => 
-          u.email?.toLowerCase() === email.toLowerCase()
-        );
-        
-        if (user) {
-          console.log("Found user via auth list:", user.id);
-          return user.id;
-        }
-      }
-    } catch (authApiError) {
-      console.log("Unable to use admin list API, falling back to other methods:", authApiError);
-    }
-    
-    // Try alternative methods if admin API fails
-    try {
-      // Try to sign in with dummy password to check if user exists
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: 'temp_password_for_check_only',
-      });
-      
-      if (error && error.message.includes('Invalid login credentials')) {
-        // User exists but password is wrong (which is what we want to check)
-        console.log("User exists based on failed login attempt");
-        
-        // Get the current session to find the user
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          console.log("Got user ID from session:", session.user.id);
-          return session.user.id;
-        }
-      }
-    } catch (loginCheckError) {
-      console.log("Login check method failed:", loginCheckError);
-    }
-    
-    // User not found
-    console.log("User not found with email:", email);
-    return null;
-  } catch (error) {
-    console.error("Error during user existence check:", error);
-    return null;
-  }
+export interface CreateUserFormValues {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
 }
 
 /**
- * Checks if a user already has the admin role
- * @param userId User ID to check
- * @returns True if user already has admin role, false otherwise
+ * Check if a user already has the admin role
  */
 export async function checkExistingAdminRole(userId: string): Promise<boolean> {
   try {
@@ -103,7 +33,7 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
       
       // Fall back to direct table check if RPC fails
       const { data: existingRole, error: roleCheckError } = await supabase
-        .from('user_roles')
+        .from('admin_users')
         .select('id')
         .eq('user_id', userId)
         .eq('role', 'admin')
@@ -129,8 +59,6 @@ export async function checkExistingAdminRole(userId: string): Promise<boolean> {
 
 /**
  * Creates a new user with admin role
- * @param values Form values with user details
- * @returns Success status
  */
 export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<boolean> {
   try {
@@ -142,8 +70,7 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
     if (existingUserId) {
       console.log("User already exists, adding admin role:", existingUserId);
       // User exists, just add admin role
-      const success = await addAdminRole(existingUserId, values.firstName, values.lastName);
-      return success;
+      return await addAdminRole(existingUserId, values.firstName, values.lastName);
     }
     
     // Try using signUp API first which can be called with anon key
@@ -214,7 +141,6 @@ export function useAdminDialogActions() {
   const { toast } = useToast();
   
   const handleCreateUserWithAdminRole = async (values: CreateUserFormValues) => {
-    console.log("handleCreateUserWithAdminRole called with:", values);
     const success = await createUserWithAdminRole(values);
     
     if (success) {
@@ -233,7 +159,7 @@ export function useAdminDialogActions() {
     }
   };
   
-  const handleAddAdminRole = async (values: AddAdminFormValues) => {
+  const handleAddAdminRole = async (values: AdminFormValues) => {
     try {
       console.log("Finding user by email:", values.email);
       // First check if user exists
