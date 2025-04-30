@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { SupabaseAuthUser, SupabaseAuthResponse } from "@/types/supabaseTypes";
+import { User } from "@supabase/supabase-js";
+import { SupabaseAuthUser } from "@/types/supabaseTypes";
 
 /**
  * Checks if a user has admin role
@@ -192,7 +193,7 @@ async function getUserEmail(userId: string): Promise<string | null> {
     // First try the users table
     const { data: userData, error: userError } = await supabase
       .from('users')
-      .select('id, email')  // Explicitly select email field
+      .select('id, email')
       .eq('id', userId)
       .maybeSingle();
     
@@ -202,20 +203,21 @@ async function getUserEmail(userId: string): Promise<string | null> {
     
     // Try to get from auth
     try {
-      // Properly type the Supabase auth response
-      const { data, error } = await supabase.auth.admin.getUserById(userId) as SupabaseAuthResponse;
+      // Use the built-in User type from Supabase
+      const { data, error } = await supabase.auth.admin.getUserById(userId);
       
-      if (!error && data && data.user) {
-        // Now properly typed, so TypeScript knows email exists
-        const userEmail = data.user.email;
+      if (!error && data?.user) {
+        // Properly typed as User from Supabase
+        const user: User = data.user;
         
-        // Add defensive check for email
-        if (!userEmail) {
+        // Add null check when accessing email
+        const email = user.email;
+        if (!email) {
           console.warn("User found but email is missing:", userId);
           return null;
         }
         
-        return userEmail;
+        return email;
       }
     } catch (authError) {
       console.error("Error getting user email from auth:", authError);
