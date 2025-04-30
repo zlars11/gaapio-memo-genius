@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { SupabaseAuthUser } from "@/types/supabaseTypes";
@@ -164,7 +163,7 @@ async function ensureUserInUsersTable(userId: string, firstName: string, lastNam
       const { error: userUpdateError } = await supabase
         .from("users")
         .update({
-          email: email || existingUser.email || 'unknown@email.com',
+          email: email || 'unknown@email.com',
           first_name: firstName,
           last_name: lastName,
           status: 'active',
