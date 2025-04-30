@@ -118,8 +118,8 @@ export function useCurrentAdmin() {
         }
       }
       
-      // Add admin role with the user's name
-      const success = await addAdminRole(currentUser.id, firstName, lastName);
+      // Add admin role with the user's name and email
+      const success = await addAdminRole(currentUser.id, firstName, lastName, currentUser.email);
       
       if (success) {
         toast({
