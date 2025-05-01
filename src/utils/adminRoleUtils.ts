@@ -20,12 +20,11 @@ export async function addAdminRole(
   try {
     console.log("Adding admin role:", { userId, firstName, lastName, email });
     
-    // Check if role already exists
+    // Check if role already exists using user_id
     const { data: existingRole, error: checkError } = await supabase
       .from('admin_users')
       .select('id')
       .eq('user_id', userId)
-      .eq('role', 'admin')
       .maybeSingle();
     
     if (checkError) {
@@ -94,8 +93,7 @@ export async function removeAdminRole(adminId: string): Promise<boolean> {
     const { error } = await supabase
       .from('admin_users')
       .delete()
-      .eq('user_id', adminId)
-      .eq('role', 'admin');
+      .eq('user_id', adminId);
     
     if (error) {
       console.error("Error removing admin role:", error);
@@ -129,7 +127,6 @@ export async function updateAdminName(
       .from('admin_users')
       .select('id')
       .eq('user_id', userId)
-      .eq('role', 'admin')
       .maybeSingle();
     
     if (checkError) {

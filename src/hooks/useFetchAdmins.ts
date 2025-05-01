@@ -40,7 +40,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         return { success: true, isCurrentUserDisplayed: false };
       }
       
-      // Check if current user is in admin list
+      // Check if current user is in admin list by user_id
       let isCurrentUserInList = false;
       if (currentUser.id) {
         // Debug output to help diagnose the issue
@@ -49,7 +49,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         
         // Ensure strict string comparison between UUIDs
         isCurrentUserInList = adminRoles.some(role => 
-          String(role.user_id).toLowerCase() === String(currentUser.id).toLowerCase()
+          role.user_id && String(role.user_id).toLowerCase() === String(currentUser.id).toLowerCase()
         );
         console.log("Is current user in admin list:", isCurrentUserInList);
       }

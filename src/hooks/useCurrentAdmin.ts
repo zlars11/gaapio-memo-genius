@@ -52,13 +52,35 @@ export function useCurrentAdmin() {
       const isAdmin = await checkAdminRole(userId);
       console.log("User is admin:", isAdmin);
 
-      setCurrentUser(prev => ({
-        ...prev,
-        id: userId,
-        email,
-        isAdmin
-      }));
-
+      // Check if user is in the admin_users table directly
+      if (isAdmin && userId) {
+        const { data: adminUserRecord, error: adminUserError } = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        if (adminUserError) {
+          console.error("Error checking admin_users table:", adminUserError);
+        }
+        
+        const displayedInList = !!adminUserRecord;
+        console.log("User is displayed in admin list:", displayedInList);
+        
+        setCurrentUser({
+          id: userId,
+          email,
+          isAdmin,
+          displayedInList
+        });
+      } else {
+        setCurrentUser({
+          id: userId,
+          email,
+          isAdmin,
+          displayedInList: false
+        });
+      }
     } catch (err: any) {
       console.error("Error in fetchCurrentUserInfo:", err);
       setError("Failed to get user information: " + err.message);
