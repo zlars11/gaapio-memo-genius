@@ -24,10 +24,12 @@ export function useAdminUsers() {
   } = useFetchAdmins(currentUser);
 
   const { toast } = useToast();
+  const [isFetching, setIsFetching] = useState(false);
 
   // Fetch admins and update display status
   const fetchAdminsAndUpdateStatus = useCallback(async () => {
     try {
+      setIsFetching(true);
       console.log("Fetching admins and updating status");
       console.log("Current user before fetch:", JSON.stringify(currentUser));
       const result = await fetchAdmins();
@@ -49,6 +51,8 @@ export function useAdminUsers() {
         variant: "destructive",
       });
       return { success: false, isCurrentUserDisplayed: false };
+    } finally {
+      setIsFetching(false);
     }
   }, [fetchAdmins, setCurrentUser, toast, currentUser]);
 
@@ -101,19 +105,22 @@ export function useAdminUsers() {
     }
   };
 
-  // Load admin users on mount
+  // Load admin users on mount with better error handling
   useEffect(() => {
     // Delay the initial fetch slightly to ensure auth state is ready
     const timer = setTimeout(() => {
       console.log("useAdminUsers: Initial fetch of admin users");
       console.log("Current user ID at initial fetch:", currentUser.id);
-      fetchAdminsAndUpdateStatus();
+      fetchAdminsAndUpdateStatus().catch(err => {
+        console.error("Failed to fetch admin users on init:", err);
+      });
     }, 300); // Short delay to allow auth to initialize
     
     return () => clearTimeout(timer);
   }, [fetchAdminsAndUpdateStatus, currentUser.id]);
 
-  const loading = currentUserLoading || adminsLoading;
+  // Combine loading states for better UI control
+  const loading = currentUserLoading || adminsLoading || isFetching;
   const fetchError = currentUserError || adminsError;
 
   return {

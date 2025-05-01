@@ -86,6 +86,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       setAdmins([]);
       return { success: false, isCurrentUserDisplayed: false };
     } finally {
+      // Make sure loading state is reset
       setLoading(false);
     }
   }, [currentUser.id]); 

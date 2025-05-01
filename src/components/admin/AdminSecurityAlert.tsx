@@ -58,6 +58,7 @@ export function AdminSecurityAlert({ currentUserEmail, onFixStatus }: AdminSecur
           variant="outline"
           className="mt-2"
           size="sm"
+          aria-label="Fix admin status"
         >
           {isFixing ? "Fixing..." : "Fix Now"}
         </Button>

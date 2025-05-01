@@ -22,43 +22,45 @@ export function AdminUsersTable({
   onUpdateName 
 }: AdminUsersTableProps) {
   return (
-    <Table>
-      <TableCaption>All users with admin access</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Added On</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {loading ? (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableCaption>All users with admin access</TableCaption>
+        <TableHeader>
           <TableRow>
-            <TableCell colSpan={4} className="text-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-              <span className="mt-2 block text-muted-foreground">Loading admin users...</span>
-            </TableCell>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Added On</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
-        ) : admins.length > 0 ? (
-          admins.map((admin) => (
-            <AdminUserRow 
-              key={admin.id}
-              admin={admin}
-              isRemoving={removing === admin.user_id}
-              onRemove={() => onRemoveAdmin(admin.user_id)}
-              isCurrentUser={admin.user_id === currentUserId}
-              onUpdateName={admin.user_id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
-            />
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={4} className="text-center py-8">
-              <span className="text-muted-foreground">No admin users found</span>
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                <span className="mt-2 block text-muted-foreground">Loading admin users...</span>
+              </TableCell>
+            </TableRow>
+          ) : admins.length > 0 ? (
+            admins.map((admin) => (
+              <AdminUserRow 
+                key={admin.id}
+                admin={admin}
+                isRemoving={removing === admin.user_id}
+                onRemove={() => onRemoveAdmin(admin.user_id)}
+                isCurrentUser={admin.user_id === currentUserId}
+                onUpdateName={admin.user_id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-8">
+                <span className="text-muted-foreground">No admin users found</span>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

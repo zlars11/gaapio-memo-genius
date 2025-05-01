@@ -31,6 +31,10 @@ export default function AdminUsers() {
     fetchAdmins
   } = useAdminUsers();
 
+  const handleOpenAddDialog = () => {
+    setAddDialogOpen(true);
+  };
+
   return (
     <AdminPageGuard>
       <div className="max-w-6xl mx-auto py-8">
@@ -61,12 +65,15 @@ export default function AdminUsers() {
                 onClick={fetchAdmins} 
                 title="Refresh admin list"
                 disabled={loading}
+                aria-label="Refresh admin list"
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <span className="sr-only">Refresh</span>
               </Button>
               <Button 
-                onClick={() => setAddDialogOpen(true)}
+                onClick={handleOpenAddDialog}
                 disabled={loading}
+                aria-label="Add new admin user"
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add Admin
