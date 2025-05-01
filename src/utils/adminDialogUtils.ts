@@ -64,6 +64,13 @@ export async function findUserByAuthEmail(email: string): Promise<{id: string | 
   try {
     console.log("Looking for auth user with email:", email);
     
+    // Define an interface for the auth user type to avoid 'never' issues
+    interface AuthUser {
+      id: string;
+      email?: string;
+      user_metadata?: Record<string, any>;
+    }
+    
     // Try using the admin API to find the user
     try {
       const { data, error } = await supabase.auth.admin.listUsers({
@@ -77,9 +84,10 @@ export async function findUserByAuthEmail(email: string): Promise<{id: string | 
       }
       
       if (data && data.users) {
-        // Type the users array explicitly to fix the 'never' type issue
-        const users = data.users;
-        // Use a type predicate to ensure TypeScript knows what's returned
+        // Explicitly type the users array to fix the 'never' type issue
+        const users = data.users as AuthUser[];
+        
+        // Now TypeScript knows the user returned from find() will have the AuthUser type
         const user = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
         
         if (user) {
