@@ -18,7 +18,13 @@ export function useCurrentAdmin() {
   // Get current user's info and admin status
   const fetchCurrentUserInfo = useCallback(async () => {
     try {
-      setLoading(true);
+      // Only set loading to true if we're not already loading
+      // This helps prevent excessive re-renders
+      setLoading(prevLoading => {
+        if (!prevLoading) return true;
+        return prevLoading;
+      });
+      
       setError(null);
       console.log("Fetching current user info");
 
@@ -28,6 +34,7 @@ export function useCurrentAdmin() {
       if (sessionError) {
         console.error("Error getting session:", sessionError);
         setError("Failed to get user session: " + sessionError.message);
+        setLoading(false); // Always set loading to false on error
         return;
       }
 
@@ -41,6 +48,7 @@ export function useCurrentAdmin() {
           isAdmin: false,
           displayedInList: false
         });
+        setLoading(false); // Always set loading to false when done
         return;
       }
       
@@ -62,6 +70,7 @@ export function useCurrentAdmin() {
         
         if (adminUserError) {
           console.error("Error checking admin_users table:", adminUserError);
+          // Don't set loading to false here as we still want to update currentUser
         }
         
         const displayedInList = !!adminUserRecord;
@@ -81,10 +90,13 @@ export function useCurrentAdmin() {
           displayedInList: false
         });
       }
+      
+      // Always set loading to false when done
+      setLoading(false);
     } catch (err: any) {
       console.error("Error in fetchCurrentUserInfo:", err);
       setError("Failed to get user information: " + err.message);
-    } finally {
+      // Always set loading to false on error
       setLoading(false);
     }
   }, []);
@@ -151,7 +163,7 @@ export function useCurrentAdmin() {
     }
   }, [currentUser]);
 
-  // Get current user on mount
+  // Get current user on mount - only once
   useEffect(() => {
     fetchCurrentUserInfo();
   }, [fetchCurrentUserInfo]);
@@ -162,5 +174,6 @@ export function useCurrentAdmin() {
     loading,
     error,
     fixAdminStatus,
+    fetchCurrentUserInfo,
   };
 }

@@ -25,9 +25,16 @@ export function useAdminUsers() {
 
   const { toast } = useToast();
   const [isFetching, setIsFetching] = useState(false);
+  const [initialFetchDone, setInitialFetchDone] = useState(false);
 
   // Fetch admins and update display status
   const fetchAdminsAndUpdateStatus = useCallback(async () => {
+    // Prevent duplicate fetch calls
+    if (isFetching) {
+      console.log("Skipping fetch as one is already in progress");
+      return null;
+    }
+    
     try {
       setIsFetching(true);
       console.log("Fetching admins and updating status");
@@ -53,6 +60,7 @@ export function useAdminUsers() {
       return { success: false, isCurrentUserDisplayed: false };
     } finally {
       setIsFetching(false);
+      setInitialFetchDone(true);
     }
   }, [fetchAdmins, setCurrentUser, toast, currentUser]);
 
@@ -105,20 +113,23 @@ export function useAdminUsers() {
     }
   };
 
-  // Load admin users on mount with better error handling
+  // Load admin users on mount only once, avoid refetching on every state change
   useEffect(() => {
     // Only fetch if we have a valid user ID and haven't already fetched
-    if (currentUser.id && !isFetching) {
+    if (currentUser.id && !isFetching && !initialFetchDone) {
       console.log("useAdminUsers: Initial fetch of admin users");
       console.log("Current user ID at initial fetch:", currentUser.id);
       fetchAdminsAndUpdateStatus().catch(err => {
         console.error("Failed to fetch admin users on init:", err);
+        // Ensure we still mark initialFetchDone even on error
+        setInitialFetchDone(true);
       });
     }
-  }, [currentUser.id, fetchAdminsAndUpdateStatus, isFetching]);
+  }, [currentUser.id, fetchAdminsAndUpdateStatus, isFetching, initialFetchDone]);
 
   // Combine loading states for better UI control
   const loading = currentUserLoading || adminsLoading || isFetching;
+  // Combine errors for UI display
   const fetchError = currentUserError || adminsError;
 
   return {

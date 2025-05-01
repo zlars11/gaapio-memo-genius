@@ -25,10 +25,13 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
         .from('admin_users')
         .select('id, user_id, role, created_at, first_name, last_name, email');
       
+      // Properly handle errors and return early
       if (roleError) {
         console.error("Error fetching admin roles:", roleError);
         setError("Failed to fetch admin roles: " + roleError.message);
         setAdmins([]);
+        // Important: Set loading to false even on error
+        setLoading(false);
         return { success: false, isCurrentUserDisplayed: false };
       }
       
@@ -37,6 +40,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       if (!adminRoles || adminRoles.length === 0) {
         console.log("No admin users found");
         setAdmins([]);
+        setLoading(false); // Make sure to set loading to false
         return { success: true, isCurrentUserDisplayed: false };
       }
       
@@ -76,6 +80,9 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       
       setAdmins(adminUsers);
       
+      // IMPORTANT: Set loading to false before returning
+      setLoading(false);
+      
       return {
         success: true,
         isCurrentUserDisplayed: isCurrentUserInList
@@ -84,10 +91,9 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       console.error("Unexpected error in fetchAdmins:", error);
       setError("An unexpected error occurred while fetching admin users: " + error.message);
       setAdmins([]);
-      return { success: false, isCurrentUserDisplayed: false };
-    } finally {
-      // Make sure loading state is reset
+      // IMPORTANT: Set loading to false on error
       setLoading(false);
+      return { success: false, isCurrentUserDisplayed: false };
     }
   }, [currentUser.id]); 
 

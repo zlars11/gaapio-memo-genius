@@ -21,6 +21,9 @@ export function AdminUsersTable({
   onRemoveAdmin,
   onUpdateName 
 }: AdminUsersTableProps) {
+  // Guard against null admins
+  const safeAdmins = admins || [];
+  
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -41,13 +44,13 @@ export function AdminUsersTable({
                 <span className="mt-2 block text-muted-foreground">Loading admin users...</span>
               </TableCell>
             </TableRow>
-          ) : admins.length > 0 ? (
-            admins.map((admin) => (
+          ) : safeAdmins.length > 0 ? (
+            safeAdmins.map((admin) => (
               <AdminUserRow 
                 key={admin.id}
                 admin={admin}
                 isRemoving={removing === admin.user_id}
-                onRemove={() => onRemoveAdmin(admin.user_id)}
+                onRemove={() => admin.user_id && onRemoveAdmin(admin.user_id)}
                 isCurrentUser={admin.user_id === currentUserId}
                 onUpdateName={admin.user_id === currentUserId && (!admin.first_name && !admin.last_name) ? onUpdateName : undefined}
               />

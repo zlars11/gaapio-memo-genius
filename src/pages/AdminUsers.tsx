@@ -10,9 +10,12 @@ import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { useAdminUsers } from "@/hooks/useAdminUsers";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AdminUsers() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const { toast } = useToast();
+  
   const { 
     loading, 
     admins, 
@@ -33,6 +36,22 @@ export default function AdminUsers() {
 
   const handleOpenAddDialog = () => {
     setAddDialogOpen(true);
+  };
+
+  const handleRefreshClick = () => {
+    toast({
+      title: "Refreshing admin list",
+      description: "Fetching the latest admin users data...",
+    });
+    
+    fetchAdmins().catch(error => {
+      console.error("Error refreshing admin list:", error);
+      toast({
+        title: "Refresh failed",
+        description: "Could not refresh admin users list. Please try again.",
+        variant: "destructive",
+      });
+    });
   };
 
   return (
@@ -62,7 +81,7 @@ export default function AdminUsers() {
             <div className="flex gap-2">
               <Button 
                 variant="outline" 
-                onClick={fetchAdmins} 
+                onClick={handleRefreshClick} 
                 title="Refresh admin list"
                 disabled={loading}
                 aria-label="Refresh admin list"
