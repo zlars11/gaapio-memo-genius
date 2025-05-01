@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, UserPlus } from "lucide-react";
+import { RefreshCw, UserPlus, ArrowLeft } from "lucide-react";
 import { AdminUsersTable } from "@/components/admin/AdminUsersTable";
 import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
 import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
@@ -11,6 +11,7 @@ import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { useAdminUsers } from "@/hooks/useAdminUsers";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 
 export default function AdminUsers() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -57,7 +58,17 @@ export default function AdminUsers() {
   return (
     <AdminPageGuard>
       <div className="max-w-6xl mx-auto py-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-8">Admin User Management</h1>
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex items-center">
+            <Button variant="ghost" size="sm" asChild className="mr-4">
+              <Link to="/admin">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Admin Portal
+              </Link>
+            </Button>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold">Admin User Management</h1>
+        </div>
         
         {currentUserIsAdmin && !currentUserDisplayed && (
           <AdminSecurityAlert 

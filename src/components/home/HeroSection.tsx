@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
 import { useEffect, useState, memo } from "react";
@@ -78,7 +79,7 @@ export const HeroSection = memo(function HeroSection() {
             {isClient && showSignUp ? (
               <Link to="/signup">Sign Up Now</Link>
             ) : (
-              <Link to="/contact">See a demo</Link>
+              <Link to="#waitlist">Join the Waitlist</Link>
             )}
           </Button>
           <Button size="lg" variant="outline" asChild>

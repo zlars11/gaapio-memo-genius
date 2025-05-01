@@ -38,7 +38,7 @@ export function WaitlistSection() {
               : "Be among the first to experience the future of accounting memo creation. Limited spots available for our beta program."}
           </p>
           <div className="w-full max-w-md">
-            {isClient ? (
+            {isClient && (
               showSignUp ? (
                 <div className="flex flex-col items-center">
                   <Button size="lg" className="w-full" asChild>
@@ -51,8 +51,6 @@ export function WaitlistSection() {
               ) : (
                 <WaitlistForm />
               )
-            ) : (
-              <div className="w-full h-[150px] bg-muted/30 animate-pulse rounded-md"></div>
             )}
           </div>
         </div>
