@@ -29,9 +29,11 @@ export function useAdminUsers() {
   const fetchAdminsAndUpdateStatus = useCallback(async () => {
     try {
       console.log("Fetching admins and updating status");
+      console.log("Current user before fetch:", JSON.stringify(currentUser));
       const result = await fetchAdmins();
       
       if (result && 'isCurrentUserDisplayed' in result) {
+        console.log("Fetch result:", result);
         setCurrentUser(prev => ({
           ...prev,
           displayedInList: result.isCurrentUserDisplayed
@@ -48,7 +50,7 @@ export function useAdminUsers() {
       });
       return { success: false, isCurrentUserDisplayed: false };
     }
-  }, [fetchAdmins, setCurrentUser, toast]);
+  }, [fetchAdmins, setCurrentUser, toast, currentUser]);
 
   const {
     removing,
@@ -68,6 +70,7 @@ export function useAdminUsers() {
   // Handle fixing current user's admin status
   const handleFixCurrentUserAdmin = async () => {
     try {
+      console.log("Fixing current user admin status for:", currentUser.id);
       const success = await fixAdminStatus();
       
       if (success) {
@@ -103,11 +106,12 @@ export function useAdminUsers() {
     // Delay the initial fetch slightly to ensure auth state is ready
     const timer = setTimeout(() => {
       console.log("useAdminUsers: Initial fetch of admin users");
+      console.log("Current user ID at initial fetch:", currentUser.id);
       fetchAdminsAndUpdateStatus();
     }, 300); // Short delay to allow auth to initialize
     
     return () => clearTimeout(timer);
-  }, [fetchAdminsAndUpdateStatus]);
+  }, [fetchAdminsAndUpdateStatus, currentUser.id]);
 
   const loading = currentUserLoading || adminsLoading;
   const fetchError = currentUserError || adminsError;

@@ -46,7 +46,7 @@ export function useCurrentAdmin() {
       
       const userId = session.user.id;
       const email = session.user.email;
-      console.log("Current user:", { userId, email });
+      console.log("Current user from session:", { userId, email });
       
       // Check if user is an admin
       const isAdmin = await checkAdminRole(userId);
