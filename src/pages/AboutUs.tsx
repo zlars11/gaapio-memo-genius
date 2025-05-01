@@ -45,7 +45,7 @@ export default function AboutUs() {
                   </div>
                   <h3 className="font-medium mb-2">Industry Expertise</h3>
                   <p className="text-sm text-muted-foreground">
-                    Deep knowledge of technical accounting requirements
+                    Deep knowledge of technical accounting requirements and writing technical accounting memos
                   </p>
                 </div>
                 
@@ -55,7 +55,7 @@ export default function AboutUs() {
                   </div>
                   <h3 className="font-medium mb-2">Software Experience</h3>
                   <p className="text-sm text-muted-foreground">
-                    Track record of building accounting software for NetSuite
+                    Track record of building accounting software
                   </p>
                 </div>
               </div>

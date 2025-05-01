@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddAdminForm } from "./forms/AddAdminForm";
 import { CreateUserDialog } from "./dialogs/CreateUserDialog";
-import { useAdminDialogActions } from "../utils/adminDialogUtils";
+import { useAdminDialogActions } from "@/utils/adminDialogUtils";
 import { AdminFormValues } from "@/types/adminTypes";
 import { useToast } from "@/components/ui/use-toast";
 
