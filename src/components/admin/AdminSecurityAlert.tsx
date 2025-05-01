@@ -12,14 +12,17 @@ interface AdminSecurityAlertProps {
 export function AdminSecurityAlert({ currentUserEmail, onFixStatus }: AdminSecurityAlertProps) {
   const [isFixing, setIsFixing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleFixStatus = async () => {
     try {
       setIsFixing(true);
       setErrorMessage(null);
-      const success = await onFixStatus();
+      const result = await onFixStatus();
       
-      if (!success) {
+      if (result) {
+        setSuccess(true);
+      } else {
         setErrorMessage("Failed to update admin status. Please try again.");
       }
     } catch (error: any) {
@@ -29,6 +32,11 @@ export function AdminSecurityAlert({ currentUserEmail, onFixStatus }: AdminSecur
       setIsFixing(false);
     }
   };
+
+  // If the fix was successful, don't show the alert anymore
+  if (success) {
+    return null;
+  }
 
   return (
     <Alert variant="destructive" className="mb-6">

@@ -77,7 +77,31 @@ export function useCurrentAdmin() {
 
       console.log("Fixing admin status for current user:", currentUser);
       
-      // Add admin role for current user
+      // First check if user already exists in admin_users table
+      const { data: existingAdmin, error: checkError } = await supabase
+        .from('admin_users')
+        .select('id, user_id')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+      
+      if (checkError) {
+        console.error("Error checking for existing admin record:", checkError);
+        return false;
+      }
+      
+      if (existingAdmin) {
+        console.log("User already exists in admin_users table:", existingAdmin);
+        
+        // Update currentUser state to show as displayed
+        setCurrentUser(prev => ({
+          ...prev,
+          displayedInList: true
+        }));
+        
+        return true;
+      }
+      
+      // User doesn't exist in admin_users, add them
       const { success, error } = await addAdminRole(
         currentUser.id, 
         "Admin", // Default name

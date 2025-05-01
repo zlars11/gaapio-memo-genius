@@ -58,7 +58,7 @@ export async function addAdminRole(
     }
     
     // Add admin role for user
-    const { error: insertError } = await supabase
+    const { data: insertData, error: insertError } = await supabase
       .from('admin_users')
       .insert({ 
         user_id: userId, 
@@ -66,7 +66,8 @@ export async function addAdminRole(
         first_name: firstName,
         last_name: lastName,
         email: email
-      });
+      })
+      .select();
     
     if (insertError) {
       console.error("Error adding admin role:", insertError);

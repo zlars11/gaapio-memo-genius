@@ -81,15 +81,15 @@ export function useAdminUsers() {
         
         // After fixing admin status, refresh the admin list
         await fetchAdminsAndUpdateStatus();
+        return true;
       } else {
         toast({
           title: "Failed to fix admin status",
           description: "An error occurred while trying to update your admin status.",
           variant: "destructive",
         });
+        return false;
       }
-      
-      return success;
     } catch (error: any) {
       console.error("Error fixing admin status:", error);
       toast({
