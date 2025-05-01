@@ -107,17 +107,15 @@ export function useAdminUsers() {
 
   // Load admin users on mount with better error handling
   useEffect(() => {
-    // Delay the initial fetch slightly to ensure auth state is ready
-    const timer = setTimeout(() => {
+    // Only fetch if we have a valid user ID and haven't already fetched
+    if (currentUser.id && !isFetching) {
       console.log("useAdminUsers: Initial fetch of admin users");
       console.log("Current user ID at initial fetch:", currentUser.id);
       fetchAdminsAndUpdateStatus().catch(err => {
         console.error("Failed to fetch admin users on init:", err);
       });
-    }, 300); // Short delay to allow auth to initialize
-    
-    return () => clearTimeout(timer);
-  }, [fetchAdminsAndUpdateStatus, currentUser.id]);
+    }
+  }, [currentUser.id, fetchAdminsAndUpdateStatus, isFetching]);
 
   // Combine loading states for better UI control
   const loading = currentUserLoading || adminsLoading || isFetching;

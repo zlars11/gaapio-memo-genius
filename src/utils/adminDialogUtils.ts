@@ -141,6 +141,20 @@ export async function addUserToAdminTable(
   lastName: string
 ): Promise<{success: boolean, error: string | null}> {
   try {
+    console.log("Adding user to admin_users table:", { userId, email, firstName, lastName });
+    
+    // First check if user already exists in table to avoid unique constraint error
+    const { data: existingAdmin } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('user_id', userId)
+      .maybeSingle();
+      
+    if (existingAdmin) {
+      console.log("User already exists in admin_users table, skipping insert");
+      return { success: true, error: null };
+    }
+    
     const { error } = await supabase
       .from('admin_users')
       .insert({
@@ -166,7 +180,7 @@ export async function addUserToAdminTable(
 /**
  * Find or create a user and add admin role
  */
-export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<boolean> {
+export async function createUserWithAdminRole(values: CreateUserFormValues): Promise<{success: boolean, error?: string}> {
   try {
     console.log("Creating new user with admin role:", values.email);
     
@@ -183,19 +197,23 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
       
       if (isAlreadyAdmin) {
         console.log("User is already an admin, no need to add again");
-        return true;
+        return { success: true };
       }
       
       // User exists but is not an admin, add them to admin_users
       console.log("User exists but is not an admin, adding to admin_users");
-      const { success } = await addUserToAdminTable(
+      const { success, error } = await addUserToAdminTable(
         existingUserId, 
         values.email, 
         values.firstName, 
         values.lastName
       );
       
-      return success;
+      if (!success) {
+        return { success: false, error };
+      }
+      
+      return { success: true };
     }
     
     // User doesn't exist, create them
@@ -214,29 +232,33 @@ export async function createUserWithAdminRole(values: CreateUserFormValues): Pro
     
     if (signUpError) {
       console.error("Error creating user with admin API:", signUpError);
-      return false;
+      return { success: false, error: signUpError.message };
     }
     
     if (!signUpData?.user) {
       console.error("Failed to create user: No user returned");
-      return false;
+      return { success: false, error: "Failed to create user: No user returned" };
     }
     
     userId = signUpData.user.id;
     console.log("User created via admin API:", userId);
     
     // Add user to admin_users table
-    const { success } = await addUserToAdminTable(
+    const { success, error } = await addUserToAdminTable(
       userId, 
       values.email, 
       values.firstName, 
       values.lastName
     );
     
-    return success;
-  } catch (error) {
+    if (!success) {
+      return { success: false, error };
+    }
+    
+    return { success: true };
+  } catch (error: any) {
     console.error("Error in createUserWithAdminRole:", error);
-    return false;
+    return { success: false, error: error.message };
   }
 }
 
@@ -247,7 +269,7 @@ export function useAdminDialogActions() {
   const { toast } = useToast();
   
   const handleCreateUserWithAdminRole = async (values: CreateUserFormValues) => {
-    const success = await createUserWithAdminRole(values);
+    const { success, error } = await createUserWithAdminRole(values);
     
     if (success) {
       toast({
@@ -258,7 +280,7 @@ export function useAdminDialogActions() {
     } else {
       toast({
         title: "Failed to create admin user",
-        description: "The user account may have been created but we couldn't assign admin privileges.",
+        description: error || "The user account may have been created but we couldn't assign admin privileges.",
         variant: "destructive",
       });
       return false;

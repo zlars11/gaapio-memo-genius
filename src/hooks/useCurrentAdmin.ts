@@ -86,7 +86,7 @@ export function useCurrentAdmin() {
       
       if (checkError) {
         console.error("Error checking for existing admin record:", checkError);
-        return false;
+        throw new Error(`Failed to check admin status: ${checkError.message}`);
       }
       
       if (existingAdmin) {
@@ -111,7 +111,7 @@ export function useCurrentAdmin() {
       
       if (!success) {
         console.error("Failed to add admin role:", error);
-        return false;
+        throw new Error(`Failed to add admin role: ${error}`);
       }
       
       console.log("Admin role added successfully");
@@ -125,7 +125,7 @@ export function useCurrentAdmin() {
       return true;
     } catch (err: any) {
       console.error("Error in fixAdminStatus:", err);
-      return false;
+      throw err; // Re-throw to allow caller to handle error properly
     }
   }, [currentUser]);
 

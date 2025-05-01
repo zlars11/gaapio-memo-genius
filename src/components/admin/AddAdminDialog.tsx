@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddAdminForm } from "./forms/AddAdminForm";
 import { CreateUserDialog } from "./dialogs/CreateUserDialog";
-import { useAdminDialogActions } from "./utils/adminDialogUtils";
+import { useAdminDialogActions } from "../utils/adminDialogUtils";
 import { AdminFormValues } from "@/types/adminTypes";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AddAdminDialogProps {
   open: boolean;
@@ -18,6 +19,7 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
   const [pendingValues, setPendingValues] = useState<AdminFormValues | null>(null);
   
   const { handleAddAdminRole, handleCreateUserWithAdminRole } = useAdminDialogActions();
+  const { toast } = useToast();
 
   // Handle adding an admin
   const handleSubmit = async (values: AdminFormValues) => {
@@ -35,8 +37,13 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
         setPendingValues(values);
         setShowCreateUser(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in handleSubmit:", error);
+      toast({
+        title: "Error adding admin",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -64,8 +71,13 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       }
       
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating user:", error);
+      toast({
+        title: "Error creating user",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
       return false;
     } finally {
       setIsLoading(false);
@@ -74,7 +86,11 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
 
   return (
     <>
-      <Dialog open={open && !showCreateUser} onOpenChange={onOpenChange}>
+      <Dialog open={open && !showCreateUser} onOpenChange={(isOpen) => {
+        if (!isLoading) {
+          onOpenChange(isOpen);
+        }
+      }}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Add Admin User</DialogTitle>
@@ -89,7 +105,12 @@ export function AddAdminDialog({ open, onOpenChange, onSuccess }: AddAdminDialog
       
       <CreateUserDialog
         open={showCreateUser}
-        onOpenChange={setShowCreateUser}
+        onOpenChange={(isOpen) => {
+          if (!isLoading) {
+            setShowCreateUser(isOpen);
+            if (!isOpen) onOpenChange(false);
+          }
+        }}
         onCreateUser={handleCreateUser}
         pendingEmail={pendingValues?.email}
         isLoading={isLoading}
