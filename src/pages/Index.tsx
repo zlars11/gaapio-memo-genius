@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -112,8 +111,8 @@ export default function Index() {
           className="absolute z-0 opacity-[0.22] w-full h-[800px]"
           style={{
             backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
-            backgroundSize: '95%',
-            backgroundPosition: '70% 30%',
+            backgroundSize: '75%',
+            backgroundPosition: '90% 60%',
             backgroundRepeat: 'no-repeat',
             pointerEvents: 'none',
             top: '0',
