@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 export const HeroSection = memo(function HeroSection() {
   const [isDark, setIsDark] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -40,10 +39,6 @@ export const HeroSection = memo(function HeroSection() {
     };
     
     window.addEventListener('storage', handleStorageEvent);
-
-    // Check for CTA preference
-    const ctaSetting = localStorage.getItem("homepageCta");
-    setShowSignUp(ctaSetting === "signup");
     
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
@@ -83,15 +78,12 @@ export const HeroSection = memo(function HeroSection() {
           AI-Powered. CPA-Approved.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
-          <Button size="lg" asChild>
-            {isClient && showSignUp ? (
-              <Link to="/signup">Sign Up Now</Link>
-            ) : (
-              <Link to="#waitlist">Join the Waitlist</Link>
-            )}
-          </Button>
+          {/* Reversed order: Request demo first, Sign Up second */}
           <Button size="lg" variant="outline" asChild>
             <Link to="/contact">Request a demo</Link>
+          </Button>
+          <Button size="lg" asChild>
+            <Link to="/signup">Sign Up Now</Link>
           </Button>
         </div>
         <div className="animate-fade-up" style={{ animationDelay: "300ms" }} onClick={scrollToHowItWorks}>

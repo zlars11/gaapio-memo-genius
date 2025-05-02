@@ -27,7 +27,7 @@ export function TestimonialsSection() {
         <div className="text-center mb-16">
           <h2 id="testimonials-heading" className="text-3xl md:text-4xl font-bold mb-4">Don't Just Take Our Word For It</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Industry professionals trust Gaapio for their accounting documentation needs.
+            See what industry professionals say about Gaapio.
           </p>
         </div>
         

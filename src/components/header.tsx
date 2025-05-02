@@ -8,24 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminNavLink } from "@/components/admin/AdminNavLink";
 
 export function Header() {
-  const [ctaText, setCtaText] = useState("Join the Waitlist");
-  const [ctaTo, setCtaTo] = useState("#waitlist");
   const [isClient, setIsClient] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setIsClient(true);
-    
-    // Check for CTA preference from localStorage
-    const ctaSetting = localStorage.getItem("homepageCta");
-    if (ctaSetting === "signup") {
-      setCtaText("Sign Up Now");
-      setCtaTo("/signup");
-    } else {
-      setCtaText("Join the Waitlist");
-      setCtaTo("#waitlist");
-    }
 
     // Check login status
     const checkSession = async () => {
@@ -91,7 +79,7 @@ export function Header() {
           <div className="flex items-center ml-2 space-x-2">
             {shouldShowCta && (
               <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
-                <Link to={ctaTo}>{ctaText}</Link>
+                <Link to="/contact">Request a Demo</Link>
               </Button>
             )}
             {isClient && isLoggedIn && (

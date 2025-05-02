@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import { ContactTable } from "@/components/admin/ContactTable";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { CompaniesTable } from "@/components/admin/CompaniesTable";
@@ -16,19 +15,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export default function Admin() {
-  const [showWaitlistTab, setShowWaitlistTab] = useState(true);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   
-  // Load waitlist visibility setting and verify admin status
+  // Verify admin status
   useEffect(() => {
     const checkAccess = async () => {
-      // Load saved setting for waitlist tab visibility
-      const showWaitlist = localStorage.getItem("showWaitlistToUsers");
-      setShowWaitlistTab(showWaitlist === null ? true : showWaitlist === "true");
-      
       // Add explicit check for admin status
       try {
         console.log("Admin.tsx: Checking session");
@@ -113,7 +107,6 @@ export default function Admin() {
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="mb-8">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            {showWaitlistTab && <TabsTrigger value="waitlist">Waitlist</TabsTrigger>}
             <TabsTrigger value="companies">Companies</TabsTrigger>
             <TabsTrigger value="firms">Firms</TabsTrigger>
             <TabsTrigger value="demos">Demo Requests</TabsTrigger>
@@ -122,11 +115,6 @@ export default function Admin() {
           <TabsContent value="dashboard">
             <AdminDashboard />
           </TabsContent>
-          {showWaitlistTab && (
-            <TabsContent value="waitlist">
-              <WaitlistTable />
-            </TabsContent>
-          )}
           <TabsContent value="companies">
             <div className="space-y-8 max-w-full">
               <CompaniesTable />

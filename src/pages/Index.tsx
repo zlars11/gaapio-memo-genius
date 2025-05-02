@@ -13,7 +13,6 @@ import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
   const [metrics, setMetrics] = useState({
-    waitlistCount: 0,
     contactCount: 0,
     userCount: 0
   });
@@ -32,12 +31,10 @@ export default function Index() {
     if (shouldShowMetrics && isAdmin) {
       // Load metrics data
       try {
-        const waitlistData = JSON.parse(localStorage.getItem("waitlistSubmissions") || "[]");
         const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
         const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
         
         setMetrics({
-          waitlistCount: waitlistData.length,
           contactCount: contactData.length,
           userCount: userData.length
         });
@@ -45,12 +42,14 @@ export default function Index() {
         console.error("Error loading metrics data:", error);
         // Fallback to default values if there's an error
         setMetrics({
-          waitlistCount: 0,
           contactCount: 0,
           userCount: 0
         });
       }
     }
+    
+    // Always ensure Sign Up mode is set
+    localStorage.setItem("homepageCta", "signup");
   }, []);
   
   return (
@@ -60,11 +59,7 @@ export default function Index() {
       {isClient && showMetrics && (
         <div className="bg-accent/30 py-3 border-b border-border/10">
           <ResponsiveContainer>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-background rounded p-3 text-center">
-                <p className="text-sm font-medium">Waitlist</p>
-                <p className="text-2xl font-bold">{metrics.waitlistCount}</p>
-              </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="bg-background rounded p-3 text-center">
                 <p className="text-sm font-medium">Contact</p>
                 <p className="text-2xl font-bold">{metrics.contactCount}</p>
