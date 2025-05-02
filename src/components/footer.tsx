@@ -1,29 +1,150 @@
-import { Github, Linkedin, Twitter } from "lucide-react";
+
+import { Github, Linkedin, Twitter, Youtube } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { Link } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border bg-background">
+      {/* Main Footer Content */}
       <div className="container px-4 md:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <a href="/" className="inline-block mb-4">
-              <Logo className="h-28 w-auto" />
-            </a>
-            <p className="text-muted-foreground max-w-md">
-              Gaapio helps CPAs and finance teams write high-quality accounting memos
-              in seconds with the power of AI.
-            </p>
-            <div className="flex items-center gap-4 mt-4">
-              <a 
-                href="#" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
+        {/* Logo and Tagline */}
+        <div className="flex flex-col items-center md:items-start mb-10">
+          <Link to="/" className="inline-block mb-4">
+            <Logo className="h-20 w-auto" />
+          </Link>
+          <p className="text-muted-foreground max-w-md text-center md:text-left text-sm">
+            Gaapio helps CPAs and finance teams write high-quality accounting memos
+            in seconds with the power of AI.
+          </p>
+        </div>
+        
+        {/* Three Column Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 lg:gap-12">
+          {/* Company Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  to="/about-us" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Demo
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Pricing
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Resources Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Resources</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Status
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Report Issue
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Security
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Terms
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Connect Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Connect</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link 
+                  to="/contact" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li className="flex items-center space-x-1">
+                <Linkedin className="h-4 w-4" />
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  LinkedIn
+                </Link>
+              </li>
+              <li className="flex items-center space-x-1">
+                <Twitter className="h-4 w-4" />
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Twitter
+                </Link>
+              </li>
+              <li className="flex items-center space-x-1">
+                <Youtube className="h-4 w-4" />
+                <Link 
+                  to="#" 
+                  className="text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  YouTube
+                </Link>
+              </li>
+            </ul>
+            
+            {/* Social Media Icons for Mobile */}
+            <div className="flex mt-6 space-x-4 md:hidden justify-center">
               <a 
                 href="#" 
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -34,86 +155,50 @@ export function Footer() {
               <a 
                 href="#" 
                 className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="GitHub"
+                aria-label="Twitter"
               >
-                <Github className="h-5 w-5" />
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a 
+                href="#" 
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="h-5 w-5" />
               </a>
             </div>
           </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-4">Product</h3>
-            <ul className="space-y-3">
-              <li>
-                <a 
-                  href="#how-it-works" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  How It Works
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#benefits" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Benefits
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#testimonials" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Testimonials
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#waitlist" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Join Waitlist
-                </a>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-4">Legal</h3>
-            <ul className="space-y-3">
-              <li>
-                <a 
-                  href="#" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Cookie Policy
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
-        
-        <div className="mt-12 pt-6 border-t border-border/50">
-          <p className="text-sm text-muted-foreground">
-            © {currentYear} Gaapio. All rights reserved.
+      </div>
+      
+      {/* Bottom Legal Strip */}
+      <div className="border-t border-border/50">
+        <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-xs text-muted-foreground mb-4 md:mb-0">
+            &copy; {currentYear} Gaapio. All rights reserved.
           </p>
+          <div className="flex items-center space-x-4">
+            <Link 
+              to="#" 
+              className="text-xs text-muted-foreground hover:underline transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Separator orientation="vertical" className="h-3 hidden md:inline-block" />
+            <Link 
+              to="#" 
+              className="text-xs text-muted-foreground hover:underline transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Separator orientation="vertical" className="h-3 hidden md:inline-block" />
+            <Link 
+              to="#" 
+              className="text-xs text-muted-foreground hover:underline transition-colors"
+            >
+              Cookie Policy
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
