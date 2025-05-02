@@ -68,7 +68,7 @@ export default function ChoosePlan() {
     {
       id: "emerging",
       name: "Emerging",
-      price: "$200",
+      price: "$400",
       description: "Perfect for growing companies",
       features: [
         "Up to 3 users",
@@ -81,7 +81,7 @@ export default function ChoosePlan() {
     {
       id: "midMarket",
       name: "Mid-Market",
-      price: "$300",
+      price: "$700",
       description: "For established businesses",
       features: [
         "Up to 6 users",
@@ -95,7 +95,7 @@ export default function ChoosePlan() {
     {
       id: "enterprise",
       name: "Enterprise",
-      price: "$500",
+      price: "$1,000",
       description: "For large organizations",
       features: [
         "Unlimited users",
