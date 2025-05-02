@@ -8,13 +8,13 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="border-t border-border bg-background mt-16">
+    <footer className="border-t border-border bg-background mt-24">
       {/* Main Footer Content */}
-      <div className="container px-4 md:px-6 py-16">
+      <div className="container px-4 md:px-6 py-14 flex flex-col items-center">
         {/* Logo and Tagline */}
-        <div className="flex flex-col items-center mb-12">
+        <div className="flex flex-col items-center mb-10 max-w-lg">
           <Link to="/" className="inline-block mb-4">
-            <Logo className="h-20 w-auto" />
+            <Logo className="h-16 w-auto" />
           </Link>
           <p className="text-muted-foreground max-w-md text-center text-sm">
             Gaapio helps CPAs and finance teams write high-quality accounting memos
@@ -22,12 +22,14 @@ export function Footer() {
           </p>
         </div>
         
-        {/* Three Column Grid Layout with improved spacing and alignment */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 lg:gap-20 max-w-5xl mx-auto">
+        <Separator className="w-full max-w-4xl mb-8" />
+        
+        {/* Three Column Grid Layout - centered and with tighter spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-3xl mx-auto text-center">
           {/* Company Column */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-3 text-center md:text-left">
+            <ul className="space-y-3">
               <li>
                 <Link 
                   to="/about-us" 
@@ -56,9 +58,9 @@ export function Footer() {
           </div>
           
           {/* Resources Column */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-3 text-center md:text-left">
+            <ul className="space-y-3">
               <li>
                 <Link 
                   to="#" 
@@ -103,9 +105,9 @@ export function Footer() {
           </div>
           
           {/* Connect Column */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold mb-4">Connect</h3>
-            <ul className="space-y-3 text-center md:text-left">
+            <ul className="space-y-3">
               <li>
                 <Link 
                   to="/contact" 
@@ -114,7 +116,7 @@ export function Footer() {
                   Contact Us
                 </Link>
               </li>
-              <li className="flex items-center justify-center md:justify-start space-x-2">
+              <li className="flex items-center justify-center space-x-2">
                 <Linkedin className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -123,7 +125,7 @@ export function Footer() {
                   LinkedIn
                 </Link>
               </li>
-              <li className="flex items-center justify-center md:justify-start space-x-2">
+              <li className="flex items-center justify-center space-x-2">
                 <Twitter className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -132,7 +134,7 @@ export function Footer() {
                   Twitter
                 </Link>
               </li>
-              <li className="flex items-center justify-center md:justify-start space-x-2">
+              <li className="flex items-center justify-center space-x-2">
                 <Youtube className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -146,9 +148,9 @@ export function Footer() {
         </div>
       </div>
       
-      {/* Bottom Legal Strip - improved spacing and mobile styling */}
+      {/* Bottom Legal Strip with improved spacing and alignment */}
       <div className="border-t border-border/50">
-        <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-center md:justify-between items-center">
           <p className="text-xs text-muted-foreground mb-4 md:mb-0">
             &copy; {currentYear} Gaapio. All rights reserved.
           </p>
