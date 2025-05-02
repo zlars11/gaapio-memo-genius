@@ -57,14 +57,15 @@ export const HeroSection = memo(function HeroSection() {
 
   return (
     <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
-      {/* Background Cover Image */}
+      {/* Background Cover Image - Adjusted positioning and opacity */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.20]"
+        className="absolute inset-0 z-0 opacity-[0.22]"
         style={{
           backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 25%',
+          backgroundSize: '90%',
+          backgroundPosition: 'center 65%', 
           backgroundRepeat: 'no-repeat',
+          transform: 'translateY(20px)',
         }}
         aria-hidden="true"
       />
