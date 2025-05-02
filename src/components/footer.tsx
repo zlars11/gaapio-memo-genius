@@ -14,9 +14,9 @@ export function Footer() {
         {/* Grid Layout for Logo & Links */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {/* Logo Column - Left aligned */}
-          <div className="md:self-center">
+          <div className="md:self-start">
             <Link to="/">
-              <Logo className="h-10 w-auto md:mr-auto" />
+              <Logo className="h-16 w-auto md:mr-auto" />
             </Link>
           </div>
           
