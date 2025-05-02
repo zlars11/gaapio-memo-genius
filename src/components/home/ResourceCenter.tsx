@@ -7,18 +7,18 @@ import { Separator } from "@/components/ui/separator";
 export function ResourceCenter() {
   return (
     <section 
-      className="py-16 md:py-24 bg-accent/30"
+      className="py-16 md:py-20 bg-accent/30"
       aria-labelledby="resources-heading"
     >
       <ResponsiveContainer className="max-w-5xl">
-        <div className="flex flex-col items-center text-center mb-10">
+        <div className="flex flex-col items-center text-center mb-8">
           <h2 
             id="resources-heading"
             className="text-3xl md:text-4xl font-bold mb-4"
           >
             Helpful Resources for Accounting & Finance Teams
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-7">
             Stay sharp with our curated links to essential accounting standards, tools, and guides.
           </p>
         </div>

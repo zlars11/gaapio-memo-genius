@@ -116,6 +116,11 @@
     @apply text-sm md:text-base;
   }
   
+  /* Standardized subheader style for consistent typography */
+  .section-subtitle {
+    @apply text-lg text-muted-foreground leading-7 max-w-2xl mx-auto;
+  }
+
   /* Improved button touch targets for mobile */
   button, 
   .button,
