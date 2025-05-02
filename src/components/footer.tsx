@@ -13,10 +13,10 @@ export function Footer() {
       <div className="container px-4 md:px-6 py-6">
         {/* Grid Layout for Logo & Links */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {/* Logo Column - Left aligned and vertically aligned with headers, smaller size */}
-          <div className="flex flex-col items-center md:items-start md:pt-1">
+          {/* Logo Column - Left aligned and vertically aligned with headers */}
+          <div className="flex flex-col items-center md:items-start">
             <Link to="/">
-              <Logo className="h-16 w-auto md:mr-auto" />
+              <Logo className="h-18 w-auto md:mr-auto" />
             </Link>
           </div>
           

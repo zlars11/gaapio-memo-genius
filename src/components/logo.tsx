@@ -45,7 +45,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       loading="eager"
       decoding="async"
       draggable={false}
-      style={{ maxHeight: className.includes("h-16") ? "64px" : className.includes("h-10") ? "40px" : "170px" }}
+      style={{ maxHeight: className.includes("h-18") ? "72px" : className.includes("h-16") ? "64px" : className.includes("h-10") ? "40px" : "170px" }}
     />
   );
 });
