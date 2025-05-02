@@ -10,11 +10,10 @@ export default function Contact() {
       <Header />
       <main className="flex-1 py-16">
         <ResponsiveContainer className="max-w-3xl">
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">Request a Demo</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
           
           <p className="text-lg text-muted-foreground mb-8">
-            Want to see how our AI-powered accounting memo platform works? Fill out the form below
-            and we'll schedule a personalized demo with you.
+            Have questions about our AI-powered accounting memo platform? Want to learn more about how we can help your team? Fill out the form below and our team will get back to you shortly.
           </p>
           
           <div className="bg-card border rounded-lg p-8 shadow-sm">

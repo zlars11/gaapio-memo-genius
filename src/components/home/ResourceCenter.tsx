@@ -16,7 +16,7 @@ export function ResourceCenter() {
             id="resources-heading"
             className="text-3xl md:text-4xl font-bold mb-4"
           >
-            Helpful Resources for Accountants & Finance Teams
+            Helpful Resources for Accounting & Finance Teams
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Stay sharp with our curated links to essential accounting standards, tools, and guides.

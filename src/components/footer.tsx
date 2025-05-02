@@ -9,11 +9,11 @@ export function Footer() {
   
   return (
     <footer className="border-t border-border bg-background mt-24">
-      {/* Main Footer Content */}
-      <div className="container px-4 md:px-6 py-14 flex flex-col items-center">
-        {/* Logo and Tagline */}
-        <div className="flex flex-col items-center mb-10 max-w-lg">
-          <Link to="/" className="inline-block mb-4">
+      {/* Main Footer Content - Improved spacing and padding */}
+      <div className="container px-4 md:px-6 py-12 md:py-16 flex flex-col items-center">
+        {/* Logo and Tagline - Added better spacing */}
+        <div className="flex flex-col items-center mb-12 max-w-lg">
+          <Link to="/" className="inline-block mb-6">
             <Logo className="h-16 w-auto" />
           </Link>
           <p className="text-muted-foreground max-w-md text-center text-sm">
@@ -22,14 +22,14 @@ export function Footer() {
           </p>
         </div>
         
-        <Separator className="w-full max-w-4xl mb-8" />
+        <Separator className="w-full max-w-4xl mb-10" />
         
-        {/* Three Column Grid Layout - centered and with tighter spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-3xl mx-auto text-center">
-          {/* Company Column */}
-          <div className="flex flex-col items-center">
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-3">
+        {/* Three Column Grid Layout - Improved spacing between columns */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-3xl mx-auto text-center">
+          {/* Company Column - Consistent spacing */}
+          <div className="flex flex-col items-center mb-8 md:mb-0">
+            <h3 className="text-lg font-semibold mb-5">Company</h3>
+            <ul className="space-y-4">
               <li>
                 <Link 
                   to="/about-us" 
@@ -57,10 +57,10 @@ export function Footer() {
             </ul>
           </div>
           
-          {/* Resources Column */}
-          <div className="flex flex-col items-center">
-            <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-3">
+          {/* Resources Column - Consistent spacing */}
+          <div className="flex flex-col items-center mb-8 md:mb-0">
+            <h3 className="text-lg font-semibold mb-5">Resources</h3>
+            <ul className="space-y-4">
               <li>
                 <Link 
                   to="#" 
@@ -104,10 +104,10 @@ export function Footer() {
             </ul>
           </div>
           
-          {/* Connect Column */}
-          <div className="flex flex-col items-center">
-            <h3 className="text-lg font-semibold mb-4">Connect</h3>
-            <ul className="space-y-3">
+          {/* Connect Column - Consistent spacing */}
+          <div className="flex flex-col items-center mb-0">
+            <h3 className="text-lg font-semibold mb-5">Connect</h3>
+            <ul className="space-y-4">
               <li>
                 <Link 
                   to="/contact" 
@@ -148,13 +148,13 @@ export function Footer() {
         </div>
       </div>
       
-      {/* Bottom Legal Strip with improved spacing and alignment */}
+      {/* Bottom Legal Strip - Better spacing and alignment */}
       <div className="border-t border-border/50">
-        <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-center md:justify-between items-center">
+        <div className="container px-4 md:px-6 py-6 flex flex-col md:flex-row justify-center md:justify-between items-center">
           <p className="text-xs text-muted-foreground mb-4 md:mb-0">
             &copy; {currentYear} Gaapio. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-0 md:space-x-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-0 md:space-x-6">
             <Link 
               to="#" 
               className="text-xs text-muted-foreground hover:underline transition-colors"
