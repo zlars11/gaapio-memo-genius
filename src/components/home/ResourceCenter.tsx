@@ -18,7 +18,7 @@ export function ResourceCenter() {
           >
             Helpful Resources for Accounting & Finance Teams
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-7">
+          <p className="section-subtitle">
             Stay sharp with our curated links to essential accounting standards, tools, and guides.
           </p>
         </div>

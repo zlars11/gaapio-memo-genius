@@ -57,10 +57,10 @@ export const HeroSection = memo(function HeroSection() {
 
   return (
     <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
-      {/* Background Memo Image - More Transparent */}
-      <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-5 z-0 pointer-events-none" aria-hidden="true">
+      {/* Background Memo Image - Updated with new images */}
+      <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-[0.15] z-0 pointer-events-none" aria-hidden="true">
         <img 
-          src={isDark ? "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png" : "/lovable-uploads/e13abd02-7766-469a-af2d-18a152812501.png"} 
+          src={isDark ? "/lovable-uploads/fdd4547f-fc69-4362-a29f-693e850e043c.png" : "/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png"} 
           alt="" 
           className="w-[800px] h-auto rotate-6"
           width={800}

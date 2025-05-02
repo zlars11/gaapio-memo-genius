@@ -8,25 +8,12 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="border-t border-border bg-background mt-24">
-      {/* Main Footer Content - Compact version with reduced vertical spacing */}
+    <footer className="border-t border-border bg-background">
+      {/* Main Footer Content - More compact layout */}
       <div className="container px-4 md:px-6 py-8">
-        {/* Logo and Tagline - Reduced spacing */}
-        <div className="flex flex-col items-center mb-6 max-w-lg">
-          <Link to="/" className="inline-block mb-3">
-            <Logo className="h-16 w-auto" />
-          </Link>
-          <p className="text-muted-foreground max-w-md text-center text-sm">
-            Gaapio helps CPAs and finance teams write high-quality accounting memos
-            in seconds with the power of AI.
-          </p>
-        </div>
-        
-        <Separator className="w-full max-w-4xl mb-6" />
-        
-        {/* Three Column Grid Layout - Tighter spacing between columns */}
+        {/* Three Column Grid Layout - Links first, logo moved to bottom */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-3xl mx-auto text-center mb-6">
-          {/* Company Column - Reduced vertical spacing */}
+          {/* Company Column */}
           <div className="flex flex-col items-center mb-4 md:mb-0">
             <h3 className="text-lg font-semibold mb-3">Company</h3>
             <ul className="space-y-3">
@@ -57,7 +44,7 @@ export function Footer() {
             </ul>
           </div>
           
-          {/* Resources Column - Reduced vertical spacing */}
+          {/* Resources Column */}
           <div className="flex flex-col items-center mb-4 md:mb-0">
             <h3 className="text-lg font-semibold mb-3">Resources</h3>
             <ul className="space-y-3">
@@ -104,7 +91,7 @@ export function Footer() {
             </ul>
           </div>
           
-          {/* Connect Column - Reduced vertical spacing */}
+          {/* Connect Column */}
           <div className="flex flex-col items-center mb-0">
             <h3 className="text-lg font-semibold mb-3">Connect</h3>
             <ul className="space-y-3">
@@ -146,9 +133,16 @@ export function Footer() {
             </ul>
           </div>
         </div>
+        
+        {/* Logo and Tagline - Moved to bottom */}
+        <div className="flex flex-col items-center mt-6 mb-4">
+          <Link to="/" className="inline-block mb-2">
+            <Logo className="h-14 w-auto" />
+          </Link>
+        </div>
       </div>
       
-      {/* Bottom Legal Strip - Tighter spacing */}
+      {/* Bottom Legal Strip */}
       <div className="border-t border-border/50">
         <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-center md:justify-between items-center">
           <p className="text-xs text-muted-foreground mb-2 md:mb-0">
