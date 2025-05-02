@@ -56,22 +56,18 @@ export const HeroSection = memo(function HeroSection() {
   };
 
   return (
-    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow overflow-hidden">
-      {/* Background Memo Image - Repositioned and increased visibility */}
-      <div 
-        className="absolute top-[20%] right-[5%] transform -translate-y-1/4 opacity-[0.25] z-0 pointer-events-none" 
+    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
+      {/* Background Cover Image */}
+      <div
+        className="absolute inset-0 z-0 opacity-[0.20]"
+        style={{
+          backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 25%',
+          backgroundRepeat: 'no-repeat',
+        }}
         aria-hidden="true"
-      >
-        <img 
-          src={isDark ? "/lovable-uploads/fdd4547f-fc69-4362-a29f-693e850e043c.png" : "/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png"} 
-          alt="" 
-          className="w-[900px] h-auto rotate-6 max-w-none md:max-w-[140%]"
-          width={900}
-          height={1000}
-          loading="eager"
-          decoding="async"
-        />
-      </div>
+      />
       
       <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
@@ -81,7 +77,6 @@ export const HeroSection = memo(function HeroSection() {
           AI-Powered. CPA-Approved.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
-          {/* Swapped button styles: Request demo now black, Sign Up white with border */}
           <Button size="lg" variant="default" asChild>
             <Link to="/contact">Request a demo</Link>
           </Button>

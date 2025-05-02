@@ -9,14 +9,14 @@ export function Footer() {
   
   return (
     <footer className="border-t border-border bg-background">
-      {/* Main Footer Content - More compact layout */}
-      <div className="container px-4 md:px-6 py-6">
-        {/* Three Column Grid Layout - Links first, logo moved to bottom */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-3xl mx-auto text-center mb-4">
+      {/* Main Footer Content - Ultra compact layout */}
+      <div className="container px-4 md:px-6 pt-4 pb-2">
+        {/* Three Column Grid Layout - Links first */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-16 max-w-3xl mx-auto text-center mb-2">
           {/* Company Column */}
-          <div className="flex flex-col items-center mb-4 md:mb-0">
-            <h3 className="text-lg font-semibold mb-3">Company</h3>
-            <ul className="space-y-3">
+          <div className="flex flex-col items-center mb-2 md:mb-0">
+            <h3 className="text-lg font-semibold mb-2">Company</h3>
+            <ul className="space-y-2">
               <li>
                 <Link 
                   to="/about-us" 
@@ -45,9 +45,9 @@ export function Footer() {
           </div>
           
           {/* Resources Column */}
-          <div className="flex flex-col items-center mb-4 md:mb-0">
-            <h3 className="text-lg font-semibold mb-3">Resources</h3>
-            <ul className="space-y-3">
+          <div className="flex flex-col items-center mb-2 md:mb-0">
+            <h3 className="text-lg font-semibold mb-2">Resources</h3>
+            <ul className="space-y-2">
               <li>
                 <Link 
                   to="#" 
@@ -93,8 +93,8 @@ export function Footer() {
           
           {/* Connect Column */}
           <div className="flex flex-col items-center mb-0">
-            <h3 className="text-lg font-semibold mb-3">Connect</h3>
-            <ul className="space-y-3">
+            <h3 className="text-lg font-semibold mb-2">Connect</h3>
+            <ul className="space-y-2">
               <li>
                 <Link 
                   to="/contact" 
@@ -134,21 +134,21 @@ export function Footer() {
           </div>
         </div>
         
-        {/* Logo - Moved to bottom with reduced spacing */}
-        <div className="flex flex-col items-center mt-2">
-          <Link to="/" className="inline-block">
-            <Logo className="h-14 w-auto" />
+        {/* Logo - Minimal spacing */}
+        <div className="flex justify-center">
+          <Link to="/">
+            <Logo className="h-12 w-auto" />
           </Link>
         </div>
       </div>
       
-      {/* Bottom Legal Strip */}
+      {/* Bottom Legal Strip - Ultra compact */}
       <div className="border-t border-border/50">
-        <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-center md:justify-between items-center">
-          <p className="text-xs text-muted-foreground mb-2 md:mb-0">
+        <div className="container px-4 md:px-6 py-2 flex flex-col md:flex-row justify-center md:justify-between items-center">
+          <p className="text-xs text-muted-foreground mb-1 md:mb-0">
             &copy; {currentYear} Gaapio. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-0 md:space-x-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-0 md:space-x-6">
             <Link 
               to="#" 
               className="text-xs text-muted-foreground hover:underline transition-colors"
