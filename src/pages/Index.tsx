@@ -105,18 +105,20 @@ export default function Index() {
         </div>
       )}
       
-      {/* Hero section with background image positioned as requested */}
+      {/* Main content with new background image positioned as requested */}
       <div className="relative">
-        {/* Background image overlay positioned to appear at the top of the page */}
+        {/* Background image overlay */}
         <div
-          className="absolute z-0 opacity-[0.22] w-full h-[800px]"
+          className="absolute z-0 w-full"
           style={{
-            backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
-            backgroundSize: '75%',
-            backgroundPosition: '90% 75%',
+            backgroundImage: `url(${isDark ? "/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png" : "/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png"})`,
+            backgroundSize: 'contain',
+            backgroundPosition: 'center 240px',
             backgroundRepeat: 'no-repeat',
+            height: '100%',
             pointerEvents: 'none',
-            top: '80px',
+            filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+            opacity: 0.25,
           }}
           aria-hidden="true"
         />
