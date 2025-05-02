@@ -105,18 +105,16 @@ export default function Index() {
         </div>
       )}
       
-      {/* Main content with overlaid background image */}
+      {/* Main content with overlaid background image positioned specifically for top of page */}
       <div className="relative">
-        {/* Background image overlay positioned lower and right of center */}
+        {/* Background image overlay positioned for proper placement */}
         <div
-          className="absolute z-0 opacity-[0.22] w-[90%] h-[90%]"
+          className="absolute z-0 opacity-[0.22] w-full h-full"
           style={{
             backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
             backgroundSize: '90%',
-            backgroundPosition: '60% 85%', 
+            backgroundPosition: '65% 100%', 
             backgroundRepeat: 'no-repeat',
-            top: '40%',
-            left: '10%',
             pointerEvents: 'none',
           }}
           aria-hidden="true"
