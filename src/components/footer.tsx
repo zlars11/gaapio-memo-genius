@@ -10,9 +10,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       {/* Main Footer Content - More compact layout */}
-      <div className="container px-4 md:px-6 py-8">
+      <div className="container px-4 md:px-6 py-6">
         {/* Three Column Grid Layout - Links first, logo moved to bottom */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-3xl mx-auto text-center mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-3xl mx-auto text-center mb-4">
           {/* Company Column */}
           <div className="flex flex-col items-center mb-4 md:mb-0">
             <h3 className="text-lg font-semibold mb-3">Company</h3>
@@ -134,9 +134,9 @@ export function Footer() {
           </div>
         </div>
         
-        {/* Logo and Tagline - Moved to bottom */}
-        <div className="flex flex-col items-center mt-6 mb-4">
-          <Link to="/" className="inline-block mb-2">
+        {/* Logo - Moved to bottom with reduced spacing */}
+        <div className="flex flex-col items-center mt-2">
+          <Link to="/" className="inline-block">
             <Logo className="h-14 w-auto" />
           </Link>
         </div>

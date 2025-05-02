@@ -184,4 +184,18 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+  
+  /* Custom pulse animation */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
 }

@@ -56,14 +56,17 @@ export const HeroSection = memo(function HeroSection() {
   };
 
   return (
-    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow">
-      {/* Background Memo Image - Updated with new images */}
-      <div className="absolute top-[45%] right-0 transform -translate-y-1/4 opacity-[0.15] z-0 pointer-events-none" aria-hidden="true">
+    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative hero-glow overflow-hidden">
+      {/* Background Memo Image - Repositioned and increased visibility */}
+      <div 
+        className="absolute top-[20%] right-[5%] transform -translate-y-1/4 opacity-[0.25] z-0 pointer-events-none" 
+        aria-hidden="true"
+      >
         <img 
           src={isDark ? "/lovable-uploads/fdd4547f-fc69-4362-a29f-693e850e043c.png" : "/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png"} 
           alt="" 
-          className="w-[800px] h-auto rotate-6"
-          width={800}
+          className="w-[900px] h-auto rotate-6 max-w-none md:max-w-[140%]"
+          width={900}
           height={1000}
           loading="eager"
           decoding="async"
