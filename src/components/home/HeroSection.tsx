@@ -78,11 +78,11 @@ export const HeroSection = memo(function HeroSection() {
           AI-Powered. CPA-Approved.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
-          {/* Reversed order: Request demo first, Sign Up second */}
-          <Button size="lg" variant="outline" asChild>
+          {/* Swapped button styles: Request demo now black, Sign Up white with border */}
+          <Button size="lg" variant="default" asChild>
             <Link to="/contact">Request a demo</Link>
           </Button>
-          <Button size="lg" asChild>
+          <Button size="lg" variant="outline" asChild>
             <Link to="/signup">Sign Up Now</Link>
           </Button>
         </div>

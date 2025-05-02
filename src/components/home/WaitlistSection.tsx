@@ -32,7 +32,7 @@ export function WaitlistSection() {
           <div className="w-full max-w-md">
             {isClient && (
               <div className="flex flex-col items-center">
-                <Button size="lg" className="w-full" asChild>
+                <Button size="lg" className="w-full" variant="default" asChild>
                   <Link to="/signup">Sign Up Now</Link>
                 </Button>
                 <p className="text-sm text-muted-foreground mt-4">

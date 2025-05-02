@@ -78,7 +78,7 @@ export function Header() {
           {/* CTA+Theme toggle: right aligned */}
           <div className="flex items-center ml-2 space-x-2">
             {shouldShowCta && (
-              <Button size="sm" asChild className="ml-2 text-base py-2 px-5">
+              <Button size="sm" variant="default" asChild className="ml-2 text-base py-2 px-5">
                 <Link to="/contact">Request a Demo</Link>
               </Button>
             )}

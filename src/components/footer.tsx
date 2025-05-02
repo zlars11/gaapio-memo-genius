@@ -8,26 +8,26 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-t border-border bg-background mt-16">
       {/* Main Footer Content */}
-      <div className="container px-4 md:px-6 py-12">
+      <div className="container px-4 md:px-6 py-16">
         {/* Logo and Tagline */}
-        <div className="flex flex-col items-center md:items-start mb-10">
+        <div className="flex flex-col items-center mb-12">
           <Link to="/" className="inline-block mb-4">
             <Logo className="h-20 w-auto" />
           </Link>
-          <p className="text-muted-foreground max-w-md text-center md:text-left text-sm">
+          <p className="text-muted-foreground max-w-md text-center text-sm">
             Gaapio helps CPAs and finance teams write high-quality accounting memos
             in seconds with the power of AI.
           </p>
         </div>
         
-        {/* Three Column Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 lg:gap-12">
+        {/* Three Column Grid Layout with improved spacing and alignment */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 lg:gap-20 max-w-5xl mx-auto">
           {/* Company Column */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <h3 className="text-lg font-semibold mb-4">Company</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-center md:text-left">
               <li>
                 <Link 
                   to="/about-us" 
@@ -56,9 +56,9 @@ export function Footer() {
           </div>
           
           {/* Resources Column */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <h3 className="text-lg font-semibold mb-4">Resources</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-center md:text-left">
               <li>
                 <Link 
                   to="#" 
@@ -103,9 +103,9 @@ export function Footer() {
           </div>
           
           {/* Connect Column */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <h3 className="text-lg font-semibold mb-4">Connect</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-center md:text-left">
               <li>
                 <Link 
                   to="/contact" 
@@ -114,7 +114,7 @@ export function Footer() {
                   Contact Us
                 </Link>
               </li>
-              <li className="flex items-center space-x-1">
+              <li className="flex items-center justify-center md:justify-start space-x-2">
                 <Linkedin className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -123,7 +123,7 @@ export function Footer() {
                   LinkedIn
                 </Link>
               </li>
-              <li className="flex items-center space-x-1">
+              <li className="flex items-center justify-center md:justify-start space-x-2">
                 <Twitter className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -132,7 +132,7 @@ export function Footer() {
                   Twitter
                 </Link>
               </li>
-              <li className="flex items-center space-x-1">
+              <li className="flex items-center justify-center md:justify-start space-x-2">
                 <Youtube className="h-4 w-4" />
                 <Link 
                   to="#" 
@@ -142,42 +142,17 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-            
-            {/* Social Media Icons for Mobile */}
-            <div className="flex mt-6 space-x-4 md:hidden justify-center">
-              <a 
-                href="#" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
           </div>
         </div>
       </div>
       
-      {/* Bottom Legal Strip */}
+      {/* Bottom Legal Strip - improved spacing and mobile styling */}
       <div className="border-t border-border/50">
         <div className="container px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-muted-foreground mb-4 md:mb-0">
             &copy; {currentYear} Gaapio. All rights reserved.
           </p>
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-0 md:space-x-4">
             <Link 
               to="#" 
               className="text-xs text-muted-foreground hover:underline transition-colors"
