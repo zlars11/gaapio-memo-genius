@@ -13,7 +13,7 @@ export function Footer() {
       <div className="container px-4 md:px-6 py-6">
         {/* Grid Layout for Logo & Links */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {/* Logo Column - Left aligned */}
+          {/* Logo Column - Left aligned and top-aligned */}
           <div className="md:self-start">
             <Link to="/">
               <Logo className="h-16 w-auto md:mr-auto" />
