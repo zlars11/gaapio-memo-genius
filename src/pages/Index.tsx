@@ -17,10 +17,36 @@ export default function Index() {
     userCount: 0
   });
   const [isClient, setIsClient] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     // Mark that we're in the client environment
     setIsClient(true);
+    
+    // Initialize dark mode detection
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setIsDark(e.matches || document.documentElement.classList.contains("dark"));
+    };
+    
+    darkModeQuery.addEventListener("change", handleChange);
+    
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    const handleStorageEvent = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    window.addEventListener('storage', handleStorageEvent);
     
     // Check if metrics should be displayed
     const shouldShowMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
@@ -50,6 +76,12 @@ export default function Index() {
     
     // Always ensure Sign Up mode is set
     localStorage.setItem("homepageCta", "signup");
+
+    return () => {
+      darkModeQuery.removeEventListener("change", handleChange);
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageEvent);
+    };
   }, []);
   
   return (
@@ -73,12 +105,34 @@ export default function Index() {
         </div>
       )}
       
-      <HeroSection />
-      <HowItWorksSection />
-      <BenefitsSection />
-      <TestimonialsSection />
-      <SocialProofSection />
-      <ResourceCenter />
+      {/* Main content with overlaid background image */}
+      <div className="relative">
+        {/* Background image overlay positioned lower and right of center */}
+        <div
+          className="absolute z-0 opacity-[0.22] w-[90%] h-[90%]"
+          style={{
+            backgroundImage: `url(${isDark ? "/lovable-uploads/0c83633d-b6f8-4432-b635-2616d974e182.png" : "/lovable-uploads/1454f55e-98e4-47ac-becf-b4833f69ad45.png"})`,
+            backgroundSize: '90%',
+            backgroundPosition: '60% 85%', 
+            backgroundRepeat: 'no-repeat',
+            top: '40%',
+            left: '10%',
+            pointerEvents: 'none',
+          }}
+          aria-hidden="true"
+        />
+        
+        {/* Content sections go on top of the background */}
+        <div className="relative z-10">
+          <HeroSection />
+          <HowItWorksSection />
+          <BenefitsSection />
+          <TestimonialsSection />
+          <SocialProofSection />
+          <ResourceCenter />
+        </div>
+      </div>
+      
       <Footer />
     </div>
   );
