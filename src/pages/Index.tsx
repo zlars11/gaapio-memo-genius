@@ -105,20 +105,21 @@ export default function Index() {
         </div>
       )}
       
-      {/* Main content with new background image positioned as requested */}
-      <div className="relative">
-        {/* Background image overlay */}
+      {/* Main content with background memo image */}
+      <div className="relative overflow-hidden">
+        {/* Background memo image overlay */}
         <div
           className="absolute z-0 w-full"
           style={{
-            backgroundImage: `url(${isDark ? "/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png" : "/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png"})`,
-            backgroundSize: 'contain',
-            backgroundPosition: 'center 240px',
+            backgroundImage: `url(${isDark ? "/lovable-uploads/d383cacb-035f-4ca1-9c54-7013f8acf023.png" : "/lovable-uploads/ac9449f8-61f5-4344-90aa-dfb2b055bdae.png"})`,
+            backgroundSize: '45%',
+            backgroundPosition: 'right 400px',
             backgroundRepeat: 'no-repeat',
             height: '100%',
             pointerEvents: 'none',
-            filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
-            opacity: 0.25,
+            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))',
+            opacity: 0.18,
+            transform: 'rotate(-5deg)',
           }}
           aria-hidden="true"
         />
