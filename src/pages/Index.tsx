@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -9,6 +8,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { ResourceCenter } from "@/components/home/ResourceCenter";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
+import { MemoBackground } from "@/components/home/MemoBackground";
 
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
@@ -105,24 +105,10 @@ export default function Index() {
         </div>
       )}
       
-      {/* Main content with background memo image */}
+      {/* Main content with custom memo background */}
       <div className="relative overflow-hidden">
-        {/* Background memo image overlay */}
-        <div
-          className="absolute z-0 w-full"
-          style={{
-            backgroundImage: `url(${isDark ? "/lovable-uploads/d383cacb-035f-4ca1-9c54-7013f8acf023.png" : "/lovable-uploads/ac9449f8-61f5-4344-90aa-dfb2b055bdae.png"})`,
-            backgroundSize: '45%',
-            backgroundPosition: 'right 400px',
-            backgroundRepeat: 'no-repeat',
-            height: '100%',
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))',
-            opacity: 0.18,
-            transform: 'rotate(-5deg)',
-          }}
-          aria-hidden="true"
-        />
+        {/* Use the new MemoBackground component */}
+        {isClient && <MemoBackground isDark={isDark} />}
         
         {/* Content sections go on top of the background */}
         <div className="relative z-10">
