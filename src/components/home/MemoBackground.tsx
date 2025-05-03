@@ -1,5 +1,5 @@
 
-import { Review } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { memo } from "react";
 
@@ -41,7 +41,7 @@ export const MemoBackground = memo(function MemoBackground({ isDark }: MemoBackg
                   History
                 </TabsTrigger>
                 <div className="flex items-center justify-center px-4">
-                  <Review size={16} className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                  <FileText size={16} className={`${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
                 </div>
               </TabsList>
             </Tabs>
