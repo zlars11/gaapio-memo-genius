@@ -112,14 +112,19 @@ export default function Index() {
           className="absolute z-0 w-full"
           style={{
             backgroundImage: `url(${isDark ? "/lovable-uploads/d383cacb-035f-4ca1-9c54-7013f8acf023.png" : "/lovable-uploads/ac9449f8-61f5-4344-90aa-dfb2b055bdae.png"})`,
-            backgroundSize: '45%',
-            backgroundPosition: 'right 400px',
+            backgroundSize: '65%', // Increased from 45% to 65%
+            backgroundPosition: 'right 10% top 400px', // Moved left by changing right from "right 400px" to "right 10%"
             backgroundRepeat: 'no-repeat',
             height: '100%',
             pointerEvents: 'none',
-            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08))',
-            opacity: 0.18,
+            filter: 'drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12))', // Enhanced shadow for depth
+            opacity: 0.22, // Slightly increased from 0.18
             transform: 'rotate(-5deg)',
+            border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)', // Added outline
+            borderRadius: '8px',
+            boxShadow: isDark 
+              ? '0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.5)' 
+              : '0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.08)'
           }}
           aria-hidden="true"
         />
