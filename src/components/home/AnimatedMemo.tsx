@@ -94,7 +94,7 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         className={`
-          w-[90%] max-w-3xl h-auto p-6 md:p-10 
+          w-full max-w-3xl h-auto p-6 md:p-10 
           ${isDark ? 'bg-background/40' : 'bg-white'} 
           rounded-lg transform rotate-[-7deg]
           ${isDark ? 'border border-gray-700' : 'border border-gray-200'}
@@ -104,6 +104,7 @@ export const AnimatedMemo = () => {
           fontFamily: 'monospace',
           opacity: 0.85,
           minHeight: '520px', // Increased height for more content
+          width: '100%', // Ensure consistent width from the start
         }}
       >
         <div 
