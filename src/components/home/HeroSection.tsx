@@ -1,10 +1,17 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AnimatedMemo } from "./AnimatedMemo";
 
 export const HeroSection = memo(function HeroSection() {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
   // Scroll to How It Works section when arrow is clicked
   const scrollToHowItWorks = () => {
     const howItWorksSection = document.getElementById('how-it-works');
@@ -14,8 +21,12 @@ export const HeroSection = memo(function HeroSection() {
   };
 
   return (
-    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
-      <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10">
+    <section className="relative min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-16">
+      {/* Background animated memo */}
+      {isClient && <AnimatedMemo />}
+      
+      {/* Hero content */}
+      <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10 mt-16 md:mt-0">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
           CPA Trusted Accounting Memos in Seconds
         </h1>
