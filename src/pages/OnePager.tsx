@@ -70,7 +70,7 @@ export default function OnePager() {
           qrContainer.appendChild(qrCanvas);
           contentClone.appendChild(qrContainer);
           
-          // Create PDF
+          // Create PDF - Fixed the constructor usage
           const canvas = await html2canvas(contentClone, {
             scale: 2,
             logging: false,

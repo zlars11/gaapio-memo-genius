@@ -109,7 +109,7 @@ export const AnimatedMemo = () => {
       <div 
         className={`
           w-full max-w-3xl h-auto p-6 md:p-10 
-          ${isDark ? 'bg-background/40' : 'bg-white'} 
+          ${isDark ? 'bg-[#1A1F2C]/90' : 'bg-white'} 
           rounded-lg transform rotate-[-7deg]
           ${isDark ? 'border border-gray-700' : 'border border-gray-200'}
           ${isDark ? 'shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'shadow-[0_0_15px_rgba(0,0,0,0.1)]'}
@@ -117,15 +117,15 @@ export const AnimatedMemo = () => {
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '520px', // Increased height for more content
-          width: '100%', // Ensure consistent width from the start
+          minHeight: '520px',
+          width: '100%',
         }}
       >
         <div 
           ref={typedElementRef}
           className={`
             font-mono text-sm md:text-base whitespace-pre-wrap text-left
-            ${isDark ? 'text-gray-300' : 'text-gray-800'}
+            ${isDark ? 'text-gray-100' : 'text-gray-800'}
           `}
           style={{ lineHeight: 1.6 }}
         ></div>
