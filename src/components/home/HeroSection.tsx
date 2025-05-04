@@ -22,9 +22,6 @@ export const HeroSection = memo(function HeroSection() {
 
   return (
     <section className="relative min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-16">
-      {/* Background animated memo */}
-      {isClient && <AnimatedMemo />}
-      
       {/* Hero content */}
       <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10 mt-16 md:mt-0">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
@@ -41,9 +38,20 @@ export const HeroSection = memo(function HeroSection() {
             <Link to="/signup">Sign Up Now</Link>
           </Button>
         </div>
-        <div className="animate-fade-up" style={{ animationDelay: "300ms" }} onClick={scrollToHowItWorks}>
-          <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow cursor-pointer" aria-hidden="true" />
-        </div>
+      </div>
+      
+      {/* Background animated memo - moved below the CTA buttons */}
+      <div className="w-full flex justify-center relative z-0 mt-4 mb-12">
+        {isClient && <AnimatedMemo />}
+      </div>
+      
+      {/* Down arrow for scrolling to How It Works section */}
+      <div 
+        className="animate-fade-up absolute bottom-8" 
+        style={{ animationDelay: "300ms" }} 
+        onClick={scrollToHowItWorks}
+      >
+        <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow cursor-pointer" aria-hidden="true" />
       </div>
     </section>
   );

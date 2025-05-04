@@ -11,7 +11,14 @@ export const AnimatedMemo = () => {
     if (typedElementRef.current) {
       typed.current = new Typed(typedElementRef.current, {
         strings: [
-          "ASC 606 ACCOUNTING MEMO\n\n1. Background: The Company recognizes revenue when control of the promised goods...\n\n2. Analysis: Based on the five-step model outlined in ASC 606...\n\n3. Conclusion: The Company's revenue recognition policy is in compliance with..."
+          "ASC 606 ACCOUNTING MEMO\n\n" +
+          "1. Background: The Company delivers bundled goods and services...\n\n" +
+          "2. Scope / Purpose: This memo evaluates whether the Company's revenue recognition...\n\n" +
+          "3. Accounting Guidance: ASC 606-10-25-1 through 25-5 provides the relevant criteria...\n\n" +
+          "4. Analysis: Based on the five-step model, the performance obligation is satisfied...\n\n" +
+          "5. Conclusion: The revenue recognition approach complies with ASC 606...\n\n" +
+          "6. Financial Statement Impact: The change increases revenue by $2.4M in Q4 2025...\n\n" +
+          "7. Disclosures: Footnote 12 will include updated revenue recognition policies..."
         ],
         typeSpeed: 40,
         backSpeed: 0,
@@ -41,7 +48,14 @@ export const AnimatedMemo = () => {
         if (typedElementRef.current) {
           typed.current = new Typed(typedElementRef.current, {
             strings: [
-              "ASC 606 ACCOUNTING MEMO\n\n1. Background: The Company recognizes revenue when control of the promised goods...\n\n2. Analysis: Based on the five-step model outlined in ASC 606...\n\n3. Conclusion: The Company's revenue recognition policy is in compliance with..."
+              "ASC 606 ACCOUNTING MEMO\n\n" +
+              "1. Background: The Company delivers bundled goods and services...\n\n" +
+              "2. Scope / Purpose: This memo evaluates whether the Company's revenue recognition...\n\n" +
+              "3. Accounting Guidance: ASC 606-10-25-1 through 25-5 provides the relevant criteria...\n\n" +
+              "4. Analysis: Based on the five-step model, the performance obligation is satisfied...\n\n" +
+              "5. Conclusion: The revenue recognition approach complies with ASC 606...\n\n" +
+              "6. Financial Statement Impact: The change increases revenue by $2.4M in Q4 2025...\n\n" +
+              "7. Disclosures: Footnote 12 will include updated revenue recognition policies..."
             ],
             typeSpeed: 40,
             backSpeed: 0,
@@ -77,19 +91,19 @@ export const AnimatedMemo = () => {
   }, []);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center z-0 overflow-hidden pointer-events-none">
+    <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         className={`
           w-[90%] max-w-3xl h-auto p-6 md:p-10 
           ${isDark ? 'bg-background/40' : 'bg-white'} 
-          rounded-lg shadow-lg transform rotate-[-7deg]
+          rounded-lg transform rotate-[-7deg]
           ${isDark ? 'border border-gray-700' : 'border border-gray-200'}
           ${isDark ? 'shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'shadow-[0_0_15px_rgba(0,0,0,0.1)]'}
         `}
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '340px',
+          minHeight: '520px', // Increased height for more content
         }}
       >
         <div 
