@@ -59,6 +59,14 @@ export function Footer() {
               <ul className="space-y-2">
                 <li>
                   <Link 
+                    to="/resources" 
+                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                  >
+                    Resource Center
+                  </Link>
+                </li>
+                <li>
+                  <Link 
                     to="#" 
                     className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
                   >
@@ -71,14 +79,6 @@ export function Footer() {
                     className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
                   >
                     Report Issue
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
-                  >
-                    Security
                   </Link>
                 </li>
                 <li>

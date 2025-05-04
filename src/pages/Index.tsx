@@ -7,7 +7,6 @@ import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
-import { ResourceCenter } from "@/components/home/ResourceCenter";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export default function Index() {
@@ -114,7 +113,6 @@ export default function Index() {
           <BenefitsSection />
           <TestimonialsSection />
           <SocialProofSection />
-          <ResourceCenter />
         </div>
       </div>
       

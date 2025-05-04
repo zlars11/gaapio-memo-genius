@@ -12,13 +12,20 @@ export const AnimatedMemo = () => {
       typed.current = new Typed(typedElementRef.current, {
         strings: [
           "ASC 606 ACCOUNTING MEMO\n\n" +
-          "1. Background: The Company delivers bundled goods and services...\n\n" +
-          "2. Scope / Purpose: This memo evaluates whether the Company's revenue recognition...\n\n" +
-          "3. Accounting Guidance: ASC 606-10-25-1 through 25-5 provides the relevant criteria...\n\n" +
-          "4. Analysis: Based on the five-step model, the performance obligation is satisfied...\n\n" +
-          "5. Conclusion: The revenue recognition approach complies with ASC 606...\n\n" +
-          "6. Financial Statement Impact: The change increases revenue by $2.4M in Q4 2025...\n\n" +
-          "7. Disclosures: Footnote 12 will include updated revenue recognition policies..."
+          "1. Background  \n" +
+          "The Company delivers bundled goods and services across multiple contracts...\n\n" +
+          "2. Scope / Purpose  \n" +
+          "This memo evaluates whether the Company's revenue recognition complies with ASC 606.\n\n" +
+          "3. Accounting Guidance  \n" +
+          "ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...\n\n" +
+          "4. Analysis  \n" +
+          "Based on the five-step model, the performance obligation is satisfied at a point in time...\n\n" +
+          "5. Conclusion  \n" +
+          "The Company's accounting treatment is consistent with ASC 606.\n\n" +
+          "6. Financial Statement Impact  \n" +
+          "The treatment results in $2.4M of revenue recognized in Q4 FY25...\n\n" +
+          "7. Disclosures  \n" +
+          "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
         typeSpeed: 40,
         backSpeed: 0,
@@ -49,13 +56,20 @@ export const AnimatedMemo = () => {
           typed.current = new Typed(typedElementRef.current, {
             strings: [
               "ASC 606 ACCOUNTING MEMO\n\n" +
-              "1. Background: The Company delivers bundled goods and services...\n\n" +
-              "2. Scope / Purpose: This memo evaluates whether the Company's revenue recognition...\n\n" +
-              "3. Accounting Guidance: ASC 606-10-25-1 through 25-5 provides the relevant criteria...\n\n" +
-              "4. Analysis: Based on the five-step model, the performance obligation is satisfied...\n\n" +
-              "5. Conclusion: The revenue recognition approach complies with ASC 606...\n\n" +
-              "6. Financial Statement Impact: The change increases revenue by $2.4M in Q4 2025...\n\n" +
-              "7. Disclosures: Footnote 12 will include updated revenue recognition policies..."
+              "1. Background  \n" +
+              "The Company delivers bundled goods and services across multiple contracts...\n\n" +
+              "2. Scope / Purpose  \n" +
+              "This memo evaluates whether the Company's revenue recognition complies with ASC 606.\n\n" +
+              "3. Accounting Guidance  \n" +
+              "ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...\n\n" +
+              "4. Analysis  \n" +
+              "Based on the five-step model, the performance obligation is satisfied at a point in time...\n\n" +
+              "5. Conclusion  \n" +
+              "The Company's accounting treatment is consistent with ASC 606.\n\n" +
+              "6. Financial Statement Impact  \n" +
+              "The treatment results in $2.4M of revenue recognized in Q4 FY25...\n\n" +
+              "7. Disclosures  \n" +
+              "Footnote 12 will reflect the updated policy disclosures accordingly."
             ],
             typeSpeed: 40,
             backSpeed: 0,

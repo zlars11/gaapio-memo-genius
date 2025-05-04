@@ -19,9 +19,11 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const ASC606Pitfalls = lazy(() => import("./pages/ASC606Pitfalls"));
 const AIAccounting = lazy(() => import("./pages/AIAccounting"));
 const Admin = lazy(() => import("./pages/Admin"));
-const AdminUsers = lazy(() => import("./pages/AdminUsers")); // Added this line
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const SignUp = lazy(() => import("./pages/SignUp"));
-const Login = lazy(() => import("./pages/Login")); 
+const Login = lazy(() => import("./pages/Login"));
+const Resources = lazy(() => import("./pages/Resources"));
+const OnePager = lazy(() => import("./pages/OnePager"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -66,9 +68,11 @@ const App = () => (
               <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
               <Route path="/ssa" element={<SubscriptionAgreement />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/users" element={<AdminUsers />} /> {/* Added this line */}
+              <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/onepager" element={<OnePager />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

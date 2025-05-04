@@ -61,7 +61,13 @@ export function Header() {
             to="/contact"
             className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
           >
-            Contact Us
+            Contact
+          </Link>
+          <Link
+            to="/resources"
+            className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
+          >
+            Resources
           </Link>
           <Link
             to="/faq"
