@@ -108,7 +108,7 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         className={`
-          w-[600px] min-w-[600px] max-w-[600px]
+          w-[680px] min-w-[680px] max-w-[680px]
           h-auto p-6 md:p-10 
           ${isDark ? 'bg-[#121212]' : 'bg-white'} 
           rounded-lg transform rotate-[-7deg]

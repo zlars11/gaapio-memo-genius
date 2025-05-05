@@ -14,36 +14,73 @@ export function HowItWorksSection() {
         
         <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           {/* Step 1 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
-              <FileSearch className="h-8 w-8 text-primary" />
+          <div className="flex flex-col text-center bg-background/60 border border-border/30 p-6 rounded-lg shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-primary/10 mb-6 mx-auto" aria-hidden="true">
+              <FileSearch className="h-7 w-7 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Guided Prompts</h3>
-            <p className="text-muted-foreground">
-              Answer a series of guardrail-guided questions that ensure your inputs lead to high-quality, standards-compliant memos — no guesswork required.
-            </p>
+            <h3 className="text-xl font-semibold mb-4">Guided Prompts</h3>
+            <ul className="text-muted-foreground text-left text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Answer structured questions with built-in guardrails</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Ensure input quality and standards compliance</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>No accounting guesswork required</span>
+              </li>
+            </ul>
           </div>
           
           {/* Step 2 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
-              <FileCheck className="h-8 w-8 text-primary" />
+          <div className="flex flex-col text-center bg-background/60 border border-border/30 p-6 rounded-lg shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-primary/10 mb-6 mx-auto" aria-hidden="true">
+              <FileCheck className="h-7 w-7 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">AI & CPA Review</h3>
-            <p className="text-muted-foreground">
-              Our proprietary AI reviews your draft and suggests improvements. Apply changes with one click. Need extra confidence? Add optional CPA review and internal sign-off — all tracked seamlessly.
-            </p>
+            <h3 className="text-xl font-semibold mb-4">AI & CPA Review</h3>
+            <ul className="text-muted-foreground text-left text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Proprietary AI reviews and improves your memo draft</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>One-click edits and enhancements</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Internal sign offs and audit trail</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Optional CPA review</span>
+              </li>
+            </ul>
           </div>
           
           {/* Step 3 */}
-          <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 mb-6" aria-hidden="true">
-              <Download className="h-8 w-8 text-primary" />
+          <div className="flex flex-col text-center bg-background/60 border border-border/30 p-6 rounded-lg shadow-sm">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-primary/10 mb-6 mx-auto" aria-hidden="true">
+              <Download className="h-7 w-7 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Manage & Deliver</h3>
-            <p className="text-muted-foreground">
-              Track full version history, add and reply to review comments, and download polished, presentation-ready memos. Built-in audit reports document every step for your auditors.
-            </p>
+            <h3 className="text-xl font-semibold mb-4">Manage & Deliver</h3>
+            <ul className="text-muted-foreground text-left text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Download polished, presentation-ready memos</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Full version history and reviewer comments</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Exportable audit reports for your auditors</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

@@ -1,10 +1,11 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { FileText, FileCheck, Download, Clock, CheckCircle2, Shield, ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-// Import jsPDF correctly - it's a default export in the newest version
+// Import jsPDF correctly
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
