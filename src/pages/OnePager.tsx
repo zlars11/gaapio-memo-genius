@@ -1,11 +1,10 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { FileText, FileCheck, Download, Clock, CheckCircle2, Shield, ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-// Import jsPDF as a default import, not a named import
+// Import jsPDF correctly - it's a default export in the newest version
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -71,7 +70,7 @@ export default function OnePager() {
           qrContainer.appendChild(qrCanvas);
           contentClone.appendChild(qrContainer);
           
-          // Create PDF - Fixed jsPDF constructor usage
+          // Create PDF with properly imported jsPDF
           const canvas = await html2canvas(contentClone, {
             scale: 2,
             logging: false,
@@ -79,7 +78,6 @@ export default function OnePager() {
           });
           
           const imgData = canvas.toDataURL('image/png');
-          // Fix: Create jsPDF instance correctly with default import
           const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'px',

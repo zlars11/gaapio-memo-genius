@@ -108,8 +108,9 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         className={`
-          w-full max-w-3xl h-auto p-6 md:p-10 
-          ${isDark ? 'bg-[#1A1F2C]/90' : 'bg-white'} 
+          w-[600px] min-w-[600px] max-w-[600px]
+          h-auto p-6 md:p-10 
+          ${isDark ? 'bg-[#121212]' : 'bg-white'} 
           rounded-lg transform rotate-[-7deg]
           ${isDark ? 'border border-gray-700' : 'border border-gray-200'}
           ${isDark ? 'shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'shadow-[0_0_15px_rgba(0,0,0,0.1)]'}
@@ -118,7 +119,7 @@ export const AnimatedMemo = () => {
           fontFamily: 'monospace',
           opacity: 0.85,
           minHeight: '520px',
-          width: '100%',
+          transition: 'none',
         }}
       >
         <div 
