@@ -70,7 +70,7 @@ export default function OnePager() {
           qrContainer.appendChild(qrCanvas);
           contentClone.appendChild(qrContainer);
           
-          // Create PDF - Fixed the constructor usage
+          // Create PDF - Fixed jsPDF constructor usage
           const canvas = await html2canvas(contentClone, {
             scale: 2,
             logging: false,
@@ -78,6 +78,7 @@ export default function OnePager() {
           });
           
           const imgData = canvas.toDataURL('image/png');
+          // Fix: Create jsPDF instance correctly
           const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'px',
