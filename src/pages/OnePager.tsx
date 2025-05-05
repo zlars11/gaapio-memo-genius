@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { FileText, FileCheck, Download, Clock, CheckCircle2, Shield, ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+// Import jsPDF correctly
+import { jsPDF } from "jspdf";
 
 export default function OnePager() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -78,7 +79,7 @@ export default function OnePager() {
           });
           
           const imgData = canvas.toDataURL('image/png');
-          // Fixed: Use jsPDF constructor correctly
+          // Use jsPDF constructor correctly with new import
           const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'px',
