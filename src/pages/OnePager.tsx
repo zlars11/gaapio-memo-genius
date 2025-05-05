@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -77,14 +78,15 @@ export default function OnePager() {
           });
           
           const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF({
+          // Fixed: Use jsPDF constructor correctly
+          const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'px',
             format: [canvas.width / 2, canvas.height / 2]
           });
           
-          pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
-          pdf.save('gaapio-one-pager.pdf');
+          doc.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+          doc.save('gaapio-one-pager.pdf');
           
           // Clean up
           document.body.removeChild(container);
