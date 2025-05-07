@@ -40,7 +40,7 @@ export function SocialProofSection() {
   return (
     <section 
       id="social-proof" 
-      className="py-12 md:py-16 bg-background border-t border-border/20 overflow-hidden"
+      className="py-12 md:py-16 bg-accent/50 border-t border-border/20 overflow-hidden"
       aria-labelledby="social-proof-heading"
     >
       <ResponsiveContainer>

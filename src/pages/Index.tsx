@@ -106,7 +106,7 @@ export default function Index() {
       
       {/* Main content */}
       <div className="relative overflow-hidden">
-        {/* Hero and other content sections */}
+        {/* Hero and other content sections with proper order and alternating backgrounds */}
         <div className="relative z-10">
           <HeroSection />
           <HowItWorksSection />

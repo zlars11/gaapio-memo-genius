@@ -58,7 +58,7 @@ export default function Status() {
               </div>
             </div>
             
-            <div className="bg-card rounded-lg border border-border p-6">
+            <div className="bg-card rounded-lg border border-border p-6 mb-20">
               <h2 className="text-xl font-semibold mb-4">Scheduled Maintenance</h2>
               <div className="flex items-center gap-3 p-4 rounded-md bg-accent/50">
                 <Clock className="h-5 w-5 text-muted-foreground" />
