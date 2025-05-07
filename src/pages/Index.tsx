@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -104,15 +103,14 @@ export default function Index() {
         </div>
       )}
       
-      {/* Main content */}
+      {/* Main content with corrected alternating backgrounds */}
       <div className="relative overflow-hidden">
-        {/* Hero and other content sections with proper order and alternating backgrounds */}
         <div className="relative z-10">
-          <HeroSection />
-          <HowItWorksSection />
-          <SocialProofSection />
-          <BenefitsSection />
-          <TestimonialsSection />
+          <HeroSection /> {/* Light background (default) */}
+          <HowItWorksSection /> {/* Dark/accent background */}
+          <SocialProofSection /> {/* Light background */} 
+          <BenefitsSection /> {/* Dark background */}
+          <TestimonialsSection /> {/* Light background */}
         </div>
       </div>
       

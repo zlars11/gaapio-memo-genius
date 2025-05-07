@@ -9,10 +9,12 @@ import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Layout, RefreshCw } from "lucide-react";
+import { Loader2, Users, Layout } from "lucide-react";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -113,28 +115,38 @@ export default function Admin() {
   }
 
   return (
-    <AdminPageGuard>
-      <div className="max-w-6xl mx-auto py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link to="/admin/users">
-                <Users className="h-4 w-4 mr-2" />
-                Manage Admin Users
-              </Link>
-            </Button>
-          </div>
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      
+      <div className="w-full bg-accent/50 border-b border-border">
+        <div className="container py-3">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <TabsList>
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsTrigger value="companies">Companies</TabsTrigger>
+              <TabsTrigger value="firms">Firms</TabsTrigger>
+              <TabsTrigger value="demos">Demo Requests</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
+              <TabsTrigger value="webpages">Webpages</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="mb-8">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="companies">Companies</TabsTrigger>
-            <TabsTrigger value="firms">Firms</TabsTrigger>
-            <TabsTrigger value="demos">Demo Requests</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-            <TabsTrigger value="webpages">Webpages</TabsTrigger>
-          </TabsList>
+      </div>
+      
+      <AdminPageGuard>
+        <main className="flex-1 container py-10">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
+            <div className="flex gap-2">
+              <Button asChild variant="outline">
+                <Link to="/admin/users">
+                  <Users className="h-4 w-4 mr-2" />
+                  Manage Admin Users
+                </Link>
+              </Button>
+            </div>
+          </div>
+          
           <TabsContent value="dashboard">
             <AdminDashboard />
           </TabsContent>
@@ -183,8 +195,10 @@ export default function Admin() {
               </div>
             </div>
           </TabsContent>
-        </Tabs>
-      </div>
-    </AdminPageGuard>
+        </main>
+      </AdminPageGuard>
+      
+      <Footer />
+    </div>
   );
 }

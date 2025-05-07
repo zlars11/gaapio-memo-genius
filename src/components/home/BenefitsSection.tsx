@@ -3,7 +3,7 @@ import { FileText, Shield, CheckCircle2, Clock, ShieldCheck } from "lucide-react
 
 export function BenefitsSection() {
   return (
-    <section id="benefits" className="py-20 md:py-32 bg-background">
+    <section id="benefits" className="py-20 md:py-32 bg-accent/50">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Benefits</h2>
