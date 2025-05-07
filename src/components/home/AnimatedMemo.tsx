@@ -116,4 +116,3 @@ export const AnimatedMemo = () => {
     </div>
   );
 };
-

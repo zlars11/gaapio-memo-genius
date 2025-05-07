@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { FileText, FileCheck, Download, Clock, CheckCircle2, Shield, ShieldCheck } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import html2canvas from "html2canvas";
-// Import jsPDF correctly
 import { jsPDF } from "jspdf";
 
 export default function OnePager() {
@@ -32,8 +30,8 @@ export default function OnePager() {
       container.style.position = 'absolute';
       container.style.left = '-9999px';
       container.style.top = '-9999px';
-      container.appendChild(contentClone);
       document.body.appendChild(container);
+      container.appendChild(contentClone);
       
       // Add QR code for PDF only
       const qrContainer = document.createElement('div');
@@ -79,7 +77,6 @@ export default function OnePager() {
           });
           
           const imgData = canvas.toDataURL('image/png');
-          // Use jsPDF constructor correctly with new import
           const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'px',

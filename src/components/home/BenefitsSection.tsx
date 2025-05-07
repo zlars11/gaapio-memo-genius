@@ -31,7 +31,7 @@ export function BenefitsSection() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Time & Cost Savings</h3>
             <p className="text-muted-foreground">
-              Cut memo creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.
+              Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.
             </p>
           </div>
           
@@ -42,7 +42,7 @@ export function BenefitsSection() {
             </div>
             <h3 className="text-xl font-semibold mb-2">CPA-Level Output</h3>
             <p className="text-muted-foreground">
-              AI-generated memos that match or exceed the quality of experienced CPAs.
+              AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.
             </p>
           </div>
           

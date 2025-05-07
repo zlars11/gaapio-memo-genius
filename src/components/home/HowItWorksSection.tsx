@@ -22,15 +22,15 @@ export function HowItWorksSection() {
             <ul className="text-muted-foreground text-left text-sm space-y-2">
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Answer structured questions with built-in guardrails</span>
+                <span>Built-in guardrails for accuracy</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Ensure input quality and standards compliance</span>
+                <span>Up-to-date with latest standards</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>No accounting guesswork required</span>
+                <span>Drafted instantly by trained AI</span>
               </li>
             </ul>
           </div>
@@ -40,11 +40,11 @@ export function HowItWorksSection() {
             <div className="w-14 h-14 flex items-center justify-center rounded-full bg-primary/10 mb-6 mx-auto" aria-hidden="true">
               <FileCheck className="h-7 w-7 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-4">AI & CPA Review</h3>
+            <h3 className="text-xl font-semibold mb-4">Review</h3>
             <ul className="text-muted-foreground text-left text-sm space-y-2">
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Proprietary AI reviews and improves your memo draft</span>
+                <span>Proprietary AI reviews and gives suggestions</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
@@ -70,7 +70,7 @@ export function HowItWorksSection() {
             <ul className="text-muted-foreground text-left text-sm space-y-2">
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Download polished, presentation-ready memos</span>
+                <span>Presentation-ready memos and disclosures</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
@@ -78,7 +78,7 @@ export function HowItWorksSection() {
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary/70 mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Exportable audit reports for your auditors</span>
+                <span>Exportable audit reports</span>
               </li>
             </ul>
           </div>
@@ -87,4 +87,3 @@ export function HowItWorksSection() {
     </section>
   );
 }
-

@@ -3,12 +3,36 @@ import { Github, Linkedin, Twitter, Youtube } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { useEffect, useState } from "react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  useEffect(() => {
+    // Check initial theme
+    setIsDarkMode(document.documentElement.classList.contains("dark"));
+    
+    // Set up observer to detect theme changes
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+  
+  // Logo src based on theme
+  const logoSrc = isDarkMode 
+    ? "/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png"
+    : "/lovable-uploads/713b502e-1d81-455b-9ef6-34c6f74b4f92.png";
   
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="bg-black text-white">
       {/* Main Footer Content - Ultra compact layout */}
       <div className="container px-4 md:px-6 py-6">
         {/* Grid Layout for Logo & Links */}
@@ -16,7 +40,7 @@ export function Footer() {
           {/* Logo Column - Left aligned and vertically aligned with headers */}
           <div className="flex flex-col items-center md:items-start">
             <Link to="/">
-              <Logo className="h-18 w-auto md:mr-auto" />
+              <img src={logoSrc} alt="Gaapio" className="h-12 w-auto" />
             </Link>
           </div>
           
@@ -24,12 +48,12 @@ export function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 col-span-1 md:col-span-3 gap-4 md:gap-16 text-center md:text-left">
             {/* Company Column */}
             <div className="mb-2 md:mb-0">
-              <h3 className="text-lg font-semibold mb-2">Company</h3>
+              <h3 className="text-lg font-semibold mb-2 text-white">Company</h3>
               <ul className="space-y-2">
                 <li>
                   <Link 
                     to="/about-us" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     About
                   </Link>
@@ -37,15 +61,15 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/contact" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Demo
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    to="/signup" 
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Pricing
                   </Link>
@@ -55,44 +79,44 @@ export function Footer() {
             
             {/* Resources Column */}
             <div className="mb-2 md:mb-0">
-              <h3 className="text-lg font-semibold mb-2">Resources</h3>
+              <h3 className="text-lg font-semibold mb-2 text-white">Resources</h3>
               <ul className="space-y-2">
                 <li>
                   <Link 
                     to="/resources" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Resource Center
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    to="/status" 
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Status
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    to="/contact" 
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Report Issue
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    to="/privacy" 
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Privacy
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    to="/ssa" 
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Terms
                   </Link>
@@ -102,39 +126,39 @@ export function Footer() {
             
             {/* Connect Column */}
             <div>
-              <h3 className="text-lg font-semibold mb-2">Connect</h3>
+              <h3 className="text-lg font-semibold mb-2 text-white">Connect</h3>
               <ul className="space-y-2">
                 <li>
                   <Link 
                     to="/contact" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Contact Us
                   </Link>
                 </li>
                 <li className="flex items-center justify-center md:justify-start space-x-2">
-                  <Linkedin className="h-3 w-3" />
+                  <Linkedin className="h-3 w-3 text-gray-300" />
                   <Link 
                     to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     LinkedIn
                   </Link>
                 </li>
                 <li className="flex items-center justify-center md:justify-start space-x-2">
-                  <Twitter className="h-3 w-3" />
+                  <Twitter className="h-3 w-3 text-gray-300" />
                   <Link 
                     to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Twitter
                   </Link>
                 </li>
                 <li className="flex items-center justify-center md:justify-start space-x-2">
-                  <Youtube className="h-3 w-3" />
+                  <Youtube className="h-3 w-3 text-gray-300" />
                   <Link 
                     to="#" 
-                    className="text-muted-foreground hover:text-foreground hover:underline transition-colors text-sm"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     YouTube
                   </Link>
@@ -146,29 +170,29 @@ export function Footer() {
       </div>
       
       {/* Bottom Legal Strip - Ultra compact */}
-      <div className="border-t border-border/50">
+      <div className="border-t border-gray-800">
         <div className="container px-4 md:px-6 py-2 flex flex-col md:flex-row justify-center md:justify-between items-center">
-          <p className="text-xs text-muted-foreground mb-1 md:mb-0">
+          <p className="text-xs text-gray-400 mb-1 md:mb-0">
             &copy; {currentYear} Gaapio. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-0 md:space-x-6">
             <Link 
-              to="#" 
-              className="text-xs text-muted-foreground hover:underline transition-colors"
+              to="/privacy" 
+              className="text-xs text-gray-400 hover:underline transition-colors"
             >
               Privacy Policy
             </Link>
-            <Separator orientation="vertical" className="h-3 hidden md:inline-block" />
+            <Separator orientation="vertical" className="h-3 hidden md:inline-block bg-gray-700" />
             <Link 
-              to="#" 
-              className="text-xs text-muted-foreground hover:underline transition-colors"
+              to="/ssa" 
+              className="text-xs text-gray-400 hover:underline transition-colors"
             >
               Terms of Service
             </Link>
-            <Separator orientation="vertical" className="h-3 hidden md:inline-block" />
+            <Separator orientation="vertical" className="h-3 hidden md:inline-block bg-gray-700" />
             <Link 
               to="#" 
-              className="text-xs text-muted-foreground hover:underline transition-colors"
+              className="text-xs text-gray-400 hover:underline transition-colors"
             >
               Cookie Policy
             </Link>

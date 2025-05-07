@@ -24,6 +24,8 @@ const SignUp = lazy(() => import("./pages/SignUp"));
 const Login = lazy(() => import("./pages/Login"));
 const Resources = lazy(() => import("./pages/Resources"));
 const OnePager = lazy(() => import("./pages/OnePager"));
+const Status = lazy(() => import("./pages/Status"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 
 // Create a loading fallback
 const LoadingFallback = () => (
@@ -73,6 +75,8 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/onepager" element={<OnePager />} />
+              <Route path="/status" element={<Status />} />
+              <Route path="/privacy" element={<Privacy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
