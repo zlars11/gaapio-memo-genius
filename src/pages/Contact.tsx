@@ -1,5 +1,5 @@
 
-import { DemoRequestForm } from "@/components/demo/DemoRequestForm";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -10,7 +10,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 py-24">
+      <main className="flex-1 pt-32 pb-24"> {/* Increased top padding to avoid header overlap */}
         <ResponsiveContainer className="max-w-5xl mb-16">
           <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
           
@@ -18,48 +18,46 @@ export default function Contact() {
             Have questions about our AI-powered accounting memo platform? Want to learn more about how we can help your team? Fill out the form below and our team will get back to you shortly.
           </p>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="md:col-span-2">
-              <div className="bg-card border rounded-lg p-8 shadow-sm">
-                <DemoRequestForm />
-              </div>
-            </div>
+          {/* Contact form taking full width */}
+          <div className="bg-card border rounded-lg p-8 shadow-sm mb-16">
+            <ContactForm />
+          </div>
+          
+          {/* Contact cards stacked vertically and centered */}
+          <div className="max-w-md mx-auto space-y-6 mb-8">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Mail className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">General Inquiries</h3>
+                    <p className="text-muted-foreground mb-2">For general questions and information</p>
+                    <a href="mailto:info@gaapio.com" className="text-primary hover:underline font-medium">
+                      info@gaapio.com
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             
-            <div className="space-y-6">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                      <Mail className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">General Inquiries</h3>
-                      <p className="text-muted-foreground mb-2">For general questions and information</p>
-                      <a href="mailto:info@gaapio.com" className="text-primary hover:underline font-medium">
-                        info@gaapio.com
-                      </a>
-                    </div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <LifeBuoy className="h-6 w-6 text-primary" />
                   </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                      <LifeBuoy className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Support</h3>
-                      <p className="text-muted-foreground mb-2">For technical support and assistance</p>
-                      <a href="mailto:support@gaapio.com" className="text-primary hover:underline font-medium">
-                        support@gaapio.com
-                      </a>
-                    </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Support</h3>
+                    <p className="text-muted-foreground mb-2">For technical support and assistance</p>
+                    <a href="mailto:support@gaapio.com" className="text-primary hover:underline font-medium">
+                      support@gaapio.com
+                    </a>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </ResponsiveContainer>
       </main>

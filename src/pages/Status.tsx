@@ -26,7 +26,7 @@ export default function Status() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="page-container flex-1 pb-20">
+      <main className="page-container flex-1 pt-32 pb-28"> {/* Increased top and bottom padding for consistent spacing */}
         <div className="container px-4 md:px-6">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
@@ -58,7 +58,7 @@ export default function Status() {
               </div>
             </div>
             
-            <div className="bg-card rounded-lg border border-border p-6 mb-20">
+            <div className="bg-card rounded-lg border border-border p-6 mb-16"> {/* Increased bottom margin for spacing */}
               <h2 className="text-xl font-semibold mb-4">Scheduled Maintenance</h2>
               <div className="flex items-center gap-3 p-4 rounded-md bg-accent/50">
                 <Clock className="h-5 w-5 text-muted-foreground" />
