@@ -85,6 +85,11 @@
     overflow-x: hidden;
   }
 
+  /* Global fix for header overlap for all pages - ensure consistent padding */
+  main {
+    @apply pt-32 md:pt-36;
+  }
+
   /* Improved focus styles for accessibility */
   a:focus-visible,
   button:focus-visible,
@@ -199,17 +204,22 @@
     }
   }
   
-  /* Logo scroll animation */
-  @keyframes scroll {
+  /* Logo marquee animation */
+  @keyframes marquee {
     0% {
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(calc(-50% - 1rem));
     }
   }
   
-  .animate-scroll {
-    animation: scroll 30s linear infinite;
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
   }
+}
+
+/* Update status and other pages to not get cut off by header */
+.page-container {
+  @apply pt-32 md:pt-36;
 }

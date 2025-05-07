@@ -5,6 +5,8 @@ import { HomepageCtaToggle } from "@/components/admin/HomepageCtaToggle";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { FeatureToggles } from "@/components/admin/FeatureToggles";
+import { Link } from "react-router-dom";
+import { ExternalLink } from "lucide-react";
 
 export function AdminDashboard() {
   const [waitlistCount, setWaitlistCount] = useState(0);
@@ -12,6 +14,7 @@ export function AdminDashboard() {
   const [userCount, setUserCount] = useState(0);
   const [showMetricsOnHomepage, setShowMetricsOnHomepage] = useState(false);
   const [showWaitlistTab, setShowWaitlistTab] = useState(true);
+  const [routes, setRoutes] = useState<string[]>([]);
 
   // Simulate fetching counts (in a real app, this would be an API call)
   useEffect(() => {
@@ -30,6 +33,27 @@ export function AdminDashboard() {
     const showWaitlist = localStorage.getItem("showWaitlistToUsers");
     // Default to true if no preference is saved
     setShowWaitlistTab(showWaitlist === null ? true : showWaitlist === "true");
+    
+    // Collect all routes from App.tsx
+    setRoutes([
+      "/",
+      "/about-us",
+      "/contact",
+      "/faq",
+      "/blog",
+      "/blog/why-technical-accounting-memos-matter",
+      "/blog/5-common-asc-606-pitfalls",
+      "/blog/how-ai-is-changing-the-accounting-landscape",
+      "/ssa",
+      "/admin",
+      "/admin/users",
+      "/signup",
+      "/login",
+      "/resources",
+      "/onepager",
+      "/status",
+      "/privacy"
+    ]);
   }, []);
 
   const handleToggleMetricsVisibility = (checked: boolean) => {
@@ -107,6 +131,31 @@ export function AdminDashboard() {
                 (When toggled off, the Waitlist tab will be hidden from the admin portal)
               </span>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Webpages</CardTitle>
+          <CardDescription>
+            All available routes in the application
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {routes.map((route, index) => (
+              <Link 
+                key={index}
+                to={route}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3 rounded-md bg-accent/30 hover:bg-accent/50 transition-colors"
+              >
+                <span className="font-medium">{route}</span>
+                <ExternalLink className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            ))}
           </div>
         </CardContent>
       </Card>

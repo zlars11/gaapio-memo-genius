@@ -25,7 +25,7 @@ export const HeroSection = memo(function HeroSection() {
       {/* Hero content - Added more top padding (pt-24) to fix header overlap */}
       <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10 mt-20 md:mt-24">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
-          Audit Ready Accounting Memos and Disclosures
+          Audit Ready Memos and Disclosures
         </h1>
         <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
           AI-Powered. CPA-Approved.

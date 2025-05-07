@@ -7,29 +7,9 @@ import { useEffect, useState } from "react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const [isDarkMode, setIsDarkMode] = useState(false);
   
-  useEffect(() => {
-    // Check initial theme
-    setIsDarkMode(document.documentElement.classList.contains("dark"));
-    
-    // Set up observer to detect theme changes
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains("dark"));
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    
-    return () => observer.disconnect();
-  }, []);
-  
-  // Logo src based on theme
-  const logoSrc = isDarkMode 
-    ? "/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png"
-    : "/lovable-uploads/713b502e-1d81-455b-9ef6-34c6f74b4f92.png";
+  // Logo src always the same regardless of theme
+  const logoSrc = "/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png";
   
   return (
     <footer className="bg-black text-white">

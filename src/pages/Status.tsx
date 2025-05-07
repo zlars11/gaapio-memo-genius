@@ -26,7 +26,7 @@ export default function Status() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="flex-1 py-20">
+      <main className="page-container flex-1">
         <div className="container px-4 md:px-6">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">

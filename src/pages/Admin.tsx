@@ -9,7 +9,7 @@ import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, RefreshCw } from "lucide-react";
+import { Loader2, Users, Layout, RefreshCw } from "lucide-react";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+  const [routes, setRoutes] = useState<string[]>([]);
   
   // Verify admin status
   useEffect(() => {
@@ -75,6 +76,27 @@ export default function Admin() {
     };
     
     checkAccess();
+    
+    // Collect all routes from App.tsx
+    setRoutes([
+      "/",
+      "/about-us",
+      "/contact",
+      "/faq",
+      "/blog",
+      "/blog/why-technical-accounting-memos-matter",
+      "/blog/5-common-asc-606-pitfalls",
+      "/blog/how-ai-is-changing-the-accounting-landscape",
+      "/ssa",
+      "/admin",
+      "/admin/users",
+      "/signup",
+      "/login",
+      "/resources",
+      "/onepager",
+      "/status",
+      "/privacy"
+    ]);
   }, [toast]);
   
   const handleTabChange = (value: string) => {
@@ -111,6 +133,7 @@ export default function Admin() {
             <TabsTrigger value="firms">Firms</TabsTrigger>
             <TabsTrigger value="demos">Demo Requests</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="webpages">Webpages</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
             <AdminDashboard />
@@ -138,6 +161,27 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="contact">
             <ContactTable />
+          </TabsContent>
+          <TabsContent value="webpages">
+            <div className="space-y-4">
+              <div className="bg-card rounded-lg border border-border p-6">
+                <h2 className="text-xl font-bold mb-4">All Website Pages</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {routes.map((route, index) => (
+                    <Link 
+                      key={index}
+                      to={route}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 rounded-md bg-accent/30 hover:bg-accent/50 transition-colors"
+                    >
+                      <span className="font-medium">{route}</span>
+                      <Layout className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

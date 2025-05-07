@@ -18,16 +18,16 @@ export function SocialProofSection() {
     }
   }, []);
 
-  // Mock company logos
+  // Company logos with brand colors
   const companies = [
-    { id: 1, name: "FinSync", color: "bg-blue-500" },
-    { id: 2, name: "AccuLedger", color: "bg-green-500" },
-    { id: 3, name: "DataStream", color: "bg-indigo-500" },
-    { id: 4, name: "CloudCore", color: "bg-purple-500" },
-    { id: 5, name: "NexusBooks", color: "bg-red-500" },
-    { id: 6, name: "TechFinance", color: "bg-amber-500" },
-    { id: 7, name: "AccountPro", color: "bg-teal-500" },
-    { id: 8, name: "FiscalEdge", color: "bg-cyan-500" },
+    { id: 1, name: "FinSync", color: "text-blue-500" },
+    { id: 2, name: "AccuLedger", color: "text-green-500" },
+    { id: 3, name: "DataStream", color: "text-indigo-500" },
+    { id: 4, name: "CloudCore", color: "text-purple-500" },
+    { id: 5, name: "NexusBooks", color: "text-red-500" },
+    { id: 6, name: "TechFinance", color: "text-amber-500" },
+    { id: 7, name: "AccountPro", color: "text-teal-500" },
+    { id: 8, name: "FiscalEdge", color: "text-cyan-500" },
   ];
 
   // Double the array for seamless scrolling
@@ -59,24 +59,23 @@ export function SocialProofSection() {
         <div className="relative w-full">
           <div 
             ref={scrollRef}
-            className="flex space-x-8 animate-scroll whitespace-nowrap py-4 overflow-hidden"
-            style={{
-              animation: "scroll 30s linear infinite",
-            }}
+            className="flex space-x-8 whitespace-nowrap py-4 overflow-hidden"
           >
-            {doubledCompanies.map((company, index) => (
-              <div 
-                key={`${company.id}-${index}`}
-                className="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center rounded-lg transition-transform hover:scale-105"
-                aria-label={`${company.name} logo`}
-              >
-                <div className={`w-full h-full ${company.color} rounded flex items-center justify-center p-3 shadow-md`}>
-                  <span className="text-white font-bold text-lg">
-                    {company.name}
-                  </span>
+            <div className="animate-marquee flex space-x-8">
+              {doubledCompanies.map((company, index) => (
+                <div 
+                  key={`${company.id}-${index}`}
+                  className="w-32 h-16 md:w-40 md:h-20 flex items-center justify-center transition-transform hover:scale-105"
+                  aria-label={`${company.name} logo`}
+                >
+                  <div className="w-full h-full bg-card rounded flex items-center justify-center p-3 shadow-sm border border-border/10">
+                    <span className={`font-bold text-lg ${company.color}`}>
+                      {company.name}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Add gradient overlays for a fade effect */}
@@ -85,20 +84,22 @@ export function SocialProofSection() {
         </div>
       </ResponsiveContainer>
       
-      {/* Add animation keyframes to make it scroll */}
-      <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes marquee {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(calc(-50% - 1rem));
+            }
           }
-          100% {
-            transform: translateX(-50%);
+          
+          .animate-marquee {
+            animation: marquee 30s linear infinite;
           }
-        }
-        .animate-scroll {
-          animation: scroll 30s linear infinite;
-        }
-      `}</style>
+        `
+      }} />
     </section>
   );
 }

@@ -110,9 +110,9 @@ export default function Index() {
         <div className="relative z-10">
           <HeroSection />
           <HowItWorksSection />
+          <SocialProofSection />
           <BenefitsSection />
           <TestimonialsSection />
-          <SocialProofSection />
         </div>
       </div>
       
