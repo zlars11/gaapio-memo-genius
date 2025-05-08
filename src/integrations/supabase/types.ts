@@ -234,6 +234,33 @@ export type Database = {
         }
         Relationships: []
       }
+      price_history: {
+        Row: {
+          created_at: string
+          effective_from: string
+          id: string
+          price: number
+          product_type: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from?: string
+          id?: string
+          price: number
+          product_type: string
+          tier: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          id?: string
+          price?: number
+          product_type?: string
+          tier?: string
+        }
+        Relationships: []
+      }
       product_prices: {
         Row: {
           created_at: string | null

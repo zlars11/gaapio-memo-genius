@@ -10,12 +10,12 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pt-24 pb-16"> {/* Adjusted padding for new header height */}
+      <main className="flex-1 pt-20 pb-16"> {/* Adjusted padding for better spacing */}
         <ResponsiveContainer className="max-w-5xl mb-16">
-          <div className="mt-8"> {/* Added top margin for better spacing */}
+          <div className="mt-4"> {/* Reduced top margin to minimize gap */}
             <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
             
-            <p className="text-lg text-muted-foreground mb-12 leading-7">
+            <p className="text-lg text-muted-foreground mb-8 leading-7">
               Have questions about our AI-powered accounting memo platform? Want to learn more about how we can help your team? Fill out the form below and our team will get back to you shortly.
             </p>
             
@@ -24,8 +24,8 @@ export default function Contact() {
               <ContactForm />
             </div>
             
-            {/* Contact cards stacked vertically and centered */}
-            <div className="max-w-lg mx-auto space-y-6 mb-8">
+            {/* Contact cards side by side */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">

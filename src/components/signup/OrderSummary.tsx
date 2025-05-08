@@ -109,21 +109,18 @@ export function OrderSummary({
         <CardHeader>
           <CardTitle>Your Subscription</CardTitle>
           <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-4">
-            <div>
-              <ul className="space-y-2 mb-6">
-                {getIncludedFeatures().map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
           
+          <div className="space-y-2 mt-2">
+            {getIncludedFeatures().map((feature, index) => (
+              <div key={index} className="flex items-start">
+                <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+        </CardHeader>
+        
+        <CardContent className="space-y-4">
           <div className="flex flex-col space-y-4 divide-y divide-border">
             <div className="flex justify-between py-2">
               <span className="font-medium">{getTierName()} {getProductName()}</span>

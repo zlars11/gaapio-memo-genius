@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -85,9 +84,9 @@
     overflow-x: hidden;
   }
 
-  /* Updated global fix for header overlap for all pages - ensure consistent padding */
+  /* Updated global fix for header overlap for all pages - reduced padding-top */
   main {
-    @apply pt-20 pb-20;
+    @apply pt-16 pb-16;
   }
 
   /* Improved focus styles for accessibility */
@@ -219,7 +218,7 @@
   }
 }
 
-/* Update page container for consistent spacing */
+/* Update page container for consistent spacing - reduced padding */
 .page-container {
-  @apply pt-36 pb-20;
+  @apply pt-24 pb-16;
 }
