@@ -101,8 +101,7 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
       features: [
         "Unlimited AI-generated technical accounting memos",
         "Unlimited AI-generated technical accounting disclosures",
-        "Discounted bundled pricing",
-        "Unified workflow"
+        "Discounted bundled pricing"
       ]
     }
   ];

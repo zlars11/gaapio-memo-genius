@@ -76,15 +76,12 @@ export function OrderSummary({
     
     // Product-specific features
     if (selectedProduct === "memos") {
-      features.push("Unlimited AI-generated memos");
-      if (addDisclosures) {
-        features.push("Unlimited AI-generated disclosures");
-      }
+      features.push("Unlimited AI-generated technical accounting memos");
     } else if (selectedProduct === "disclosures") {
-      features.push("Unlimited AI-generated disclosures");
+      features.push("Unlimited AI-generated technical accounting disclosures");
     } else if (selectedProduct === "bundle") {
-      features.push("Unlimited AI-generated memos");
-      features.push("Unlimited AI-generated disclosures");
+      features.push("Unlimited AI-generated technical accounting memos");
+      features.push("Unlimited AI-generated technical accounting disclosures");
     }
     
     // Tier-specific features
