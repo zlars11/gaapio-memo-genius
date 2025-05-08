@@ -8,6 +8,7 @@ import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Logo } from "./logo";
 
 export function Header() {
   const { theme } = useTheme();
@@ -28,14 +29,7 @@ export function Header() {
     <header className="bg-background sticky top-0 z-50 w-full border-b">
       <div className="container flex h-16 items-center justify-between py-4">
         <Link to="/" className="mr-4 flex items-center font-bold">
-          <Avatar className="mr-2 h-8 w-8">
-            <AvatarImage 
-              src={theme === "dark" ? "/gaapio-favicon-dark-cropped.png" : "/gaapio-favicon-light-cropped.png"} 
-              alt="Gaapio logo" 
-            />
-            <AvatarFallback>G</AvatarFallback>
-          </Avatar>
-          <span>Gaapio</span>
+          <Logo className="h-8 w-auto" />
         </Link>
         <div className="mx-6 flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
           <nav className="hidden lg:flex gap-6">

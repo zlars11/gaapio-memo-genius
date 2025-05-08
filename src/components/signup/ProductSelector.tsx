@@ -11,33 +11,24 @@ interface ProductSelectorProps {
 }
 
 export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier }: ProductSelectorProps) {
-  // Function to get user limit based on tier
-  const getUserLimit = (tier: string) => {
-    if (tier === "enterprise") return "Unlimited users";
-    if (tier === "mid") return "Up to 6 users";
-    return "Up to 3 users";
-  };
-
-  // Function to check if audit package is included based on tier
-  const hasAuditPackage = (tier: string) => {
-    return tier === "mid" || tier === "enterprise";
-  };
-
   const products = [
     {
       id: "memos",
       title: "Memos",
       description: "AI-generated accounting memos",
+      feature: "Unlimited AI-generated memos"
     },
     {
       id: "disclosures",
       title: "Disclosures",
       description: "AI-generated financial disclosures",
+      feature: "Unlimited AI-generated disclosures"
     },
     {
       id: "bundle",
       title: "Both (Bundle)",
       description: "AI-generated memos and disclosures",
+      feature: "Unlimited AI-generated memos + Unlimited AI-generated disclosures",
       popular: true,
     }
   ];
@@ -76,28 +67,8 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>{getUserLimit(selectedTier)}</span>
+                  <span>{product.feature}</span>
                 </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>Unlimited {product.id === "bundle" 
-                    ? "AI-generated memos and disclosures" 
-                    : `AI-generated ${product.id}`}</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>Internal approvals</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>Version history</span>
-                </li>
-                {hasAuditPackage(selectedTier) && (
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                    <span>Audit package</span>
-                  </li>
-                )}
               </ul>
             </CardContent>
             <CardFooter>

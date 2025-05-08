@@ -10,27 +10,25 @@ interface TierSelectorProps {
 }
 
 export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) {
+  // Define the tiers with their features
   const tiers = [
     {
       id: "emerging",
       title: "Emerging",
       description: "Up to 3 users",
-      price: "$400",
-      features: ["Internal approvals", "Version history"]
+      features: ["Version history"]
     },
     {
       id: "mid",
       title: "Mid-Market",
       description: "Up to 6 users",
-      price: "$700",
-      features: ["Internal approvals", "Version history", "Audit package"]
+      features: ["Version history", "Internal approvals"]
     },
     {
       id: "enterprise",
       title: "Enterprise",
       description: "Unlimited users",
-      price: "$1,000",
-      features: ["Internal approvals", "Version history", "Audit package"]
+      features: ["Version history", "Internal approvals", "Audit package"]
     }
   ];
 
@@ -59,7 +57,6 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                 )}
               </CardTitle>
               <p className="text-sm text-muted-foreground">{tier.description}</p>
-              <p className="text-2xl font-bold mt-2">{tier.price}<span className="text-sm font-normal">/month</span></p>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
