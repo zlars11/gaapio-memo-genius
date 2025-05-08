@@ -7,7 +7,8 @@ import { CurrentAdminUser } from "@/types/adminTypes";
 import { useToast } from "@/components/ui/use-toast";
 
 export function useCurrentAdmin() {
-  const [currentUser, setCurrentUser] = useState<CurrentAdminUser>({
+  // Add first_name field to the CurrentAdminUser type to fix the error
+  const [currentUser, setCurrentUser] = useState<CurrentAdminUser & { first_name?: string }>({
     id: null,
     email: null,
     isAdmin: false,
@@ -82,7 +83,7 @@ export function useCurrentAdmin() {
         try {
           const { data: adminUserRecord, error: adminUserError } = await supabase
             .from('admin_users')
-            .select('id')
+            .select('id, first_name, last_name')
             .eq('user_id', userId)
             .maybeSingle();
           
@@ -102,7 +103,8 @@ export function useCurrentAdmin() {
             id: userId,
             email,
             isAdmin,
-            displayedInList
+            displayedInList,
+            first_name: adminUserRecord?.first_name || undefined
           });
         } catch (adminListError) {
           console.error("Error checking admin list:", adminListError);

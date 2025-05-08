@@ -6,9 +6,10 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 interface AdminFetchErrorAlertProps {
   error: string | null;
   onRetry: () => void;
+  loading?: boolean;
 }
 
-export function AdminFetchErrorAlert({ error, onRetry }: AdminFetchErrorAlertProps) {
+export function AdminFetchErrorAlert({ error, onRetry, loading }: AdminFetchErrorAlertProps) {
   // If no error, don't render anything
   if (!error) return null;
   
@@ -23,8 +24,9 @@ export function AdminFetchErrorAlert({ error, onRetry }: AdminFetchErrorAlertPro
           size="sm" 
           className="w-fit mt-2"
           onClick={onRetry}
+          disabled={loading}
         >
-          <RefreshCw className="h-3 w-3 mr-2" />
+          <RefreshCw className={`h-3 w-3 mr-2 ${loading ? 'animate-spin' : ''}`} />
           Try Again
         </Button>
       </AlertDescription>

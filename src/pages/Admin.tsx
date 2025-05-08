@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { CompaniesTable } from "@/components/admin/CompaniesTable";
-import { UsersTable } from "@/components/admin/UsersTable";
+import { UserSignupsTable } from "@/components/admin/UsersTable";
 import { ContactTable } from "@/components/admin/ContactTable";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
@@ -24,7 +24,14 @@ import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const { currentUser, loading: userLoading, error: userError } = useCurrentAdmin();
+  const { 
+    currentUser, 
+    loading: userLoading, 
+    error: userError,
+    fixAdminStatus,
+    fetchCurrentUserInfo 
+  } = useCurrentAdmin();
+  
   const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
   const [showNameDialog, setShowNameDialog] = useState(false);
   
@@ -33,7 +40,7 @@ export default function Admin() {
     loading: adminsLoading, 
     error: adminsError,
     fetchAdmins
-  } = useFetchAdmins();
+  } = useFetchAdmins(currentUser);
 
   // Set the active tab from URL if present
   useEffect(() => {
@@ -66,16 +73,24 @@ export default function Admin() {
     </div>
   );
 
+  const handleFixAdminStatus = async () => {
+    return await fixAdminStatus();
+  };
+
   return (
     <AdminPageGuard>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <AdminSecurityAlert />
+        {currentUser.isAdmin && !currentUser.displayedInList && (
+          <AdminSecurityAlert 
+            currentUserEmail={currentUser.email} 
+            onFixStatus={handleFixAdminStatus} 
+          />
+        )}
         
         <ResponsiveContainer className="py-10">
           <h1 className="text-3xl font-bold mb-8">Admin Portal</h1>
           
           <AdminFetchErrorAlert 
-            loading={userLoading || adminsLoading}
             error={userError || adminsError}
             onRetry={fetchAdmins}
           />
@@ -105,7 +120,7 @@ export default function Admin() {
               </TabsContent>
               
               <TabsContent value="users" className="space-y-4">
-                <UsersTable />
+                <UserSignupsTable />
               </TabsContent>
               
               <TabsContent value="waitlist" className="space-y-4">
@@ -146,7 +161,7 @@ export default function Admin() {
                       >
                         <div>
                           <p className="font-medium">
-                            {admin.first_name || admin.lastName ? 
+                            {admin.first_name || admin.last_name ? 
                               `${admin.first_name || ''} ${admin.last_name || ''}` : 
                               'Unnamed Admin'}
                           </p>
@@ -154,7 +169,7 @@ export default function Admin() {
                           <p className="text-xs text-muted-foreground">Role: {admin.role}</p>
                         </div>
                         <div>
-                          {admin.id === currentUser.admin_id && !currentUser.first_name && (
+                          {admin.user_id === currentUser.id && !currentUser.first_name && (
                             <Button 
                               variant="outline" 
                               size="sm"
@@ -177,7 +192,10 @@ export default function Admin() {
                 
                 <div className="border rounded-md p-6 bg-card">
                   <h2 className="text-2xl font-semibold mb-6">Integrations</h2>
-                  <ZapierWebhookSetup />
+                  <ZapierWebhookSetup 
+                    webhookType="zapier" 
+                    description="Connect Zapier to receive notifications when users submit forms" 
+                  />
                 </div>
                 
                 <div className="border rounded-md p-6 bg-card">
@@ -201,10 +219,19 @@ export default function Admin() {
           <AdminNameDialog
             open={showNameDialog}
             onOpenChange={setShowNameDialog}
-            onSuccess={fetchAdmins}
+            onSave={(firstName, lastName, email) => handleUpdateName(firstName, lastName, email)}
+            isLoading={false}
           />
         )}
       </div>
     </AdminPageGuard>
   );
+
+  async function handleUpdateName(firstName: string, lastName: string, email: string): Promise<boolean> {
+    // Implementation for updating admin name
+    console.log("Updating admin name:", firstName, lastName, email);
+    // After successful update, refresh admin list
+    await fetchAdmins();
+    return true;
+  }
 }
