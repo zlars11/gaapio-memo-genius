@@ -30,7 +30,7 @@ export default function FAQ() {
                     What types of memos can Gaapio create?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    <p className="mb-4">
+                    <p>
                       Gaapio can generate a wide range of technical accounting memos including Revenue Recognition (ASC 606), Leases (ASC 842), Business Combinations (ASC 805), Fair Value Measurements (ASC 820), Impairment (ASC 350 / ASC 360), Debt and Equity (ASC 470 / ASC 480), Stock-Based Compensation (ASC 718), Income Taxes (ASC 740), Financial Instruments (ASC 815), Segment Reporting (ASC 280), Commitments and Contingencies (ASC 450), and more. Our AI system is trained on the latest accounting standards and best practices.
                     </p>
                   </AccordionContent>

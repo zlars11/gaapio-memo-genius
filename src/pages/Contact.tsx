@@ -15,7 +15,7 @@ export default function Contact() {
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
             
-            <p className="text-lg text-muted-foreground mb-8 leading-7 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground mb-8 leading-7 max-w-3xl mx-auto text-center">
               Have questions about our AI-powered accounting memo platform? Want to learn more about how we can help your team? Fill out the form below and our team will get back to you shortly.
             </p>
           </div>
