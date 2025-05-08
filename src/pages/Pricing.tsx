@@ -39,6 +39,7 @@ export default function Pricing() {
   const [addDisclosures, setAddDisclosures] = useState(false);
   const [cpaReviewCount, setCpaReviewCount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const { toast } = useToast();
   
   // Reset add-ons when product changes
@@ -52,7 +53,14 @@ export default function Pricing() {
   const currentFeatures = getProductFeatures(product, tier);
   
   // Calculate total price
-  const totalPrice = calculateTotalPrice(product, tier, addDisclosures, cpaReviewCount);
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const price = await calculateTotalPrice(product, tier, addDisclosures, cpaReviewCount);
+      setTotalPrice(price);
+    };
+    
+    fetchPrice();
+  }, [product, tier, addDisclosures, cpaReviewCount]);
   
   // Handle checkout
   const handleCheckout = async () => {
@@ -62,7 +70,7 @@ export default function Pricing() {
       // Get price IDs based on selection
       const priceIds = getSelectedPriceIds(product, tier, addDisclosures, cpaReviewCount);
       
-      // Call the create-checkout function (will be implemented next)
+      // Call the create-checkout function
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           priceIds,
@@ -165,7 +173,7 @@ export default function Pricing() {
                     tier="emerging"
                     product={product}
                     features={currentFeatures}
-                    price={400}
+                    price={totalPrice}
                   />
                 </TabsContent>
                 <TabsContent value="midMarket">
@@ -173,7 +181,7 @@ export default function Pricing() {
                     tier="midMarket"
                     product={product}
                     features={currentFeatures}
-                    price={700}
+                    price={totalPrice}
                     popular={true}
                   />
                 </TabsContent>
@@ -182,7 +190,7 @@ export default function Pricing() {
                     tier="enterprise"
                     product={product}
                     features={currentFeatures}
-                    price={1000}
+                    price={totalPrice}
                   />
                 </TabsContent>
               </div>
@@ -195,28 +203,6 @@ export default function Pricing() {
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  {/* Disclosures add-on (only when Memos is selected) */}
-                  {product === "memos" && (
-                    <div className="flex items-start space-x-3">
-                      <Checkbox 
-                        id="disclosures-addon" 
-                        checked={addDisclosures}
-                        onCheckedChange={(checked) => setAddDisclosures(checked as boolean)}
-                      />
-                      <div>
-                        <label 
-                          htmlFor="disclosures-addon" 
-                          className="text-base font-medium cursor-pointer"
-                        >
-                          Add Disclosures
-                        </label>
-                        <p className="text-sm text-muted-foreground">
-                          Add AI-generated financial disclosures to your plan
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  
                   {/* CPA Review add-on */}
                   <div className="flex items-start space-x-3">
                     <div className="flex-1">
@@ -278,14 +264,7 @@ export default function Pricing() {
                     </span>
                   </div>
                   
-                  {/* Add-ons */}
-                  {(product === "memos" && addDisclosures) && (
-                    <div className="flex justify-between">
-                      <span className="font-medium">Add-on:</span>
-                      <span>Disclosures Add-on</span>
-                    </div>
-                  )}
-                  
+                  {/* CPA Review */}
                   {cpaReviewCount > 0 && (
                     <div className="flex justify-between">
                       <span className="font-medium">CPA Review:</span>

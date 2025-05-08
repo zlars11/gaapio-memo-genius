@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -15,6 +14,9 @@ interface PriceItem {
   price: number;
   product_type: string;
   tier: string;
+  stripe_price_id: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export function PricingManagement() {
@@ -95,6 +97,7 @@ export function PricingManagement() {
       case "emerging": return "Emerging";
       case "midMarket": return "Mid-Market";
       case "enterprise": return "Enterprise";
+      case "all": return "All Tiers";
       default: return tier;
     }
   };
@@ -181,7 +184,7 @@ export function PricingManagement() {
                   <div key={price.id} className="grid grid-cols-4 gap-4 items-center border-b py-3">
                     <div>{formatProductType(price.product_type)}</div>
                     <div>
-                      {price.tier === 'all' ? 'All Tiers' : formatTierName(price.tier)}
+                      {formatTierName(price.tier)}
                     </div>
                     <div>
                       <Input

@@ -1,91 +1,78 @@
 
-// Follow this setup guide to integrate the Deno language server with your editor:
-// https://deno.land/manual/getting_started/setup_your_environment
-// This enables autocomplete, go to definition, etc.
-
-import { stripe } from '../_shared/stripe.ts'
-import { corsHeaders } from '../_shared/cors.ts'
-import { getPriceInfo } from '../_shared/prices.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
+import { stripe } from "../_shared/stripe.ts"
+import { corsHeaders } from "../_shared/cors.ts"
+import { getPriceInfo } from "../_shared/prices.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1"
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
-const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || ''
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
-interface CreateCheckoutBody {
-  priceIds: string[]
-  successUrl: string
-  cancelUrl: string
-  customerEmail?: string
-  metadata?: Record<string, string>
-}
-
-Deno.serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Get request body
-    const body: CreateCheckoutBody = await req.json()
-    const { priceIds, successUrl, cancelUrl, customerEmail, metadata = {} } = body
+    // Get the request body
+    const { priceIds, successUrl, cancelUrl } = await req.json()
 
-    console.log('Creating checkout session with price IDs:', priceIds)
-    
+    // Validate the request
     if (!priceIds || !Array.isArray(priceIds) || priceIds.length === 0) {
       return new Response(
-        JSON.stringify({ error: 'Missing or invalid price IDs' }),
+        JSON.stringify({ error: 'Invalid request: priceIds must be a non-empty array' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // Lookup prices from database instead of hardcoding them
-    const lineItems = await Promise.all(
-      priceIds.map(async (priceId) => {
-        const priceInfo = await getPriceInfo(supabase, priceId)
-        if (!priceInfo) {
-          throw new Error(`Price not found: ${priceId}`)
-        }
-        
-        return {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: priceInfo.name,
-            },
-            unit_amount: priceInfo.price * 100, // Convert to cents
-            recurring: {
-              interval: 'month',
-              interval_count: 1,
-            },
-          },
-          quantity: 1,
-        }
-      })
-    )
+    if (!successUrl || !cancelUrl) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request: successUrl and cancelUrl are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
-    // Create checkout session
+    // Create a supabase client
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    // Get price details for each ID
+    const lineItems = []
+    
+    for (const priceId of priceIds) {
+      const price = await getPriceInfo(supabase, priceId)
+      
+      if (!price) {
+        return new Response(
+          JSON.stringify({ error: `Price ID not found: ${priceId}` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+      
+      lineItems.push({
+        price: priceId,
+        quantity: 1,
+      })
+    }
+
+    // Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'subscription',
       success_url: successUrl,
       cancel_url: cancelUrl,
-      customer_email: customerEmail,
-      metadata,
-      allow_promotion_codes: true,
+      billing_address_collection: 'required',
     })
 
+    // Return the checkout URL
     return new Response(
       JSON.stringify({ checkoutUrl: session.url }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating checkout session:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }

@@ -91,19 +91,21 @@ export const getProductFeatures = (
 export const getPrice = async (
   productType: "memos" | "disclosures" | "bundle",
   tier: "emerging" | "midMarket" | "enterprise"
-) => {
+): Promise<number> => {
   try {
     // Import supabase client here to avoid circular dependencies
     const { supabase } = await import("@/integrations/supabase/client");
     
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('product_prices')
       .select('price')
       .eq('product_type', productType)
       .eq('tier', tier)
       .single();
       
-    if (data && data.price) {
+    if (error) throw error;
+    
+    if (data && data.price !== undefined) {
       return data.price;
     }
   } catch (error) {
@@ -120,7 +122,7 @@ export const calculateTotalPrice = async (
   tier: "emerging" | "midMarket" | "enterprise",
   addDisclosures: boolean,
   cpaReviewCount: number
-) => {
+): Promise<number> => {
   try {
     // Get base price
     let total = await getPrice(product, tier);
@@ -130,14 +132,16 @@ export const calculateTotalPrice = async (
       try {
         const { supabase } = await import("@/integrations/supabase/client");
         
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('product_prices')
           .select('price')
           .eq('product_type', 'addon_disclosure')
           .eq('tier', tier)
           .single();
           
-        if (data && data.price) {
+        if (error) throw error;
+        
+        if (data && data.price !== undefined) {
           total += data.price;
         } else {
           total += PRICING_INFO.addons.disclosures[tier];
@@ -152,14 +156,16 @@ export const calculateTotalPrice = async (
       try {
         const { supabase } = await import("@/integrations/supabase/client");
         
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('product_prices')
           .select('price')
           .eq('product_type', 'addon_cpa')
           .eq('tier', 'all')
           .single();
           
-        if (data && data.price) {
+        if (error) throw error;
+        
+        if (data && data.price !== undefined) {
           total += data.price * cpaReviewCount;
         } else {
           total += PRICING_INFO.addons.cpaReview * cpaReviewCount;

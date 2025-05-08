@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { calculateTotalPrice } from "@/utils/priceUtils";
 
 interface OrderSummaryProps {
   selectedTier: string;
@@ -20,14 +22,26 @@ export function OrderSummary({
   isLoading,
   onSubscribe
 }: OrderSummaryProps) {
-  // Tier pricing
-  const getTierBasePrice = () => {
-    switch (selectedTier) {
-      case "enterprise": return 1000;
-      case "mid": return 700;
-      default: return 400; // emerging
-    }
-  };
+  const [total, setTotal] = useState<number>(0);
+  
+  // Convert tier and product to match our utility types
+  const productType = selectedProduct as "memos" | "disclosures" | "bundle";
+  const tierType = selectedTier === "mid" ? "midMarket" : selectedTier as "emerging" | "enterprise";
+  
+  // Load dynamic price when component mounts or dependencies change
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const calculatedTotal = await calculateTotalPrice(
+        productType, 
+        tierType,
+        addDisclosures,
+        cpaReviewCount
+      );
+      setTotal(calculatedTotal);
+    };
+    
+    fetchPrice();
+  }, [productType, tierType, addDisclosures, cpaReviewCount]);
 
   // Get tier display name
   const getTierName = () => {
@@ -45,16 +59,6 @@ export function OrderSummary({
       case "bundle": return "Bundle";
       default: return "Memos";
     }
-  };
-
-  // Calculate total
-  const calculateTotal = () => {
-    let total = getTierBasePrice();
-    
-    // Add CPA review
-    total += cpaReviewCount * 1000;
-    
-    return total;
   };
 
   // Format price for display
@@ -123,19 +127,19 @@ export function OrderSummary({
           <div className="flex flex-col space-y-4 divide-y divide-border">
             <div className="flex justify-between py-2">
               <span className="font-medium">{getTierName()} {getProductName()}</span>
-              <span>{formatPrice(getTierBasePrice())}/month</span>
+              <span>{formatPrice(total)}/month</span>
             </div>
             
             {cpaReviewCount > 0 && (
               <div className="flex justify-between py-2">
                 <span className="font-medium">CPA Review × {cpaReviewCount}</span>
-                <span>+{formatPrice(cpaReviewCount * 1000)}/month</span>
+                <span>Included in total</span>
               </div>
             )}
             
             <div className="flex justify-between pt-4 font-bold text-lg">
               <span>Total</span>
-              <span>{formatPrice(calculateTotal())}/month</span>
+              <span>{formatPrice(total)}/month</span>
             </div>
           </div>
           

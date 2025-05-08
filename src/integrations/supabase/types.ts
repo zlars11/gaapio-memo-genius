@@ -234,6 +234,39 @@ export type Database = {
         }
         Relationships: []
       }
+      product_prices: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          price: number
+          product_type: string
+          stripe_price_id: string
+          tier: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          price: number
+          product_type: string
+          stripe_price_id: string
+          tier: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          price?: number
+          product_type?: string
+          stripe_price_id?: string
+          tier?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           company_id: string | null
