@@ -6,8 +6,6 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Logo } from "./logo";
 
 export function Header() {
@@ -18,53 +16,39 @@ export function Header() {
     setMounted(true);
   }, []);
 
-  // Update navigation links to remove Pricing
+  // Update navigation links to match the screenshot
   const navigationLinks = [
-    { href: "/about-us", label: "About" },
+    { href: "/about-us", label: "About Us" },
     { href: "/contact", label: "Contact" },
     { href: "/resources", label: "Resources" },
+    { href: "/faq", label: "FAQ" },
+    { href: "/blog", label: "Blog" },
   ];
 
   return (
     <header className="bg-background sticky top-0 z-50 w-full border-b">
       <div className="container flex h-16 items-center justify-between py-4">
         <Link to="/" className="mr-4 flex items-center font-bold">
-          <Logo className="h-8 w-auto" />
+          <Logo className="h-10 w-auto" />
         </Link>
-        <div className="mx-6 flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
-          <nav className="hidden lg:flex gap-6">
+        <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
+          <nav className="hidden lg:flex gap-8">
             {navigationLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="text-base font-medium hover:underline underline-offset-4"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
+          <Button variant="default" className="hidden lg:flex" asChild>
+            <Link to="/contact">
+              Request a Demo
+            </Link>
+          </Button>
           <ModeToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Sign In
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/login">
-                  Login
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/signup">
-                  Sign Up
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <Sheet>
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" aria-label="Menu">
@@ -90,16 +74,10 @@ export function Header() {
                     </Link>
                   ))}
                   <Link
-                    to="/login"
+                    to="/contact"
                     className="text-lg font-medium hover:underline underline-offset-4"
                   >
-                    Login
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="text-lg font-medium hover:underline underline-offset-4"
-                  >
-                    Sign Up
+                    Request a Demo
                   </Link>
                 </nav>
               </div>
