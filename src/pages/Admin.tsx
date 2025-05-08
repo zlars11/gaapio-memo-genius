@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PriceHistoryViewer } from "@/components/admin/PriceHistoryViewer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function Admin() {
@@ -89,7 +88,6 @@ export default function Admin() {
                 <TabsTrigger value="firms">Firms</TabsTrigger>
                 <TabsTrigger value="demos">Demo Requests</TabsTrigger>
                 <TabsTrigger value="pricing">Pricing</TabsTrigger>
-                <TabsTrigger value="priceHistory">Price History</TabsTrigger>
                 <TabsTrigger value="contact">Contact</TabsTrigger>
                 <TabsTrigger value="webpages">Webpages</TabsTrigger>
               </TabsList>
@@ -153,12 +151,6 @@ export default function Admin() {
           <TabsContent value="pricing">
             <ErrorBoundary fallback={renderFallback("Error loading pricing management")}>
               <PricingManagement />
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="priceHistory">
-            <ErrorBoundary fallback={renderFallback("Error loading price history")}>
-              <PriceHistoryViewer />
             </ErrorBoundary>
           </TabsContent>
           
