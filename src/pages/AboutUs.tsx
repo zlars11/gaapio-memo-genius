@@ -18,7 +18,10 @@ export default function AboutUs() {
           <div className="container px-4 md:px-6">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">Gaapio is bringing simplicity back to accounting</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6">About Gaapio</h1>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  We're bringing simplicity back to accounting
+                </p>
               </div>
               
               <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -58,7 +61,7 @@ export default function AboutUs() {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 border-b">
+        <section className="py-16 md:py-24 border-b bg-muted/30">
           <div className="container px-4 md:px-6">
             <div className="max-w-5xl mx-auto">
               <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -77,7 +80,7 @@ export default function AboutUs() {
                   </p>
                 </div>
                 
-                <div className="rounded-xl overflow-hidden border">
+                <div className="rounded-xl overflow-hidden border shadow-sm">
                   <img 
                     src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" 
                     alt="Gaapio team collaborating" 
@@ -94,7 +97,7 @@ export default function AboutUs() {
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold mb-12 text-center">Backed by the best</h2>
               
-              <p className="text-lg text-center mb-16">
+              <p className="text-lg text-center mb-16 max-w-3xl mx-auto">
                 We are grateful to work with some of the best investors in innovation. Our backers include highly 
                 accomplished venture firms, product builders, and accounting professionals.
               </p>
