@@ -39,9 +39,9 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     <img
       src={isDark ? darkModeLogo : lightModeLogo}
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-      width={160}
-      height={48}
-      className={`h-8 w-auto object-contain transition-all duration-200 ${className}`}
+      width={480}
+      height={144}
+      className={`h-24 w-auto object-contain transition-all duration-200 ${className}`}
       loading="eager"
       decoding="async"
       draggable={false}

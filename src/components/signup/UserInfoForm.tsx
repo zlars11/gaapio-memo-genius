@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 
 interface UserInfoFormProps {
   onSubmit: (userData: UserFormData) => void;
@@ -30,6 +30,7 @@ export function UserInfoForm({ onSubmit, onBack, isLoading }: UserInfoFormProps)
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,6 +39,11 @@ export function UserInfoForm({ onSubmit, onBack, isLoading }: UserInfoFormProps)
     // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+
+    // Clear general submission error when user makes changes
+    if (submissionError) {
+      setSubmissionError(null);
     }
   };
   
@@ -59,11 +65,17 @@ export function UserInfoForm({ onSubmit, onBack, isLoading }: UserInfoFormProps)
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmissionError(null);
     
     if (validateForm()) {
-      onSubmit(formData);
+      try {
+        onSubmit(formData);
+      } catch (error: any) {
+        console.error("Error submitting form:", error);
+        setSubmissionError(error.message || "An error occurred while submitting your information. Please try again.");
+      }
     }
   };
   
@@ -139,6 +151,12 @@ export function UserInfoForm({ onSubmit, onBack, isLoading }: UserInfoFormProps)
               />
               {errors.company && <p className="text-red-500 text-xs">{errors.company}</p>}
             </div>
+
+            {submissionError && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
+                <p className="text-sm">{submissionError}</p>
+              </div>
+            )}
           </CardContent>
           
           <CardFooter className="flex justify-between">

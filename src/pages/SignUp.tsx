@@ -89,39 +89,36 @@ export default function SignUp() {
   // Handle user info submission
   const handleUserInfoSubmit = async (formData: UserFormData) => {
     setUserInfo(formData);
-    handleCreateSubscription(formData);
-  };
-
-  // Handle firm contact form submission
-  const handleFirmFormSuccess = (data: any) => {
-    toast({
-      title: "Form Submitted",
-      description: "Thanks for your interest! Our team will be in touch with you shortly.",
-    });
-    navigate("/");
-  };
-
-  // Handle subscription creation with user info
-  const handleCreateSubscription = async (userData: UserFormData) => {
     setIsLoading(true);
     setError(null);
 
     try {
       // First create or get the user and company
+      console.log("Creating user and company with data:", {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        tier: selectedTier === "mid" ? "midMarket" : selectedTier,
+        product: selectedProduct
+      });
+
       const { data: signupData, error: signupError } = await supabase.functions.invoke("create-user-company", {
         body: {
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
-          phone: userData.phone,
-          company: userData.company,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone || "",
+          company: formData.company,
           tier: selectedTier === "mid" ? "midMarket" : selectedTier,
           product: selectedProduct
         }
       });
 
-      if (signupError) {
-        throw new Error(signupError.message || 'Failed to create user account');
+      if (signupError || !signupData) {
+        console.error("Error creating user/company:", signupError);
+        throw new Error(signupError?.message || 'Failed to create user account');
       }
 
       console.log("User and company created successfully:", signupData);
@@ -142,7 +139,7 @@ export default function SignUp() {
           priceIds,
           successUrl: `${window.location.origin}/success`,
           cancelUrl: `${window.location.origin}/cancel`,
-          userEmail: userData.email,
+          userEmail: formData.email,
           userId: signupData?.userId,
           companyId: signupData?.companyId
         }
@@ -173,6 +170,15 @@ export default function SignUp() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle firm contact form submission
+  const handleFirmFormSuccess = (data: any) => {
+    toast({
+      title: "Form Submitted",
+      description: "Thanks for your interest! Our team will be in touch with you shortly.",
+    });
+    navigate("/");
   };
 
   // Adjust the steps array based on the client type

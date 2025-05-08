@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { Header } from "@/components/header";
+import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { ExternalLink, FileEdit } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -41,6 +44,18 @@ export default function Admin() {
     error: adminsError,
     fetchAdmins
   } = useFetchAdmins(currentUser);
+
+  // List of pages to display in the webpages tab
+  const websitePages = [
+    { title: "Home Page", path: "/", description: "Main landing page" },
+    { title: "About Us", path: "/about-us", description: "Company information page" },
+    { title: "One Pager", path: "/onepager", description: "Product overview in a single page format" },
+    { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
+    { title: "Resources", path: "/resources", description: "Blog and resource content" },
+    { title: "Contact", path: "/contact", description: "Contact form and information" },
+    { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
+    { title: "Sign Up", path: "/signup", description: "User registration flow" }
+  ];
 
   // Set the active tab from URL if present
   useEffect(() => {
@@ -145,8 +160,35 @@ export default function Admin() {
                 <div className="p-6 border rounded-md bg-card">
                   <h2 className="text-2xl font-semibold mb-4">Website Pages Management</h2>
                   <p className="text-muted-foreground mb-6">Manage website pages content and SEO settings</p>
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">Page editor coming soon.</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    {websitePages.map((page) => (
+                      <Card key={page.path} className="overflow-hidden">
+                        <CardContent className="p-4">
+                          <h3 className="font-medium text-lg mb-2">{page.title}</h3>
+                          <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
+                          <div className="flex items-center justify-between mt-2">
+                            <Link 
+                              to={page.path} 
+                              className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink className="h-4 w-4 mr-1" />
+                              View Page
+                            </Link>
+                            <Button variant="outline" size="sm" className="flex items-center">
+                              <FileEdit className="h-4 w-4 mr-1" />
+                              Edit
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  
+                  <div className="text-center py-8 mt-4">
+                    <p className="text-muted-foreground">Full page editor coming soon.</p>
                   </div>
                 </div>
               </TabsContent>

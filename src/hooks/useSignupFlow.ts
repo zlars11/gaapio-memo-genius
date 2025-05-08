@@ -36,6 +36,45 @@ export const useSignupFlow = () => {
     setShowInfoForm(true);
   };
 
+  // Function to handle checkout creation
+  const createCheckout = async (userData: any, productInfo: any) => {
+    setIsLoading(true);
+    try {
+      const priceIds = Array.isArray(productInfo.priceIds) ? 
+        productInfo.priceIds : [productInfo.priceIds];
+      
+      console.log("Creating checkout with price IDs:", priceIds);
+      
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceIds,
+          successUrl: `${window.location.origin}/success`,
+          cancelUrl: `${window.location.origin}/cancel`,
+          userEmail: userData.email,
+          userId: userData.userId,
+          companyId: userData.companyId
+        }
+      });
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || "Failed to create checkout session");
+      }
+      
+      if (data?.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+        return true;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error("Error creating checkout:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     setIsLoading,
@@ -56,5 +95,6 @@ export const useSignupFlow = () => {
     handlePlanChange,
     handleBackFromPayment,
     handleSubscribeClick,
+    createCheckout
   };
 };
