@@ -45,7 +45,7 @@ export default function Admin() {
     fetchAdmins
   } = useFetchAdmins(currentUser);
 
-  // List of pages to display in the webpages tab
+  // List of pages to display in the webpages tab, including hidden pages
   const websitePages = [
     { title: "Home Page", path: "/", description: "Main landing page" },
     { title: "About Us", path: "/about-us", description: "Company information page" },
@@ -54,7 +54,15 @@ export default function Admin() {
     { title: "Resources", path: "/resources", description: "Blog and resource content" },
     { title: "Contact", path: "/contact", description: "Contact form and information" },
     { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
-    { title: "Sign Up", path: "/signup", description: "User registration flow" }
+    { title: "Sign Up", path: "/signup", description: "User registration flow" },
+    { title: "Success", path: "/success", description: "Payment success page" },
+    { title: "Cancel", path: "/cancel", description: "Payment cancellation page" },
+    { title: "Privacy", path: "/privacy", description: "Privacy policy page" },
+    { title: "Subscription Agreement", path: "/ssa", description: "Subscription service agreement" },
+    { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
+    { title: "Status", path: "/status", description: "System status page" },
+    { title: "ASC 606", path: "/asc606", description: "ASC 606 information" },
+    { title: "AI Accounting", path: "/ai-accounting", description: "AI Accounting information" }
   ];
 
   // Set the active tab from URL if present

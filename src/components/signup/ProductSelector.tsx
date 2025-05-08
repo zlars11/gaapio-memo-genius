@@ -85,28 +85,22 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
       id: "memos",
       title: "Memos",
       features: [
-        "AI-generated technical accounting memos",
-        "Unlimited memo creation",
-        "Expert review available",
-        "Collaborate with your team"
+        "Unlimited AI-generated technical accounting memos"
       ]
     },
     {
       id: "disclosures",
       title: "Disclosures",
       features: [
-        "AI-generated accounting disclosures",
-        "Unlimited disclosure creation",
-        "Expert review available",
-        "Collaborate with your team"
+        "Unlimited AI-generated technical accounting disclosures"
       ]
     },
     {
       id: "bundle",
-      title: "Memos + Disclosures",
+      title: "Bundle",
       features: [
-        "All Memos features",
-        "All Disclosures features",
+        "Unlimited AI-generated technical accounting memos",
+        "Unlimited AI-generated technical accounting disclosures",
         "Discounted bundled pricing",
         "Unified workflow"
       ]
