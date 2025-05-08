@@ -16,9 +16,6 @@ interface AddOnsSelectorProps {
 }
 
 export function AddOnsSelector({
-  selectedProduct,
-  addDisclosures,
-  onAddDisclosuresChange,
   cpaReviewCount,
   onCpaReviewCountChange
 }: AddOnsSelectorProps) {
@@ -36,28 +33,6 @@ export function AddOnsSelector({
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Step 3: Add-Ons (Optional)</h2>
       <div className="space-y-4">
-        {selectedProduct === "memos" && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Add Disclosures</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Add AI-generated financial disclosures to your plan
-                  </p>
-                  <p className="font-medium">+$300/month</p>
-                </div>
-                <Switch
-                  checked={addDisclosures}
-                  onCheckedChange={onAddDisclosuresChange}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">CPA Review</CardTitle>

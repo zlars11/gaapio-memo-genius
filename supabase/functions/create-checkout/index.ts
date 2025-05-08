@@ -1,116 +1,92 @@
+
 // Follow this setup guide to integrate the Deno language server with your editor:
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0"
-import Stripe from "https://esm.sh/stripe@14.21.0"
+import { stripe } from '../_shared/stripe.ts'
+import { corsHeaders } from '../_shared/cors.ts'
+import { getPriceInfo } from '../_shared/prices.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || ''
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
-serve(async (req) => {
-  // Handle CORS preflight request
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+interface CreateCheckoutBody {
+  priceIds: string[]
+  successUrl: string
+  cancelUrl: string
+  customerEmail?: string
+  metadata?: Record<string, string>
+}
+
+Deno.serve(async (req) => {
+  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Get the request body
-    const { priceIds, successUrl, cancelUrl } = await req.json();
+    // Get request body
+    const body: CreateCheckoutBody = await req.json()
+    const { priceIds, successUrl, cancelUrl, customerEmail, metadata = {} } = body
+
+    console.log('Creating checkout session with price IDs:', priceIds)
     
     if (!priceIds || !Array.isArray(priceIds) || priceIds.length === 0) {
-      throw new Error('Invalid price IDs');
-    }
-    
-    // Initialize Stripe client
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-      apiVersion: '2023-10-16',
-    });
-
-    // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    );
-
-    // Get the JWT token from the request header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('Authorization header is missing');
-    }
-    const token = authHeader.replace('Bearer ', '');
-
-    // Get the user from the JWT token
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
-    
-    if (userError || !user) {
-      throw new Error('Invalid user token');
+      return new Response(
+        JSON.stringify({ error: 'Missing or invalid price IDs' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
-    // Check if the user already exists as a customer in Stripe
-    const { data: customers } = await stripe.customers.list({
-      email: user.email,
-      limit: 1,
-    });
+    // Lookup prices from database instead of hardcoding them
+    const lineItems = await Promise.all(
+      priceIds.map(async (priceId) => {
+        const priceInfo = await getPriceInfo(supabase, priceId)
+        if (!priceInfo) {
+          throw new Error(`Price not found: ${priceId}`)
+        }
+        
+        return {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: priceInfo.name,
+            },
+            unit_amount: priceInfo.price * 100, // Convert to cents
+            recurring: {
+              interval: 'month',
+              interval_count: 1,
+            },
+          },
+          quantity: 1,
+        }
+      })
+    )
 
-    let customerId;
-
-    // If the user exists as a customer in Stripe, use their customer ID
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    } else {
-      // Otherwise, create a new customer in Stripe
-      const customer = await stripe.customers.create({
-        email: user.email,
-        metadata: {
-          userId: user.id,
-        },
-      });
-      customerId = customer.id;
-    }
-
-    // Format line items for Stripe checkout
-    const lineItems = priceIds.map(priceId => ({
-      price: priceId,
-      quantity: 1,
-    }));
-
-    // Create a checkout session
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'subscription',
-      success_url: successUrl || `${req.headers.get('origin')}/success`,
-      cancel_url: cancelUrl || `${req.headers.get('origin')}/cancel`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      customer_email: customerEmail,
+      metadata,
       allow_promotion_codes: true,
-      metadata: {
-        userId: user.id,
-      },
-    });
+    })
 
-    // Return the checkout URL
     return new Response(
-      JSON.stringify({ 
-        checkoutUrl: session.url,
-        sessionId: session.id 
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      },
+      JSON.stringify({ checkoutUrl: session.url }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error) {
-    // Return error message
+    console.error('Error creating checkout session:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      },
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
 })

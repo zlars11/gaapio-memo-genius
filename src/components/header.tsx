@@ -31,9 +31,9 @@ export function Header() {
 
   return (
     <header className="bg-background sticky top-0 z-50 w-full border-b shadow-sm">
-      <div className="container flex h-24 items-center justify-between py-4">
+      <div className="container flex h-28 items-center justify-between py-4">
         <Link to="/" className="flex items-center">
-          <Logo className="h-16 md:h-18 w-auto" />
+          <Logo className="h-20 md:h-20 w-auto" />
         </Link>
         <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
           <nav className="hidden lg:flex gap-8">
@@ -44,7 +44,7 @@ export function Header() {
                 className="text-base font-medium transition-colors hover:text-primary relative group"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-0 bg-primary/10 transition-all duration-300 scale-x-0 group-hover:scale-x-100 group-hover:h-full -z-10 rounded-md"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </Link>
             ))}
           </nav>

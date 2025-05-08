@@ -76,15 +76,21 @@ export default function SignUp() {
         }
       });
 
-      if (error) throw new Error(error.message || 'Failed to create checkout session');
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || 'Failed to create checkout session');
+      }
       
       if (data?.checkoutUrl) {
         // Redirect to Stripe Checkout
         window.location.href = data.checkoutUrl;
       } else {
+        console.error("No checkout URL returned:", data);
         throw new Error('No checkout URL returned');
       }
     } catch (error: any) {
+      console.error("Subscription error:", error);
+      
       toast({
         title: "Error",
         description: error.message || "Something went wrong. Please try again.",

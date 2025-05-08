@@ -9,8 +9,9 @@ import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Layout } from "lucide-react";
+import { Loader2, Users, Layout, DollarSign } from "lucide-react";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
+import { PricingManagement } from "@/components/admin/PricingManagement";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
@@ -74,6 +75,7 @@ export default function Admin() {
               <TabsTrigger value="companies">Companies</TabsTrigger>
               <TabsTrigger value="firms">Firms</TabsTrigger>
               <TabsTrigger value="demos">Demo Requests</TabsTrigger>
+              <TabsTrigger value="pricing">Pricing</TabsTrigger>
               <TabsTrigger value="contact">Contact</TabsTrigger>
               <TabsTrigger value="webpages">Webpages</TabsTrigger>
             </TabsList>
@@ -118,6 +120,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="demos">
             <DemoRequestsTable />
+          </TabsContent>
+          <TabsContent value="pricing">
+            <PricingManagement />
           </TabsContent>
           <TabsContent value="contact">
             <ContactTable />

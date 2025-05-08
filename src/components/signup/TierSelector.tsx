@@ -56,7 +56,7 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                   </div>
                 )}
               </CardTitle>
-              <p className="text-sm text-muted-foreground">{tier.description}</p>
+              <p className="text-xl font-bold text-center mt-2">{tier.description}</p>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
@@ -68,10 +68,10 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                 ))}
               </ul>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-center">
               <Button 
                 variant={selectedTier === tier.id ? "default" : "outline"} 
-                className="w-full"
+                className="w-full h-10"
                 onClick={() => onSelectTier(tier.id)}
               >
                 {selectedTier === tier.id ? "Selected" : "Select"}

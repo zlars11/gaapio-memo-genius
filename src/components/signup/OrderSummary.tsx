@@ -42,7 +42,7 @@ export function OrderSummary({
   const getProductName = () => {
     switch (selectedProduct) {
       case "disclosures": return "Disclosures";
-      case "bundle": return "Memos + Disclosures Bundle";
+      case "bundle": return "Bundle";
       default: return "Memos";
     }
   };
@@ -50,11 +50,6 @@ export function OrderSummary({
   // Calculate total
   const calculateTotal = () => {
     let total = getTierBasePrice();
-    
-    // If memos with disclosures add-on
-    if (selectedProduct === "memos" && addDisclosures) {
-      total += 300; // Add disclosures add-on
-    }
     
     // Add CPA review
     total += cpaReviewCount * 1000;
@@ -109,12 +104,12 @@ export function OrderSummary({
       <Card className="bg-muted/30 border-primary/30">
         <CardHeader>
           <CardTitle>Your Subscription</CardTitle>
+          <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-4">
             <div>
-              <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
-              <ul className="space-y-2 mt-3 mb-6">
+              <ul className="space-y-2 mb-6">
                 {getIncludedFeatures().map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
@@ -130,13 +125,6 @@ export function OrderSummary({
               <span className="font-medium">{getTierName()} {getProductName()}</span>
               <span>{formatPrice(getTierBasePrice())}/month</span>
             </div>
-            
-            {selectedProduct === "memos" && addDisclosures && (
-              <div className="flex justify-between py-2">
-                <span className="font-medium">Disclosures Add-On</span>
-                <span>+{formatPrice(300)}/month</span>
-              </div>
-            )}
             
             {cpaReviewCount > 0 && (
               <div className="flex justify-between py-2">

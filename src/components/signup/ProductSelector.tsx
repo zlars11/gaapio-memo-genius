@@ -26,9 +26,12 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
     },
     {
       id: "bundle",
-      title: "Both (Bundle)",
+      title: "Bundle",
       description: "AI-generated memos and disclosures",
-      feature: "Unlimited AI-generated memos + Unlimited AI-generated disclosures",
+      features: [
+        "Unlimited AI-generated memos",
+        "Unlimited AI-generated disclosures"
+      ],
       popular: true,
     }
   ];
@@ -65,16 +68,25 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>{product.feature}</span>
-                </li>
+                {product.id === "bundle" ? (
+                  product.features?.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                    <span>{product.feature}</span>
+                  </li>
+                )}
               </ul>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-center">
               <Button 
                 variant={selectedProduct === product.id ? "default" : "outline"} 
-                className="w-full"
+                className="w-full h-10"
                 onClick={() => onSelectProduct(product.id)}
               >
                 {selectedProduct === product.id ? "Selected" : "Select"}
