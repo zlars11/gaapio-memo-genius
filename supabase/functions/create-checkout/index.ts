@@ -16,7 +16,18 @@ serve(async (req: Request) => {
 
   try {
     // Get the request body
-    const { priceIds, successUrl, cancelUrl } = await req.json()
+    const { 
+      priceIds, 
+      successUrl, 
+      cancelUrl, 
+      userEmail,
+      userId,
+      companyId
+    } = await req.json()
+
+    // Log request parameters
+    console.log('Creating checkout session with price IDs:', priceIds);
+    console.log('User data:', { userEmail, userId, companyId });
 
     // Validate the request
     if (!priceIds || !Array.isArray(priceIds) || priceIds.length === 0) {
@@ -34,7 +45,9 @@ serve(async (req: Request) => {
     }
 
     // Create a supabase client
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false }
+    })
 
     // Get price details for each ID
     const lineItems = []
@@ -55,13 +68,53 @@ serve(async (req: Request) => {
       })
     }
 
+    // Create or get Stripe customer if email is provided
+    let customerId: string | undefined = undefined;
+    if (userEmail) {
+      try {
+        const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
+        if (customers.data.length > 0) {
+          customerId = customers.data[0].id;
+          console.log(`Found existing Stripe customer: ${customerId}`);
+        } else {
+          // Create a new customer
+          const newCustomer = await stripe.customers.create({
+            email: userEmail,
+            metadata: {
+              userId: userId || '',
+              companyId: companyId || ''
+            }
+          });
+          customerId = newCustomer.id;
+          console.log(`Created new Stripe customer: ${customerId}`);
+          
+          // Update company record with Stripe customer ID
+          if (companyId) {
+            await supabase
+              .from('companies')
+              .update({ stripe_customer_id: customerId })
+              .eq('id', companyId);
+          }
+        }
+      } catch (stripeError) {
+        console.error('Error managing Stripe customer:', stripeError);
+        // Continue without customer ID if there's an error
+      }
+    }
+
     // Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: !customerId && userEmail ? userEmail : undefined,
       line_items: lineItems,
       mode: 'subscription',
-      success_url: successUrl,
+      success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl,
       billing_address_collection: 'required',
+      metadata: {
+        userId: userId || '',
+        companyId: companyId || ''
+      }
     })
 
     // Return the checkout URL

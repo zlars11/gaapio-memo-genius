@@ -9,13 +9,15 @@ import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Layout, DollarSign } from "lucide-react";
+import { Loader2, Users, Layout } from "lucide-react";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { PricingManagement } from "@/components/admin/PricingManagement";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { PriceHistoryViewer } from "@/components/admin/PriceHistoryViewer";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -67,19 +69,24 @@ export default function Admin() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <div className="w-full bg-accent/50 border-b border-border mt-0">
+      <div className="w-full bg-accent/50 border-b border-border mt-16">
         <div className="container py-3">
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList>
-              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-              <TabsTrigger value="companies">Companies</TabsTrigger>
-              <TabsTrigger value="firms">Firms</TabsTrigger>
-              <TabsTrigger value="demos">Demo Requests</TabsTrigger>
-              <TabsTrigger value="pricing">Pricing</TabsTrigger>
-              <TabsTrigger value="contact">Contact</TabsTrigger>
-              <TabsTrigger value="webpages">Webpages</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <ErrorBoundary
+            fallback={<div className="p-4 bg-red-100 text-red-800 rounded">There was an error loading the tabs. Please refresh the page.</div>}
+          >
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+              <TabsList>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                <TabsTrigger value="companies">Companies</TabsTrigger>
+                <TabsTrigger value="firms">Firms</TabsTrigger>
+                <TabsTrigger value="demos">Demo Requests</TabsTrigger>
+                <TabsTrigger value="pricing">Pricing</TabsTrigger>
+                <TabsTrigger value="priceHistory">Price History</TabsTrigger>
+                <TabsTrigger value="contact">Contact</TabsTrigger>
+                <TabsTrigger value="webpages">Webpages</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </ErrorBoundary>
         </div>
       </div>
       
@@ -97,57 +104,64 @@ export default function Admin() {
             </div>
           </div>
           
-          <TabsContent value="dashboard">
-            <AdminDashboard />
-          </TabsContent>
-          <TabsContent value="companies">
-            <div className="space-y-8 max-w-full">
-              <CompaniesTable />
-              <ZapierWebhookSetup
-                webhookType="companyCreated"
-                description="Receive a webhook trigger when a new company is created."
-              />
-            </div>
-          </TabsContent>
-          <TabsContent value="firms">
-            <div className="space-y-8 max-w-full">
-              <FirmSignupsTable />
-              <ZapierWebhookSetup
-                webhookType="firmSignup"
-                description="Receive a webhook trigger when a new firm signs up."
-              />
-            </div>
-          </TabsContent>
-          <TabsContent value="demos">
-            <DemoRequestsTable />
-          </TabsContent>
-          <TabsContent value="pricing">
-            <PricingManagement />
-          </TabsContent>
-          <TabsContent value="contact">
-            <ContactTable />
-          </TabsContent>
-          <TabsContent value="webpages">
-            <div className="space-y-4">
-              <div className="bg-card rounded-lg border border-border p-6">
-                <h2 className="text-xl font-bold mb-4">All Website Pages</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {routes.map((route, index) => (
-                    <Link 
-                      key={index}
-                      to={route}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 rounded-md bg-accent/30 hover:bg-accent/50 transition-colors"
-                    >
-                      <span className="font-medium">{route}</span>
-                      <Layout className="h-4 w-4 text-muted-foreground" />
-                    </Link>
-                  ))}
+          <ErrorBoundary
+            fallback={<div className="p-6 bg-red-100 text-red-800 rounded">There was an error loading this content. Please check the console for details.</div>}
+          >
+            <TabsContent value="dashboard">
+              <AdminDashboard />
+            </TabsContent>
+            <TabsContent value="companies">
+              <div className="space-y-8 max-w-full">
+                <CompaniesTable />
+                <ZapierWebhookSetup
+                  webhookType="companyCreated"
+                  description="Receive a webhook trigger when a new company is created."
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="firms">
+              <div className="space-y-8 max-w-full">
+                <FirmSignupsTable />
+                <ZapierWebhookSetup
+                  webhookType="firmSignup"
+                  description="Receive a webhook trigger when a new firm signs up."
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="demos">
+              <DemoRequestsTable />
+            </TabsContent>
+            <TabsContent value="pricing">
+              <PricingManagement />
+            </TabsContent>
+            <TabsContent value="priceHistory">
+              <PriceHistoryViewer />
+            </TabsContent>
+            <TabsContent value="contact">
+              <ContactTable />
+            </TabsContent>
+            <TabsContent value="webpages">
+              <div className="space-y-4">
+                <div className="bg-card rounded-lg border border-border p-6">
+                  <h2 className="text-xl font-bold mb-4">All Website Pages</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {routes.map((route, index) => (
+                      <Link 
+                        key={index}
+                        to={route}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-3 rounded-md bg-accent/30 hover:bg-accent/50 transition-colors"
+                      >
+                        <span className="font-medium">{route}</span>
+                        <Layout className="h-4 w-4 text-muted-foreground" />
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
+          </ErrorBoundary>
         </main>
       </AdminPageGuard>
       

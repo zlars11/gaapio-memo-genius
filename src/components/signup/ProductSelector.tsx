@@ -15,19 +15,16 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
     {
       id: "memos",
       title: "Memos",
-      description: "AI-generated accounting memos",
-      feature: "Unlimited AI-generated memos"
+      features: ["Unlimited AI-generated memos"]
     },
     {
       id: "disclosures",
       title: "Disclosures",
-      description: "AI-generated financial disclosures",
-      feature: "Unlimited AI-generated disclosures"
+      features: ["Unlimited AI-generated disclosures"]
     },
     {
       id: "bundle",
       title: "Bundle",
-      description: "AI-generated memos and disclosures",
       features: [
         "Unlimited AI-generated memos",
         "Unlimited AI-generated disclosures"
@@ -44,7 +41,7 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
           <Card 
             key={product.id} 
             className={cn(
-              "cursor-pointer transition-all",
+              "cursor-pointer transition-all h-full flex flex-col",
               selectedProduct === product.id 
                 ? "border-primary shadow-md" 
                 : "hover:border-primary/50",
@@ -64,26 +61,18 @@ export function ProductSelector({ selectedProduct, onSelectProduct, selectedTier
                   <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">Best Value</span>
                 )}
               </CardTitle>
-              <p className="text-sm text-muted-foreground">{product.description}</p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-grow">
               <ul className="space-y-2">
-                {product.id === "bundle" ? (
-                  product.features?.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="flex items-start">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                    <span>{product.feature}</span>
+                    <span>{feature}</span>
                   </li>
-                )}
+                ))}
               </ul>
             </CardContent>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="mt-auto">
               <Button 
                 variant={selectedProduct === product.id ? "default" : "outline"} 
                 className="w-full h-10"

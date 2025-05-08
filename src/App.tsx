@@ -26,7 +26,6 @@ const Resources = lazy(() => import("./pages/Resources"));
 const OnePager = lazy(() => import("./pages/OnePager"));
 const Status = lazy(() => import("./pages/Status"));
 const Privacy = lazy(() => import("./pages/Privacy"));
-const Pricing = lazy(() => import("./pages/Pricing"));
 const Success = lazy(() => import("./pages/Success"));
 const Cancel = lazy(() => import("./pages/Cancel"));
 
@@ -80,7 +79,6 @@ const App = () => (
               <Route path="/onepager" element={<OnePager />} />
               <Route path="/status" element={<Status />} />
               <Route path="/privacy" element={<Privacy />} />
-              <Route path="/pricing" element={<Pricing />} />
               <Route path="/success" element={<Success />} />
               <Route path="/cancel" element={<Cancel />} />
               <Route path="*" element={<NotFound />} />

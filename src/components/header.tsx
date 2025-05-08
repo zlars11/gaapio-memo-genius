@@ -36,10 +36,8 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    { name: "Home", href: "/" },
     { name: "About", href: "/about-us" },
     { name: "Resources", href: "/resources" },
-    { name: "Pricing", href: "/pricing" },
     { name: "FAQ", href: "/faq" },
     { name: "Contact", href: "/contact" }
   ];
@@ -55,9 +53,9 @@ export function Header() {
         scrolled ? "shadow-sm" : ""
       }`}
     >
-      <div className="container flex h-20 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <Logo className="h-16 w-auto" />
+          <Logo className="h-12 w-auto" />
         </Link>
 
         {isMobile ? (
@@ -86,9 +84,6 @@ export function Header() {
                     </Link>
                   ))}
                   <div className="mt-6 space-y-2">
-                    <Button asChild className="w-full" variant="outline">
-                      <Link to="/login">Log In</Link>
-                    </Button>
                     <Button asChild className="w-full">
                       <Link to="/signup">Sign Up</Link>
                     </Button>
@@ -119,9 +114,6 @@ export function Header() {
             </nav>
             <div className="flex items-center gap-2">
               <ModeToggle />
-              <Button asChild variant="outline">
-                <Link to="/login">Log In</Link>
-              </Button>
               <Button asChild>
                 <Link to="/signup">Sign Up</Link>
               </Button>

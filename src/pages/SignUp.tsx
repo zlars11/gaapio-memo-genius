@@ -9,6 +9,7 @@ import { TierSelector } from "@/components/signup/TierSelector";
 import { ProductSelector } from "@/components/signup/ProductSelector";
 import { AddOnsSelector } from "@/components/signup/AddOnsSelector";
 import { OrderSummary } from "@/components/signup/OrderSummary";
+import { UserInfoForm, UserFormData } from "@/components/signup/UserInfoForm";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getSelectedPriceIds } from "@/utils/priceUtils";
@@ -17,6 +18,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 export default function SignUp() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserFormData | null>(null);
+  const [showUserForm, setShowUserForm] = useState(false);
   const { toast } = useToast();
 
   // Subscription options state
@@ -54,11 +57,44 @@ export default function SignUp() {
     }
   };
 
-  // Handle subscription
-  const handleSubscribe = async () => {
+  // Handle showing user info form
+  const handleProceedToUserInfo = () => {
+    setShowUserForm(true);
+  };
+
+  // Handle back from user form
+  const handleBackFromUserForm = () => {
+    setShowUserForm(false);
+  };
+
+  // Handle user info submission
+  const handleUserInfoSubmit = async (formData: UserFormData) => {
+    setUserInfo(formData);
+    handleCreateSubscription(formData);
+  };
+
+  // Handle subscription creation with user info
+  const handleCreateSubscription = async (userData: UserFormData) => {
     setIsLoading(true);
 
     try {
+      // First create or get the user and company
+      const { data: signupData, error: signupError } = await supabase.functions.invoke("create-user-company", {
+        body: {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          phone: userData.phone,
+          company: userData.company,
+          tier: selectedTier === "mid" ? "midMarket" : selectedTier,
+          product: selectedProduct
+        }
+      });
+
+      if (signupError) {
+        throw new Error(signupError.message || 'Failed to create user account');
+      }
+
       // Map the selected product to price IDs
       const priceIds = getSelectedPriceIds(
         selectedProduct === "bundle" ? "bundle" : selectedProduct as "memos" | "disclosures",
@@ -72,7 +108,10 @@ export default function SignUp() {
         body: {
           priceIds,
           successUrl: `${window.location.origin}/success`,
-          cancelUrl: `${window.location.origin}/cancel`
+          cancelUrl: `${window.location.origin}/cancel`,
+          userEmail: userData.email,
+          userId: signupData?.userId,
+          companyId: signupData?.companyId
         }
       });
 
@@ -103,7 +142,7 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 pt-28 pb-16">
+      <main className="flex-1 pt-16 pb-16">
         <ResponsiveContainer>
           <div className="mb-8 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Sign Up for Gaapio</h1>
@@ -115,57 +154,67 @@ export default function SignUp() {
           <div className="max-w-4xl mx-auto">
             <GuidedFlowSteps currentStep={currentStep} />
 
-            {currentStep === 1 && (
-              <TierSelector
-                selectedTier={selectedTier}
-                onSelectTier={handleTierSelect}
-              />
-            )}
+            {!showUserForm ? (
+              <>
+                {currentStep === 1 && (
+                  <TierSelector
+                    selectedTier={selectedTier}
+                    onSelectTier={handleTierSelect}
+                  />
+                )}
 
-            {currentStep === 2 && (
-              <ProductSelector
-                selectedProduct={selectedProduct}
-                onSelectProduct={handleProductSelect}
-                selectedTier={selectedTier}
-              />
-            )}
+                {currentStep === 2 && (
+                  <ProductSelector
+                    selectedProduct={selectedProduct}
+                    onSelectProduct={handleProductSelect}
+                    selectedTier={selectedTier}
+                  />
+                )}
 
-            {currentStep === 3 && (
-              <AddOnsSelector
-                selectedProduct={selectedProduct}
-                addDisclosures={addDisclosures}
-                onAddDisclosuresChange={setAddDisclosures}
-                cpaReviewCount={cpaReviewCount}
-                onCpaReviewCountChange={setCpaReviewCount}
-              />
-            )}
+                {currentStep === 3 && (
+                  <AddOnsSelector
+                    selectedProduct={selectedProduct}
+                    addDisclosures={addDisclosures}
+                    onAddDisclosuresChange={setAddDisclosures}
+                    cpaReviewCount={cpaReviewCount}
+                    onCpaReviewCountChange={setCpaReviewCount}
+                  />
+                )}
 
-            {currentStep === 4 && (
-              <OrderSummary
-                selectedTier={selectedTier}
-                selectedProduct={selectedProduct}
-                addDisclosures={addDisclosures}
-                cpaReviewCount={cpaReviewCount}
+                {currentStep === 4 && (
+                  <OrderSummary
+                    selectedTier={selectedTier}
+                    selectedProduct={selectedProduct}
+                    addDisclosures={addDisclosures}
+                    cpaReviewCount={cpaReviewCount}
+                    isLoading={isLoading}
+                    onSubscribe={handleProceedToUserInfo}
+                  />
+                )}
+
+                <div className="flex justify-between mt-8">
+                  {currentStep > 1 ? (
+                    <Button variant="outline" onClick={goToPreviousStep}>
+                      <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {currentStep < 4 && (
+                    <Button onClick={goToNextStep}>
+                      Continue <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <UserInfoForm 
+                onSubmit={handleUserInfoSubmit}
+                onBack={handleBackFromUserForm}
                 isLoading={isLoading}
-                onSubscribe={handleSubscribe}
               />
             )}
-
-            <div className="flex justify-between mt-8">
-              {currentStep > 1 ? (
-                <Button variant="outline" onClick={goToPreviousStep}>
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
-              ) : (
-                <div></div>
-              )}
-
-              {currentStep < 4 && (
-                <Button onClick={goToNextStep}>
-                  Continue <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              )}
-            </div>
           </div>
         </ResponsiveContainer>
       </main>

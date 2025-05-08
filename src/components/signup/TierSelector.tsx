@@ -40,7 +40,7 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
           <Card 
             key={tier.id} 
             className={cn(
-              "cursor-pointer transition-all",
+              "cursor-pointer transition-all h-full flex flex-col",
               selectedTier === tier.id 
                 ? "border-primary shadow-md" 
                 : "hover:border-primary/50"
@@ -56,9 +56,9 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                   </div>
                 )}
               </CardTitle>
-              <p className="text-xl font-bold text-center mt-2">{tier.description}</p>
+              <p className="text-sm text-muted-foreground mt-2">{tier.description}</p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-grow">
               <ul className="space-y-2">
                 {tier.features.map((feature, index) => (
                   <li key={index} className="flex items-start">
@@ -68,7 +68,7 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                 ))}
               </ul>
             </CardContent>
-            <CardFooter className="flex justify-center">
+            <CardFooter className="mt-auto">
               <Button 
                 variant={selectedTier === tier.id ? "default" : "outline"} 
                 className="w-full h-10"
