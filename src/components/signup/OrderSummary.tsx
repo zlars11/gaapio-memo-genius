@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Check } from "lucide-react";
 
 interface OrderSummaryProps {
   selectedTier: string;
