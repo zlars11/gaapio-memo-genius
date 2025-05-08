@@ -7,10 +7,14 @@ import { Menu } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";
 import { Logo } from "./logo";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function Header() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const isMobile = useIsMobile();
+  const isTablet = useMediaQuery("md");
 
   useEffect(() => {
     setMounted(true);
@@ -26,10 +30,10 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-background sticky top-0 z-50 w-full border-b">
-      <div className="container flex h-16 items-center justify-between py-4">
-        <Link to="/" className="mr-4 flex items-center font-bold">
-          <Logo className="h-10 w-auto" />
+    <header className="bg-background sticky top-0 z-50 w-full border-b shadow-sm">
+      <div className="container flex h-20 items-center justify-between py-4">
+        <Link to="/" className="flex items-center">
+          <Logo className="h-12 md:h-14 w-auto" />
         </Link>
         <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
           <nav className="hidden lg:flex gap-8">
@@ -37,9 +41,10 @@ export function Header() {
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-base font-medium hover:underline underline-offset-4"
+                className="text-base font-medium transition-colors hover:text-primary relative group"
               >
                 {link.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </nav>
@@ -55,27 +60,27 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="sm:w-2/3 md:w-1/2">
+            <SheetContent side="right" className="w-[85%] sm:w-[350px]">
               <SheetHeader className="text-left">
                 <SheetTitle>Menu</SheetTitle>
                 <SheetDescription>
                   Navigate through the site.
                 </SheetDescription>
               </SheetHeader>
-              <div className="mt-4">
+              <div className="mt-6">
                 <nav className="flex flex-col gap-4">
                   {navigationLinks.map((link) => (
                     <Link
                       key={link.href}
                       to={link.href}
-                      className="text-lg font-medium hover:underline underline-offset-4"
+                      className="text-lg font-medium py-2 px-4 hover:bg-accent rounded-md transition-colors"
                     >
                       {link.label}
                     </Link>
                   ))}
                   <Link
                     to="/contact"
-                    className="text-lg font-medium hover:underline underline-offset-4"
+                    className="text-lg font-medium bg-primary text-primary-foreground mt-2 py-2.5 px-4 rounded-md hover:bg-primary/90 transition-colors"
                   >
                     Request a Demo
                   </Link>

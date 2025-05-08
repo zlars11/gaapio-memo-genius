@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -103,7 +104,7 @@ export default function Index() {
         </div>
       )}
       
-      {/* Main content with corrected alternating backgrounds */}
+      {/* Main content with corrected spacing for new header height */}
       <div className="relative overflow-hidden">
         <div className="relative z-10">
           <HeroSection /> {/* Light background (default) */}

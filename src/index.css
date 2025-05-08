@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -86,7 +87,7 @@
 
   /* Updated global fix for header overlap for all pages - ensure consistent padding */
   main {
-    @apply pt-36 pb-20;
+    @apply pt-20 pb-20;
   }
 
   /* Improved focus styles for accessibility */

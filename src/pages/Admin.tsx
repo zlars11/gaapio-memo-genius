@@ -117,7 +117,7 @@ export default function Admin() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <div className="w-full bg-accent/50 border-b border-border">
+      <div className="w-full bg-accent/50 border-b border-border mt-0">
         <div className="container py-3">
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList>
@@ -133,7 +133,7 @@ export default function Admin() {
       </div>
       
       <AdminPageGuard>
-        <main className="flex-1 container py-10">
+        <main className="flex-1 container py-6">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
             <div className="flex gap-2">
