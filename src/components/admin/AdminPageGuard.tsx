@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 interface AdminPageGuardProps {
   children: React.ReactNode;
@@ -248,5 +249,23 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <ErrorBoundary fallback={
+      <div className="container mx-auto py-8">
+        <Alert variant="destructive" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>
+            There was an error loading the admin portal. Please try refreshing the page or contact support.
+          </AlertDescription>
+        </Alert>
+        <div className="flex justify-center">
+          <Button onClick={() => navigate("/")} className="mr-4">Return to Home</Button>
+          <Button variant="outline" onClick={() => window.location.reload()}>Refresh Page</Button>
+        </div>
+      </div>
+    }>
+      {children}
+    </ErrorBoundary>
+  );
 }

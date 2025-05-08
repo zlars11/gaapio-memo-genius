@@ -10,12 +10,12 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pt-20 pb-16"> {/* Adjusted padding for better spacing */}
-        <ResponsiveContainer className="max-w-5xl mb-16">
-          <div className="mt-4"> {/* Reduced top margin to minimize gap */}
+      <main className="flex-1 pt-32 pb-16"> {/* Increased padding-top for consistent spacing */}
+        <ResponsiveContainer className="max-w-5xl">
+          <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
             
-            <p className="text-lg text-muted-foreground mb-8 leading-7">
+            <p className="text-lg text-muted-foreground mb-8 leading-7 max-w-3xl">
               Have questions about our AI-powered accounting memo platform? Want to learn more about how we can help your team? Fill out the form below and our team will get back to you shortly.
             </p>
             
@@ -33,7 +33,7 @@ export default function Contact() {
                       <Mail className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">General Inquiries</h3>
+                      <h3 className="font-semibold text-lg mb-1">General Inquiries</h3>
                       <p className="text-muted-foreground mb-2">For general questions and information</p>
                       <a href="mailto:info@gaapio.com" className="text-primary hover:underline font-medium">
                         info@gaapio.com
@@ -50,7 +50,7 @@ export default function Contact() {
                       <LifeBuoy className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Support</h3>
+                      <h3 className="font-semibold text-lg mb-1">Support</h3>
                       <p className="text-muted-foreground mb-2">For technical support and assistance</p>
                       <a href="mailto:support@gaapio.com" className="text-primary hover:underline font-medium">
                         support@gaapio.com

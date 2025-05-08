@@ -2,7 +2,6 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
 import { stripe } from "../_shared/stripe.ts"
 import { corsHeaders } from "../_shared/cors.ts"
-import { getPriceInfo } from "../_shared/prices.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1"
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
@@ -25,9 +24,11 @@ serve(async (req: Request) => {
       companyId
     } = await req.json()
 
-    // Log request parameters
+    // Log request parameters for debugging
     console.log('Creating checkout session with price IDs:', priceIds);
     console.log('User data:', { userEmail, userId, companyId });
+    console.log('Success URL:', successUrl);
+    console.log('Cancel URL:', cancelUrl);
 
     // Validate the request
     if (!priceIds || !Array.isArray(priceIds) || priceIds.length === 0) {
@@ -69,7 +70,7 @@ serve(async (req: Request) => {
       "price_addon_cpareview": "price_1PJHKxFy2MioU7rZIHROyjiL"
     };
     
-    // Map the requested price IDs to actual Stripe price IDs
+    // Map the requested price IDs to actual Stripe price IDs and log for debugging
     const lineItems = [];
     
     for (const priceId of priceIds) {
@@ -81,6 +82,13 @@ serve(async (req: Request) => {
       });
       
       console.log(`Mapped price ID ${priceId} to ${actualPriceId}`);
+    }
+
+    if (lineItems.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'No valid price IDs provided' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     // Create or get Stripe customer if email is provided
@@ -118,6 +126,14 @@ serve(async (req: Request) => {
     }
 
     // Create a Checkout Session
+    console.log('Creating checkout session with params:', {
+      customer: customerId,
+      customer_email: !customerId && userEmail ? userEmail : undefined,
+      line_items: lineItems,
+      success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl
+    });
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: !customerId && userEmail ? userEmail : undefined,
@@ -130,7 +146,9 @@ serve(async (req: Request) => {
         userId: userId || '',
         companyId: companyId || ''
       }
-    })
+    });
+
+    console.log('Successfully created checkout session:', session.id);
 
     // Return the checkout URL
     return new Response(
@@ -138,10 +156,10 @@ serve(async (req: Request) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (error: any) {
-    console.error('Error creating checkout session:', error)
+    console.error('Error creating checkout session:', error);
     return new Response(
       JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
-})
+});

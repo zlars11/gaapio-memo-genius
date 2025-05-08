@@ -14,12 +14,14 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getSelectedPriceIds } from "@/utils/priceUtils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function SignUp() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<UserFormData | null>(null);
   const [showUserForm, setShowUserForm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Subscription options state
@@ -76,6 +78,7 @@ export default function SignUp() {
   // Handle subscription creation with user info
   const handleCreateSubscription = async (userData: UserFormData) => {
     setIsLoading(true);
+    setError(null);
 
     try {
       // First create or get the user and company
@@ -95,6 +98,8 @@ export default function SignUp() {
         throw new Error(signupError.message || 'Failed to create user account');
       }
 
+      console.log("User and company created successfully:", signupData);
+
       // Map the selected product to price IDs
       const priceIds = getSelectedPriceIds(
         selectedProduct === "bundle" ? "bundle" : selectedProduct as "memos" | "disclosures",
@@ -102,6 +107,8 @@ export default function SignUp() {
         selectedProduct === "memos" && addDisclosures,
         cpaReviewCount
       );
+
+      console.log("Using price IDs for checkout:", priceIds);
 
       // Call the Supabase Edge Function to create checkout
       const { data, error } = await supabase.functions.invoke("create-checkout", {
@@ -121,6 +128,7 @@ export default function SignUp() {
       }
       
       if (data?.checkoutUrl) {
+        console.log("Redirecting to checkout URL:", data.checkoutUrl);
         // Redirect to Stripe Checkout
         window.location.href = data.checkoutUrl;
       } else {
@@ -130,11 +138,13 @@ export default function SignUp() {
     } catch (error: any) {
       console.error("Subscription error:", error);
       
+      setError(error.message || "Something went wrong. Please try again.");
       toast({
         title: "Error",
         description: error.message || "Something went wrong. Please try again.",
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -142,7 +152,7 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 pt-16 pb-16">
+      <main className="flex-1 pt-32 pb-16">
         <ResponsiveContainer>
           <div className="mb-8 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Sign Up for Gaapio</h1>
@@ -154,66 +164,82 @@ export default function SignUp() {
           <div className="max-w-4xl mx-auto">
             <GuidedFlowSteps currentStep={currentStep} />
 
-            {!showUserForm ? (
-              <>
-                {currentStep === 1 && (
-                  <TierSelector
-                    selectedTier={selectedTier}
-                    onSelectTier={handleTierSelect}
-                  />
-                )}
-
-                {currentStep === 2 && (
-                  <ProductSelector
-                    selectedProduct={selectedProduct}
-                    onSelectProduct={handleProductSelect}
-                    selectedTier={selectedTier}
-                  />
-                )}
-
-                {currentStep === 3 && (
-                  <AddOnsSelector
-                    selectedProduct={selectedProduct}
-                    addDisclosures={addDisclosures}
-                    onAddDisclosuresChange={setAddDisclosures}
-                    cpaReviewCount={cpaReviewCount}
-                    onCpaReviewCountChange={setCpaReviewCount}
-                  />
-                )}
-
-                {currentStep === 4 && (
-                  <OrderSummary
-                    selectedTier={selectedTier}
-                    selectedProduct={selectedProduct}
-                    addDisclosures={addDisclosures}
-                    cpaReviewCount={cpaReviewCount}
-                    isLoading={isLoading}
-                    onSubscribe={handleProceedToUserInfo}
-                  />
-                )}
-
-                <div className="flex justify-between mt-8">
-                  {currentStep > 1 ? (
-                    <Button variant="outline" onClick={goToPreviousStep}>
-                      <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                    </Button>
-                  ) : (
-                    <div></div>
+            <ErrorBoundary fallback={
+              <div className="p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md my-4">
+                <p className="text-red-500 dark:text-red-400">An error occurred loading this section. Please try refreshing the page or contact support.</p>
+                <Button onClick={() => window.location.reload()} variant="outline" className="mt-2">Refresh Page</Button>
+              </div>
+            }>
+              {!showUserForm ? (
+                <>
+                  {currentStep === 1 && (
+                    <TierSelector
+                      selectedTier={selectedTier}
+                      onSelectTier={handleTierSelect}
+                    />
                   )}
 
-                  {currentStep < 4 && (
-                    <Button onClick={goToNextStep}>
-                      Continue <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
+                  {currentStep === 2 && (
+                    <ProductSelector
+                      selectedProduct={selectedProduct}
+                      onSelectProduct={handleProductSelect}
+                      selectedTier={selectedTier}
+                    />
                   )}
-                </div>
-              </>
-            ) : (
-              <UserInfoForm 
-                onSubmit={handleUserInfoSubmit}
-                onBack={handleBackFromUserForm}
-                isLoading={isLoading}
-              />
+
+                  {currentStep === 3 && (
+                    <AddOnsSelector
+                      selectedProduct={selectedProduct}
+                      addDisclosures={addDisclosures}
+                      onAddDisclosuresChange={setAddDisclosures}
+                      cpaReviewCount={cpaReviewCount}
+                      onCpaReviewCountChange={setCpaReviewCount}
+                    />
+                  )}
+
+                  {currentStep === 4 && (
+                    <OrderSummary
+                      selectedTier={selectedTier}
+                      selectedProduct={selectedProduct}
+                      addDisclosures={addDisclosures}
+                      cpaReviewCount={cpaReviewCount}
+                      isLoading={isLoading}
+                      onSubscribe={handleProceedToUserInfo}
+                    />
+                  )}
+
+                  <div className="flex justify-between mt-8">
+                    {currentStep > 1 ? (
+                      <Button variant="outline" onClick={goToPreviousStep}>
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                      </Button>
+                    ) : (
+                      <div></div>
+                    )}
+
+                    {currentStep < 4 && (
+                      <Button onClick={goToNextStep}>
+                        Continue <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <UserInfoForm 
+                  onSubmit={handleUserInfoSubmit}
+                  onBack={handleBackFromUserForm}
+                  isLoading={isLoading}
+                />
+              )}
+            </ErrorBoundary>
+
+            {error && (
+              <div className="mt-4 p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md text-center">
+                <p className="text-red-700 dark:text-red-400">{error}</p>
+                <p className="text-red-600 dark:text-red-300 text-sm mt-2">
+                  If this issue persists, please contact support at support@gaapio.com
+                </p>
+              </div>
             )}
           </div>
         </ResponsiveContainer>

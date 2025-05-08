@@ -55,7 +55,7 @@ export function Header() {
     >
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center">
-          <Logo className="h-14 w-auto" />
+          <Logo className="h-14 w-auto flex items-center" />
         </Link>
 
         {isMobile ? (
@@ -85,7 +85,7 @@ export function Header() {
                   ))}
                   <div className="mt-6 space-y-2">
                     <Button asChild className="w-full">
-                      <Link to="/signup">Sign Up</Link>
+                      <Link to="/request-demo">Request a Demo</Link>
                     </Button>
                   </div>
                 </nav>
@@ -115,7 +115,7 @@ export function Header() {
             <div className="flex items-center gap-2">
               <ModeToggle />
               <Button asChild>
-                <Link to="/signup">Sign Up</Link>
+                <Link to="/request-demo">Request a Demo</Link>
               </Button>
             </div>
           </div>
