@@ -26,10 +26,11 @@ export default function Admin() {
   // Verify admin status
   useEffect(() => {
     const checkAccess = async () => {
-      // Add explicit check for admin status
       try {
         console.log("Admin.tsx: Checking session");
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data } = await supabase.auth.getSession();
+        const session = data?.session;
+        
         if (!session) {
           console.log("Admin.tsx: No session found");
           setIsLoading(false);
@@ -37,17 +38,14 @@ export default function Admin() {
         }
         
         console.log("Admin.tsx: Session found, user ID:", session.user.id);
-        console.log("Admin.tsx: Checking admin role with parameters:", {
+        
+        // Check if user has admin role
+        const { data: isAdminData, error } = await supabase.rpc('has_role', {
           user_id: session.user.id,
           role: 'admin'
         });
         
-        const { data, error } = await supabase.rpc('has_role', {
-          user_id: session.user.id,
-          role: 'admin'
-        });
-        
-        console.log("Admin.tsx: Admin check result:", { data, error });
+        console.log("Admin.tsx: Admin check result:", { isAdminData, error });
         
         if (error) {
           console.error("Admin.tsx: Error checking admin status:", error);
@@ -57,7 +55,7 @@ export default function Admin() {
             variant: "destructive"
           });
           setIsAdmin(false);
-        } else if (!data) {
+        } else if (!isAdminData) {
           console.log("Admin.tsx: User is not an admin");
           toast({
             title: "Access Denied",
@@ -114,6 +112,7 @@ export default function Admin() {
     );
   }
 
+  // Show content regardless of admin status - the AdminPageGuard will handle permissions
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
