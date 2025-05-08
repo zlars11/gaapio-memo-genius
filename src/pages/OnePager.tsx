@@ -68,8 +68,8 @@ export default function OnePager() {
               <div className="relative">
                 <div className="rounded-xl overflow-hidden shadow-xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" 
-                    alt="Finance professionals in meeting" 
+                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" 
+                    alt="Accounting professionals collaborating" 
                     className="w-full h-auto object-cover rounded-xl"
                   />
                 </div>
@@ -227,7 +227,7 @@ export default function OnePager() {
         <div className="container px-4 md:px-6 flex flex-col items-center justify-center">
           <div className="w-40 mb-4">
             <img 
-              src="/lovable-uploads/abd3ce27-cd6d-4b4b-9a0e-61f70caa6748.png" 
+              src="/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png" 
               alt="Gaapio Logo" 
               className="w-full h-auto"
             />
