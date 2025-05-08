@@ -1,83 +1,85 @@
 
-import { useEffect, useState, Suspense } from "react";
-import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
+import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { ContactTable } from "@/components/admin/ContactTable";
-import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { CompaniesTable } from "@/components/admin/CompaniesTable";
-import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Users, Layout } from "lucide-react";
+import { UsersTable } from "@/components/admin/UsersTable";
+import { ContactTable } from "@/components/admin/ContactTable";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
+import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
+import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
+import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import { PricingManagement } from "@/components/admin/PricingManagement";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
+import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
+import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
+import { FeatureToggles } from "@/components/admin/FeatureToggles";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useCurrentAdmin } from "@/hooks/useCurrentAdmin";
+import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
+import { useFetchAdmins } from "@/hooks/useFetchAdmins";
+import { Button } from "@/components/ui/button";
+import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
+import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
-  const [routes, setRoutes] = useState<string[]>([]);
+  const { currentUser, loading: userLoading, error: userError } = useCurrentAdmin();
+  const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
+  const [showNameDialog, setShowNameDialog] = useState(false);
   
-  // Verify admin status
+  const { 
+    admins, 
+    loading: adminsLoading, 
+    error: adminsError,
+    fetchAdmins
+  } = useFetchAdmins();
+
+  // Set the active tab from URL if present
   useEffect(() => {
-    // Collect all routes from App.tsx
-    setRoutes([
-      "/",
-      "/about-us",
-      "/contact",
-      "/faq",
-      "/blog",
-      "/blog/why-technical-accounting-memos-matter",
-      "/blog/5-common-asc-606-pitfalls",
-      "/blog/how-ai-is-changing-the-accounting-landscape",
-      "/ssa",
-      "/admin",
-      "/admin/users",
-      "/signup",
-      "/login",
-      "/resources",
-      "/onepager",
-      "/status",
-      "/privacy"
-    ]);
-    
-    // Set loading to false - we'll let AdminPageGuard handle auth checks
-    setIsLoading(false);
-  }, [toast]);
-  
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, []);
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    // Update URL without reload
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', value);
+    window.history.pushState({}, '', url);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
-        <span>Loading admin panel...</span>
-      </div>
-    );
-  }
-
   const renderFallback = (message: string) => (
-    <div className="p-6 bg-red-100 text-red-800 rounded">
-      <h3 className="font-bold text-lg mb-2">Something went wrong</h3>
-      <p>{message}</p>
-      <p className="mt-2 text-sm">Please check the console for more details or try refreshing the page.</p>
+    <div className="p-8 text-center">
+      <h2 className="text-lg font-medium text-destructive mb-2">Error</h2>
+      <p className="text-muted-foreground">{message}</p>
+      <Button 
+        variant="outline" 
+        className="mt-4"
+        onClick={() => window.location.reload()}
+      >
+        Refresh Page
+      </Button>
     </div>
   );
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      
-      <div className="w-full bg-accent/50 border-b border-border mt-16">
-        <div className="container py-3">
+    <AdminPageGuard>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AdminSecurityAlert />
+        
+        <ResponsiveContainer className="py-10">
+          <h1 className="text-3xl font-bold mb-8">Admin Portal</h1>
+          
+          <AdminFetchErrorAlert 
+            loading={userLoading || adminsLoading}
+            error={userError || adminsError}
+            onRetry={fetchAdmins}
+          />
+          
           <ErrorBoundary
             fallback={renderFallback("There was an error loading the tabs. Please refresh the page.")}
           >
@@ -85,108 +87,124 @@ export default function Admin() {
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="companies">Companies</TabsTrigger>
-                <TabsTrigger value="firms">Firms</TabsTrigger>
+                <TabsTrigger value="users">Users</TabsTrigger>
+                <TabsTrigger value="waitlist">Waitlist</TabsTrigger>
+                <TabsTrigger value="contacts">Contact</TabsTrigger>
                 <TabsTrigger value="demos">Demo Requests</TabsTrigger>
+                <TabsTrigger value="firms">Firm Signups</TabsTrigger>
                 <TabsTrigger value="pricing">Pricing</TabsTrigger>
-                <TabsTrigger value="contact">Contact</TabsTrigger>
-                <TabsTrigger value="webpages">Webpages</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
-            </Tabs>
-          </ErrorBoundary>
-        </div>
-      </div>
-      
-      <AdminPageGuard>
-        <main className="flex-1 container py-8">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
-            <div className="flex gap-2">
-              <Button asChild variant="outline">
-                <Link to="/admin/users">
-                  <Users className="h-4 w-4 mr-2" />
-                  Manage Admin Users
-                </Link>
-              </Button>
-            </div>
-          </div>
-          
-          <TabsContent value="dashboard">
-            <ErrorBoundary fallback={renderFallback("Error loading dashboard content")}>
-              <Suspense fallback={<div className="p-6 animate-pulse">Loading dashboard data...</div>}>
+
+              <TabsContent value="dashboard" className="border rounded-md mt-6 bg-card">
                 <AdminDashboard />
-              </Suspense>
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="companies">
-            <ErrorBoundary fallback={renderFallback("Error loading companies data")}>
-              <div className="space-y-8 max-w-full">
+              </TabsContent>
+              
+              <TabsContent value="companies" className="space-y-4">
                 <CompaniesTable />
-                <ZapierWebhookSetup
-                  webhookType="companyCreated"
-                  description="Receive a webhook trigger when a new company is created."
-                />
-              </div>
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="firms">
-            <ErrorBoundary fallback={renderFallback("Error loading firms data")}>
-              <div className="space-y-8 max-w-full">
+              </TabsContent>
+              
+              <TabsContent value="users" className="space-y-4">
+                <UsersTable />
+              </TabsContent>
+              
+              <TabsContent value="waitlist" className="space-y-4">
+                <WaitlistTable />
+              </TabsContent>
+              
+              <TabsContent value="contacts" className="space-y-4">
+                <ContactTable />
+              </TabsContent>
+              
+              <TabsContent value="demos" className="space-y-4">
+                <DemoRequestsTable />
+              </TabsContent>
+              
+              <TabsContent value="firms" className="space-y-4">
                 <FirmSignupsTable />
-                <ZapierWebhookSetup
-                  webhookType="firmSignup"
-                  description="Receive a webhook trigger when a new firm signs up."
-                />
-              </div>
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="demos">
-            <ErrorBoundary fallback={renderFallback("Error loading demo requests data")}>
-              <DemoRequestsTable />
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="pricing">
-            <ErrorBoundary fallback={renderFallback("Error loading pricing management")}>
-              <PricingManagement />
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="contact">
-            <ErrorBoundary fallback={renderFallback("Error loading contact data")}>
-              <ContactTable />
-            </ErrorBoundary>
-          </TabsContent>
-          
-          <TabsContent value="webpages">
-            <ErrorBoundary fallback={renderFallback("Error loading webpages data")}>
-              <div className="space-y-4">
-                <div className="bg-card rounded-lg border border-border p-6">
-                  <h2 className="text-xl font-bold mb-4">All Website Pages</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {routes.map((route, index) => (
-                      <Link 
-                        key={index}
-                        to={route}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between p-3 rounded-md bg-accent/30 hover:bg-accent/50 transition-colors"
+              </TabsContent>
+              
+              <TabsContent value="pricing" className="space-y-4">
+                <PricingManagement />
+              </TabsContent>
+              
+              <TabsContent value="settings" className="space-y-8">
+                <div className="border rounded-md p-6 bg-card">
+                  <h2 className="text-2xl font-semibold mb-6">Admin Users</h2>
+                  <div className="mb-6">
+                    <Button onClick={() => setShowAddAdminDialog(true)}>
+                      Add Admin User
+                    </Button>
+                  </div>
+                  
+                  <h3 className="text-lg font-medium mb-4">Current Admins</h3>
+                  <div className="space-y-4">
+                    {admins.map(admin => (
+                      <div 
+                        key={admin.id} 
+                        className="flex justify-between items-center p-4 border rounded-md"
                       >
-                        <span className="font-medium">{route}</span>
-                        <Layout className="h-4 w-4 text-muted-foreground" />
-                      </Link>
+                        <div>
+                          <p className="font-medium">
+                            {admin.first_name || admin.lastName ? 
+                              `${admin.first_name || ''} ${admin.last_name || ''}` : 
+                              'Unnamed Admin'}
+                          </p>
+                          <p className="text-muted-foreground text-sm">{admin.email}</p>
+                          <p className="text-xs text-muted-foreground">Role: {admin.role}</p>
+                        </div>
+                        <div>
+                          {admin.id === currentUser.admin_id && !currentUser.first_name && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => setShowNameDialog(true)}
+                            >
+                              Set Your Name
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     ))}
+                    
+                    {!adminsLoading && admins.length === 0 && (
+                      <p className="text-center py-4 text-muted-foreground">
+                        No admin users found
+                      </p>
+                    )}
                   </div>
                 </div>
-              </div>
-            </ErrorBoundary>
-          </TabsContent>
-        </main>
-      </AdminPageGuard>
-      
-      <Footer />
-    </div>
+                
+                <div className="border rounded-md p-6 bg-card">
+                  <h2 className="text-2xl font-semibold mb-6">Integrations</h2>
+                  <ZapierWebhookSetup />
+                </div>
+                
+                <div className="border rounded-md p-6 bg-card">
+                  <h2 className="text-2xl font-semibold mb-6">Feature Toggles</h2>
+                  <FeatureToggles />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </ErrorBoundary>
+        </ResponsiveContainer>
+        
+        {showAddAdminDialog && (
+          <AddAdminDialog
+            open={showAddAdminDialog}
+            onOpenChange={setShowAddAdminDialog}
+            onSuccess={fetchAdmins}
+          />
+        )}
+        
+        {showNameDialog && (
+          <AdminNameDialog
+            open={showNameDialog}
+            onOpenChange={setShowNameDialog}
+            onSuccess={fetchAdmins}
+          />
+        )}
+      </div>
+    </AdminPageGuard>
   );
 }
