@@ -105,26 +105,25 @@ export function OrderSummary({
       <Card className="bg-muted/30 border-primary/30">
         <CardHeader>
           <CardTitle>Your Subscription</CardTitle>
-          
-          <div className="space-y-4 mt-2">
-            <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
-            
-            <div className="space-y-2">
-              {getIncludedFeatures().map((feature, index) => (
-                <div key={index} className="flex items-start">
-                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                  <span>{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </CardHeader>
         
         <CardContent className="space-y-4">
           <div className="flex flex-col space-y-4 divide-y divide-border">
-            <div className="flex justify-between py-2">
-              <span className="font-medium">{getTierName()} {getProductName()}</span>
-              <span>{formatPrice(total)}/month</span>
+            <div>
+              <div className="flex justify-between py-2">
+                <span className="font-medium">{getTierName()} {getProductName()}</span>
+                <span>{formatPrice(total)}/month</span>
+              </div>
+              
+              {/* Moved features here, directly under the product name */}
+              <div className="ml-6 space-y-2 mt-2">
+                {getIncludedFeatures().map((feature, index) => (
+                  <div key={index} className="flex items-start">
+                    <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
             </div>
             
             {cpaReviewCount > 0 && (
