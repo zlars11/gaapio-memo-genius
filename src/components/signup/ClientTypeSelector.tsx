@@ -14,7 +14,7 @@ export function ClientTypeSelector({ selectedType, onSelectType }: ClientTypeSel
     {
       id: "company",
       title: "Company",
-      description: "I represent a company looking for accounting memo solutions",
+      description: "I represent a company looking for accounting memo or disclosure solutions",
       icon: Building
     },
     {

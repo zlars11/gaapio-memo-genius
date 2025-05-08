@@ -45,7 +45,6 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       loading="eager"
       decoding="async"
       draggable={false}
-      style={{ maxHeight: "40px" }}
     />
   );
 });

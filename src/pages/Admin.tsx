@@ -81,7 +81,7 @@ export default function Admin() {
           <ErrorBoundary
             fallback={renderFallback("There was an error loading the tabs. Please refresh the page.")}
           >
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="companies">Companies</TabsTrigger>
