@@ -34,7 +34,7 @@ export default function Cancel() {
                   <Link to="/contact">Contact Support</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/pricing">Try Again</Link>
+                  <Link to="/signup">Try Again</Link>
                 </Button>
               </CardFooter>
             </Card>

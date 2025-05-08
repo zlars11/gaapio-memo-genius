@@ -1,189 +1,110 @@
-
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Logo } from "@/components/logo";
-import { supabase } from "@/integrations/supabase/client";
-import { AdminNavLink } from "@/components/admin/AdminNavLink";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Link } from "react-router-dom";
+import { useTheme } from "@/components/ui/use-theme";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { ModeToggle } from "./ModeToggle";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export function Header() {
-  const [isClient, setIsClient] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-
-    // Check login status
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsLoggedIn(!!session);
-    };
-
-    checkSession();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsLoggedIn(!!session);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    setMounted(true);
   }, []);
 
-  // Don't show CTA on admin page
-  const shouldShowCta = isClient && !isLoggedIn && !location.pathname.startsWith('/admin');
+  // Update navigation links to remove Pricing
+  const navigationLinks = [
+    { href: "/about-us", label: "About" },
+    { href: "/contact", label: "Contact" },
+    { href: "/resources", label: "Resources" },
+  ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-30 bg-background/60 border-b border-border/40 backdrop-blur-lg">
-      <div className="container flex items-center justify-between" style={{ height: "70px", padding: "0 1rem" }}>
-        {/* Logo: left-most */}
-        <Link
-          to="/"
-          className="flex items-center h-full group"
-          aria-label="Go to homepage"
-        >
-          <Logo className="h-[60px] w-auto transition-all duration-150 group-hover:scale-105" />
+    <header className="bg-background sticky top-0 z-50 w-full border-b">
+      <div className="container flex h-16 items-center justify-between py-4">
+        <Link to="/" className="mr-4 flex items-center font-bold">
+          <Avatar className="mr-2 h-8 w-8">
+            <AvatarImage src="/gaapio-favicon-light-cropped.png" alt="Gaapio logo" />
+            <AvatarFallback>G</AvatarFallback>
+          </Avatar>
+          <span>Gaapio</span>
         </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1 lg:space-x-3">
-          <Link
-            to="/about-us"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            About Us
-          </Link>
-          <Link
-            to="/pricing"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            Pricing
-          </Link>
-          <Link
-            to="/contact"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            Contact
-          </Link>
-          <Link
-            to="/resources"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            Resources
-          </Link>
-          <Link
-            to="/faq"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            FAQ
-          </Link>
-          <Link
-            to="/blog"
-            className="font-medium px-3 py-2 rounded hover:bg-accent text-base"
-          >
-            Blog
-          </Link>
-        </nav>
-
-        {/* CTA + Theme toggle + Mobile Menu: right aligned */}
-        <div className="flex items-center gap-2 lg:gap-4">
-          {shouldShowCta && (
-            <Button variant="default" asChild className="text-sm py-1 px-3 hidden sm:inline-flex">
-              <Link to="/contact">Request a Demo</Link>
-            </Button>
-          )}
-          {isClient && isLoggedIn && (
-            <Button variant="outline" asChild className="text-sm py-1 px-3 hidden sm:inline-flex">
-              <Link to="/" onClick={() => supabase.auth.signOut()}>Logout</Link>
-            </Button>
-          )}
-          <ThemeToggle />
-          {isClient && isLoggedIn && <AdminNavLink />}
-
-          {/* Mobile menu button */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu />
-                <span className="sr-only">Toggle menu</span>
+        <div className="mx-6 flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
+          <nav className="hidden lg:flex gap-6">
+            {navigationLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-sm font-medium hover:underline underline-offset-4"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <ModeToggle />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Sign In
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/login">
+                  Login
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/signup">
+                  Sign Up
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Sheet>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="icon" aria-label="Menu">
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[85%] max-w-sm">
-              <nav className="flex flex-col space-y-4 mt-8">
-                <Link
-                  to="/about-us"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/pricing"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Pricing
-                </Link>
-                <Link
-                  to="/contact"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-                <Link
-                  to="/resources"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Resources
-                </Link>
-                <Link
-                  to="/faq"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  FAQ
-                </Link>
-                <Link
-                  to="/blog"
-                  className="font-medium px-4 py-2 rounded hover:bg-accent text-lg"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Blog
-                </Link>
-                {shouldShowCta && (
-                  <Button 
-                    variant="default" 
-                    asChild
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="w-full mt-4"
+            <SheetContent side="left" className="sm:w-2/3 md:w-1/2">
+              <SheetHeader className="text-left">
+                <SheetTitle>Menu</SheetTitle>
+                <SheetDescription>
+                  Navigate through the site.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-4">
+                <nav className="flex flex-col gap-4">
+                  {navigationLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className="text-lg font-medium hover:underline underline-offset-4"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  <Link
+                    to="/login"
+                    className="text-lg font-medium hover:underline underline-offset-4"
                   >
-                    <Link to="/contact">Request a Demo</Link>
-                  </Button>
-                )}
-                {isClient && isLoggedIn && (
-                  <Button 
-                    variant="outline" 
-                    asChild
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      supabase.auth.signOut();
-                    }}
-                    className="w-full"
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="text-lg font-medium hover:underline underline-offset-4"
                   >
-                    <Link to="/">Logout</Link>
-                  </Button>
-                )}
-              </nav>
+                    Sign Up
+                  </Link>
+                </nav>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
