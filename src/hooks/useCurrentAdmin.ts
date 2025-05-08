@@ -7,10 +7,12 @@ import { CurrentAdminUser } from "@/types/adminTypes";
 import { useToast } from "@/components/ui/use-toast";
 
 export function useCurrentAdmin() {
-  // Add first_name field to the CurrentAdminUser type to fix the error
-  const [currentUser, setCurrentUser] = useState<CurrentAdminUser & { first_name?: string }>({
+  // Updated to match our updated CurrentAdminUser type
+  const [currentUser, setCurrentUser] = useState<CurrentAdminUser>({
     id: null,
     email: null,
+    first_name: null,
+    last_name: null,
     isAdmin: false,
     displayedInList: false
   });
@@ -53,6 +55,8 @@ export function useCurrentAdmin() {
         setCurrentUser({
           id: null,
           email: null,
+          first_name: null,
+          last_name: null,
           isAdmin: false,
           displayedInList: false
         });
@@ -102,9 +106,10 @@ export function useCurrentAdmin() {
           setCurrentUser({
             id: userId,
             email,
+            first_name: adminUserRecord?.first_name || null,
+            last_name: adminUserRecord?.last_name || null,
             isAdmin,
-            displayedInList,
-            first_name: adminUserRecord?.first_name || undefined
+            displayedInList
           });
         } catch (adminListError) {
           console.error("Error checking admin list:", adminListError);
@@ -113,6 +118,8 @@ export function useCurrentAdmin() {
         setCurrentUser({
           id: userId,
           email,
+          first_name: null,
+          last_name: null,
           isAdmin,
           displayedInList: false
         });
