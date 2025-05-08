@@ -5,24 +5,31 @@ import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useToast } from "@/components/ui/use-toast";
 import { GuidedFlowSteps } from "@/components/signup/GuidedFlowSteps";
+import { ClientTypeSelector } from "@/components/signup/ClientTypeSelector";
 import { TierSelector } from "@/components/signup/TierSelector";
 import { ProductSelector } from "@/components/signup/ProductSelector";
 import { AddOnsSelector } from "@/components/signup/AddOnsSelector";
 import { OrderSummary } from "@/components/signup/OrderSummary";
 import { UserInfoForm, UserFormData } from "@/components/signup/UserInfoForm";
+import { FirmContactForm } from "@/components/signup/FirmContactForm"; 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getSelectedPriceIds } from "@/utils/priceUtils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(0);  // Starting from 0 for client type selection
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<UserFormData | null>(null);
   const [showUserForm, setShowUserForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Client type step
+  const [selectedClientType, setSelectedClientType] = useState("company");
 
   // Subscription options state
   const [selectedTier, setSelectedTier] = useState("emerging");
@@ -32,6 +39,11 @@ export default function SignUp() {
 
   // Navigation functions
   const goToNextStep = () => {
+    if (selectedClientType === "firm") {
+      navigate("/firm-signup");
+      return;
+    }
+
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
       window.scrollTo(0, 0);
@@ -39,10 +51,15 @@ export default function SignUp() {
   };
 
   const goToPreviousStep = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
       window.scrollTo(0, 0);
     }
+  };
+
+  // Handle client type selection
+  const handleClientTypeSelect = (type: string) => {
+    setSelectedClientType(type);
   };
 
   // Handle tier selection
@@ -73,6 +90,15 @@ export default function SignUp() {
   const handleUserInfoSubmit = async (formData: UserFormData) => {
     setUserInfo(formData);
     handleCreateSubscription(formData);
+  };
+
+  // Handle firm contact form submission
+  const handleFirmFormSuccess = (data: any) => {
+    toast({
+      title: "Form Submitted",
+      description: "Thanks for your interest! Our team will be in touch with you shortly.",
+    });
+    navigate("/");
   };
 
   // Handle subscription creation with user info
@@ -149,6 +175,23 @@ export default function SignUp() {
     }
   };
 
+  // Adjust the steps array based on the client type
+  const getStepTitle = (stepIndex: number) => {
+    if (selectedClientType === "firm") {
+      return "CPA Firm Information";
+    }
+    
+    const companySteps = [
+      "Select Your Account Type",
+      "Select Your Tier", 
+      "Select Your Product", 
+      "Add-Ons (Optional)", 
+      "Order Summary"
+    ];
+    
+    return companySteps[stepIndex];
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -162,7 +205,9 @@ export default function SignUp() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <GuidedFlowSteps currentStep={currentStep} />
+            {currentStep > 0 && selectedClientType === "company" && (
+              <GuidedFlowSteps currentStep={currentStep} />
+            )}
 
             <ErrorBoundary fallback={
               <div className="p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md my-4">
@@ -172,6 +217,13 @@ export default function SignUp() {
             }>
               {!showUserForm ? (
                 <>
+                  {currentStep === 0 && (
+                    <ClientTypeSelector
+                      selectedType={selectedClientType}
+                      onSelectType={handleClientTypeSelect}
+                    />
+                  )}
+                  
                   {currentStep === 1 && (
                     <TierSelector
                       selectedTier={selectedTier}
@@ -209,7 +261,7 @@ export default function SignUp() {
                   )}
 
                   <div className="flex justify-between mt-8">
-                    {currentStep > 1 ? (
+                    {currentStep > 0 ? (
                       <Button variant="outline" onClick={goToPreviousStep}>
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back
                       </Button>
@@ -217,11 +269,10 @@ export default function SignUp() {
                       <div></div>
                     )}
 
-                    {currentStep < 4 && (
-                      <Button onClick={goToNextStep}>
-                        Continue <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    )}
+                    <Button onClick={goToNextStep}>
+                      {currentStep === 0 && selectedClientType === "firm" ? "Continue as CPA Firm" : "Continue"} 
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </div>
                 </>
               ) : (
