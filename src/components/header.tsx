@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { AdminNavLink } from "@/components/admin/AdminNavLink";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,11 +57,12 @@ export function Header() {
     >
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center">
-          <Logo className="h-10 w-auto" />
+          <Logo className="h-8" />
         </Link>
 
         {isMobile ? (
           <div className="flex items-center gap-4">
+            <AdminNavLink />
             <ModeToggle />
             <Sheet>
               <SheetTrigger asChild>
@@ -113,6 +116,7 @@ export function Header() {
               ))}
             </nav>
             <div className="flex items-center gap-2">
+              <AdminNavLink />
               <ModeToggle />
               <Button asChild>
                 <Link to="/request-demo">Request a Demo</Link>

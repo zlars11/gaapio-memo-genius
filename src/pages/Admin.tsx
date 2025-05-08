@@ -8,7 +8,6 @@ import { ContactTable } from "@/components/admin/ContactTable";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
-import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import { PricingManagement } from "@/components/admin/PricingManagement";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
@@ -21,6 +20,7 @@ import { useFetchAdmins } from "@/hooks/useFetchAdmins";
 import { Button } from "@/components/ui/button";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
+import { Header } from "@/components/header";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -80,6 +80,7 @@ export default function Admin() {
   return (
     <AdminPageGuard>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Header />
         {currentUser.isAdmin && !currentUser.displayedInList && (
           <AdminSecurityAlert 
             currentUserEmail={currentUser.email} 
@@ -87,12 +88,13 @@ export default function Admin() {
           />
         )}
         
-        <ResponsiveContainer className="py-10">
+        <ResponsiveContainer className="py-10 mt-16">
           <h1 className="text-3xl font-bold mb-8">Admin Portal</h1>
           
           <AdminFetchErrorAlert 
             error={userError || adminsError}
             onRetry={fetchAdmins}
+            loading={adminsLoading}
           />
           
           <ErrorBoundary
@@ -103,11 +105,11 @@ export default function Admin() {
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="companies">Companies</TabsTrigger>
                 <TabsTrigger value="users">Users</TabsTrigger>
-                <TabsTrigger value="waitlist">Waitlist</TabsTrigger>
                 <TabsTrigger value="contacts">Contact</TabsTrigger>
                 <TabsTrigger value="demos">Demo Requests</TabsTrigger>
                 <TabsTrigger value="firms">Firm Signups</TabsTrigger>
                 <TabsTrigger value="pricing">Pricing</TabsTrigger>
+                <TabsTrigger value="webpages">Webpages</TabsTrigger>
                 <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
 
@@ -121,10 +123,6 @@ export default function Admin() {
               
               <TabsContent value="users" className="space-y-4">
                 <UserSignupsTable />
-              </TabsContent>
-              
-              <TabsContent value="waitlist" className="space-y-4">
-                <WaitlistTable />
               </TabsContent>
               
               <TabsContent value="contacts" className="space-y-4">
@@ -141,6 +139,16 @@ export default function Admin() {
               
               <TabsContent value="pricing" className="space-y-4">
                 <PricingManagement />
+              </TabsContent>
+              
+              <TabsContent value="webpages" className="space-y-4">
+                <div className="p-6 border rounded-md bg-card">
+                  <h2 className="text-2xl font-semibold mb-4">Website Pages Management</h2>
+                  <p className="text-muted-foreground mb-6">Manage website pages content and SEO settings</p>
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Page editor coming soon.</p>
+                  </div>
+                </div>
               </TabsContent>
               
               <TabsContent value="settings" className="space-y-8">
@@ -169,7 +177,7 @@ export default function Admin() {
                           <p className="text-xs text-muted-foreground">Role: {admin.role}</p>
                         </div>
                         <div>
-                          {admin.user_id === currentUser.id && !currentUser.first_name && (
+                          {admin.user_id === currentUser.id && (!currentUser.first_name && !currentUser.last_name) && (
                             <Button 
                               variant="outline" 
                               size="sm"
@@ -219,7 +227,7 @@ export default function Admin() {
           <AdminNameDialog
             open={showNameDialog}
             onOpenChange={setShowNameDialog}
-            onSave={(firstName, lastName, email) => handleUpdateName(firstName, lastName, email)}
+            onSave={handleUpdateName}
             isLoading={false}
           />
         )}
@@ -227,9 +235,11 @@ export default function Admin() {
     </AdminPageGuard>
   );
 
-  async function handleUpdateName(firstName: string, lastName: string, email: string): Promise<boolean> {
+  async function handleUpdateName(firstName: string, lastName: string): Promise<boolean> {
     // Implementation for updating admin name
-    console.log("Updating admin name:", firstName, lastName, email);
+    console.log("Updating admin name:", firstName, lastName);
+    if (!currentUser.email) return false;
+    
     // After successful update, refresh admin list
     await fetchAdmins();
     return true;

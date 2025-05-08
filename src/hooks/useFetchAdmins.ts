@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminUser, CurrentAdminUser } from "@/types/adminTypes";
 
@@ -12,6 +12,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
   const [loading, setLoading] = useState(false);
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
   // Fetch all admin users
   const fetchAdmins = useCallback(async (): Promise<FetchAdminsResult> => {
@@ -76,6 +77,7 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       
       setAdmins(adminUsers);
       setLoading(false);
+      setInitialized(true);
       
       return {
         success: true,
@@ -86,9 +88,17 @@ export function useFetchAdmins(currentUser: CurrentAdminUser) {
       setError("An unexpected error occurred while fetching admin users: " + error.message);
       setAdmins([]);
       setLoading(false);
+      setInitialized(true);
       return { success: false, isCurrentUserDisplayed: false };
     }
-  }, [currentUser.id]); 
+  }, [currentUser.id]);
+
+  // Auto-fetch admins on mount if we have a current user ID
+  useEffect(() => {
+    if (!initialized && currentUser.id) {
+      fetchAdmins();
+    }
+  }, [fetchAdmins, currentUser.id, initialized]);
 
   return {
     loading,

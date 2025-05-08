@@ -1,7 +1,7 @@
 
 import { useEffect, useState, memo } from "react";
 
-// Ensures massive sizing, day/night mode support, optimized for header
+// Ensures proper sizing, day/night mode support, optimized for header
 export const Logo = memo(({ className = "" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
 
@@ -31,7 +31,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Massive logo (white for dark, black for light)
+  // Logo files (white for dark, black for light)
   const darkModeLogo = "/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png";
   const lightModeLogo = "/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png";
 
@@ -39,9 +39,9 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     <img
       src={isDark ? darkModeLogo : lightModeLogo}
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-      width={800}
-      height={240}
-      className={`h-auto w-auto object-contain transition-all duration-200 ${className}`}
+      width={160}
+      height={48}
+      className={`h-8 w-auto object-contain transition-all duration-200 ${className}`}
       loading="eager"
       decoding="async"
       draggable={false}
