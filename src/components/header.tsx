@@ -1,12 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useTheme } from "@/components/ui/use-theme";
+import { useTheme } from "./theme-toggle";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function Header() {
   const { theme } = useTheme();
@@ -28,7 +29,10 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between py-4">
         <Link to="/" className="mr-4 flex items-center font-bold">
           <Avatar className="mr-2 h-8 w-8">
-            <AvatarImage src="/gaapio-favicon-light-cropped.png" alt="Gaapio logo" />
+            <AvatarImage 
+              src={theme === "dark" ? "/gaapio-favicon-dark-cropped.png" : "/gaapio-favicon-light-cropped.png"} 
+              alt="Gaapio logo" 
+            />
             <AvatarFallback>G</AvatarFallback>
           </Avatar>
           <span>Gaapio</span>
