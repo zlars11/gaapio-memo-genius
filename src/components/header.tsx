@@ -54,8 +54,8 @@ export function Header() {
       }`}
     >
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <Logo className="h-12 w-auto" />
+        <Link to="/" className="flex items-center">
+          <Logo className="h-14 w-auto" />
         </Link>
 
         {isMobile ? (

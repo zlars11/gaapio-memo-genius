@@ -108,15 +108,18 @@ export function OrderSummary({
       <Card className="bg-muted/30 border-primary/30">
         <CardHeader>
           <CardTitle>Your Subscription</CardTitle>
-          <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
           
-          <div className="space-y-2 mt-2">
-            {getIncludedFeatures().map((feature, index) => (
-              <div key={index} className="flex items-start">
-                <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                <span>{feature}</span>
-              </div>
-            ))}
+          <div className="space-y-4 mt-2">
+            <h3 className="font-medium text-lg">{getTierName()} {getProductName()}</h3>
+            
+            <div className="space-y-2">
+              {getIncludedFeatures().map((feature, index) => (
+                <div key={index} className="flex items-start">
+                  <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </CardHeader>
         

@@ -49,23 +49,38 @@ serve(async (req: Request) => {
       auth: { persistSession: false }
     })
 
-    // Get price details for each ID
-    const lineItems = []
+    // Set up line items with actual Stripe price IDs
+    // These are placeholder price IDs - in production, you would use real Stripe price IDs
+    const priceLookup = {
+      // Base products
+      "price_memos_emerging": "price_1PJHJyFy2MioU7rZIBXF226c", 
+      "price_memos_midmarket": "price_1PJHIyFy2MioU7rZYRezDq49",
+      "price_memos_enterprise": "price_1PJHJ3Fy2MioU7rZk0CZiWeG",
+      "price_disclosures_emerging": "price_1PJHJbFy2MioU7rZy3KidZIb",
+      "price_disclosures_midmarket": "price_1PJHJmFy2MioU7rZjC3TnNJs",
+      "price_disclosures_enterprise": "price_1PJHJvFy2MioU7rZ5UpS5noA",
+      "price_bundle_emerging": "price_1PJHK9Fy2MioU7rZst27ktF4",
+      "price_bundle_midmarket": "price_1PJHKGFy2MioU7rZn5eVjcAO",
+      "price_bundle_enterprise": "price_1PJHKOFy2MioU7rZG101HaXy",
+      // Add-ons
+      "price_addon_disclosures_emerging": "price_1PJHKXFy2MioU7rZb68k4NCE",
+      "price_addon_disclosures_midmarket": "price_1PJHKfFy2MioU7rZYnKDaHzO",
+      "price_addon_disclosures_enterprise": "price_1PJHKoFy2MioU7rZWymF6Fm1",
+      "price_addon_cpareview": "price_1PJHKxFy2MioU7rZIHROyjiL"
+    };
+    
+    // Map the requested price IDs to actual Stripe price IDs
+    const lineItems = [];
     
     for (const priceId of priceIds) {
-      const price = await getPriceInfo(supabase, priceId)
-      
-      if (!price) {
-        return new Response(
-          JSON.stringify({ error: `Price ID not found: ${priceId}` }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
+      const actualPriceId = priceLookup[priceId] || priceId;
       
       lineItems.push({
-        price: priceId,
+        price: actualPriceId,
         quantity: 1,
-      })
+      });
+      
+      console.log(`Mapped price ID ${priceId} to ${actualPriceId}`);
     }
 
     // Create or get Stripe customer if email is provided

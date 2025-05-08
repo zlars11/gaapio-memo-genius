@@ -15,20 +15,17 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
     {
       id: "emerging",
       title: "Emerging",
-      description: "Up to 3 users",
-      features: ["Version history"]
+      features: ["Up to 3 users", "Version history"]
     },
     {
       id: "mid",
       title: "Mid-Market",
-      description: "Up to 6 users",
-      features: ["Version history", "Internal approvals"]
+      features: ["Up to 6 users", "Version history", "Internal approvals"]
     },
     {
       id: "enterprise",
       title: "Enterprise",
-      description: "Unlimited users",
-      features: ["Version history", "Internal approvals", "Audit package"]
+      features: ["Unlimited users", "Version history", "Internal approvals", "Audit package"]
     }
   ];
 
@@ -56,11 +53,16 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                   </div>
                 )}
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-2">{tier.description}</p>
+              
+              <div className="mt-3">
+                <div className="text-sm text-muted-foreground">
+                  {tier.features[0]}
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="flex-grow">
               <ul className="space-y-2">
-                {tier.features.map((feature, index) => (
+                {tier.features.slice(1).map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
                     <span>{feature}</span>

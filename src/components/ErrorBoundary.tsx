@@ -9,22 +9,25 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   state: State = {
     hasError: false,
-    error: null
+    error: null,
+    errorInfo: null
   };
 
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI.
-    return { hasError: true, error };
+    return { hasError: true, error, errorInfo: null };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Error caught by ErrorBoundary:", error);
     console.error("Component stack:", errorInfo.componentStack);
+    this.setState({ errorInfo });
   }
 
   render() {

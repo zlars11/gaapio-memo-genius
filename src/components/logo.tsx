@@ -41,14 +41,14 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
       width={800}
       height={240}
-      className={`h-auto w-auto max-w-[450px] sm:max-w-[500px] md:max-w-[550px] block object-contain transition-all duration-200 ${className}`}
+      className={`h-auto w-auto max-w-[500px] sm:max-w-[550px] md:max-w-[600px] block object-contain transition-all duration-200 ${className}`}
       loading="eager"
       decoding="async"
       draggable={false}
       style={{ 
         maxHeight: className.includes("h-12") ? "100px" : 
-                 (className.includes("h-14") ? "120px" : 
-                 (className.includes("h-16") ? "140px" : "240px")) 
+                 (className.includes("h-14") ? "140px" : 
+                 (className.includes("h-16") ? "160px" : "260px")) 
       }}
     />
   );

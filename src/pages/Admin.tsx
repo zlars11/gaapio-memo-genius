@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { ContactTable } from "@/components/admin/ContactTable";
@@ -65,6 +65,14 @@ export default function Admin() {
     );
   }
 
+  const renderFallback = (message: string) => (
+    <div className="p-6 bg-red-100 text-red-800 rounded">
+      <h3 className="font-bold text-lg mb-2">Something went wrong</h3>
+      <p>{message}</p>
+      <p className="mt-2 text-sm">Please check the console for more details or try refreshing the page.</p>
+    </div>
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -72,7 +80,7 @@ export default function Admin() {
       <div className="w-full bg-accent/50 border-b border-border mt-16">
         <div className="container py-3">
           <ErrorBoundary
-            fallback={<div className="p-4 bg-red-100 text-red-800 rounded">There was an error loading the tabs. Please refresh the page.</div>}
+            fallback={renderFallback("There was an error loading the tabs. Please refresh the page.")}
           >
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList>
@@ -91,7 +99,7 @@ export default function Admin() {
       </div>
       
       <AdminPageGuard>
-        <main className="flex-1 container py-6">
+        <main className="flex-1 container py-8">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold">Admin Portal</h1>
             <div className="flex gap-2">
@@ -104,13 +112,16 @@ export default function Admin() {
             </div>
           </div>
           
-          <ErrorBoundary
-            fallback={<div className="p-6 bg-red-100 text-red-800 rounded">There was an error loading this content. Please check the console for details.</div>}
-          >
-            <TabsContent value="dashboard">
-              <AdminDashboard />
-            </TabsContent>
-            <TabsContent value="companies">
+          <TabsContent value="dashboard">
+            <ErrorBoundary fallback={renderFallback("Error loading dashboard content")}>
+              <Suspense fallback={<div className="p-6 animate-pulse">Loading dashboard data...</div>}>
+                <AdminDashboard />
+              </Suspense>
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="companies">
+            <ErrorBoundary fallback={renderFallback("Error loading companies data")}>
               <div className="space-y-8 max-w-full">
                 <CompaniesTable />
                 <ZapierWebhookSetup
@@ -118,8 +129,11 @@ export default function Admin() {
                   description="Receive a webhook trigger when a new company is created."
                 />
               </div>
-            </TabsContent>
-            <TabsContent value="firms">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="firms">
+            <ErrorBoundary fallback={renderFallback("Error loading firms data")}>
               <div className="space-y-8 max-w-full">
                 <FirmSignupsTable />
                 <ZapierWebhookSetup
@@ -127,20 +141,35 @@ export default function Admin() {
                   description="Receive a webhook trigger when a new firm signs up."
                 />
               </div>
-            </TabsContent>
-            <TabsContent value="demos">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="demos">
+            <ErrorBoundary fallback={renderFallback("Error loading demo requests data")}>
               <DemoRequestsTable />
-            </TabsContent>
-            <TabsContent value="pricing">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="pricing">
+            <ErrorBoundary fallback={renderFallback("Error loading pricing management")}>
               <PricingManagement />
-            </TabsContent>
-            <TabsContent value="priceHistory">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="priceHistory">
+            <ErrorBoundary fallback={renderFallback("Error loading price history")}>
               <PriceHistoryViewer />
-            </TabsContent>
-            <TabsContent value="contact">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="contact">
+            <ErrorBoundary fallback={renderFallback("Error loading contact data")}>
               <ContactTable />
-            </TabsContent>
-            <TabsContent value="webpages">
+            </ErrorBoundary>
+          </TabsContent>
+          
+          <TabsContent value="webpages">
+            <ErrorBoundary fallback={renderFallback("Error loading webpages data")}>
               <div className="space-y-4">
                 <div className="bg-card rounded-lg border border-border p-6">
                   <h2 className="text-xl font-bold mb-4">All Website Pages</h2>
@@ -160,8 +189,8 @@ export default function Admin() {
                   </div>
                 </div>
               </div>
-            </TabsContent>
-          </ErrorBoundary>
+            </ErrorBoundary>
+          </TabsContent>
         </main>
       </AdminPageGuard>
       
