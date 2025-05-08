@@ -26,9 +26,9 @@ export default function Status() {
     <div className="flex min-h-screen flex-col">
       <Header />
       
-      <main className="page-container flex-1 pt-32 pb-28"> {/* Increased top and bottom padding for consistent spacing */}
+      <main className="flex-1 pt-24 pb-16"> {/* Adjusted padding for new header height */}
         <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto mt-8"> {/* Added top margin for better spacing */}
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold mb-4">System Status</h1>
               <div className="flex items-center justify-center gap-2 text-emerald-500">
@@ -42,8 +42,8 @@ export default function Status() {
               <h2 className="text-xl font-semibold mb-4">Services</h2>
               <div className="space-y-4">
                 {services.map((service, index) => (
-                  <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-b-0">
-                    <div>
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 border-b border-border/50 last:border-b-0">
+                    <div className="mb-2 sm:mb-0">
                       <p className="font-medium">{service.name}</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export default function Status() {
               </div>
             </div>
             
-            <div className="bg-card rounded-lg border border-border p-6 mb-16"> {/* Increased bottom margin for spacing */}
+            <div className="bg-card rounded-lg border border-border p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">Scheduled Maintenance</h2>
               <div className="flex items-center gap-3 p-4 rounded-md bg-accent/50">
                 <Clock className="h-5 w-5 text-muted-foreground" />
