@@ -39,13 +39,17 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     <img
       src={isDark ? darkModeLogo : lightModeLogo}
       alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-      width={700}
-      height={200}
-      className={`h-auto w-auto max-w-[250px] sm:max-w-[280px] block object-contain transition-all duration-200 ${className}`}
+      width={800}
+      height={240}
+      className={`h-auto w-auto max-w-[300px] sm:max-w-[350px] md:max-w-[400px] block object-contain transition-all duration-200 ${className}`}
       loading="eager"
       decoding="async"
       draggable={false}
-      style={{ maxHeight: className.includes("h-12") ? "48px" : (className.includes("h-14") ? "56px" : "170px") }}
+      style={{ 
+        maxHeight: className.includes("h-12") ? "60px" : 
+                 (className.includes("h-14") ? "70px" : 
+                 (className.includes("h-16") ? "80px" : "200px")) 
+      }}
     />
   );
 });

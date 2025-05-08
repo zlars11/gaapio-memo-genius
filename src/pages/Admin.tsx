@@ -19,64 +19,11 @@ import { Footer } from "@/components/footer";
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const [routes, setRoutes] = useState<string[]>([]);
   
   // Verify admin status
   useEffect(() => {
-    const checkAccess = async () => {
-      try {
-        console.log("Admin.tsx: Checking session");
-        const { data } = await supabase.auth.getSession();
-        const session = data?.session;
-        
-        if (!session) {
-          console.log("Admin.tsx: No session found");
-          setIsLoading(false);
-          return;
-        }
-        
-        console.log("Admin.tsx: Session found, user ID:", session.user.id);
-        
-        // Check if user has admin role
-        const { data: isAdminData, error } = await supabase.rpc('has_role', {
-          user_id: session.user.id,
-          role: 'admin'
-        });
-        
-        console.log("Admin.tsx: Admin check result:", { isAdminData, error });
-        
-        if (error) {
-          console.error("Admin.tsx: Error checking admin status:", error);
-          toast({
-            title: "Error",
-            description: "Could not verify your admin privileges. Please try again.",
-            variant: "destructive"
-          });
-          setIsAdmin(false);
-        } else if (!isAdminData) {
-          console.log("Admin.tsx: User is not an admin");
-          toast({
-            title: "Access Denied",
-            description: "You don't have permission to access the admin area.",
-            variant: "destructive"
-          });
-          setIsAdmin(false);
-        } else {
-          console.log("Admin.tsx: User is confirmed as admin");
-          setIsAdmin(true);
-        }
-      } catch (error) {
-        console.error("Admin.tsx: Error checking admin status:", error);
-        setIsAdmin(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    checkAccess();
-    
     // Collect all routes from App.tsx
     setRoutes([
       "/",
@@ -97,6 +44,9 @@ export default function Admin() {
       "/status",
       "/privacy"
     ]);
+    
+    // Set loading to false - we'll let AdminPageGuard handle auth checks
+    setIsLoading(false);
   }, [toast]);
   
   const handleTabChange = (value: string) => {
@@ -112,7 +62,6 @@ export default function Admin() {
     );
   }
 
-  // Show content regardless of admin status - the AdminPageGuard will handle permissions
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

@@ -31,9 +31,9 @@ export function Header() {
 
   return (
     <header className="bg-background sticky top-0 z-50 w-full border-b shadow-sm">
-      <div className="container flex h-20 items-center justify-between py-4">
+      <div className="container flex h-24 items-center justify-between py-4">
         <Link to="/" className="flex items-center">
-          <Logo className="h-12 md:h-14 w-auto" />
+          <Logo className="h-16 md:h-18 w-auto" />
         </Link>
         <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-8">
           <nav className="hidden lg:flex gap-8">
@@ -44,7 +44,7 @@ export function Header() {
                 className="text-base font-medium transition-colors hover:text-primary relative group"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-primary/10 transition-all duration-300 scale-x-0 group-hover:scale-x-100 group-hover:h-full -z-10 rounded-md"></span>
               </Link>
             ))}
           </nav>
@@ -73,7 +73,7 @@ export function Header() {
                     <Link
                       key={link.href}
                       to={link.href}
-                      className="text-lg font-medium py-2 px-4 hover:bg-accent rounded-md transition-colors"
+                      className="text-lg font-medium py-2 px-4 hover:bg-primary/10 rounded-md transition-colors"
                     >
                       {link.label}
                     </Link>

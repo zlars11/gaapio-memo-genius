@@ -39,7 +39,14 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
           console.log('SecurityMiddleware: No session found, redirecting to login');
           setIsLoading(false);
           setIsAuthorized(false);
-          navigate('/login', { replace: true });
+          
+          toast({
+            title: "Authentication Required",
+            description: "Please login to access this area",
+            variant: "default"
+          });
+          
+          navigate('/login', { state: { from: location.pathname } });
           return;
         }
 
@@ -52,11 +59,11 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
         console.error('SecurityMiddleware: Auth error:', error);
         toast({
           title: "Authentication Error",
-          description: error.message || "Failed to verify your login status",
+          description: "Please try logging in again",
           variant: "destructive"
         });
         
-        navigate('/login', { replace: true });
+        navigate('/login', { state: { from: location.pathname } });
         setIsLoading(false);
         setIsAuthorized(false);
       }
@@ -68,9 +75,14 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('SecurityMiddleware: Auth state changed:', event);
+        
         if (!session && requiresAuth) {
+          console.log('SecurityMiddleware: No session after auth change');
           setIsAuthorized(false);
-          navigate('/login', { replace: true });
+          navigate('/login', { state: { from: location.pathname } });
+        } else if (session && requiresAuth) {
+          console.log('SecurityMiddleware: Session found after auth change');
+          setIsAuthorized(true);
         }
       }
     );
@@ -81,7 +93,7 @@ export function SecurityMiddleware({ children }: SecurityMiddlewareProps): JSX.E
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse">Loading Security Check...</div>
+        <div className="animate-pulse text-primary">Loading...</div>
       </div>
     );
   }

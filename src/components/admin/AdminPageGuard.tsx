@@ -26,9 +26,6 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
   // Check if user is logged in and has admin role
   useEffect(() => {
     const checkAdminStatus = async () => {
-      setIsLoading(true);
-      setError("");
-      
       try {
         console.log('AdminPageGuard: Checking session');
         const { data } = await supabase.auth.getSession();
@@ -45,35 +42,32 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
         console.log('AdminPageGuard: Session found, user ID:', session.user.id);
         setIsAuthenticated(true);
         
-        // Check if user has admin role
-        const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
-          user_id: session.user.id,
-          role: 'admin'
-        });
-        
-        console.log('AdminPageGuard: Admin role check result:', { isAdmin, roleError });
-        
-        if (roleError) {
-          console.error('AdminPageGuard: Error checking admin role:', roleError);
-          setIsAuthorized(false);
-          toast({
-            title: "Error",
-            description: "Could not verify your admin privileges. Please try again.",
-            variant: "destructive"
+        // Check if user has admin role - simplified approach
+        try {
+          const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
+            user_id: session.user.id,
+            role: 'admin'
           });
-        } else {
-          setIsAuthorized(!!isAdmin);
           
-          if (!isAdmin) {
-            console.log('AdminPageGuard: User is not an admin');
-            toast({
-              title: "Access Denied",
-              description: "You don't have permission to access the admin area.",
-              variant: "destructive"
-            });
+          console.log('AdminPageGuard: Admin role check result:', { isAdmin, roleError });
+          
+          if (roleError) {
+            console.error('AdminPageGuard: Error checking admin role:', roleError);
+            setIsAuthorized(false);
           } else {
-            console.log('AdminPageGuard: User is authorized as admin');
+            // If isAdmin is truthy, the user has admin role
+            setIsAuthorized(!!isAdmin);
+            
+            if (!isAdmin) {
+              console.log('AdminPageGuard: User is not an admin');
+            } else {
+              console.log('AdminPageGuard: User is authorized as admin');
+              localStorage.setItem("admin_authenticated", "true"); // For optional use in UI components
+            }
           }
+        } catch (authCheckError) {
+          console.error('AdminPageGuard: Error in admin role check:', authCheckError);
+          setIsAuthorized(false);
         }
       } catch (err) {
         console.error("AdminPageGuard: Error checking admin status:", err);
@@ -87,22 +81,20 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     checkAdminStatus();
     
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('AdminPageGuard: Auth state changed:', event);
-        if (!session) {
-          setIsAuthenticated(false);
-          setIsAuthorized(false);
-        } else {
-          setIsAuthenticated(true);
-          // Recheck authorization when auth state changes
-          checkAdminStatus();
-        }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      console.log('AdminPageGuard: Auth state changed:', event);
+      if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+        setIsAuthorized(false);
+        localStorage.removeItem("admin_authenticated");
+      } else if (event === 'SIGNED_IN') {
+        // Re-check admin status when user signs in
+        checkAdminStatus();
       }
-    );
+    });
     
     return () => subscription.unsubscribe();
-  }, [toast]);
+  }, []);
 
   const handleLogin = async () => {
     setError("");
@@ -114,44 +106,58 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     
     try {
       setIsLoading(true);
-      console.log('AdminPageGuard: Attempting login with:', { email });
+      console.log('AdminPageGuard: Attempting login with email:', email);
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('AdminPageGuard: Login error:', error);
+        setError(error.message);
+        setIsLoading(false);
+        return;
+      }
       
       if (data.user) {
         console.log('AdminPageGuard: Login successful, user ID:', data.user.id);
         
         // Check if user has admin role after login
-        const { data: adminData, error: adminError } = await supabase.rpc('has_role', {
-          user_id: data.user.id,
-          role: 'admin'
-        });
-        
-        console.log('AdminPageGuard: Admin role check after login:', { adminData, adminError });
-        
-        if (adminError || !adminData) {
-          console.log('AdminPageGuard: User is not an admin');
-          setError("You don't have permission to access the admin area.");
-          toast({
-            title: "Access Denied",
-            description: "You don't have permission to access the admin area.",
-            variant: "destructive"
+        try {
+          const { data: adminData, error: adminError } = await supabase.rpc('has_role', {
+            user_id: data.user.id,
+            role: 'admin'
           });
-          // Not necessary to sign out here, we'll just show the unauthorized screen
-        } else {
-          console.log('AdminPageGuard: User is authorized as admin');
+          
+          console.log('AdminPageGuard: Admin role check after login:', { adminData, adminError });
+          
+          if (adminError) {
+            console.error('AdminPageGuard: Error checking admin role after login:', adminError);
+            throw new Error(`Failed to verify admin privileges: ${adminError.message}`);
+          }
+          
+          if (!adminData) {
+            console.log('AdminPageGuard: User is not an admin');
+            setError("You don't have permission to access the admin area.");
+            setIsAuthenticated(true);
+            setIsAuthorized(false);
+          } else {
+            console.log('AdminPageGuard: User is authorized as admin');
+            setIsAuthenticated(true);
+            setIsAuthorized(true);
+            setError("");
+            localStorage.setItem("admin_authenticated", "true");
+          }
+        } catch (adminCheckError: any) {
+          console.error('AdminPageGuard: Error in admin check after login:', adminCheckError);
+          setError(adminCheckError.message || "Failed to verify admin privileges");
           setIsAuthenticated(true);
-          setIsAuthorized(true);
-          setError("");
+          setIsAuthorized(false);
         }
       }
     } catch (err: any) {
-      console.error("AdminPageGuard: Login error:", err);
+      console.error("AdminPageGuard: Unexpected login error:", err);
       setError(err.message || "Failed to login. Please check your credentials.");
     } finally {
       setIsLoading(false);
@@ -163,6 +169,7 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
       await supabase.auth.signOut();
       setIsAuthenticated(false);
       setIsAuthorized(false);
+      localStorage.removeItem("admin_authenticated");
       navigate("/login");
     } catch (err) {
       console.error("AdminPageGuard: Logout error:", err);
@@ -180,7 +187,7 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-center py-8">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Admin Access Required</CardTitle>
@@ -241,9 +248,5 @@ export function AdminPageGuard({ children }: AdminPageGuardProps) {
     );
   }
 
-  return (
-    <div>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
