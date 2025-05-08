@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDistanceToNow } from "date-fns";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type PriceHistoryEntry = {
   id: string;
@@ -67,48 +68,115 @@ export function PriceHistoryViewer() {
     return tier.charAt(0).toUpperCase() + tier.slice(1);
   };
 
+  // Safely format date as distance from now
+  const safeFormatDistanceToNow = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return "Unknown date";
+      }
+      
+      return formatDistanceToNow(date, { addSuffix: true });
+    } catch (err) {
+      console.error("Error formatting date:", err, dateString);
+      return "Date format error";
+    }
+  };
+  
+  // Safely format date for display
+  const safeFormatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return "Invalid date";
+      }
+      
+      return date.toLocaleString();
+    } catch (err) {
+      console.error("Error formatting date:", err, dateString);
+      return "Date format error";
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Price Change History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Price Change History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Error loading price history</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (priceHistory.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Price Change History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center py-8 text-muted-foreground">No price history records found.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Price Change History</CardTitle>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 text-red-800 p-4 rounded-md">
-            <p>Error: {error}</p>
-          </div>
-        ) : priceHistory.length === 0 ? (
-          <p className="text-center py-8 text-muted-foreground">No price history records found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Tier</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Effective From</TableHead>
-                  <TableHead>Changed</TableHead>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Tier</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Effective From</TableHead>
+                <TableHead>Changed</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {priceHistory.map((entry) => (
+                <TableRow key={entry.id}>
+                  <TableCell className="font-medium">{formatProductType(entry.product_type)}</TableCell>
+                  <TableCell>{formatTier(entry.tier)}</TableCell>
+                  <TableCell>{formatCurrency(entry.price)}</TableCell>
+                  <TableCell>{safeFormatDate(entry.effective_from)}</TableCell>
+                  <TableCell>{safeFormatDistanceToNow(entry.created_at)}</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {priceHistory.map((entry) => (
-                  <TableRow key={entry.id}>
-                    <TableCell className="font-medium">{formatProductType(entry.product_type)}</TableCell>
-                    <TableCell>{formatTier(entry.tier)}</TableCell>
-                    <TableCell>{formatCurrency(entry.price)}</TableCell>
-                    <TableCell>{new Date(entry.effective_from).toLocaleString()}</TableCell>
-                    <TableCell>{formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );
