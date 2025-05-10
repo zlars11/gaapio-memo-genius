@@ -33,7 +33,7 @@ export default function AboutUs() {
               
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                  <h2 className="text-3xl font-bold mb-6">We're transforming technical accounting with expertise</h2>
+                  <h2 className="text-3xl font-bold mb-6">We're transforming technical accounting with AI</h2>
                 </div>
                 
                 <div className="space-y-6">
@@ -48,8 +48,8 @@ export default function AboutUs() {
                     workspace that transforms the entire technical memo process. Teams get clear, purpose-built
                     documentation that feels more like a guided conversation than a tedious form to populate.
                     Accountants get AI tools that match, organize, and produce a final draft of their
-                    accounting memos—automatically. It's not just a better accounting platform, it's a better way
-                    to work together.
+                    accounting memos—automatically. It's not just a better accounting platform, it's a smarter way
+                    to work.
                   </p>
                 </div>
               </div>
