@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -45,24 +44,23 @@ export default function Admin() {
     fetchAdmins
   } = useFetchAdmins(currentUser);
 
-  // List of pages to display in the webpages tab, including hidden pages
+  // Updated list of pages to display in the webpages tab - only real pages
   const websitePages = [
     { title: "Home Page", path: "/", description: "Main landing page" },
     { title: "About Us", path: "/about-us", description: "Company information page" },
-    { title: "One Pager", path: "/onepager", description: "Product overview in a single page format" },
+    { title: "Contact", path: "/contact", description: "Contact form and information" },
     { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
     { title: "Resources", path: "/resources", description: "Blog and resource content" },
-    { title: "Contact", path: "/contact", description: "Contact form and information" },
-    { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
+    { title: "Blog", path: "/blog", description: "Blog articles and posts" },
+    { title: "Login", path: "/login", description: "User login page" },
     { title: "Sign Up", path: "/signup", description: "User registration flow" },
-    { title: "Success", path: "/success", description: "Payment success page" },
-    { title: "Cancel", path: "/cancel", description: "Payment cancellation page" },
+    { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
+    { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
+    { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
     { title: "Privacy", path: "/privacy", description: "Privacy policy page" },
     { title: "Subscription Agreement", path: "/ssa", description: "Subscription service agreement" },
-    { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
-    { title: "Status", path: "/status", description: "System status page" },
-    { title: "ASC 606", path: "/asc606", description: "ASC 606 information" },
-    { title: "AI Accounting", path: "/ai-accounting", description: "AI Accounting information" }
+    { title: "Success", path: "/success", description: "Payment success page" },
+    { title: "Cancel", path: "/cancel", description: "Payment cancellation page" }
   ];
 
   // Set the active tab from URL if present

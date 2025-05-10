@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { 
@@ -21,7 +20,7 @@ export default function AboutUs() {
       </a>
       
       <main className="flex-1 pt-20" id="about-content">
-        {/* Hero Section */}
+        {/* Hero Section - Updated content */}
         <section className="py-16 md:py-24 border-b">
           <div className="container px-4 md:px-6">
             <div className="max-w-5xl mx-auto">
@@ -34,15 +33,10 @@ export default function AboutUs() {
               
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                  <h2 className="text-3xl font-bold mb-6">We're transforming technical accounting with practitioner expertise</h2>
+                  <h2 className="text-3xl font-bold mb-6">We're transforming technical accounting with expertise</h2>
                 </div>
                 
                 <div className="space-y-6">
-                  <p className="text-lg">
-                    Accounting used to be simple: research, analyze, and document. But complexity has increased with 
-                    regulations, distributed teams, and growing audit scope that slows down client and auditor satisfaction.
-                  </p>
-                  
                   <p className="text-lg">
                     With over a decade of experience in both Big 4 environments and specialized accounting consultancies,
                     we understand the pain points of technical accounting documentation. That's why we built Gaapio—a 
