@@ -32,8 +32,12 @@ export default function AboutUs() {
               </div>
               
               <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <h2 className="text-3xl font-bold mb-6">We're transforming technical accounting with AI</h2>
+                <div className="flex justify-center">
+                  <img 
+                    src="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png" 
+                    alt="Two CPA accountants working together" 
+                    className="rounded-lg shadow-md max-w-full h-auto"
+                  />
                 </div>
                 
                 <div className="space-y-6">

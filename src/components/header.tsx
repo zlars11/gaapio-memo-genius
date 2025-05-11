@@ -41,6 +41,7 @@ export function Header() {
     { name: "About", href: "/about-us" },
     { name: "Resources", href: "/resources" },
     { name: "FAQ", href: "/faq" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" }
   ];
 
