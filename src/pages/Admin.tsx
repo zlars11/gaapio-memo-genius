@@ -44,7 +44,7 @@ export default function Admin() {
     fetchAdmins
   } = useFetchAdmins(currentUser);
 
-  // Updated list of pages to display in the webpages tab - only real pages
+  // Updated list of pages to display in the webpages tab - only real pages that exist in App.tsx
   const websitePages = [
     { title: "Home Page", path: "/", description: "Main landing page" },
     { title: "About Us", path: "/about-us", description: "Company information page" },
@@ -52,10 +52,10 @@ export default function Admin() {
     { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
     { title: "Resources", path: "/resources", description: "Blog and resource content" },
     { title: "Blog", path: "/blog", description: "Blog articles and posts" },
+    { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
     { title: "Login", path: "/login", description: "User login page" },
     { title: "Sign Up", path: "/signup", description: "User registration flow" },
     { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
-    { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
     { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
     { title: "Privacy", path: "/privacy", description: "Privacy policy page" },
     { title: "Subscription Agreement", path: "/ssa", description: "Subscription service agreement" },

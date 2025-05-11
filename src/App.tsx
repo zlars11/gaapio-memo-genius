@@ -27,6 +27,7 @@ import SignUp from "./pages/SignUp";
 import FirmSignup from "./pages/FirmSignup";
 import Cancel from "./pages/Cancel";
 import Success from "./pages/Success";
+import RequestDemo from "./pages/RequestDemo";
 
 const App: React.FC = () => {
   return (
@@ -40,7 +41,7 @@ const App: React.FC = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
         <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
-        <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<BlogPost />} />
+        <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
         <Route path="/ssa" element={<SubscriptionAgreement />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/users" element={<AdminUsers />} />
@@ -48,7 +49,7 @@ const App: React.FC = () => {
         <Route path="/onepager" element={<OnePager />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/request-demo" element={<AIAccounting />} />
+        <Route path="/request-demo" element={<RequestDemo />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/firm-signup" element={<FirmSignup />} />
         <Route path="/choose-plan" element={<ChoosePlan />} />
