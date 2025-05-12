@@ -67,7 +67,7 @@ export function ClientTypeSelector({ selectedType, onSelectType }: ClientTypeSel
                   className="w-full h-10"
                   onClick={() => onSelectType(type.id)}
                 >
-                  {selectedType === type.id ? "Selected" : "Select"}
+                  Select
                 </Button>
               </CardFooter>
             </Card>
