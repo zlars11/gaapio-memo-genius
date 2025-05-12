@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FileSearch, FileText, FileCheck, Download, Book, BookOpen, ExternalLink } from "lucide-react";
@@ -8,7 +7,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ResourceExternalCard } from "@/components/resources/ResourceExternalCard";
 
 export default function Resources() {
   // Observer for scroll animations
@@ -46,6 +44,175 @@ export default function Resources() {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Helpful tools and guidance for accounting and finance professionals
             </p>
+          </div>
+          
+          {/* Featured External Resources - Moved to top */}
+          <div className="mb-20">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold">Featured External Resources</h2>
+              <div className="h-px flex-grow bg-border/50 ml-4"></div>
+            </div>
+            <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-8">
+              {/* SEC EDGAR */}
+              <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]">
+                <CardHeader>
+                  <div className="flex items-start">
+                    <div className="h-8 w-8 mb-3 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png" 
+                        alt="SEC logo" 
+                        className="max-h-full max-w-full object-contain" 
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle>SEC EDGAR</CardTitle>
+                      <Badge className="mt-1 bg-[#eef6ff] text-[#0369a1] dark:bg-blue-900/30 dark:text-blue-300">Authoritative</Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    Access public company filings and disclosure documents. Search for financial statements, annual reports, and regulatory filings.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
+                    <a href="https://www.sec.gov/edgar/searchedgar/companysearch" target="_blank" rel="noopener noreferrer">
+                      <span>Visit Resource</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+              
+              {/* Deloitte */}
+              <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "100ms" }}>
+                <CardHeader>
+                  <div className="flex items-start">
+                    <div className="h-8 w-8 mb-3 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/d0db1379-3bdf-4c82-b7ac-4e9b270af3aa.png" 
+                        alt="Deloitte logo" 
+                        className="max-h-full max-w-full object-contain" 
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle>Deloitte Accounting Library</CardTitle>
+                      <Badge className="mt-1 bg-[#eef6ff] text-[#0369a1] dark:bg-blue-900/30 dark:text-blue-300">Big 4</Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    Comprehensive technical accounting guidance and publications. Access in-depth resources on accounting standards and implementation.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
+                    <a href="https://dart.deloitte.com" target="_blank" rel="noopener noreferrer">
+                      <span>Visit Resource</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+              
+              {/* PwC */}
+              <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "200ms" }}>
+                <CardHeader>
+                  <div className="flex items-start">
+                    <div className="h-8 w-8 mb-3 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/c45fd480-1870-4963-9797-c53223261a19.png" 
+                        alt="PwC logo" 
+                        className="max-h-full max-w-full object-contain" 
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle>PwC Inform</CardTitle>
+                      <Badge className="mt-1 bg-[#eef6ff] text-[#0369a1] dark:bg-blue-900/30 dark:text-blue-300">Big 4</Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    In-depth accounting and financial reporting guidance. Industry-specific resources and technical insights from PwC professionals.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
+                    <a href="https://viewpoint.pwc.com" target="_blank" rel="noopener noreferrer">
+                      <span>Visit Resource</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              {/* EY */}
+              <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "300ms" }}>
+                <CardHeader>
+                  <div className="flex items-start">
+                    <div className="h-8 w-8 mb-3 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png" 
+                        alt="EY logo" 
+                        className="max-h-full max-w-full object-contain" 
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle>EY AccountingLink</CardTitle>
+                      <Badge className="mt-1 bg-[#eef6ff] text-[#0369a1] dark:bg-blue-900/30 dark:text-blue-300">Big 4</Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    Technical insights on accounting, regulatory and financial reporting. Access EY's interpretations and guidance on complex accounting matters.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
+                    <a href="https://www.ey.com/en_us/assurance/accountinglink" target="_blank" rel="noopener noreferrer">
+                      <span>Visit Resource</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+              
+              {/* KPMG */}
+              <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "400ms" }}>
+                <CardHeader>
+                  <div className="flex items-start">
+                    <div className="h-8 w-8 mb-3 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png" 
+                        alt="KPMG logo" 
+                        className="max-h-full max-w-full object-contain" 
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle>KPMG Guidance Center</CardTitle>
+                      <Badge className="mt-1 bg-[#eef6ff] text-[#0369a1] dark:bg-blue-900/30 dark:text-blue-300">Big 4</Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                    Accounting standards implementation and practical insights. Stay up-to-date with KPMG's interpretations of new and existing standards.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
+                    <a href="https://frv.kpmg.us" target="_blank" rel="noopener noreferrer">
+                      <span>Visit Resource</span>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           </div>
           
           {/* Accounting Standards & Guidance */}
@@ -101,7 +268,6 @@ export default function Resources() {
                 </CardFooter>
               </Card>
               
-              {/* Card 3 */}
               <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "200ms" }}>
                 <CardHeader>
                   <div className="flex items-start">
@@ -281,57 +447,6 @@ export default function Resources() {
                   </Button>
                 </CardFooter>
               </Card>
-            </div>
-          </div>
-          
-          {/* Featured External Resources - New Section */}
-          <div className="py-16 bg-accent/30 -mx-4 px-4 md:-mx-6 md:px-6 dark:bg-[#0a0a0a]">
-            <div className="container">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Featured External Resources</h2>
-                <div className="h-px flex-grow bg-border/50 ml-4 dark:bg-border/20"></div>
-              </div>
-              <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
-                <ResourceExternalCard 
-                  title="SEC EDGAR"
-                  description="Access public company filings and disclosure documents."
-                  imageUrl="/lovable-uploads/46cd9a78-e198-4c02-8bb3-54dd178bcc07.png"
-                  link="https://www.sec.gov/edgar/searchedgar/companysearch"
-                  delay={0}
-                />
-                
-                <ResourceExternalCard 
-                  title="Deloitte Accounting Library"
-                  description="Comprehensive technical accounting guidance and publications."
-                  imageUrl="/lovable-uploads/d0db1379-3bdf-4c82-b7ac-4e9b270af3aa.png"
-                  link="https://dart.deloitte.com"
-                  delay={100}
-                />
-                
-                <ResourceExternalCard 
-                  title="PwC Inform"
-                  description="In-depth accounting and financial reporting guidance."
-                  imageUrl="/lovable-uploads/c45fd480-1870-4963-9797-c53223261a19.png"
-                  link="https://viewpoint.pwc.com"
-                  delay={200}
-                />
-                
-                <ResourceExternalCard 
-                  title="EY AccountingLink"
-                  description="Technical insights on accounting, regulatory and financial reporting."
-                  imageUrl="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png"
-                  link="https://www.ey.com/en_us/assurance/accountinglink"
-                  delay={300}
-                />
-                
-                <ResourceExternalCard 
-                  title="KPMG Guidance Center"
-                  description="Accounting standards implementation and practical insights."
-                  imageUrl="/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png"
-                  link="https://frv.kpmg.us"
-                  delay={400}
-                />
-              </div>
             </div>
           </div>
         </div>
