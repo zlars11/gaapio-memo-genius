@@ -17,7 +17,7 @@ export function BenefitsSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.5 } // Increased threshold to 0.5 (50% visibility)
     );
 
     if (sectionRef.current) {
@@ -42,25 +42,25 @@ export function BenefitsSection() {
       icon: Clock,
       title: "Time & Cost Savings",
       description: "Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.",
-      delay: 200
+      delay: 300
     },
     {
       icon: FileText,
       title: "CPA-Level Output",
       description: "AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.",
-      delay: 400
+      delay: 600
     },
     {
       icon: Shield,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
-      delay: 600
+      delay: 900
     },
     {
       icon: ShieldCheck,
       title: "Enterprise-Grade Security",
       description: "Your data stays private — never used to train public AI models. We follow strict security protocols.",
-      delay: 800
+      delay: 1200
     }
   ];
 
@@ -117,17 +117,20 @@ export function BenefitsSection() {
           </div>
           
           {/* Right column - Benefits list (60% width) */}
-          <div className="md:col-span-6 space-y-5">
+          <div className="md:col-span-6 space-y-6">
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
                 className={cn(
-                  "flex gap-4 transition-all duration-600 ease-out",
+                  "flex gap-5 transition-all duration-700 ease-out",
                   isVisible 
                     ? "opacity-100 translate-y-0" 
                     : "opacity-0 translate-y-5"
                 )}
-                style={{ transitionDelay: `${benefit.delay}ms` }}
+                style={{ 
+                  transitionDelay: `${benefit.delay}ms`,
+                  transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)"
+                }}
               >
                 <div className="mt-1 text-[#339CFF] flex-shrink-0">
                   <benefit.icon className="h-5 w-5" />
