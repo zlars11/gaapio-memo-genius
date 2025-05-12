@@ -2,7 +2,7 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Check, Zap, Clock, ShieldCheck, BarChart2, Lightbulb, Building2, Brain } from "lucide-react";
+import { Download, FileText, Check, Zap, Clock, ShieldCheck, BarChart2, Lightbulb, Building2, Brain, Shield } from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
