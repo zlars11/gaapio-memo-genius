@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
 
 export function BenefitsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -43,25 +42,25 @@ export function BenefitsSection() {
       icon: Clock,
       title: "Time & Cost Savings",
       description: "Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.",
-      delay: 100
+      delay: 200
     },
     {
       icon: FileText,
       title: "CPA-Level Output",
       description: "AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.",
-      delay: 200
+      delay: 400
     },
     {
       icon: Shield,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
-      delay: 300
+      delay: 600
     },
     {
       icon: ShieldCheck,
       title: "Enterprise-Grade Security",
       description: "Your data stays private — never used to train public AI models. We follow strict security protocols.",
-      delay: 400
+      delay: 800
     }
   ];
 
@@ -92,9 +91,9 @@ export function BenefitsSection() {
       </style>
       
       <div className="container px-4 md:px-6">
-        <div className="grid md:grid-cols-2 gap-12 md:gap-8 lg:gap-16 items-start">
-          {/* Left column - Heading and description */}
-          <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-10 gap-12 md:gap-8 lg:gap-16 items-start">
+          {/* Left column - Heading and description (40% width) */}
+          <div className="md:col-span-4 space-y-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Benefits</h2>
               <p className="text-xl text-muted-foreground max-w-md">
@@ -103,27 +102,27 @@ export function BenefitsSection() {
             </div>
             
             <div className="pt-4">
-              <Button variant="link" className="group text-[#339CFF] p-0 h-auto font-medium" asChild>
-                <Link to="/features">
-                  See All Features 
-                  <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+              <Button variant="link" className="group text-[#339CFF] p-0 h-auto font-medium">
+                <div className="flex items-center cursor-pointer">
+                  See Features 
+                  <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </div>
               </Button>
             </div>
           </div>
           
           {/* Vertical Divider (visible on md screens and up) */}
-          <div className="hidden md:block absolute left-1/2 top-20 bottom-20 transform -translate-x-1/2">
+          <div className="hidden md:block absolute left-[40%] top-20 bottom-20">
             <Separator orientation="vertical" className="h-full" style={{ backgroundColor: "var(--benefits-divider)" }} />
           </div>
           
-          {/* Right column - Benefits list */}
-          <div className="space-y-8">
+          {/* Right column - Benefits list (60% width) */}
+          <div className="md:col-span-6 space-y-5">
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
                 className={cn(
-                  "flex gap-4 transition-all duration-500",
+                  "flex gap-4 transition-all duration-600 ease-out",
                   isVisible 
                     ? "opacity-100 translate-y-0" 
                     : "opacity-0 translate-y-5"
