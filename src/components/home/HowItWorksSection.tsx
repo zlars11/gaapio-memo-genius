@@ -50,14 +50,14 @@ export function HowItWorksSection() {
           {/* Step 1 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-300",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-400 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
-            style={{ transitionDelay: "0ms" }}
+            style={{ transitionDelay: "0ms", transitionDuration: "400ms" }}
           >
-            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
               01
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
@@ -83,14 +83,14 @@ export function HowItWorksSection() {
           {/* Step 2 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-300",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-400 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
-            style={{ transitionDelay: "100ms" }}
+            style={{ transitionDelay: "150ms", transitionDuration: "400ms" }}
           >
-            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
               02
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
@@ -120,14 +120,14 @@ export function HowItWorksSection() {
           {/* Step 3 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-300",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-400 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
-            style={{ transitionDelay: "200ms" }}
+            style={{ transitionDelay: "300ms", transitionDuration: "400ms" }}
           >
-            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
               03
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
