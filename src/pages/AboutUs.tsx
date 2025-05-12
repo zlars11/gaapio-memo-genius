@@ -164,7 +164,7 @@ export default function AboutUs() {
         {/* Intro Section - Blue background with pattern */}
         <section 
           ref={introRef}
-          className="py-16 md:py-24 bg-[#f4faff] relative overflow-hidden"
+          className="py-16 md:py-24 bg-[#f4faff] dark:bg-gray-900 relative overflow-hidden"
         >
           {/* Abstract background pattern */}
           <div className="absolute inset-0 opacity-5 pointer-events-none">
@@ -185,8 +185,8 @@ export default function AboutUs() {
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >
-                <h1 className="text-4xl md:text-5xl font-bold mb-6">About Gaapio</h1>
-                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 dark:text-white">About Gaapio</h1>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto dark:text-gray-300">
                   Built by CPAs for CPAs — Accounting Excellence Meets Cutting-Edge Technology
                 </p>
               </div>
@@ -228,13 +228,13 @@ export default function AboutUs() {
                     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                   }}
                 >
-                  <p className="text-lg">
+                  <p className="text-lg dark:text-gray-200">
                     With over a decade of experience in both Big 4 environments and specialized accounting consultancies,
                     we understand the pain points of technical accounting documentation. That's why we built Gaapio—a 
                     purpose-built platform that transforms how accounting teams approach technical memos and documentation.
                   </p>
                   
-                  <p className="text-lg">
+                  <p className="text-lg dark:text-gray-200">
                     What is Gaapio? It's not just another accounting tool. It's a purposefully designed 
                     workspace that transforms the entire technical memo process. Teams get clear, purpose-built
                     documentation that feels more like a guided conversation than a tedious form to populate.
@@ -251,18 +251,18 @@ export default function AboutUs() {
         {/* Our Expertise Section */}
         <section 
           ref={expertiseRef}
-          className="py-16 md:py-24 border-t border-b border-muted"
+          className="py-16 md:py-24 border-t border-b border-muted dark:border-gray-800 dark:bg-background"
         >
           <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold mb-12 text-center">Our Expertise</h2>
+              <h2 className="text-3xl font-bold mb-12 text-center dark:text-white">Our Expertise</h2>
               
               <div className="grid md:grid-cols-2 gap-8">
                 {expertiseItems.map((item, index) => (
                   <div 
                     key={index}
                     className={cn(
-                      "flex items-start gap-4 p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:bg-[#f4faff] group",
+                      "flex items-start gap-4 p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:bg-[#f4faff] dark:hover:bg-gray-800 group",
                       expertiseVisible 
                         ? "opacity-100 translate-y-0" 
                         : "opacity-0 translate-y-[30px]"
@@ -277,8 +277,8 @@ export default function AboutUs() {
                       <item.icon className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors">{item.title}</h3>
-                      <p className="text-muted-foreground group-hover:text-foreground transition-colors">{item.description}</p>
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors dark:text-white">{item.title}</h3>
+                      <p className="text-muted-foreground group-hover:text-foreground transition-colors dark:text-gray-300">{item.description}</p>
                     </div>
                   </div>
                 ))}
@@ -290,17 +290,17 @@ export default function AboutUs() {
         {/* Our Philosophy Section */}
         <section 
           ref={philosophyRef}
-          className="py-16 md:py-24 bg-[#f4faff] border-b relative"
+          className="py-16 md:py-24 bg-[#f4faff] dark:bg-gray-900 border-b relative"
         >
           {/* Abstract background pattern */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#339CFF]/5 dark:bg-[#339CFF]/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#339CFF]/5 dark:bg-[#339CFF]/10 rounded-full blur-3xl"></div>
           
           <ResponsiveContainer>
             <div className="max-w-3xl mx-auto">
               <div 
                 className={cn(
-                  "text-left space-y-6 transition-all",
+                  "text-left space-y-6 transition-all dark:bg-gray-800/30 dark:p-8 dark:rounded-xl",
                   philosophyVisible 
                     ? "opacity-100 translate-y-0" 
                     : "opacity-0 translate-y-[30px]"
@@ -311,22 +311,22 @@ export default function AboutUs() {
                 }}
               >
                 <div className="border-l-4 border-[#339CFF] pl-6 py-2">
-                  <h2 className="text-3xl font-bold mb-6">Our Philosophy: Reliability Meets Innovation</h2>
+                  <h2 className="text-3xl font-bold mb-6 dark:text-white">Our Philosophy: Reliability Meets Innovation</h2>
                 </div>
                 
-                <p className="text-lg leading-relaxed">
+                <p className="text-lg leading-relaxed dark:text-gray-200">
                   We believe accountants deserve cutting-edge technology that doesn't sacrifice reliability. 
                   Our platform is built on the foundation of practitioner knowledge, ensuring that innovation 
                   enhances—rather than disrupts—the accounting workflow.
                 </p>
                 
-                <p className="text-lg leading-relaxed">
+                <p className="text-lg leading-relaxed dark:text-gray-200">
                   Having spent years in the trenches of technical accounting, we've experienced firsthand the 
                   challenges of documentation workflows. Gaapio addresses these pain points with thoughtful 
                   design informed by real accounting experience.
                 </p>
                 
-                <p className="text-lg leading-relaxed">
+                <p className="text-lg leading-relaxed dark:text-gray-200">
                   Our commitment to quality extends beyond our product. As CPAs ourselves, we uphold the profession's 
                   highest standards of integrity, accuracy, and excellence in everything we build.
                 </p>
@@ -338,21 +338,21 @@ export default function AboutUs() {
         {/* Building on Experience Section */}
         <section 
           ref={timelineRef}
-          className="py-16 md:py-24 border-b relative"
+          className="py-16 md:py-24 border-b relative dark:bg-background dark:border-gray-800"
         >
           {/* Light connecting line in background */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-muted-foreground/10 hidden md:block"></div>
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-muted-foreground/10 dark:bg-gray-700/50 hidden md:block"></div>
           
           <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-6">Building on Experience</h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                <h2 className="text-3xl font-bold mb-6 dark:text-white">Building on Experience</h2>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto dark:text-gray-300">
                   Our journey from accounting professionals to software innovators
                 </p>
               </div>
               
-              <div className="relative border-l border-muted-foreground/30 pl-8 ml-4 space-y-12">
+              <div className="relative border-l border-muted-foreground/30 dark:border-gray-600 pl-8 ml-4 space-y-12">
                 {timelineEvents.map((event, index) => (
                   <div 
                     key={index}
@@ -368,13 +368,13 @@ export default function AboutUs() {
                       transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                     }}
                   >
-                    <div className="absolute -left-[41px] p-1 rounded-full bg-background border group-hover:border-[#339CFF] transition-all duration-300">
+                    <div className="absolute -left-[41px] p-1 rounded-full bg-background dark:bg-gray-800 border group-hover:border-[#339CFF] transition-all duration-300">
                       <div className="w-6 h-6 rounded-full bg-[#339CFF] flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300">
                         <MapPin className="h-3 w-3 text-white" />
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors duration-300">{event.title}</h3>
-                    <p className="text-muted-foreground">{event.description}</p>
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors duration-300 dark:text-white">{event.title}</h3>
+                    <p className="text-muted-foreground dark:text-gray-300">{event.description}</p>
                   </div>
                 ))}
               </div>
@@ -385,16 +385,16 @@ export default function AboutUs() {
         {/* Team Values Section */}
         <section 
           ref={valuesRef}
-          className="py-16 md:py-24 bg-[#f4faff] relative"
+          className="py-16 md:py-24 bg-[#f4faff] dark:bg-gray-900 relative"
         >
           {/* Abstract background graphic */}
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#339CFF]/5 dark:bg-[#339CFF]/10 rounded-full blur-3xl"></div>
           
           <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-6">Our Values</h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                <h2 className="text-3xl font-bold mb-6 dark:text-white">Our Values</h2>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto dark:text-gray-300">
                   The principles that guide our work and define our approach to serving accounting professionals
                 </p>
               </div>
@@ -404,7 +404,7 @@ export default function AboutUs() {
                   <div 
                     key={index}
                     className={cn(
-                      "flex gap-3 transition-all hover:scale-[1.02] hover:bg-[#f0f9ff] p-4 rounded-lg",
+                      "flex gap-3 transition-all hover:scale-[1.02] hover:bg-[#f0f9ff] dark:hover:bg-gray-800 p-4 rounded-lg dark:bg-gray-800/50",
                       valuesVisible 
                         ? "opacity-100 translate-y-0" 
                         : "opacity-0 translate-y-[30px]"
@@ -419,8 +419,8 @@ export default function AboutUs() {
                       <Star className="h-5 w-5" />
                     </div>
                     <div className="text-left">
-                      <h3 className="text-xl font-bold mb-1">{value.title}</h3>
-                      <p className="text-muted-foreground">{value.description}</p>
+                      <h3 className="text-xl font-bold mb-1 dark:text-white">{value.title}</h3>
+                      <p className="text-muted-foreground dark:text-gray-300">{value.description}</p>
                     </div>
                   </div>
                 ))}
@@ -432,7 +432,7 @@ export default function AboutUs() {
         {/* CTA Section */}
         <section
           ref={ctaRef}
-          className="py-16 md:py-20 border-t"
+          className="py-16 md:py-20 border-t dark:border-gray-800 dark:bg-background"
         >
           <ResponsiveContainer>
             <div 
@@ -447,8 +447,8 @@ export default function AboutUs() {
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
               }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your technical accounting workflows?</h2>
-              <p className="text-lg text-muted-foreground mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 dark:text-white">Ready to transform your technical accounting workflows?</h2>
+              <p className="text-lg text-muted-foreground mb-8 dark:text-gray-300">
                 Let us help you simplify your technical accounting workflows.
               </p>
               <Button size="lg" variant="blue" asChild>

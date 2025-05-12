@@ -12,10 +12,10 @@ export const AnimatedMemo = () => {
     const isDark = document.documentElement.classList.contains("dark");
     if (memoContainerRef.current) {
       // Apply styles to the memo container
-      memoContainerRef.current.style.backgroundColor = isDark ? "#121212" : "#ffffff";
+      memoContainerRef.current.style.backgroundColor = isDark ? "#1a1a1a" : "#ffffff";
       memoContainerRef.current.style.borderColor = isDark ? "#333333" : "#e5e7eb";
       memoContainerRef.current.style.boxShadow = isDark 
-        ? "0 0 15px rgba(255,255,255,0.1)" 
+        ? "0 0 15px rgba(255,255,255,0.05)" 
         : "0 0 15px rgba(0,0,0,0.1)";
     }
     
