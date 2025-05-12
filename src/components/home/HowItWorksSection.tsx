@@ -33,7 +33,7 @@ export function HowItWorksSection() {
     <section 
       id="how-it-works" 
       ref={sectionRef}
-      className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#f4faff] to-white dark:from-[#0f0f0f] dark:to-[#0f0f0f] dark:text-white"
+      className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#f4faff] to-white dark:from-[#101624] dark:to-[#101624] dark:text-white"
     >
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
@@ -47,7 +47,7 @@ export function HowItWorksSection() {
           {/* Step 1 */}
           <div 
             className={cn(
-              "flex flex-col bg-white dark:bg-[#1c1c1c] rounded-2xl p-8 relative overflow-hidden transition-all",
+              "flex flex-col bg-white dark:bg-[#1a2234] rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_6px_16px_rgba(255,255,255,0.05)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.03)]",
               "dark:border dark:border-white/5",
@@ -59,7 +59,7 @@ export function HowItWorksSection() {
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
-            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.06)] dark:opacity-100">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.05)] dark:opacity-100">
               01
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105 dark:bg-[#339CFF10]">
@@ -85,7 +85,7 @@ export function HowItWorksSection() {
           {/* Step 2 */}
           <div 
             className={cn(
-              "flex flex-col bg-white dark:bg-[#1c1c1c] rounded-2xl p-8 relative overflow-hidden transition-all",
+              "flex flex-col bg-white dark:bg-[#1a2234] rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_6px_16px_rgba(255,255,255,0.05)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.03)]",
               "dark:border dark:border-white/5",
@@ -97,7 +97,7 @@ export function HowItWorksSection() {
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
-            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.06)] dark:opacity-100">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.05)] dark:opacity-100">
               02
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105 dark:bg-[#339CFF10]">
@@ -127,7 +127,7 @@ export function HowItWorksSection() {
           {/* Step 3 */}
           <div 
             className={cn(
-              "flex flex-col bg-white dark:bg-[#1c1c1c] rounded-2xl p-8 relative overflow-hidden transition-all",
+              "flex flex-col bg-white dark:bg-[#1a2234] rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_6px_16px_rgba(255,255,255,0.05)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.03)]",
               "dark:border dark:border-white/5",
@@ -139,7 +139,7 @@ export function HowItWorksSection() {
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
-            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.06)] dark:opacity-100">
+            <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF] dark:text-[rgba(255,255,255,0.05)] dark:opacity-100">
               03
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105 dark:bg-[#339CFF10]">
