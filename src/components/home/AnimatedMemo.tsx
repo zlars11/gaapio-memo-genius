@@ -99,18 +99,17 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         ref={memoContainerRef}
-        className="w-full max-w-[680px] h-auto p-4 sm:p-6 md:p-10 bg-white rounded-lg transform rotate-[-7deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)]"
+        className="w-[680px] min-w-[680px] max-w-[680px] h-auto p-6 md:p-10 bg-white rounded-lg transform rotate-[-7deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)]"
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '300px',
-          maxHeight: '520px',
+          minHeight: '520px',
           transition: 'all 0.3s ease',
         }}
       >
         <div 
           ref={typedElementRef}
-          className="font-mono text-xs sm:text-sm md:text-base whitespace-pre-wrap text-left text-gray-800"
+          className="font-mono text-sm md:text-base whitespace-pre-wrap text-left text-gray-800"
           style={{ lineHeight: 1.6 }}
         ></div>
       </div>
