@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -82,9 +83,11 @@ export default function SignUp() {
         );
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 w-full">
             <h2 className="text-xl font-semibold">Select a Plan</h2>
-            <StripePricingTable pricingTableId={getPricingTableId()} />
+            <div className="stripe-pricing-wrapper w-full">
+              <StripePricingTable pricingTableId={getPricingTableId()} />
+            </div>
           </div>
         );
       default:
@@ -104,7 +107,7 @@ export default function SignUp() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          <div className={`mx-auto ${currentStep === 2 ? 'w-full max-w-full' : 'max-w-4xl'}`}>
             <ErrorBoundary fallback={
               <div className="p-4 border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 rounded-md my-4">
                 <p className="text-red-500 dark:text-red-400">An error occurred loading this section. Please try refreshing the page or contact support.</p>
