@@ -1,8 +1,7 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Check, Lightning } from "lucide-react";
+import { Download, FileText, Check, Zap } from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -125,7 +124,7 @@ export default function OnePager() {
                     
                     <div className="flex items-start">
                       <div className="bg-[#339CFF] text-white p-2 rounded mr-3 flex-shrink-0">
-                        <Lightning className="h-5 w-5" />
+                        <Zap className="h-5 w-5" />
                       </div>
                       <div>
                         <h4 className="font-medium">Built-in technical references</h4>
