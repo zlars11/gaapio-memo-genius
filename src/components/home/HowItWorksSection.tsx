@@ -33,7 +33,7 @@ export function HowItWorksSection() {
     <section 
       id="how-it-works" 
       ref={sectionRef}
-      className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#f4faff] to-white dark:from-[#111827] dark:to-[#111827] dark:text-white"
+      className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B] dark:text-white"
     >
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">

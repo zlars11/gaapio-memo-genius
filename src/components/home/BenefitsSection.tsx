@@ -83,7 +83,7 @@ export function BenefitsSection() {
           }
           
           .dark {
-            --benefits-bg: #111827;
+            --benefits-bg: #1A1F2B;
             --benefits-text: #ffffff;
             --benefits-divider: #2a2f36;
           }

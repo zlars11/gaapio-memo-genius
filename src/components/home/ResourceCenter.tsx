@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 export function ResourceCenter() {
   return (
     <section 
-      className="py-16 md:py-20 bg-accent/30 dark:bg-[#111827]"
+      className="py-16 md:py-20 bg-accent/30 dark:bg-[#1A1F2B]"
       aria-labelledby="resources-heading"
     >
       <ResponsiveContainer className="max-w-5xl">
