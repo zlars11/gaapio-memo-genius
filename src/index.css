@@ -217,6 +217,18 @@
   .animate-marquee {
     animation: marquee 30s linear infinite;
   }
+
+  /* Resource Page Animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  
+  .animate-fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Standardized page container for consistent spacing across all pages */
