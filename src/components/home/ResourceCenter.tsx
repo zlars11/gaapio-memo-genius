@@ -1,4 +1,3 @@
-
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Link } from "react-router-dom";
 import { ExternalLink, FileText, Shield } from "lucide-react";
