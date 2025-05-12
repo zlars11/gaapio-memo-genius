@@ -17,7 +17,7 @@ export function BenefitsSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.5 } // Increased threshold to 0.5 (50% visibility)
+      { threshold: 0.5 } // Trigger when 50% of section is visible
     );
 
     if (sectionRef.current) {
@@ -42,25 +42,25 @@ export function BenefitsSection() {
       icon: Clock,
       title: "Time & Cost Savings",
       description: "Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.",
-      delay: 300
+      delay: 400
     },
     {
       icon: FileText,
       title: "CPA-Level Output",
       description: "AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.",
-      delay: 600
+      delay: 800
     },
     {
       icon: Shield,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
-      delay: 900
+      delay: 1200
     },
     {
       icon: ShieldCheck,
       title: "Enterprise-Grade Security",
       description: "Your data stays private — never used to train public AI models. We follow strict security protocols.",
-      delay: 1200
+      delay: 1600
     }
   ];
 
@@ -122,20 +122,21 @@ export function BenefitsSection() {
               <div 
                 key={index}
                 className={cn(
-                  "flex gap-5 transition-all duration-700 ease-out",
+                  "flex gap-3 transition-all",
                   isVisible 
                     ? "opacity-100 translate-y-0" 
-                    : "opacity-0 translate-y-5"
+                    : "opacity-0 translate-y-[30px]"
                 )}
                 style={{ 
                   transitionDelay: `${benefit.delay}ms`,
-                  transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)"
+                  transitionDuration: "900ms",
+                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >
-                <div className="mt-1 text-[#339CFF] flex-shrink-0">
+                <div className="mt-1 text-[#339CFF] flex-shrink-0 min-w-[24px]">
                   <benefit.icon className="h-5 w-5" />
                 </div>
-                <div>
+                <div className="text-left max-w-[480px]">
                   <h3 className="text-lg font-semibold mb-1">{benefit.title}</h3>
                   <p className="text-muted-foreground">{benefit.description}</p>
                 </div>

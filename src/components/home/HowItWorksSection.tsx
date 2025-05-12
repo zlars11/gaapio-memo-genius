@@ -15,7 +15,7 @@ export function HowItWorksSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.5 } // Increased threshold to 0.5 (50% visibility)
+      { threshold: 0.5 } // Trigger when 50% of section is visible
     );
 
     if (sectionRef.current) {
@@ -50,14 +50,15 @@ export function HowItWorksSection() {
           {/* Step 1 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-700 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
               transitionDelay: "0ms",
-              transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)"
+              transitionDuration: "900ms",
+              transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
             <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
@@ -86,14 +87,15 @@ export function HowItWorksSection() {
           {/* Step 2 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-700 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "300ms",
-              transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)"
+              transitionDelay: "400ms",
+              transitionDuration: "900ms",
+              transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
             <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
@@ -126,14 +128,15 @@ export function HowItWorksSection() {
           {/* Step 3 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-700 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "600ms",
-              transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)"
+              transitionDelay: "800ms",
+              transitionDuration: "900ms",
+              transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
             <div className="absolute right-6 top-4 text-[100px] font-bold opacity-10 text-[#339CFF]">
