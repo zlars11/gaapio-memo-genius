@@ -2,34 +2,53 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { CheckCircle2, ArrowRight, FileText, Download } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Download, FileText, Check, Lightning } from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 export default function OnePager() {
   const contentRef = useRef<HTMLDivElement>(null);
+  const downloadAreaRef = useRef<HTMLDivElement>(null);
   
   const downloadAsPdf = async () => {
-    if (!contentRef.current) return;
+    if (!downloadAreaRef.current) return;
     
     try {
-      const canvas = await html2canvas(contentRef.current, {
+      // Hide the download button before capturing
+      const downloadButton = downloadAreaRef.current.querySelector('.download-button-container');
+      if (downloadButton) {
+        downloadButton.classList.add('hidden');
+      }
+      
+      const canvas = await html2canvas(downloadAreaRef.current, {
         scale: 2,
         logging: false,
-        useCORS: true
+        useCORS: true,
+        backgroundColor: '#ffffff'
       });
+      
+      // Restore the download button visibility
+      if (downloadButton) {
+        downloadButton.classList.remove('hidden');
+      }
       
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width / 2, canvas.height / 2]
+        unit: 'mm',
+        format: 'a4'
       });
       
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      // Calculate the ratio to fit the image properly on the PDF
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth * ratio, imgHeight * ratio);
       pdf.save('gaapio-one-pager.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -40,204 +59,179 @@ export default function OnePager() {
     <div className="flex flex-col min-h-screen bg-background" ref={contentRef}>
       <Header />
       
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="pt-32 pb-16 lg:pb-24 relative overflow-hidden">
-          <div className="container px-4 md:px-6">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              <div className="space-y-6">
-                <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-foreground leading-tight">
+      <main className="pt-20 pb-16">
+        <div className="container px-4 md:px-6 flex flex-col items-center">
+          {/* Download button at the top */}
+          <div className="mb-8 w-full max-w-4xl">
+            <Button 
+              onClick={downloadAsPdf} 
+              className="bg-[#339CFF] hover:bg-[#1F8FFF] text-white"
+            >
+              <Download className="mr-2 h-4 w-4" /> Download One-Pager
+            </Button>
+          </div>
+          
+          {/* The actual one-pager content that will be captured for PDF */}
+          <div 
+            ref={downloadAreaRef} 
+            className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl"
+          >
+            <div className="p-8 md:p-12">
+              {/* Logo and Heading */}
+              <div className="flex items-center mb-8">
+                <img 
+                  src="/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png" 
+                  alt="Gaapio Logo" 
+                  className="w-16 h-16 mr-4"
+                />
+                <h1 className="text-3xl font-bold">gaapio</h1>
+              </div>
+              
+              {/* Hero Section */}
+              <div className="mb-12">
+                <h2 className="text-4xl font-bold tracking-tight mb-4">
                   Accounting memos — automated, accurate, and audit-ready.
-                </h1>
-                
-                <p className="text-xl text-muted-foreground max-w-[600px]">
-                  Gaapio is the AI memo assistant for accounting teams. Built by CPAs, it drafts 
-                  technical memos with precision, helping your team move faster while staying GAAP-compliant.
+                </h2>
+                <p className="text-lg text-gray-700">
+                  Gaapio is the AI memo assistant for accounting teams. Built by CPAs, 
+                  it drafts technical memos with precision, helping your team move faster 
+                  while staying GAAP-compliant.
                 </p>
-                
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
-                    <Link to="/contact">Book a Demo <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <a href="/">Website</a>
-                  </Button>
-                </div>
               </div>
               
-              <div className="relative">
-                <div className="rounded-xl overflow-hidden shadow-xl">
-                  <img 
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" 
-                    alt="Accounting professionals collaborating" 
-                    className="w-full h-auto object-cover rounded-xl"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Product Screenshot Section */}
-        <section className="py-16 lg:py-24 bg-gradient-to-b from-accent/30 to-background relative">
-          <div className="container px-4 md:px-6">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl lg:text-4xl font-bold tracking-tight mb-4">
-                Streamlined Memo Creation
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Our intuitive interface makes technical accounting documentation simple.
-              </p>
-            </div>
-            
-            <div className="relative mx-auto max-w-4xl">
-              <div className="rounded-xl overflow-hidden shadow-2xl border border-border">
-                <div className="bg-card p-2 border-b flex items-center justify-between">
-                  <div className="flex items-center">
-                    <FileText className="h-5 w-5 text-primary mr-2" />
-                    <span className="font-medium">Revenue Recognition Memo - ASC 606</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-2 py-1 rounded">AI-generated content</span>
-                    <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-1 rounded">Editable</span>
-                    <span className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded">Export to PDF</span>
-                  </div>
-                </div>
+              {/* Streamlined Memo Creation */}
+              <div className="mb-12 bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-2xl font-semibold mb-6">Streamlined Memo Creation</h3>
                 
-                <div className="p-6">
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-lg font-bold mb-2">1. Background and Transaction Summary</h3>
-                      <p className="text-sm text-muted-foreground">
-                        SaaS Inc. entered into a contract with Client Co. on January 1, 2023, to provide software 
-                        licenses, implementation services, and post-contract support for a total consideration of 
-                        $500,000 over a three-year term...
-                      </p>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="bg-[#339CFF] text-white p-2 rounded mr-3 flex-shrink-0">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Guided drafting for accuracy and compliance</h4>
+                      </div>
                     </div>
                     
-                    <div>
-                      <h3 className="text-lg font-bold mb-2">2. Applicable Guidance</h3>
-                      <p className="text-sm text-muted-foreground">
-                        ASC 606-10-25-1 outlines the five-step model for revenue recognition:
-                      </p>
-                      <ul className="list-disc list-inside text-sm text-muted-foreground ml-4 mt-2">
-                        <li>Identify the contract with a customer</li>
-                        <li>Identify the performance obligations in the contract</li>
-                        <li>Determine the transaction price</li>
-                        <li>Allocate the transaction price to the performance obligations</li>
-                        <li>Recognize revenue when (or as) each performance obligation is satisfied</li>
-                      </ul>
+                    <div className="flex items-start">
+                      <div className="bg-[#339CFF] text-white p-2 rounded mr-3 flex-shrink-0">
+                        <Check className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Proprietary AI reviews and enhances</h4>
+                      </div>
                     </div>
                     
-                    <div>
-                      <h3 className="text-lg font-bold mb-2">3. Analysis and Conclusion</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Based on our assessment of the contract terms and conditions and application of 
-                        ASC 606 guidance, we have identified three distinct performance obligations...
-                      </p>
+                    <div className="flex items-start">
+                      <div className="bg-[#339CFF] text-white p-2 rounded mr-3 flex-shrink-0">
+                        <Lightning className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Built-in technical references</h4>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <div className="text-center font-medium mb-2">Revenue Recognition Memo</div>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-sm font-medium">1. Background and Transaction Summary</div>
+                        <div className="h-2 bg-gray-200 rounded w-full mt-1"></div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">2. Application Guidance</div>
+                        <div className="h-2 bg-gray-200 rounded w-full mt-1"></div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">3. Rich in technical references</div>
+                        <div className="h-2 bg-gray-200 rounded w-full mt-1"></div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium">4. Actions and Uncertainties</div>
+                        <div className="h-2 bg-gray-200 rounded w-full mt-1"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Features Section */}
-        <section className="py-16 lg:py-24">
-          <div className="container px-4 md:px-6">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl lg:text-4xl font-bold tracking-tight mb-4">Key Gaapio Capabilities</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Advanced AI built specifically for accounting and finance teams.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 max-w-5xl mx-auto">
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">Built by Big 4 CPAs</p>
-              </div>
               
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">Aligned to U.S. GAAP</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">Fast, accurate memo drafts</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">Designed for controllers and CFOs</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">No technical setup required</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">Fully editable output</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">AI tuned for accounting standards</p>
-              </div>
-              
-              <div className="flex items-start">
-                <CheckCircle2 className="h-6 w-6 text-primary mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-lg">SOC 2 Ready & Privacy-First</p>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Benefits Section */}
-        <section className="py-16 lg:py-24 bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-t-[3rem] overflow-hidden">
-          <div className="container px-4 md:px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl lg:text-4xl font-bold tracking-tight mb-6">
-                Why Gaapio?
-              </h2>
-              
-              <div className="space-y-4 text-lg md:text-xl">
-                <p>We built Gaapio because writing memos sucks.</p>
+              {/* Key Capabilities */}
+              <div className="mb-12">
+                <h3 className="text-2xl font-semibold mb-6">Key Gaapio Capabilities</h3>
                 
-                <p>You're juggling ASC guidance, internal policy, and audit risk — all under a deadline.</p>
-                
-                <p>Gaapio helps you move faster, stay compliant, and free up your team for more important work.</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="flex items-start">
+                    <div className="bg-[#339CFF] text-white p-1 rounded-full mr-3 flex-shrink-0">
+                      <Check className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p>Advanced AI trained by Big 4 experts to tackle technical accounting with speed and reliability</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-[#339CFF] text-white p-1 rounded-full mr-3 flex-shrink-0">
+                      <Check className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p>Built by CPAs for CPAs and accounting teams</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-[#339CFF] text-white p-1 rounded-full mr-3 flex-shrink-0">
+                      <Check className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p>ASC-aligned technical content that keeps you GAAP compliant</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-[#339CFF] text-white p-1 rounded-full mr-3 flex-shrink-0">
+                      <Check className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p>Draft, edit, and finalize memos in a fraction of the time</p>
+                    </div>
+                  </div>
+                </div>
               </div>
               
-              <div className="mt-10">
-                <Button onClick={downloadAsPdf} size="lg" className="bg-primary hover:bg-primary/90">
-                  Download One-Pager <Download className="ml-2 h-4 w-4" />
+              {/* Why Gaapio */}
+              <div className="mb-12 bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-2xl font-semibold mb-4">Why Gaapio?</h3>
+                <p className="text-lg">
+                  We built Gaapio because writing memos sucks. You're juggling ASC guidance, 
+                  internal policy, and audit risk — all under a deadline. Gaapio helps you 
+                  move faster, stay compliant, and free up your team for more important work.
+                </p>
+              </div>
+              
+              {/* Contact Information */}
+              <div className="border-t pt-6 mt-6 text-center">
+                <div className="flex justify-around items-center">
+                  <div>www.gaapio.com</div>
+                  <div>sales@gaapio.com</div>
+                  <div>info@gaapio.com</div>
+                </div>
+              </div>
+              
+              {/* Hidden container for the download button that won't appear in the PDF */}
+              <div className="download-button-container flex justify-center mt-8">
+                <Button 
+                  onClick={downloadAsPdf} 
+                  className="bg-[#339CFF] hover:bg-[#1F8FFF] text-white"
+                >
+                  <Download className="mr-2 h-4 w-4" /> Download One-Pager
                 </Button>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-      
-      <div className="bg-muted py-8">
-        <div className="container px-4 md:px-6 flex flex-col items-center justify-center">
-          <div className="w-40 mb-4">
-            <img 
-              src="/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png" 
-              alt="Gaapio Logo" 
-              className="w-full h-auto"
-            />
-          </div>
-          
-          <p className="text-center text-muted-foreground">
-            AI Powered. CPA Approved.
-          </p>
         </div>
-      </div>
+      </main>
       
       <Footer />
     </div>
