@@ -17,7 +17,7 @@ export function BenefitsSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of section is visible
+      { threshold: 0.6 } // Trigger when 60% of section is visible
     );
 
     if (sectionRef.current) {
@@ -42,25 +42,25 @@ export function BenefitsSection() {
       icon: Clock,
       title: "Time & Cost Savings",
       description: "Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.",
-      delay: 500
+      delay: 600
     },
     {
       icon: FileText,
       title: "CPA-Level Output",
       description: "AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.",
-      delay: 1000
+      delay: 1200
     },
     {
       icon: Shield,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
-      delay: 1500
+      delay: 1800
     },
     {
       icon: ShieldCheck,
       title: "Enterprise-Grade Security",
       description: "Your data stays private — never used to train public AI models. We follow strict security protocols.",
-      delay: 2000
+      delay: 2400
     }
   ];
 
@@ -129,7 +129,7 @@ export function BenefitsSection() {
                 )}
                 style={{ 
                   transitionDelay: `${benefit.delay}ms`,
-                  transitionDuration: "1200ms",
+                  transitionDuration: "2000ms",
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >

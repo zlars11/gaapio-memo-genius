@@ -15,7 +15,7 @@ export function HowItWorksSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of section is visible
+      { threshold: 0.6 } // Trigger when 60% of section is visible
     );
 
     if (sectionRef.current) {
@@ -57,7 +57,7 @@ export function HowItWorksSection() {
             )}
             style={{ 
               transitionDelay: "0ms",
-              transitionDuration: "1200ms",
+              transitionDuration: "2000ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
@@ -93,8 +93,8 @@ export function HowItWorksSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "500ms",
-              transitionDuration: "1200ms",
+              transitionDelay: "600ms",
+              transitionDuration: "2000ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
@@ -134,8 +134,8 @@ export function HowItWorksSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "1000ms",
-              transitionDuration: "1200ms",
+              transitionDelay: "1200ms",
+              transitionDuration: "2000ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >

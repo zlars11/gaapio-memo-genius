@@ -29,7 +29,7 @@ export function TestimonialsSection() {
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of section is visible
+      { threshold: 0.6 } // Trigger when 60% of section is visible
     );
 
     if (sectionRef.current) {
@@ -114,8 +114,8 @@ export function TestimonialsSection() {
                   : "opacity-0 translate-y-[30px]"
               )}
               style={{ 
-                transitionDelay: `${index * 500}ms`,
-                transitionDuration: "1200ms",
+                transitionDelay: `${index * 600}ms`,
+                transitionDuration: "2000ms",
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
               }}
             >
