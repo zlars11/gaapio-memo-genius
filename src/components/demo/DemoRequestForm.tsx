@@ -15,6 +15,7 @@ export function DemoRequestForm() {
           type="submit" 
           className="w-full" 
           size="lg"
+          variant="blue"
           disabled={isLoading}
         >
           {isLoading ? "Submitting..." : "Request Demo"}

@@ -88,7 +88,7 @@ export function Header() {
                     </Link>
                   ))}
                   <div className="mt-6 space-y-2">
-                    <Button asChild className="w-full">
+                    <Button asChild className="w-full" variant="blue">
                       <Link to="/request-demo">Request a Demo</Link>
                     </Button>
                   </div>
@@ -119,7 +119,7 @@ export function Header() {
             <div className="flex items-center gap-2">
               <AdminNavLink />
               <ModeToggle />
-              <Button asChild>
+              <Button asChild variant="blue">
                 <Link to="/request-demo">Request a Demo</Link>
               </Button>
             </div>

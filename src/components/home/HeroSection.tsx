@@ -31,10 +31,10 @@ export const HeroSection = memo(function HeroSection() {
           AI-Powered. CPA-Approved.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
-          <Button size="lg" variant="default" asChild>
+          <Button size="lg" variant="blue" asChild>
             <Link to="/request-demo">Request a demo</Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
+          <Button size="lg" variant="blueOutline" asChild>
             <Link to="/signup">Sign Up Now</Link>
           </Button>
         </div>
