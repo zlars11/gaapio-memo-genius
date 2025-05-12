@@ -111,11 +111,11 @@ export function TestimonialsSection() {
                 "transition-all",
                 inView 
                   ? "opacity-100 translate-y-0" 
-                  : "opacity-0 translate-y-[20px]"
+                  : "opacity-0 translate-y-[30px]"
               )}
               style={{ 
-                transitionDelay: `${index * 200}ms`,
-                transitionDuration: "700ms",
+                transitionDelay: `${index * 500}ms`,
+                transitionDuration: "1200ms",
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
               }}
             >

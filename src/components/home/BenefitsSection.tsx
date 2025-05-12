@@ -42,25 +42,25 @@ export function BenefitsSection() {
       icon: Clock,
       title: "Time & Cost Savings",
       description: "Cut memo and disclosure creation time by up to 90%. Make your internal team look like rockstars — or save thousands compared to outsourced memos.",
-      delay: 400
+      delay: 500
     },
     {
       icon: FileText,
       title: "CPA-Level Output",
       description: "AI-generated memos and disclosures that match or exceed the quality of experienced CPAs.",
-      delay: 800
+      delay: 1000
     },
     {
       icon: Shield,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
-      delay: 1200
+      delay: 1500
     },
     {
       icon: ShieldCheck,
       title: "Enterprise-Grade Security",
       description: "Your data stays private — never used to train public AI models. We follow strict security protocols.",
-      delay: 1600
+      delay: 2000
     }
   ];
 
@@ -129,7 +129,7 @@ export function BenefitsSection() {
                 )}
                 style={{ 
                   transitionDelay: `${benefit.delay}ms`,
-                  transitionDuration: "900ms",
+                  transitionDuration: "1200ms",
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >

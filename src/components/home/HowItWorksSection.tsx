@@ -50,14 +50,14 @@ export function HowItWorksSection() {
           {/* Step 1 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
               transitionDelay: "0ms",
-              transitionDuration: "900ms",
+              transitionDuration: "1200ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
@@ -87,14 +87,14 @@ export function HowItWorksSection() {
           {/* Step 2 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "400ms",
-              transitionDuration: "900ms",
+              transitionDelay: "500ms",
+              transitionDuration: "1200ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
@@ -128,14 +128,14 @@ export function HowItWorksSection() {
           {/* Step 3 */}
           <div 
             className={cn(
-              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all duration-900 ease-out",
+              "flex flex-col bg-white rounded-2xl p-8 relative overflow-hidden transition-all",
               "hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] hover:translate-y-[-4px]",
               "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[30px]"
             )}
             style={{ 
-              transitionDelay: "800ms",
-              transitionDuration: "900ms",
+              transitionDelay: "1000ms",
+              transitionDuration: "1200ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
             }}
           >
