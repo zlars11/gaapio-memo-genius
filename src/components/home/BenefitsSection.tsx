@@ -75,19 +75,21 @@ export function BenefitsSection() {
         color: "var(--benefits-text)"
       }}
     >
-      <style jsx="true">{`
-        :root {
-          --benefits-bg: #f4faff;
-          --benefits-text: inherit;
-          --benefits-divider: #e0e0e0;
-        }
-        
-        .dark {
-          --benefits-bg: #111927;
-          --benefits-text: #ffffff;
-          --benefits-divider: #2a2f36;
-        }
-      `}</style>
+      <style>
+        {`
+          :root {
+            --benefits-bg: #f4faff;
+            --benefits-text: inherit;
+            --benefits-divider: #e0e0e0;
+          }
+          
+          .dark {
+            --benefits-bg: #111927;
+            --benefits-text: #ffffff;
+            --benefits-divider: #2a2f36;
+          }
+        `}
+      </style>
       
       <div className="container px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-12 md:gap-8 lg:gap-16 items-start">
