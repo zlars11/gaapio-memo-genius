@@ -23,14 +23,14 @@ export const HeroSection = memo(function HeroSection() {
   return (
     <section className="relative min-h-[90vh] flex flex-col justify-center items-center pt-20 pb-16">
       {/* Hero content - Added more top padding (pt-24) to fix header overlap */}
-      <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10 mt-20 md:mt-24">
+      <div className="container px-4 md:px-6 flex flex-col items-center text-center relative z-10 mt-16 sm:mt-20 md:mt-24">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up">
           Audit Ready Memos and Disclosures
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <p className="text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-12 max-w-3xl animate-fade-up" style={{ animationDelay: "100ms" }}>
           AI-Powered. CPA-Approved.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 sm:mb-16 animate-fade-up" style={{ animationDelay: "200ms" }}>
           <Button size="lg" variant="blue" asChild>
             <Link to="/request-demo">Request a demo</Link>
           </Button>
@@ -40,8 +40,8 @@ export const HeroSection = memo(function HeroSection() {
         </div>
       </div>
       
-      {/* Background animated memo - moved below the CTA buttons */}
-      <div className="w-full flex justify-center relative z-0 mt-4 mb-12">
+      {/* Background animated memo - made responsive */}
+      <div className="w-full px-4 flex justify-center relative z-0 mb-8 sm:mb-12">
         {isClient && <AnimatedMemo />}
       </div>
       
@@ -51,7 +51,7 @@ export const HeroSection = memo(function HeroSection() {
         style={{ animationDelay: "300ms" }} 
         onClick={scrollToHowItWorks}
       >
-        <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 animate-pulse-slow cursor-pointer" aria-hidden="true" />
+        <ArrowDownCircle className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/50 animate-pulse-slow cursor-pointer" aria-hidden="true" />
       </div>
     </section>
   );
