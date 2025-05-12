@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -290,7 +289,7 @@ export default function AboutUs() {
         {/* Our Philosophy Section */}
         <section 
           ref={philosophyRef}
-          className="py-16 md:py-24 bg-[#f4faff] dark:bg-gray-900 border-b relative"
+          className="py-16 md:py-24 bg-[#f4faff] dark:bg-[#111827] border-b relative"
         >
           {/* Abstract background pattern */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-[#339CFF]/5 dark:bg-[#339CFF]/10 rounded-full blur-3xl"></div>
@@ -385,7 +384,7 @@ export default function AboutUs() {
         {/* Team Values Section */}
         <section 
           ref={valuesRef}
-          className="py-16 md:py-24 bg-[#f4faff] dark:bg-gray-900 relative"
+          className="py-16 md:py-24 bg-[#f4faff] dark:bg-[#111827] relative"
         >
           {/* Abstract background graphic */}
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#339CFF]/5 dark:bg-[#339CFF]/10 rounded-full blur-3xl"></div>

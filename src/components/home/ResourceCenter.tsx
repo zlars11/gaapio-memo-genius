@@ -1,3 +1,4 @@
+
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Link } from "react-router-dom";
 import { ExternalLink, FileText, Shield } from "lucide-react";
@@ -6,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 export function ResourceCenter() {
   return (
     <section 
-      className="py-16 md:py-20 bg-accent/30"
+      className="py-16 md:py-20 bg-accent/30 dark:bg-[#111827]"
       aria-labelledby="resources-heading"
     >
       <ResponsiveContainer className="max-w-5xl">
