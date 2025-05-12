@@ -7,6 +7,8 @@ import { FirmContactForm } from "@/components/signup/FirmContactForm";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { SignupSuccess } from "@/components/signup/SignupSuccess";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function FirmSignup() {
   const { toast } = useToast();
@@ -27,6 +29,10 @@ export default function FirmSignup() {
   const handleHomeClick = () => {
     navigate("/");
   };
+
+  const handleBackClick = () => {
+    navigate("/signup");
+  };
   
   return (
     <div className="flex min-h-screen flex-col">
@@ -44,16 +50,30 @@ export default function FirmSignup() {
               
               <div className="max-w-2xl mx-auto">
                 <FirmContactForm onSuccess={handleFormSuccess} />
+                
+                <div className="mt-6">
+                  <Button variant="outline" onClick={handleBackClick}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Signup
+                  </Button>
+                </div>
               </div>
             </>
           ) : (
-            <SignupSuccess
-              showFirmContact={true}
-              userInfo={formData}
-              paymentInfo={null}
-              selectedPlan="firms"
-              onHomeClick={handleHomeClick}
-            />
+            <>
+              <SignupSuccess
+                showFirmContact={true}
+                userInfo={formData}
+                paymentInfo={null}
+                selectedPlan="firms"
+                onHomeClick={handleHomeClick}
+              />
+              
+              <div className="mt-6 text-center">
+                <Button variant="outline" onClick={handleBackClick}>
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Signup
+                </Button>
+              </div>
+            </>
           )}
         </ResponsiveContainer>
       </main>
