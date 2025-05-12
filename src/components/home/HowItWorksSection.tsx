@@ -57,7 +57,7 @@ export function HowItWorksSection() {
             )}
             style={{ transitionDelay: "0ms" }}
           >
-            <div className="absolute -right-8 top-0 text-[120px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
               01
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
@@ -90,7 +90,7 @@ export function HowItWorksSection() {
             )}
             style={{ transitionDelay: "100ms" }}
           >
-            <div className="absolute -right-8 top-0 text-[120px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
               02
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
@@ -127,7 +127,7 @@ export function HowItWorksSection() {
             )}
             style={{ transitionDelay: "200ms" }}
           >
-            <div className="absolute -right-8 top-0 text-[120px] font-bold opacity-10 text-[#339CFF]">
+            <div className="absolute right-4 top-2 text-[110px] font-bold opacity-10 text-[#339CFF]">
               03
             </div>
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105">
