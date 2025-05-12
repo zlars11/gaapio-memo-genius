@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { 
   Briefcase, 
   FileText, 
@@ -9,9 +11,13 @@ import {
   Award, 
   FileCode, 
   FileSearch,
-  ChevronRight
+  ChevronRight,
+  Star,
+  MapPin,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 
 export default function AboutUs() {
   // Section refs for scroll animations
@@ -20,6 +26,7 @@ export default function AboutUs() {
   const philosophyRef = useRef<HTMLElement>(null);
   const timelineRef = useRef<HTMLElement>(null);
   const valuesRef = useRef<HTMLElement>(null);
+  const ctaRef = useRef<HTMLElement>(null);
   
   // Visibility states for animations
   const [introVisible, setIntroVisible] = useState(false);
@@ -27,6 +34,7 @@ export default function AboutUs() {
   const [philosophyVisible, setPhilosophyVisible] = useState(false);
   const [timelineVisible, setTimelineVisible] = useState(false);
   const [valuesVisible, setValuesVisible] = useState(false);
+  const [ctaVisible, setCtaVisible] = useState(false);
   
   // Setup observers for each section
   useEffect(() => {
@@ -56,6 +64,7 @@ export default function AboutUs() {
     const philosophyObserver = createObserver(philosophyRef, setPhilosophyVisible);
     const timelineObserver = createObserver(timelineRef, setTimelineVisible);
     const valuesObserver = createObserver(valuesRef, setValuesVisible);
+    const ctaObserver = createObserver(ctaRef, setCtaVisible);
 
     // Cleanup observers
     return () => {
@@ -64,6 +73,7 @@ export default function AboutUs() {
       if (philosophyRef.current) philosophyObserver.unobserve(philosophyRef.current);
       if (timelineRef.current) timelineObserver.unobserve(timelineRef.current);
       if (valuesRef.current) valuesObserver.unobserve(valuesRef.current);
+      if (ctaRef.current) ctaObserver.unobserve(ctaRef.current);
     };
   }, []);
   
@@ -151,12 +161,17 @@ export default function AboutUs() {
       </a>
       
       <main className="flex-1" id="about-content">
-        {/* Intro Section - Blue background */}
+        {/* Intro Section - Blue background with pattern */}
         <section 
           ref={introRef}
-          className="py-16 md:py-24 bg-[#f4faff]"
+          className="py-16 md:py-24 bg-[#f4faff] relative overflow-hidden"
         >
-          <div className="container px-4 md:px-6">
+          {/* Abstract background pattern */}
+          <div className="absolute inset-0 opacity-5 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('/lovable-uploads/4ddb44ca-e07c-45c3-b9e4-b2e4c7fbcd41.png')] bg-repeat opacity-10"></div>
+          </div>
+          
+          <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div 
                 className={cn(
@@ -190,11 +205,14 @@ export default function AboutUs() {
                     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                   }}
                 >
-                  <img 
-                    src="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png" 
-                    alt="Two CPA accountants working together" 
-                    className="rounded-lg shadow-md max-w-full h-auto"
-                  />
+                  <div className="relative">
+                    <img 
+                      src="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png" 
+                      alt="Two CPA accountants working together" 
+                      className="rounded-lg shadow-lg max-w-full h-auto z-10 relative"
+                    />
+                    <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#339CFF]/20 rounded-lg z-0"></div>
+                  </div>
                 </div>
                 
                 <div 
@@ -227,7 +245,7 @@ export default function AboutUs() {
                 </div>
               </div>
             </div>
-          </div>
+          </ResponsiveContainer>
         </section>
 
         {/* Our Expertise Section */}
@@ -235,7 +253,7 @@ export default function AboutUs() {
           ref={expertiseRef}
           className="py-16 md:py-24 border-t border-b border-muted"
         >
-          <div className="container px-4 md:px-6">
+          <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold mb-12 text-center">Our Expertise</h2>
               
@@ -244,7 +262,7 @@ export default function AboutUs() {
                   <div 
                     key={index}
                     className={cn(
-                      "flex items-start gap-4 p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:bg-[#f4faff]",
+                      "flex items-start gap-4 p-4 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:bg-[#f4faff] group",
                       expertiseVisible 
                         ? "opacity-100 translate-y-0" 
                         : "opacity-0 translate-y-[30px]"
@@ -255,26 +273,30 @@ export default function AboutUs() {
                       transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                     }}
                   >
-                    <div className="mt-1 text-[#339CFF] flex-shrink-0">
+                    <div className="mt-1 text-[#339CFF] flex-shrink-0 p-2 rounded-full bg-[#339CFF]/10 group-hover:bg-[#339CFF]/20 transition-all">
                       <item.icon className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground">{item.description}</p>
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors">{item.title}</h3>
+                      <p className="text-muted-foreground group-hover:text-foreground transition-colors">{item.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          </ResponsiveContainer>
         </section>
 
         {/* Our Philosophy Section */}
         <section 
           ref={philosophyRef}
-          className="py-16 md:py-24 bg-[#f4faff] border-b"
+          className="py-16 md:py-24 bg-[#f4faff] border-b relative"
         >
-          <div className="container px-4 md:px-6">
+          {/* Abstract background pattern */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
+          
+          <ResponsiveContainer>
             <div className="max-w-3xl mx-auto">
               <div 
                 className={cn(
@@ -310,15 +332,18 @@ export default function AboutUs() {
                 </p>
               </div>
             </div>
-          </div>
+          </ResponsiveContainer>
         </section>
 
         {/* Building on Experience Section */}
         <section 
           ref={timelineRef}
-          className="py-16 md:py-24 border-b"
+          className="py-16 md:py-24 border-b relative"
         >
-          <div className="container px-4 md:px-6">
+          {/* Light connecting line in background */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-muted-foreground/10 hidden md:block"></div>
+          
+          <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-6">Building on Experience</h2>
@@ -344,7 +369,9 @@ export default function AboutUs() {
                     }}
                   >
                     <div className="absolute -left-[41px] p-1 rounded-full bg-background border group-hover:border-[#339CFF] transition-all duration-300">
-                      <div className="w-6 h-6 rounded-full bg-[#339CFF] group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300"></div>
+                      <div className="w-6 h-6 rounded-full bg-[#339CFF] flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300">
+                        <MapPin className="h-3 w-3 text-white" />
+                      </div>
                     </div>
                     <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors duration-300">{event.title}</h3>
                     <p className="text-muted-foreground">{event.description}</p>
@@ -352,15 +379,18 @@ export default function AboutUs() {
                 ))}
               </div>
             </div>
-          </div>
+          </ResponsiveContainer>
         </section>
         
         {/* Team Values Section */}
         <section 
           ref={valuesRef}
-          className="py-16 md:py-24 bg-[#f4faff]"
+          className="py-16 md:py-24 bg-[#f4faff] relative"
         >
-          <div className="container px-4 md:px-6">
+          {/* Abstract background graphic */}
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#339CFF]/5 rounded-full blur-3xl"></div>
+          
+          <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold mb-6">Our Values</h2>
@@ -386,7 +416,7 @@ export default function AboutUs() {
                     }}
                   >
                     <div className="mt-1 text-[#339CFF] flex-shrink-0">
-                      <ChevronRight className="h-5 w-5" />
+                      <Star className="h-5 w-5" />
                     </div>
                     <div className="text-left">
                       <h3 className="text-xl font-bold mb-1">{value.title}</h3>
@@ -396,7 +426,38 @@ export default function AboutUs() {
                 ))}
               </div>
             </div>
-          </div>
+          </ResponsiveContainer>
+        </section>
+
+        {/* CTA Section */}
+        <section
+          ref={ctaRef}
+          className="py-16 md:py-20 border-t"
+        >
+          <ResponsiveContainer>
+            <div 
+              className={cn(
+                "max-w-4xl mx-auto text-center transition-all",
+                ctaVisible 
+                  ? "opacity-100 translate-y-0" 
+                  : "opacity-0 translate-y-[30px]"
+              )}
+              style={{ 
+                transitionDuration: "2000ms",
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
+              }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your technical accounting workflows?</h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Let us help you simplify your technical accounting workflows.
+              </p>
+              <Button size="lg" variant="blue" asChild>
+                <Link to="/request-demo" className="flex items-center gap-2">
+                  Request a Demo <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </ResponsiveContainer>
         </section>
       </main>
       
