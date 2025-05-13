@@ -138,11 +138,27 @@ const ToastContext = React.createContext<{
   dispatch: () => null,
 });
 
+// Global dispatch function for when the provider is not available
+let dispatch: React.Dispatch<Action> = () => {
+  console.warn("Toast action dispatched outside of provider, this is a no-op");
+};
+
 // Provider component
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = React.useReducer(reducer, { toasts: [] });
+  const [state, stateDispatch] = React.useReducer(reducer, { toasts: [] });
+  
+  // Update the global dispatch when the provider is mounted
+  React.useEffect(() => {
+    dispatch = stateDispatch;
+    return () => {
+      dispatch = () => {
+        console.warn("Toast action dispatched outside of provider, this is a no-op");
+      };
+    };
+  }, [stateDispatch]);
+  
   return (
-    <ToastContext.Provider value={{ toasts: state.toasts, dispatch }}>
+    <ToastContext.Provider value={{ toasts: state.toasts, dispatch: stateDispatch }}>
       {children}
     </ToastContext.Provider>
   );
@@ -151,33 +167,20 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 // Custom hook to use the context
 const useToastContext = () => {
   const context = React.useContext(ToastContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useToastContext must be used within a ToastProvider");
   }
   return context;
 };
 
-// Global dispatch function for when the provider is not available
-let globalDispatch: React.Dispatch<Action> = () => {
-  console.warn("Toast action dispatched outside of provider, this is a no-op");
-};
-
-// Global state for cases when provider is not available
-let TOAST_STATE: ToasterToast[] = [];
-
-// Default dispatch for cases when provider is not available
-const defaultDispatch = (action: Action) => {
-  console.warn("Toast action dispatched outside of provider, this is a no-op");
-};
-
 export function useToast() {
-  let { toasts, dispatch } = { toasts: TOAST_STATE, dispatch: defaultDispatch };
+  let { toasts, dispatch: contextDispatch } = { toasts: [], dispatch };
   
   try {
     const context = useToastContext();
     if (context) {
       toasts = context.toasts;
-      dispatch = context.dispatch;
+      contextDispatch = context.dispatch;
     }
   } catch (e) {
     // fallback to global state
@@ -185,23 +188,23 @@ export function useToast() {
 
   return {
     toasts,
-    toast: (props: ToasterToastProps) => toast(props, dispatch),
-    dismiss: (toastId?: string) => dispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
+    toast: (props: ToasterToastProps) => toast(props, contextDispatch),
+    dismiss: (toastId?: string) => contextDispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
   };
 }
 
-export function toast(props: ToasterToastProps, dispatch: React.Dispatch<Action> = defaultDispatch) {
+export function toast(props: ToasterToastProps, dispatchFn: React.Dispatch<Action> = dispatch) {
   const id = genId();
 
   const update = (props: ToasterToastProps) =>
-    dispatch({
+    dispatchFn({
       type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
     });
 
-  const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
+  const dismiss = () => dispatchFn({ type: actionTypes.DISMISS_TOAST, toastId: id });
 
-  dispatch({
+  dispatchFn({
     type: actionTypes.ADD_TOAST,
     toast: {
       ...props,
