@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import {
   Toast,
@@ -138,7 +139,7 @@ const ToastContext = React.createContext<{
 });
 
 // Provider component
-const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = React.useReducer(reducer, { toasts: [] });
   return (
     <ToastContext.Provider value={{ toasts: state.toasts, dispatch }}>
@@ -156,19 +157,21 @@ const useToastContext = () => {
   return context;
 };
 
-// Initialize a default context for non-provider usage
-const defaultDispatch = (action: Action) => {
-  console.warn(
-    "Toast action dispatched outside of provider, this is a no-op"
-  );
+// Global dispatch function for when the provider is not available
+let globalDispatch: React.Dispatch<Action> = () => {
+  console.warn("Toast action dispatched outside of provider, this is a no-op");
 };
 
 // Global state for cases when provider is not available
 let TOAST_STATE: ToasterToast[] = [];
-const TOAST_DISPATCH = defaultDispatch;
 
-function useToast() {
-  let { toasts, dispatch } = { toasts: TOAST_STATE, dispatch: TOAST_DISPATCH };
+// Default dispatch for cases when provider is not available
+const defaultDispatch = (action: Action) => {
+  console.warn("Toast action dispatched outside of provider, this is a no-op");
+};
+
+export function useToast() {
+  let { toasts, dispatch } = { toasts: TOAST_STATE, dispatch: defaultDispatch };
   
   try {
     const context = useToastContext();
@@ -187,7 +190,7 @@ function useToast() {
   };
 }
 
-function toast(props: ToasterToastProps, dispatch: React.Dispatch<Action> = TOAST_DISPATCH) {
+export function toast(props: ToasterToastProps, dispatch: React.Dispatch<Action> = defaultDispatch) {
   const id = genId();
 
   const update = (props: ToasterToastProps) =>
@@ -216,5 +219,3 @@ function toast(props: ToasterToastProps, dispatch: React.Dispatch<Action> = TOAS
     update,
   };
 }
-
-export { useToast, toast, ToastProvider };
