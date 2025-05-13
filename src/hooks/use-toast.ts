@@ -1,60 +1,59 @@
-
-import * as React from "react"
+import * as React from "react";
 import {
   Toast,
   ToastActionElement,
   ToastProps,
-} from "@/components/ui/toast"
+} from "@/components/ui/toast";
 
-const TOAST_LIMIT = 5
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 5;
+const TOAST_REMOVE_DELAY = 1000000;
 
 type ToasterToast = ToastProps & {
-  id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: ToastActionElement
-}
+  id: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  action?: ToastActionElement;
+};
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",
   REMOVE_TOAST: "REMOVE_TOAST",
-} as const
+} as const;
 
-let count = 0
+let count = 0;
 
 function genId() {
-  count = (count + 1) % Number.MAX_VALUE
-  return count.toString()
+  count = (count + 1) % Number.MAX_VALUE;
+  return count.toString();
 }
 
-type ActionType = typeof actionTypes
+type ActionType = typeof actionTypes;
 
 type Action =
   | {
-      type: ActionType["ADD_TOAST"]
-      toast: ToasterToast
+      type: ActionType["ADD_TOAST"];
+      toast: ToasterToast;
     }
   | {
-      type: ActionType["UPDATE_TOAST"]
-      toast: Partial<ToasterToast> & Pick<ToasterToast, "id">
+      type: ActionType["UPDATE_TOAST"];
+      toast: Partial<ToasterToast> & Pick<ToasterToast, "id">;
     }
   | {
-      type: ActionType["DISMISS_TOAST"]
-      toastId?: ToasterToast["id"]
+      type: ActionType["DISMISS_TOAST"];
+      toastId?: ToasterToast["id"];
     }
   | {
-      type: ActionType["REMOVE_TOAST"]
-      toastId?: ToasterToast["id"]
-    }
+      type: ActionType["REMOVE_TOAST"];
+      toastId?: ToasterToast["id"];
+    };
 
 interface State {
-  toasts: ToasterToast[]
+  toasts: ToasterToast[];
 }
 
-const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
+const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -62,7 +61,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
-      }
+      };
 
     case actionTypes.UPDATE_TOAST:
       return {
@@ -70,19 +69,19 @@ const reducer = (state: State, action: Action): State => {
         toasts: state.toasts.map((t) =>
           t.id === action.toast.id ? { ...t, ...action.toast } : t
         ),
-      }
+      };
 
     case actionTypes.DISMISS_TOAST: {
-      const { toastId } = action
+      const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
+      // Side effects - This could be extracted into a dismissToast() action,
+      // but keeping it here for simplicity
       if (toastId) {
-        addToRemoveQueue(toastId)
+        addToRemoveQueue(toastId);
       } else {
         state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id)
-        })
+          addToRemoveQueue(toast.id);
+        });
       }
 
       return {
@@ -95,45 +94,47 @@ const reducer = (state: State, action: Action): State => {
               }
             : t
         ),
-      }
+      };
     }
     case actionTypes.REMOVE_TOAST:
       if (action.toastId === undefined) {
         return {
           ...state,
           toasts: [],
-        }
+        };
       }
       return {
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
-      }
+      };
   }
-}
+};
 
 function addToRemoveQueue(toastId: string) {
   if (toastTimeouts.has(toastId)) {
-    return
+    return;
   }
 
   const timeout = setTimeout(() => {
-    toastTimeouts.delete(toastId)
+    toastTimeouts.delete(toastId);
     dispatch({
       type: actionTypes.REMOVE_TOAST,
       toastId: toastId,
-    })
-  }, TOAST_REMOVE_DELAY)
+    });
+  }, TOAST_REMOVE_DELAY);
 
-  toastTimeouts.set(toastId, timeout)
+  toastTimeouts.set(toastId, timeout);
 }
 
 interface ToasterToastProps extends Omit<ToasterToast, "id"> {}
 
 // Create context for toast state management
-const ToastContext = React.createContext<{
+type ToastContextType = {
   toasts: ToasterToast[];
   dispatch: React.Dispatch<Action>;
-}>({
+};
+
+const ToastContext = React.createContext<ToastContextType>({
   toasts: [],
   dispatch: () => null,
 });
@@ -143,8 +144,10 @@ let dispatch: React.Dispatch<Action> = () => {
   console.warn("Toast action dispatched outside of provider, this is a no-op");
 };
 
-// Provider component
-export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+// Provider component - No JSX here, just creating a React element
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ 
+  children 
+}) => {
   const [state, stateDispatch] = React.useReducer(reducer, { toasts: [] });
   
   // Update the global dispatch when the provider is mounted
@@ -157,15 +160,15 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [stateDispatch]);
   
-  return (
-    <ToastContext.Provider value={{ toasts: state.toasts, dispatch: stateDispatch }}>
-      {children}
-    </ToastContext.Provider>
+  return React.createElement(
+    ToastContext.Provider, 
+    { value: { toasts: state.toasts, dispatch: stateDispatch } }, 
+    children
   );
 };
 
 // Custom hook to use the context
-const useToastContext = () => {
+const useToastContext = (): ToastContextType => {
   const context = React.useContext(ToastContext);
   if (!context) {
     throw new Error("useToastContext must be used within a ToastProvider");
@@ -174,7 +177,7 @@ const useToastContext = () => {
 };
 
 export function useToast() {
-  let { toasts, dispatch: contextDispatch } = { toasts: [], dispatch };
+  let { toasts, dispatch: contextDispatch } = { toasts: [] as ToasterToast[], dispatch };
   
   try {
     const context = useToastContext();
@@ -210,7 +213,7 @@ export function toast(props: ToasterToastProps, dispatchFn: React.Dispatch<Actio
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss();
       },
     },
