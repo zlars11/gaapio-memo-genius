@@ -2,11 +2,19 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Check, Zap, Clock, ShieldCheck, BarChart2, Lightbulb, Building2, Brain, Shield } from "lucide-react";
+import { 
+  Download, 
+  FileText, 
+  Check, 
+  Clock, 
+  ShieldCheck, 
+  CheckCircle2
+} from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export default function OnePager() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -63,7 +71,7 @@ export default function OnePager() {
       <main className="pt-16 pb-8">
         <div className="container px-4 md:px-6 flex flex-col items-center">
           {/* Download button at the top */}
-          <div className="mb-4 w-full max-w-4xl">
+          <div className="mb-4 w-full max-w-5xl">
             <Button 
               onClick={downloadAsPdf} 
               variant="blue"
@@ -73,223 +81,305 @@ export default function OnePager() {
             </Button>
           </div>
           
-          {/* The actual one-pager content that will be captured for PDF */}
+          {/* The one-pager content that will be captured for PDF */}
           <div 
             ref={downloadAreaRef} 
-            className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl"
-            style={{ fontFamily: 'Inter, sans-serif', maxHeight: '1100px' }}
+            className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-5xl"
+            style={{ fontFamily: 'Inter, sans-serif' }}
           >
+            {/* Header area with logo */}
+            <div className="p-8 pb-0">
+              <div className="flex justify-between items-start">
+                <img 
+                  src="/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png" 
+                  alt="Gaapio Logo" 
+                  className="w-32 h-auto" 
+                />
+              </div>
+            </div>
+
             {/* Hero Section - Updated layout */}
-            <div className="p-6 md:p-8 border-b">
-              <div className="flex flex-col md:flex-row items-start justify-between gap-6">
-                {/* Logo and Headline - Left side */}
+            <div className="p-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                {/* Headline - Left side */}
                 <div className="flex-1">
-                  <img 
-                    src="/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png" 
-                    alt="Gaapio Logo" 
-                    className="w-24 h-auto mb-6" 
-                  />
-                  <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
-                    Audit-Ready Memos and Disclosures
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#1A1F2C] mb-4">
+                    Fastest way to create<br />audit-ready accounting memos
                   </h1>
-                  <h2 className="text-xl md:text-2xl font-medium text-gray-700 mb-3">
-                    AI-Powered. CPA-Approved.
-                  </h2>
-                  <p className="text-base text-gray-700 mb-4">
+                  <p className="text-base md:text-lg text-gray-700 mb-6 max-w-xl">
                     Gaapio is the AI assistant built for accounting teams. From ASC 606 memos to 10-K footnotes, 
                     we help your team move faster while staying GAAP-compliant.
                   </p>
                   
-                  {/* Callout bar for core offerings */}
-                  <div className="bg-[#0074d4]/5 p-3 rounded-md border border-[#0074d4]/20 flex items-center justify-center mt-2 mb-1">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center">
-                        <Check className="h-5 w-5 text-[#0074d4] mr-2" />
-                        <span className="font-medium">Technical Accounting Memos</span>
+                  {/* Core offerings highlight */}
+                  <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div className="flex items-center">
+                      <div className="p-2 rounded-full bg-[#0074d4]/10">
+                        <CheckCircle2 className="h-5 w-5 text-[#0074d4]" />
                       </div>
-                      <div className="flex items-center">
-                        <Check className="h-5 w-5 text-[#0074d4] mr-2" />
-                        <span className="font-medium">Footnote Disclosures</span>
+                      <span className="ml-2 font-medium">Technical Accounting Memos</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="p-2 rounded-full bg-[#0074d4]/10">
+                        <CheckCircle2 className="h-5 w-5 text-[#0074d4]" />
                       </div>
+                      <span className="ml-2 font-medium">Footnote Disclosures</span>
                     </div>
                   </div>
                 </div>
                 
                 {/* Professional Image - Right side */}
-                <div className="flex-shrink-0 md:w-2/5">
-                  <div className="bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-                    <img 
-                      src="/lovable-uploads/c45fd480-1870-4963-9797-c53223261a19.png" 
-                      alt="Finance Team Working" 
-                      className="w-full h-auto object-cover"
-                    />
+                <div className="md:w-2/5">
+                  <div className="rounded-lg overflow-hidden shadow-md">
+                    <AspectRatio ratio={4/3} className="bg-muted">
+                      <img 
+                        src="/lovable-uploads/c45fd480-1870-4963-9797-c53223261a19.png" 
+                        alt="Finance Team Working" 
+                        className="w-full h-full object-cover"
+                      />
+                    </AspectRatio>
                   </div>
                 </div>
               </div>
             </div>
             
-            <Separator className="h-px bg-gray-100" />
+            <Separator className="h-px bg-gray-100 mx-8" />
             
-            {/* Streamlined Workflow - Adjusted layout */}
-            <div className="p-5 md:p-6 border-b">
-              <h2 className="text-xl font-semibold mb-4 text-[#0074d4]">Streamlined Workflow</h2>
+            {/* Key Capabilities Section */}
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-[#0074d4] mb-6">Key Gaapio Capabilities</h2>
               
-              <div className="flex flex-col md:flex-row gap-5">
-                {/* Left Column - Screenshot */}
-                <div className="md:w-2/5">
-                  <img 
-                    src="/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png" 
-                    alt="Gaapio Interface" 
-                    className="w-full h-auto rounded-lg border border-gray-200 shadow-sm"
-                    style={{ maxHeight: "200px", objectFit: "cover" }}
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">AI-powered memo drafting</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Real-time compliance checks</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Built-in GAAP/IFRS citations</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Team collaboration features</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="space-y-4">
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Footnote generation</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Version history and audit trail</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Customizable templates</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-1 rounded-full bg-[#0074d4]/10 mt-1">
+                        <Check className="h-4 w-4 text-[#0074d4]" />
+                      </div>
+                      <span className="ml-2">Optional CPA review</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            {/* How It Works section with visual */}
+            <div className="bg-gray-50 p-8">
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                {/* Image/screenshot */}
+                <div className="md:w-1/2">
+                  <div className="rounded-lg overflow-hidden border border-gray-200 shadow-md">
+                    <AspectRatio ratio={16/10} className="bg-white">
+                      <img 
+                        src="/lovable-uploads/87623a0a-f991-495f-9403-a577f9e5ee2a.png" 
+                        alt="Gaapio Interface" 
+                        className="w-full h-full object-cover"
+                      />
+                    </AspectRatio>
+                  </div>
                 </div>
                 
-                {/* Right Column - Steps */}
-                <div className="md:w-3/5 space-y-3">
-                  <div className="mb-2">
-                    <h3 className="text-base font-semibold flex items-center">
-                      <FileText className="h-4 w-4 text-[#0074d4] mr-2" />
-                      Guided Prompts
-                    </h3>
-                    <ul className="ml-6 text-sm space-y-1">
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Built-in guardrails for accuracy</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Up-to-date with latest standards</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Drafted instantly by trained AI</span>
-                      </li>
-                    </ul>
-                  </div>
+                {/* How it works content */}
+                <div className="md:w-1/2 space-y-6">
+                  <h2 className="text-2xl font-bold text-[#0074d4]">How Gaapio Works</h2>
                   
-                  <div className="mb-2">
-                    <h3 className="text-base font-semibold flex items-center">
-                      <FileText className="h-4 w-4 text-[#0074d4] mr-2" />
-                      Review
+                  <div>
+                    <h3 className="font-semibold mb-2 text-gray-800 flex items-center">
+                      <div className="bg-[#0074d4] text-white w-6 h-6 rounded-full flex items-center justify-center mr-2">1</div>
+                      Draft
                     </h3>
-                    <ul className="ml-6 text-sm space-y-1">
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Proprietary AI reviews and gives suggestions</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>One-click edits and enhancements</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Internal sign offs and audit trail</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Optional CPA review</span>
-                      </li>
-                    </ul>
+                    <p className="text-gray-600 pl-8">Input your accounting scenario through guided prompts. Our AI drafts a compliant memo in seconds.</p>
                   </div>
                   
                   <div>
-                    <h3 className="text-base font-semibold flex items-center">
-                      <FileText className="h-4 w-4 text-[#0074d4] mr-2" />
-                      Manage & Deliver
+                    <h3 className="font-semibold mb-2 text-gray-800 flex items-center">
+                      <div className="bg-[#0074d4] text-white w-6 h-6 rounded-full flex items-center justify-center mr-2">2</div>
+                      Review
                     </h3>
-                    <ul className="ml-6 text-sm space-y-1">
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Presentation-ready memos and disclosures</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Full version history and reviewer comments</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0074d4] mt-1.5 mr-2 flex-shrink-0"></span>
-                        <span>Exportable audit reports</span>
-                      </li>
-                    </ul>
+                    <p className="text-gray-600 pl-8">Our system checks for GAAP compliance. Team members can comment and suggest edits in real-time.</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-semibold mb-2 text-gray-800 flex items-center">
+                      <div className="bg-[#0074d4] text-white w-6 h-6 rounded-full flex items-center justify-center mr-2">3</div>
+                      Approve & Deliver
+                    </h3>
+                    <p className="text-gray-600 pl-8">Finalize with approval workflows. Export audit-ready documents with full citation support.</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <Separator className="h-px bg-gray-100" />
-            
-            {/* Key Benefits Section - From homepage */}
-            <div className="p-5 md:p-6 bg-gray-50">
-              <h2 className="text-xl font-semibold mb-4 text-[#0074d4]">Key Benefits</h2>
+            {/* Benefits grid section */}
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-[#0074d4] mb-6">Benefits That Matter</h2>
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
-                <div className="flex flex-col items-center text-center p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                  <div className="p-2 rounded-full bg-[#0074d4]/10 mb-2">
-                    <CheckCircle className="h-5 w-5 text-[#0074d4]" />
-                  </div>
-                  <h3 className="font-medium text-sm">Audit Ready</h3>
-                </div>
-                
-                <div className="flex flex-col items-center text-center p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                  <div className="p-2 rounded-full bg-[#0074d4]/10 mb-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Benefit box 1 */}
+                <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+                  <div className="p-2 rounded-full bg-[#0074d4]/10 inline-flex mb-3">
                     <Clock className="h-5 w-5 text-[#0074d4]" />
                   </div>
-                  <h3 className="font-medium text-sm">Time & Cost Savings</h3>
+                  <h3 className="font-semibold text-lg mb-2">Save Time</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Cut memo creation time by 80%</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Automate routine disclosure drafting</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Focus on analysis, not formatting</span>
+                    </li>
+                  </ul>
                 </div>
                 
-                <div className="flex flex-col items-center text-center p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                  <div className="p-2 rounded-full bg-[#0074d4]/10 mb-2">
-                    <FileText className="h-5 w-5 text-[#0074d4]" />
-                  </div>
-                  <h3 className="font-medium text-sm">CPA-Level Output</h3>
-                </div>
-                
-                <div className="flex flex-col items-center text-center p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                  <div className="p-2 rounded-full bg-[#0074d4]/10 mb-2">
+                {/* Benefit box 2 */}
+                <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+                  <div className="p-2 rounded-full bg-[#0074d4]/10 inline-flex mb-3">
                     <ShieldCheck className="h-5 w-5 text-[#0074d4]" />
                   </div>
-                  <h3 className="font-medium text-sm">GAAP/IFRS Compliance</h3>
+                  <h3 className="font-semibold text-lg mb-2">Ensure Compliance</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Up-to-date with latest standards</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Built-in GAAP/IFRS references</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Audit trail for review process</span>
+                    </li>
+                  </ul>
                 </div>
                 
-                <div className="flex flex-col items-center text-center p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                  <div className="p-2 rounded-full bg-[#0074d4]/10 mb-2">
-                    <Shield className="h-5 w-5 text-[#0074d4]" />
+                {/* Benefit box 3 */}
+                <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+                  <div className="p-2 rounded-full bg-[#0074d4]/10 inline-flex mb-3">
+                    <FileText className="h-5 w-5 text-[#0074d4]" />
                   </div>
-                  <h3 className="font-medium text-sm">Enterprise-Grade Security</h3>
+                  <h3 className="font-semibold text-lg mb-2">Improve Quality</h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Consistent structure and language</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Enhanced clarity for reviewers</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="p-0.5 rounded-full bg-[#0074d4]/10 mt-1 mr-2">
+                        <Check className="h-3 w-3 text-[#0074d4]" />
+                      </div>
+                      <span>Reduced errors and omissions</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
             
-            <Separator className="h-px bg-gray-100" />
-            
-            {/* Footer with contact info - Kept as is */}
-            <div className="bg-gray-50 p-6 text-center border-t">
-              <div className="flex flex-col md:flex-row justify-center items-center gap-6 mb-6">
-                <div className="flex items-center">
-                  <span className="text-[#0074d4]">🌐</span>
-                  <span className="ml-2">www.gaapio.com</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-[#0074d4]">✉️</span>
-                  <span className="ml-2">sales@gaapio.com</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-[#0074d4]">✉️</span>
-                  <span className="ml-2">info@gaapio.com</span>
-                </div>
-              </div>
+            {/* CTA section */}
+            <div className="bg-[#0074d4] text-white p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">See how Gaapio automates your next memo</h2>
+              <p className="mb-6 max-w-2xl mx-auto">Book a demo today at www.gaapio.com/demo</p>
               
               {/* Download button container - this will be hidden in PDF */}
               <div className="download-button-container">
                 <Button 
                   onClick={downloadAsPdf} 
-                  variant="blue"
+                  variant="outline"
                   size="lg"
-                  className="mx-auto"
+                  className="mx-auto text-white border-white hover:bg-white/10"
                 >
                   <Download className="mr-2 h-4 w-4" /> Download One-Pager
                 </Button>
+              </div>
+            </div>
+            
+            {/* Footer with contact info */}
+            <div className="p-4 text-center bg-gray-50 border-t text-sm text-gray-600">
+              <div className="flex flex-wrap justify-center items-center gap-4">
+                <div className="flex items-center">
+                  <span className="text-[#0074d4]">🌐</span>
+                  <span className="ml-1">www.gaapio.com</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-[#0074d4]">✉️</span>
+                  <span className="ml-1">sales@gaapio.com</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-[#0074d4]">✉️</span>
+                  <span className="ml-1">info@gaapio.com</span>
+                </div>
               </div>
             </div>
           </div>
@@ -300,22 +390,3 @@ export default function OnePager() {
     </div>
   );
 }
-
-const CheckCircle = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <circle cx="12" cy="12" r="10" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-);
-
