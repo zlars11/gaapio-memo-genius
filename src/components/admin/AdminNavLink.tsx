@@ -7,6 +7,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { supabase } from "@/integrations/supabase/client";
 
 export function AdminNavLink() {
+  // This component will now render nothing
+  return null;
+  
+  // The code below is kept but will never execute since we return null above
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
