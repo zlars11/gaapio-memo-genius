@@ -65,7 +65,7 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
                 {tier.features.slice(1).map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <Check className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-                    <span>{feature}</span>
+                    <span className="text-left">{feature}</span>
                   </li>
                 ))}
               </ul>
