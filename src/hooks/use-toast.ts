@@ -128,28 +128,75 @@ function addToRemoveQueue(toastId: string) {
 
 interface ToasterToastProps extends Omit<ToasterToast, "id"> {}
 
-const [state, dispatch] = React.createSignal<State>({
+// Create context for toast state management
+const ToastContext = React.createContext<{
+  toasts: ToasterToast[];
+  dispatch: React.Dispatch<Action>;
+}>({
   toasts: [],
-})
+  dispatch: () => null,
+});
+
+// Provider component
+const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = React.useReducer(reducer, { toasts: [] });
+  return (
+    <ToastContext.Provider value={{ toasts: state.toasts, dispatch }}>
+      {children}
+    </ToastContext.Provider>
+  );
+};
+
+// Custom hook to use the context
+const useToastContext = () => {
+  const context = React.useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error("useToastContext must be used within a ToastProvider");
+  }
+  return context;
+};
+
+// Initialize a default context for non-provider usage
+const defaultDispatch = (action: Action) => {
+  console.warn(
+    "Toast action dispatched outside of provider, this is a no-op"
+  );
+};
+
+// Global state for cases when provider is not available
+let TOAST_STATE: ToasterToast[] = [];
+const TOAST_DISPATCH = defaultDispatch;
 
 function useToast() {
-  return {
-    toasts: state().toasts,
-    toast,
-    dismiss: (toastId?: string) => dispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
+  let { toasts, dispatch } = { toasts: TOAST_STATE, dispatch: TOAST_DISPATCH };
+  
+  try {
+    const context = useToastContext();
+    if (context) {
+      toasts = context.toasts;
+      dispatch = context.dispatch;
+    }
+  } catch (e) {
+    // fallback to global state
   }
+
+  return {
+    toasts,
+    toast: (props: ToasterToastProps) => toast(props, dispatch),
+    dismiss: (toastId?: string) => dispatch({ type: actionTypes.DISMISS_TOAST, toastId }),
+  };
 }
 
-function toast(props: ToasterToastProps) {
-  const id = genId()
+function toast(props: ToasterToastProps, dispatch: React.Dispatch<Action> = TOAST_DISPATCH) {
+  const id = genId();
 
   const update = (props: ToasterToastProps) =>
     dispatch({
       type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
-    })
+    });
 
-  const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id })
+  const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
 
   dispatch({
     type: actionTypes.ADD_TOAST,
@@ -158,16 +205,16 @@ function toast(props: ToasterToastProps) {
       id,
       open: true,
       onOpenChange: (open) => {
-        if (!open) dismiss()
+        if (!open) dismiss();
       },
     },
-  })
+  });
 
   return {
     id,
     dismiss,
     update,
-  }
+  };
 }
 
-export { useToast, toast }
+export { useToast, toast, ToastProvider };
