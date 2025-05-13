@@ -39,9 +39,10 @@ export const PLANS = [
 ];
 
 export const PLAN_FEATURES = [
-  "Unlimited AI-generated memos",
-  "Free premium templates",
-  "Team collaboration tools",
+  "Version history",
+  "Internal workflows",
+  "Audit package (Mid-Market and Enterprise)",
+  "Compliance updates and training (Enterprise only)",
 ];
 
 export const getPlanObject = (planId: string) => {
