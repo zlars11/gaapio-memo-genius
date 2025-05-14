@@ -25,6 +25,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ExternalLink, FileEdit } from "lucide-react";
 import { PageEditor } from "@/components/admin/PageEditor";
+import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilitySettings";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -39,6 +40,19 @@ export default function Admin() {
   const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [selectedPage, setSelectedPage] = useState<{ title: string; path: string; description: string; } | null>(null);
+  
+  // Store the tab visibility settings
+  const [tabVisibility, setTabVisibility] = useState<Record<string, boolean>>({
+    dashboard: true,
+    companies: true,
+    users: true,
+    contacts: true,
+    demos: true,
+    firms: true,
+    pricing: true,
+    webpages: true,
+    settings: true
+  });
   
   const { 
     admins, 
@@ -82,14 +96,43 @@ export default function Admin() {
     { title: "Not Found (404)", path: "/404", description: "404 error page" },
   ];
 
+  // Load tab visibility settings
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("adminTabVisibility");
+    if (savedSettings) {
+      try {
+        const parsedSettings = JSON.parse(savedSettings);
+        const visibility: Record<string, boolean> = {};
+        
+        parsedSettings.forEach((tab: AdminTab) => {
+          visibility[tab.id] = tab.visible;
+        });
+        
+        setTabVisibility(visibility);
+      } catch (error) {
+        console.error("Error loading tab visibility settings:", error);
+      }
+    }
+  }, []);
+
   // Set the active tab from URL if present
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam) {
+    if (tabParam && tabVisibility[tabParam]) {
       setActiveTab(tabParam);
+    } else {
+      // Find first visible tab if current one is hidden
+      if (!tabVisibility[activeTab]) {
+        const firstVisible = Object.entries(tabVisibility)
+          .find(([_, visible]) => visible)?.[0];
+        
+        if (firstVisible) {
+          setActiveTab(firstVisible);
+        }
+      }
     }
-  }, []);
+  }, [tabVisibility]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -142,150 +185,173 @@ export default function Admin() {
           >
             <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList>
-                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                <TabsTrigger value="companies">Companies</TabsTrigger>
-                <TabsTrigger value="users">Users</TabsTrigger>
-                <TabsTrigger value="contacts">Contact</TabsTrigger>
-                <TabsTrigger value="demos">Demo Requests</TabsTrigger>
-                <TabsTrigger value="firms">Firm Signups</TabsTrigger>
-                <TabsTrigger value="pricing">Pricing</TabsTrigger>
-                <TabsTrigger value="webpages">Webpages</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                {tabVisibility.dashboard && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
+                {tabVisibility.companies && <TabsTrigger value="companies">Companies</TabsTrigger>}
+                {tabVisibility.users && <TabsTrigger value="users">Users</TabsTrigger>}
+                {tabVisibility.contacts && <TabsTrigger value="contacts">Contact</TabsTrigger>}
+                {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
+                {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
+                {tabVisibility.pricing && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
+                {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
+                {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
 
-              <TabsContent value="dashboard" className="border rounded-md mt-6 bg-card">
-                <AdminDashboard />
-              </TabsContent>
+              {tabVisibility.dashboard && (
+                <TabsContent value="dashboard" className="border rounded-md mt-6 bg-card">
+                  <AdminDashboard />
+                </TabsContent>
+              )}
               
-              <TabsContent value="companies" className="space-y-4">
-                <CompaniesTable />
-              </TabsContent>
+              {tabVisibility.companies && (
+                <TabsContent value="companies" className="space-y-4">
+                  <CompaniesTable />
+                </TabsContent>
+              )}
               
-              <TabsContent value="users" className="space-y-4">
-                <UserSignupsTable />
-              </TabsContent>
+              {tabVisibility.users && (
+                <TabsContent value="users" className="space-y-4">
+                  <UserSignupsTable />
+                </TabsContent>
+              )}
               
-              <TabsContent value="contacts" className="space-y-4">
-                <ContactTable />
-              </TabsContent>
+              {tabVisibility.contacts && (
+                <TabsContent value="contacts" className="space-y-4">
+                  <ContactTable />
+                </TabsContent>
+              )}
               
-              <TabsContent value="demos" className="space-y-4">
-                <DemoRequestsTable />
-              </TabsContent>
+              {tabVisibility.demos && (
+                <TabsContent value="demos" className="space-y-4">
+                  <DemoRequestsTable />
+                </TabsContent>
+              )}
               
-              <TabsContent value="firms" className="space-y-4">
-                <FirmSignupsTable />
-              </TabsContent>
+              {tabVisibility.firms && (
+                <TabsContent value="firms" className="space-y-4">
+                  <FirmSignupsTable />
+                </TabsContent>
+              )}
               
-              <TabsContent value="pricing" className="space-y-4">
-                <PricingManagement />
-              </TabsContent>
+              {tabVisibility.pricing && (
+                <TabsContent value="pricing" className="space-y-4">
+                  <PricingManagement />
+                </TabsContent>
+              )}
               
-              <TabsContent value="webpages" className="space-y-4">
-                {selectedPage ? (
-                  <PageEditor 
-                    page={selectedPage} 
-                    onClose={() => setSelectedPage(null)}
-                  />
-                ) : (
-                  <div className="p-6 border rounded-md bg-card">
-                    <h2 className="text-2xl font-semibold mb-4">Website Pages Management</h2>
-                    <p className="text-muted-foreground mb-6">Manage website pages content and SEO settings</p>
+              {tabVisibility.webpages && (
+                <TabsContent value="webpages" className="space-y-4">
+                  {selectedPage ? (
+                    <PageEditor 
+                      page={selectedPage} 
+                      onClose={() => setSelectedPage(null)}
+                    />
+                  ) : (
+                    <div className="p-6 border rounded-md bg-card">
+                      <h2 className="text-2xl font-semibold mb-4">Website Pages Management</h2>
+                      <p className="text-muted-foreground mb-6">Manage website pages content and SEO settings</p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                        {websitePages.map((page) => (
+                          <Card key={page.path} className="overflow-hidden">
+                            <CardContent className="p-4">
+                              <h3 className="font-medium text-lg mb-2">{page.title}</h3>
+                              <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
+                              <div className="flex items-center justify-between mt-2">
+                                <Link 
+                                  to={page.path} 
+                                  className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <ExternalLink className="h-4 w-4 mr-1" />
+                                  View Page
+                                </Link>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="flex items-center"
+                                  onClick={() => setSelectedPage(page)}
+                                >
+                                  <FileEdit className="h-4 w-4 mr-1" />
+                                  Edit
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              )}
+              
+              {tabVisibility.settings && (
+                <TabsContent value="settings" className="space-y-8">
+                  <div className="border rounded-md p-6 bg-card">
+                    <h2 className="text-2xl font-semibold mb-6">Admin Users</h2>
+                    <div className="mb-6">
+                      <Button onClick={() => setShowAddAdminDialog(true)}>
+                        Add Admin User
+                      </Button>
+                    </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                      {websitePages.map((page) => (
-                        <Card key={page.path} className="overflow-hidden">
-                          <CardContent className="p-4">
-                            <h3 className="font-medium text-lg mb-2">{page.title}</h3>
-                            <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
-                            <div className="flex items-center justify-between mt-2">
-                              <Link 
-                                to={page.path} 
-                                className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="h-4 w-4 mr-1" />
-                                View Page
-                              </Link>
+                    <h3 className="text-lg font-medium mb-4">Current Admins</h3>
+                    <div className="space-y-4">
+                      {admins.map(admin => (
+                        <div 
+                          key={admin.id} 
+                          className="flex justify-between items-center p-4 border rounded-md"
+                        >
+                          <div>
+                            <p className="font-medium">
+                              {admin.first_name || admin.last_name ? 
+                                `${admin.first_name || ''} ${admin.last_name || ''}` : 
+                                'Unnamed Admin'}
+                            </p>
+                            <p className="text-muted-foreground text-sm">{admin.email}</p>
+                            <p className="text-xs text-muted-foreground">Role: {admin.role}</p>
+                          </div>
+                          <div>
+                            {admin.user_id === currentUser.id && (!currentUser.first_name && !currentUser.last_name) && (
                               <Button 
                                 variant="outline" 
-                                size="sm" 
-                                className="flex items-center"
-                                onClick={() => setSelectedPage(page)}
+                                size="sm"
+                                onClick={() => setShowNameDialog(true)}
                               >
-                                <FileEdit className="h-4 w-4 mr-1" />
-                                Edit
+                                Set Your Name
                               </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
+                            )}
+                          </div>
+                        </div>
                       ))}
+                      
+                      {!adminsLoading && admins.length === 0 && (
+                        <p className="text-center py-4 text-muted-foreground">
+                          No admin users found
+                        </p>
+                      )}
                     </div>
                   </div>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="settings" className="space-y-8">
-                <div className="border rounded-md p-6 bg-card">
-                  <h2 className="text-2xl font-semibold mb-6">Admin Users</h2>
-                  <div className="mb-6">
-                    <Button onClick={() => setShowAddAdminDialog(true)}>
-                      Add Admin User
-                    </Button>
+                  
+                  <div className="border rounded-md p-6 bg-card">
+                    <h2 className="text-2xl font-semibold mb-6">Admin Portal Settings</h2>
+                    <TabVisibilitySettings />
                   </div>
                   
-                  <h3 className="text-lg font-medium mb-4">Current Admins</h3>
-                  <div className="space-y-4">
-                    {admins.map(admin => (
-                      <div 
-                        key={admin.id} 
-                        className="flex justify-between items-center p-4 border rounded-md"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {admin.first_name || admin.last_name ? 
-                              `${admin.first_name || ''} ${admin.last_name || ''}` : 
-                              'Unnamed Admin'}
-                          </p>
-                          <p className="text-muted-foreground text-sm">{admin.email}</p>
-                          <p className="text-xs text-muted-foreground">Role: {admin.role}</p>
-                        </div>
-                        <div>
-                          {admin.user_id === currentUser.id && (!currentUser.first_name && !currentUser.last_name) && (
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => setShowNameDialog(true)}
-                            >
-                              Set Your Name
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {!adminsLoading && admins.length === 0 && (
-                      <p className="text-center py-4 text-muted-foreground">
-                        No admin users found
-                      </p>
-                    )}
+                  <div className="border rounded-md p-6 bg-card">
+                    <h2 className="text-2xl font-semibold mb-6">Integrations</h2>
+                    <ZapierWebhookSetup 
+                      webhookType="zapier" 
+                      description="Connect Zapier to receive notifications when users submit forms" 
+                    />
                   </div>
-                </div>
-                
-                <div className="border rounded-md p-6 bg-card">
-                  <h2 className="text-2xl font-semibold mb-6">Integrations</h2>
-                  <ZapierWebhookSetup 
-                    webhookType="zapier" 
-                    description="Connect Zapier to receive notifications when users submit forms" 
-                  />
-                </div>
-                
-                <div className="border rounded-md p-6 bg-card">
-                  <h2 className="text-2xl font-semibold mb-6">Feature Toggles</h2>
-                  <FeatureToggles />
-                </div>
-              </TabsContent>
+                  
+                  <div className="border rounded-md p-6 bg-card">
+                    <h2 className="text-2xl font-semibold mb-6">Feature Toggles</h2>
+                    <FeatureToggles />
+                  </div>
+                </TabsContent>
+              )}
             </Tabs>
           </ErrorBoundary>
         </ResponsiveContainer>
