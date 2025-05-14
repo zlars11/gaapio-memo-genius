@@ -10,7 +10,7 @@ import {
   ShieldCheck, 
   FileSearch,
   FileCheck,
-  FileScope
+  FileCode  // Changed from FileScope to FileCode as suggested by the error
 } from "lucide-react";
 import { useRef } from "react";
 import html2canvas from "html2canvas";
