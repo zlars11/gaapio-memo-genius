@@ -4,7 +4,6 @@ import { ArrowDownCircle, CheckCircle2 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatedMemo } from "./AnimatedMemo";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export const HeroSection = memo(function HeroSection() {
   const [isClient, setIsClient] = useState(false);
@@ -24,14 +23,14 @@ export const HeroSection = memo(function HeroSection() {
   return (
     <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-16 pb-12 dark:bg-background">
       {/* Hero content with improved spacing */}
-      <div className="container px-4 md:px-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center relative z-10 mt-16 md:mt-20">
+      <div className="container px-4 md:px-6 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center relative z-10 mt-16 md:mt-20">
         {/* Left side - Text content */}
-        <div className="flex flex-col items-start text-left">
+        <div className="flex flex-col items-start text-left lg:w-1/2">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
-            Audit Ready Memos and Disclosures
+            Be Audit Ready with Gaapio
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
-            AI-Powered. CPA-Approved.
+            AI-Powered Technical Accounting Memos and Financial Statement Disclosures
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" variant="blue" asChild>
@@ -56,20 +55,18 @@ export const HeroSection = memo(function HeroSection() {
               </div>
               <span className="font-medium">Footnote Disclosures</span>
             </div>
+            <div className="flex items-center">
+              <div className="p-1 rounded-full bg-[#0074d4]/10 mr-2">
+                <CheckCircle2 className="h-5 w-5 text-[#0074d4]" />
+              </div>
+              <span className="font-medium">Compliant with Accounting Standards</span>
+            </div>
           </div>
         </div>
         
-        {/* Right side - Professional image */}
-        <div className="w-full h-full flex justify-center items-center">
-          <div className="w-full overflow-hidden rounded-xl shadow-lg">
-            <AspectRatio ratio={4/3}>
-              <img 
-                src="/lovable-uploads/c45fd480-1870-4963-9797-c53223261a19.png"
-                alt="Accounting Team Collaboration" 
-                className="w-full h-full object-cover"
-              />
-            </AspectRatio>
-          </div>
+        {/* Right side - Large "G" Logo */}
+        <div className="lg:w-1/2 flex justify-center items-center">
+          {isClient && <AnimatedMemo />}
         </div>
       </div>
       
