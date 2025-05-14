@@ -103,9 +103,9 @@ export const AnimatedMemo = () => {
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '500px', 
-          maxHeight: '560px',
-          overflowY: 'hidden',
+          minHeight: '600px',  // Increased minimum height to accommodate the full text
+          maxHeight: '700px',  // Increased maximum height
+          overflowY: 'visible', // Changed from 'hidden' to 'visible' to show overflowing content
           transition: 'all 0.3s ease',
         }}
       >
