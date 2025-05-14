@@ -42,8 +42,8 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
         
-        {/* Animated memo display with proper sizing */}
-        <div className="flex justify-center items-center w-full max-w-xl mx-auto mb-8">
+        {/* Animated memo display with wider sizing */}
+        <div className="flex justify-center items-center w-full mx-auto mb-8 overflow-visible">
           {isClient && <AnimatedMemo />}
         </div>
       </div>
