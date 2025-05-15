@@ -93,14 +93,16 @@ export function TabVisibilitySettings() {
   }, []);
   
   const handleToggleChange = (id: string, checked: boolean) => {
-    setTabs(tabs.map(tab => 
+    setTabs(prevTabs => prevTabs.map(tab => 
       tab.id === id ? { ...tab, visible: checked } : tab
     ));
   };
   
   const saveSettings = () => {
-    // Ensure at least one tab remains visible
-    if (!tabs.some(tab => tab.visible)) {
+    // Ensure at least one tab remains visible - settings tab should always be visible
+    const hasVisibleTabs = tabs.some(tab => tab.visible);
+    
+    if (!hasVisibleTabs) {
       toast({
         title: "Error",
         description: "At least one tab must remain visible.",
@@ -118,7 +120,7 @@ export function TabVisibilitySettings() {
   };
   
   const resetToDefault = () => {
-    setTabs(tabs.map(tab => ({ ...tab, visible: true })));
+    setTabs(prevTabs => prevTabs.map(tab => ({ ...tab, visible: true })));
     
     toast({
       title: "Settings reset",
@@ -128,7 +130,7 @@ export function TabVisibilitySettings() {
   
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-center">
         <CardTitle>Tab Visibility</CardTitle>
         <CardDescription>
           Control which tabs are visible in the admin portal
@@ -139,7 +141,7 @@ export function TabVisibilitySettings() {
           {tabs.map((tab) => (
             <div key={tab.id} className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor={`tab-${tab.id}`}>{tab.name}</Label>
+                <div className="font-medium">{tab.name}</div>
                 <p className="text-sm text-muted-foreground">
                   {tab.description}
                 </p>
@@ -149,11 +151,12 @@ export function TabVisibilitySettings() {
                 checked={tab.visible}
                 onCheckedChange={(checked) => handleToggleChange(tab.id, checked)}
                 disabled={tab.id === "settings"} // Always keep settings tab visible
+                aria-label={`Toggle visibility of ${tab.name} tab`}
               />
             </div>
           ))}
           
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end space-x-2 pt-6 mt-4 border-t">
             <Button variant="outline" onClick={resetToDefault}>
               Reset to Default
             </Button>
