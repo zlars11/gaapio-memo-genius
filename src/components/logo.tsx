@@ -45,7 +45,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       loading="eager"
       decoding="async"
       draggable={false}
-      fetchpriority="high"
+      fetchPriority="high"
     />
   );
 });
