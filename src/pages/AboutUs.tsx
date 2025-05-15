@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -335,13 +334,11 @@ export default function AboutUs() {
           </ResponsiveContainer>
         </section>
 
-        {/* Building on Experience Section */}
+        {/* Building on Experience Section - REVERTING BACK TO ORIGINAL BUT WITHOUT THE CENTER LINE */}
         <section 
           ref={timelineRef}
           className="py-16 md:py-24 border-b relative dark:bg-background dark:border-gray-800"
         >
-          {/* Remove the vertical line in the background */}
-          
           <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
@@ -351,7 +348,6 @@ export default function AboutUs() {
                 </p>
               </div>
               
-              {/* Remove the border-l and adjust spacing to center content */}
               <div className="relative space-y-12 max-w-3xl mx-auto">
                 {timelineEvents.map((event, index) => (
                   <div 
