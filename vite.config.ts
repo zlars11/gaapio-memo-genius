@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
       'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://bxojxrcerefklsrqkmrs.supabase.co wss://bxojxrcerefklsrqkmrs.supabase.co; font-src 'self';",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Cache-Control': 'max-age=31536000, immutable',
     }
   },
   plugins: [
@@ -41,9 +42,25 @@ export default defineConfig(({ mode }) => ({
         // Split vendor chunks for better caching
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            return 'vendor';
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
+            } else if (id.includes('@radix-ui')) {
+              return 'vendor-radix';
+            } else if (id.includes('lucide')) {
+              return 'vendor-lucide';
+            } else {
+              return 'vendor';
+            }
           }
         },
+      },
+    },
+    // Add Brotli compression for production builds
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
   },

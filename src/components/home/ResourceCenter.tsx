@@ -3,8 +3,14 @@ import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Link } from "react-router-dom";
 import { ExternalLink, FileText, Shield } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useEffect } from "react";
 
 export function ResourceCenter() {
+  // Scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <section 
       className="py-16 md:py-20 bg-accent/30 dark:bg-[#1A1F2B]"
@@ -113,7 +119,7 @@ export function ResourceCenter() {
           </div>
 
           {/* Column 3 - Templates & Downloads */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="flex flex-col items-center md:items-start h-full">
             <div className="flex items-center mb-4">
               <Shield className="h-5 w-5 mr-2" />
               <h3 className="text-xl font-semibold">Templates & Downloads</h3>
@@ -125,7 +131,7 @@ export function ResourceCenter() {
                   to="#" 
                   className="flex items-center justify-center md:justify-start hover:text-primary transition-colors"
                 >
-                  <span>ASC 606 Memo Template</span>
+                  <span>Coming soon</span>
                 </Link>
               </li>
               <li>
@@ -133,7 +139,7 @@ export function ResourceCenter() {
                   to="#" 
                   className="flex items-center justify-center md:justify-start hover:text-primary transition-colors"
                 >
-                  <span>Audit-Ready Memo Checklist</span>
+                  <span>Coming soon</span>
                 </Link>
               </li>
               <li className="flex-grow">
@@ -141,7 +147,7 @@ export function ResourceCenter() {
                   to="#" 
                   className="flex items-center justify-center md:justify-start hover:text-primary transition-colors"
                 >
-                  <span>GAAP Pitfalls Cheat Sheet</span>
+                  <span>Coming soon</span>
                 </Link>
               </li>
             </ul>
