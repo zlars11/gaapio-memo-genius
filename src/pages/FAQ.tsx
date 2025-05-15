@@ -28,6 +28,70 @@ export default function FAQ() {
 
             <div className="max-w-3xl mx-auto glass-card p-8 rounded-2xl shadow-md hover:bg-secondary/30 transition-all duration-300">
               <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-5">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+                    How is this different from ChatGPT?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground space-y-4">
+                    <p>
+                      While ChatGPT can help generate ideas or draft initial language, Gaapio is purpose-built to produce accounting memos and disclosures that meet real-world audit, SEC, and internal control standards.
+                    </p>
+                    <p>
+                      Here's what sets us apart:
+                    </p>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="font-bold">Built-In Guardrails, Not Just Prompts</p>
+                        <p>
+                          With Gaapio, you're not guessing what to ask or how to format it. Our platform enforces accounting-specific structure, completeness, and compliance — ensuring your memo includes every key component from background to conclusion.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">Trained Specifically for Accounting</p>
+                        <p>
+                          Our models are fine-tuned using thousands of technical memos, accounting standards (e.g. ASC 606, 842, 805), and CPA-reviewed examples — not internet text. This creates high-confidence, domain-specific outputs ChatGPT can't reliably generate on its own.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">AI Review = Built-In Second Opinion</p>
+                        <p>
+                          Each memo is automatically reviewed by a separately trained AI review layer fine-tuned for QA — catching gaps, inconsistencies, or missing disclosures before you do. Think of it as a built-in senior manager reviewing every draft.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">Deep Enterprise-Grade Security</p>
+                        <p>
+                          Unlike ChatGPT, Gaapio is designed to secure confidential financial data. From SOC 2 controls to private data handling, we're committed to protecting sensitive company information — essential for public companies or those preparing for audit.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">Contract + Workflow Integration</p>
+                        <p>
+                          We don't just generate text — we digest uploaded contracts (e.g. lease agreements, purchase agreements) and identify nuanced triggers like embedded leases or performance obligations. Our AI understands and reflects accounting treatment accurately — ChatGPT alone can't track or validate across documents.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">Designed for Accountants — Not Prompt Engineers</p>
+                        <p>
+                          ChatGPT helps. Gaapio delivers. We give accountants an end-to-end solution that turns complex facts into submission-ready memos with embedded accounting logic — no prompt engineering, no formatting guesswork, no second guessing.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="font-bold">TL;DR:</p>
+                        <p>
+                          ChatGPT is a helpful assistant. Gaapio is your accounting braintrust in a box.
+                        </p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                
                 <AccordionItem value="item-1">
                   <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     What types of memos can Gaapio create?
@@ -68,17 +132,6 @@ export default function FAQ() {
                   <AccordionContent className="text-muted-foreground">
                     <p>
                       Yes, we offer flexible enterprise pricing plans designed for larger accounting teams and organizations. Our enterprise plans include advanced features like team collaboration, enhanced security controls, priority support, and dedicated account management. Contact our sales team for a customized quote.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-5">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    How is this different from ChatGPT?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Unlike general-purpose AI tools like ChatGPT, Gaapio is specifically designed for technical accounting documentation. Our platform is built by CPAs with Big 4 backgrounds and is trained on accounting standards and best practices. We provide structured workflows, accounting-specific features, and compliance-focused outputs that ensure accuracy and relevance for accounting professionals.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
