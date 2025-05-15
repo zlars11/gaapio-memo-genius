@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -334,7 +335,7 @@ export default function AboutUs() {
           </ResponsiveContainer>
         </section>
 
-        {/* Building on Experience Section - REVERTING BACK TO ORIGINAL BUT WITHOUT THE CENTER LINE */}
+        {/* Building on Experience Section - REVISED TO MATCH DESIGN IMAGE */}
         <section 
           ref={timelineRef}
           className="py-16 md:py-24 border-b relative dark:bg-background dark:border-gray-800"
@@ -348,33 +349,47 @@ export default function AboutUs() {
                 </p>
               </div>
               
-              <div className="relative space-y-12 max-w-3xl mx-auto">
-                {timelineEvents.map((event, index) => (
-                  <div 
-                    key={index}
-                    className={cn(
-                      "relative transition-all group",
-                      timelineVisible 
-                        ? "opacity-100 translate-y-0" 
-                        : "opacity-0 translate-y-[30px]"
-                    )}
-                    style={{ 
-                      transitionDelay: `${index * 600}ms`,
-                      transitionDuration: "2000ms",
-                      transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
-                    }}
-                  >
-                    <div className="flex items-center justify-center mb-4">
-                      <div className="p-1 rounded-full bg-background dark:bg-gray-800 border group-hover:border-[#339CFF] transition-all duration-300">
-                        <div className="w-8 h-8 rounded-full bg-[#339CFF] flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300">
-                          <MapPin className="h-4 w-4 text-white" />
+              <div className="relative">
+                {/* Timeline Container */}
+                <div className="max-w-4xl mx-auto relative">
+                  {/* Timeline Line - Only visible in desktop */}
+                  <div className="absolute left-[28px] top-[30px] bottom-8 w-[2px] bg-[#eaeaea] dark:bg-gray-700 hidden md:block"></div>
+                  
+                  {/* Timeline Events */}
+                  {timelineEvents.map((event, index) => (
+                    <div 
+                      key={index}
+                      className={cn(
+                        "relative transition-all mb-12 last:mb-0",
+                        timelineVisible 
+                          ? "opacity-100 translate-y-0" 
+                          : "opacity-0 translate-y-[30px]"
+                      )}
+                      style={{ 
+                        transitionDelay: `${index * 600}ms`,
+                        transitionDuration: "2000ms",
+                        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
+                      }}
+                    >
+                      <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+                        {/* Timeline Circle */}
+                        <div className="flex-shrink-0 mb-4 md:mb-0">
+                          <div className="relative">
+                            <div className="w-14 h-14 rounded-full bg-[#339CFF] flex items-center justify-center z-10 relative">
+                              <span className="text-white font-bold">{index + 1}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Content */}
+                        <div className="md:ml-8 max-w-3xl">
+                          <h3 className="text-xl md:text-2xl font-bold mb-2 dark:text-white">{event.title}</h3>
+                          <p className="text-muted-foreground dark:text-gray-300">{event.description}</p>
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 text-center group-hover:text-[#339CFF] transition-colors duration-300 dark:text-white">{event.title}</h3>
-                    <p className="text-muted-foreground dark:text-gray-300 text-center">{event.description}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </ResponsiveContainer>
