@@ -1,3 +1,5 @@
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -20,12 +22,12 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
   const postSlug = post.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   
   return (
-    <Card className="h-full flex flex-col overflow-hidden hover:shadow-md transition-shadow">
+    <Card className="h-full flex flex-col overflow-hidden rounded-2xl hover:shadow-lg transition-all duration-300 border border-border/50">
       <div className="aspect-video w-full overflow-hidden">
         <img
           src={post.imageUrl}
           alt={`Featured image for article: ${post.title}`}
-          className="h-full w-full object-cover transition-transform hover:scale-105 duration-300"
+          className="h-full w-full object-cover transition-transform hover:scale-105 duration-300 filter grayscale"
           loading="lazy"
           decoding="async"
           width={400}
@@ -34,7 +36,7 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
       </div>
       <CardHeader className="pb-0 space-y-2">
         <div className="flex flex-wrap justify-between items-center gap-2 mb-1">
-          <span className="text-xs font-medium px-2.5 py-0.5 bg-primary/10 text-primary rounded-full">
+          <span className="text-xs font-medium px-2.5 py-0.5 bg-secondary text-secondary-foreground rounded-full">
             {post.category}
           </span>
           <span className="text-xs text-muted-foreground">{post.date}</span>
@@ -52,13 +54,19 @@ export const BlogPostCard = memo(function BlogPostCard({ post }: BlogPostCardPro
       </CardContent>
       <CardFooter className="flex items-center justify-between pt-0">
         <span className="text-xs text-muted-foreground">By {post.author}</span>
-        <Link 
-          to={`/blog/${postSlug}`}
-          className="text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
-          aria-label={`Read more about ${post.title}`}
+        <Button 
+          size="sm" 
+          variant="default"
+          asChild
+          className="rounded-full"
         >
-          Read More
-        </Link>
+          <Link 
+            to={`/blog/${postSlug}`}
+            aria-label={`Read more about ${post.title}`}
+          >
+            Read More
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

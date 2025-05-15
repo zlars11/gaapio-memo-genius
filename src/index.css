@@ -194,6 +194,12 @@
   .animate-pulse-slow {
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  /* Blog card fade-up animation */
+  .animate-fade-up {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
   
   @keyframes pulse {
     0%, 100% {

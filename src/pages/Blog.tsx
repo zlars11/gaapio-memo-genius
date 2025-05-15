@@ -1,4 +1,5 @@
 
+import { useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BlogPostCard } from "@/components/blog/BlogPostCard";
@@ -34,6 +35,33 @@ const samplePosts = [
 ];
 
 export default function Blog() {
+  const blogCardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-fade-up");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const cards = blogCardsRef.current?.querySelectorAll(".blog-card-item");
+    cards?.forEach((card) => {
+      observer.observe(card);
+    });
+
+    return () => {
+      cards?.forEach((card) => {
+        observer.unobserve(card);
+      });
+    };
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -53,16 +81,25 @@ export default function Blog() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto" role="list" aria-label="Blog posts">
+            <div 
+              ref={blogCardsRef}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" 
+              role="list" 
+              aria-label="Blog posts"
+            >
               {samplePosts.map(post => (
-                <div key={post.id} role="listitem">
+                <div 
+                  key={post.id} 
+                  role="listitem" 
+                  className="blog-card-item opacity-0 transform translate-y-4 transition-all duration-500"
+                >
                   <BlogPostCard post={post} />
                 </div>
               ))}
             </div>
 
-            <div className="text-center mt-12 md:mt-16">
-              <p className="text-muted-foreground px-4">
+            <div className="text-center mt-12 md:mt-16 animate-fade-in">
+              <p className="text-muted-foreground text-sm px-4 max-w-2xl mx-auto">
                 Stay tuned for more insights and articles from our team of accounting professionals.
               </p>
             </div>
