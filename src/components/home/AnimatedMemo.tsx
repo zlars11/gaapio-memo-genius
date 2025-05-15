@@ -46,19 +46,19 @@ export const AnimatedMemo = () => {
       typed.current = new Typed(typedElementRef.current, {
         strings: [
           "ASC 606 ACCOUNTING MEMO\n\n" +
-          "1. Background  \n" +
+          "<strong>1. Background</strong>  \n" +
           "The Company delivers bundled goods and services across multiple contracts...\n\n" +
-          "2. Scope / Purpose  \n" +
+          "<strong>2. Scope / Purpose</strong>  \n" +
           "This memo evaluates whether the Company's revenue recognition complies with ASC 606.\n\n" +
-          "3. Accounting Guidance  \n" +
+          "<strong>3. Accounting Guidance</strong>  \n" +
           "ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...\n\n" +
-          "4. Analysis  \n" +
+          "<strong>4. Analysis</strong>  \n" +
           "Based on the five-step model, the performance obligation is satisfied at a point in time...\n\n" +
-          "5. Conclusion  \n" +
+          "<strong>5. Conclusion</strong>  \n" +
           "The Company's accounting treatment is consistent with ASC 606.\n\n" +
-          "6. Financial Statement Impact  \n" +
+          "<strong>6. Financial Statement Impact</strong>  \n" +
           "The treatment results in $2.4M of revenue recognized in Q4 FY25...\n\n" +
-          "7. Disclosures  \n" +
+          "<strong>7. Disclosures</strong>  \n" +
           "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
         typeSpeed: 12, // 2x faster than previous setting (24)
@@ -147,13 +147,10 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden pointer-events-none">
       <div 
         ref={memoContainerRef}
-        className="w-[900px] max-w-full h-auto p-6 md:p-10 bg-white rounded-lg transform rotate-[-7deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)]"
+        className="w-[900px] max-w-full p-6 md:p-10 bg-white rounded-lg transform rotate-[-7deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)]"
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '600px',
-          maxHeight: '700px',
-          overflowY: 'visible',
           transition: 'all 0.3s ease',
         }}
       >
