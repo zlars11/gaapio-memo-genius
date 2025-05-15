@@ -1,11 +1,15 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 
 export const AnimatedMemo = () => {
   const typedElementRef = useRef<HTMLDivElement>(null);
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const typed = useRef<Typed | null>(null);
+  const [memoCompleted, setMemoCompleted] = useState(false);
+  const [footnoteVisible, setFootnoteVisible] = useState(false);
+  const footnoteRef = useRef<HTMLDivElement>(null);
+  const footnoteTypedRef = useRef<Typed | null>(null);
 
   // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
@@ -23,10 +27,21 @@ export const AnimatedMemo = () => {
       // Apply styles to the typed text
       typedElementRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
     }
+
+    if (footnoteRef.current) {
+      // Apply styles to the footnote
+      footnoteRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
+      
+      // Apply specific styles to horizontal rule in different themes
+      const hr = footnoteRef.current.querySelector('hr');
+      if (hr) {
+        hr.style.borderColor = isDark ? "#444444" : "#000000";
+      }
+    }
   };
 
   useEffect(() => {
-    // Initialize typed.js
+    // Initialize typed.js for the main memo
     if (typedElementRef.current) {
       typed.current = new Typed(typedElementRef.current, {
         strings: [
@@ -46,13 +61,16 @@ export const AnimatedMemo = () => {
           "7. Disclosures  \n" +
           "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
-        typeSpeed: 24, // 40% faster than original 40
+        typeSpeed: 12, // 2x faster than previous setting (24)
         backSpeed: 0,
         loop: false,
         showCursor: true,
         cursorChar: "|",
-        startDelay: 600, // Reduced from 1000ms to 600ms for quicker start
+        startDelay: 600,
         smartBackspace: false,
+        onComplete: () => {
+          setMemoCompleted(true);
+        }
       });
       
       // Apply theme styles immediately after initialization
@@ -64,8 +82,38 @@ export const AnimatedMemo = () => {
       if (typed.current) {
         typed.current.destroy();
       }
+      if (footnoteTypedRef.current) {
+        footnoteTypedRef.current.destroy();
+      }
     };
   }, []);
+
+  // Initialize the footnote typing once the memo is completed
+  useEffect(() => {
+    if (memoCompleted && footnoteRef.current && !footnoteVisible) {
+      // Small delay before showing footnote section
+      const timer = setTimeout(() => {
+        setFootnoteVisible(true);
+        
+        // Initialize typed.js for the footnote section
+        const footnoteElement = footnoteRef.current.querySelector('.footnote-content');
+        if (footnoteElement) {
+          footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
+            strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery."],
+            typeSpeed: 18, // A bit faster than main memo for better flow
+            backSpeed: 0,
+            loop: false,
+            showCursor: true,
+            cursorChar: "|",
+            startDelay: 800, // Slight delay after the divider appears
+            smartBackspace: false,
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [memoCompleted, footnoteVisible]);
 
   // Set up observer for theme changes
   useEffect(() => {
@@ -103,9 +151,9 @@ export const AnimatedMemo = () => {
         style={{
           fontFamily: 'monospace',
           opacity: 0.85,
-          minHeight: '600px',  // Increased minimum height to accommodate the full text
-          maxHeight: '700px',  // Increased maximum height
-          overflowY: 'visible', // Changed from 'hidden' to 'visible' to show overflowing content
+          minHeight: '600px',
+          maxHeight: '700px',
+          overflowY: 'visible',
           transition: 'all 0.3s ease',
         }}
       >
@@ -114,6 +162,27 @@ export const AnimatedMemo = () => {
           className="font-mono text-sm md:text-base whitespace-pre-wrap text-left text-gray-800"
           style={{ lineHeight: 1.6 }}
         ></div>
+        
+        {memoCompleted && (
+          <div 
+            ref={footnoteRef} 
+            className={`mt-6 text-left transition-opacity duration-500 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <hr className="border-t border-black my-4" />
+            
+            <div className="footnote-header font-serif font-bold text-lg mb-2">
+              Note 2 — Revenue Recognition
+            </div>
+            
+            <div 
+              className="footnote-content font-serif text-sm md:text-base text-justify"
+              style={{ 
+                textIndent: '1.5em',
+                lineHeight: 1.6 
+              }}
+            ></div>
+          </div>
+        )}
       </div>
     </div>
   );
