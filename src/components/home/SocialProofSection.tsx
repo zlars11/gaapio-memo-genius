@@ -18,16 +18,16 @@ export function SocialProofSection() {
     }
   }, []);
 
-  // Company logos with website brand colors
+  // Company logos with website brand colors - adjusted with more blues
   const companies = [
-    { id: 1, name: "FinSync", color: "text-foreground" },
-    { id: 2, name: "AccuLedger", color: "text-muted-foreground" },
-    { id: 3, name: "DataStream", color: "text-primary" },
-    { id: 4, name: "CloudCore", color: "text-secondary" },
-    { id: 5, name: "NexusBooks", color: "text-card-foreground" },
-    { id: 6, name: "TechFinance", color: "text-accent-foreground" },
-    { id: 7, name: "AccountPro", color: "text-border" },
-    { id: 8, name: "FiscalEdge", color: "text-ring" },
+    { id: 1, name: "FinSync", color: "text-foreground" }, // Keeping dark
+    { id: 2, name: "AccuLedger", color: "text-primary" }, // Changed to blue (primary)
+    { id: 3, name: "DataStream", color: "text-blue-500" }, // Changed to blue
+    { id: 4, name: "CloudCore", color: "text-muted-foreground" }, // Keeping gray
+    { id: 5, name: "NexusBooks", color: "text-blue-700" }, // Changed to dark blue
+    { id: 6, name: "TechFinance", color: "text-card-foreground" }, // Keeping default
+    { id: 7, name: "AccountPro", color: "text-[#339CFF]" }, // Changed to site blue
+    { id: 8, name: "FiscalEdge", color: "text-blue-400" }, // Changed to lighter blue
   ];
 
   // Double the array for seamless scrolling
