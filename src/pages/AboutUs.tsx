@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -339,8 +340,7 @@ export default function AboutUs() {
           ref={timelineRef}
           className="py-16 md:py-24 border-b relative dark:bg-background dark:border-gray-800"
         >
-          {/* Light connecting line in background */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-muted-foreground/10 dark:bg-gray-700/50 hidden md:block"></div>
+          {/* Remove the vertical line in the background */}
           
           <ResponsiveContainer>
             <div className="max-w-5xl mx-auto">
@@ -351,7 +351,8 @@ export default function AboutUs() {
                 </p>
               </div>
               
-              <div className="relative border-l border-muted-foreground/30 dark:border-gray-600 pl-8 ml-4 space-y-12">
+              {/* Remove the border-l and adjust spacing to center content */}
+              <div className="relative space-y-12 max-w-3xl mx-auto">
                 {timelineEvents.map((event, index) => (
                   <div 
                     key={index}
@@ -367,13 +368,15 @@ export default function AboutUs() {
                       transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                     }}
                   >
-                    <div className="absolute -left-[41px] p-1 rounded-full bg-background dark:bg-gray-800 border group-hover:border-[#339CFF] transition-all duration-300">
-                      <div className="w-6 h-6 rounded-full bg-[#339CFF] flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300">
-                        <MapPin className="h-3 w-3 text-white" />
+                    <div className="flex items-center justify-center mb-4">
+                      <div className="p-1 rounded-full bg-background dark:bg-gray-800 border group-hover:border-[#339CFF] transition-all duration-300">
+                        <div className="w-8 h-8 rounded-full bg-[#339CFF] flex items-center justify-center group-hover:scale-110 group-hover:shadow-[0_0_0_4px_rgba(51,156,255,0.2)] transition-all duration-300">
+                          <MapPin className="h-4 w-4 text-white" />
+                        </div>
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-[#339CFF] transition-colors duration-300 dark:text-white">{event.title}</h3>
-                    <p className="text-muted-foreground dark:text-gray-300">{event.description}</p>
+                    <h3 className="text-xl font-bold mb-2 text-center group-hover:text-[#339CFF] transition-colors duration-300 dark:text-white">{event.title}</h3>
+                    <p className="text-muted-foreground dark:text-gray-300 text-center">{event.description}</p>
                   </div>
                 ))}
               </div>
