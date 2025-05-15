@@ -61,7 +61,7 @@ export const AnimatedMemo = () => {
           "<strong>7. Disclosures</strong>  \n" +
           "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
-        typeSpeed: 12, // 2x faster than previous setting (24)
+        typeSpeed: 7, // Even faster (was 12 before)
         backSpeed: 0,
         loop: false,
         showCursor: true,
@@ -100,7 +100,7 @@ export const AnimatedMemo = () => {
         if (footnoteElement) {
           footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
             strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery, depending on the terms of the contract.\n\nThe Company's contracts generally include a single performance obligation, and pricing is fixed and determinable. No significant financing components, variable consideration, or rights of return exist within the standard terms."],
-            typeSpeed: 18, // A bit faster than main memo for better flow
+            typeSpeed: 10, // Faster typing speed (was 18 before)
             backSpeed: 0,
             loop: false,
             showCursor: true,
@@ -152,7 +152,7 @@ export const AnimatedMemo = () => {
           fontFamily: 'monospace',
           opacity: 0.85,
           transition: 'all 0.3s ease',
-          minHeight: '760px', // Set fixed height from the beginning
+          minHeight: '800px', // Increased height to ensure no cut-offs
         }}
       >
         <div 
@@ -164,16 +164,16 @@ export const AnimatedMemo = () => {
         {memoCompleted && (
           <div 
             ref={footnoteRef} 
-            className={`mt-8 pt-8 text-left transition-opacity duration-500 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`} // Added pt-8 for extra spacing
+            className={`mt-8 pt-10 text-left transition-opacity duration-300 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`} // Increased top padding (pt-10)
           >
             <hr className="border-t border-black my-4" />
             
-            <div className="footnote-header font-mono font-bold text-lg mb-2">
+            <div className="footnote-header font-mono font-bold text-lg mb-3 pl-1">
               Note 2 — Revenue Recognition
             </div>
             
             <div 
-              className="footnote-content font-mono text-sm md:text-base text-justify"
+              className="footnote-content font-mono text-sm md:text-base text-justify pl-1"
               style={{ 
                 textIndent: '1.5em',
                 lineHeight: 1.6 
