@@ -99,7 +99,7 @@ export const AnimatedMemo = () => {
         const footnoteElement = footnoteRef.current.querySelector('.footnote-content');
         if (footnoteElement) {
           footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
-            strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery."],
+            strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery, depending on the terms of the contract.\n\nThe Company's contracts generally include a single performance obligation, and pricing is fixed and determinable. No significant financing components, variable consideration, or rights of return exist within the standard terms."],
             typeSpeed: 18, // A bit faster than main memo for better flow
             backSpeed: 0,
             loop: false,
@@ -152,6 +152,7 @@ export const AnimatedMemo = () => {
           fontFamily: 'monospace',
           opacity: 0.85,
           transition: 'all 0.3s ease',
+          minHeight: '760px', // Set fixed height from the beginning
         }}
       >
         <div 
@@ -163,16 +164,16 @@ export const AnimatedMemo = () => {
         {memoCompleted && (
           <div 
             ref={footnoteRef} 
-            className={`mt-6 text-left transition-opacity duration-500 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`}
+            className={`mt-8 pt-8 text-left transition-opacity duration-500 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`} // Added pt-8 for extra spacing
           >
             <hr className="border-t border-black my-4" />
             
-            <div className="footnote-header font-serif font-bold text-lg mb-2">
+            <div className="footnote-header font-mono font-bold text-lg mb-2">
               Note 2 — Revenue Recognition
             </div>
             
             <div 
-              className="footnote-content font-serif text-sm md:text-base text-justify"
+              className="footnote-content font-mono text-sm md:text-base text-justify"
               style={{ 
                 textIndent: '1.5em',
                 lineHeight: 1.6 
