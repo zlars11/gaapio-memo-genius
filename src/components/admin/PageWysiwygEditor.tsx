@@ -52,11 +52,13 @@ export function PageWysiwygEditor({ content, onChange }: PageWysiwygEditorProps)
     }
     
     if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      // Using extendMarkRange to ensure the right selection range for link
+      editor.chain().focus().extendMarkRange('link').unsetMark('link').run();
       return;
     }
     
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    // Set link with the correct href attribute
+    editor.chain().focus().extendMarkRange('link').setMark('link', { href: url }).run();
   }, [editor]);
 
   const addImage = useCallback(() => {
