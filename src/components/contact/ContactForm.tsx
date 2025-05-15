@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -164,28 +165,30 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
   };
   
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2.5">
           <Label htmlFor="first_name">First Name</Label>
           <Input 
             id="first_name"
             placeholder="First name"
             {...register("first_name", { required: "First name is required" })}
             aria-invalid={errors.first_name ? "true" : "false"}
+            className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
           />
           {errors.first_name && (
             <p className="text-sm text-red-500">{errors.first_name.message}</p>
           )}
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           <Label htmlFor="last_name">Last Name</Label>
           <Input 
             id="last_name"
             placeholder="Last name"
             {...register("last_name", { required: "Last name is required" })}
             aria-invalid={errors.last_name ? "true" : "false"}
+            className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
           />
           {errors.last_name && (
             <p className="text-sm text-red-500">{errors.last_name.message}</p>
@@ -193,20 +196,21 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <Label htmlFor="company">Company</Label>
         <Input
           id="company"
           placeholder="Your company name"
           {...register("company", { required: "Company is required" })}
           aria-invalid={errors.company ? "true" : "false"}
+          className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
         />
         {errors.company && (
           <p className="text-sm text-red-500">{errors.company.message}</p>
         )}
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
@@ -220,13 +224,14 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
             },
           })}
           aria-invalid={errors.email ? "true" : "false"}
+          className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
         />
         {errors.email && (
           <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <Label htmlFor="phone">Phone</Label>
         <Input
           id="phone"
@@ -236,13 +241,14 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
           placeholder="Your phone number"
           {...register("phone", { required: "Phone number is required" })}
           aria-invalid={errors.phone ? "true" : "false"}
+          className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
         />
         {errors.phone && (
           <p className="text-sm text-red-500">{errors.phone.message}</p>
         )}
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         <Label htmlFor="message">Message</Label>
         <Textarea
           id="message"
@@ -250,6 +256,7 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
           rows={5}
           {...register("message", { required: "Message is required" })}
           aria-invalid={errors.message ? "true" : "false"}
+          className="rounded-lg transition-all focus:border-primary/50 focus:shadow-sm hover:border-primary/30"
         />
         {errors.message && (
           <p className="text-sm text-red-500">{errors.message.message}</p>
@@ -258,7 +265,7 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
       
       <Button 
         type="submit" 
-        className="w-full" 
+        className="w-full rounded-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-sm" 
         size="lg"
         disabled={isSubmitting}
       >
