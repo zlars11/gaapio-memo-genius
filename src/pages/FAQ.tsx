@@ -2,6 +2,8 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export default function FAQ() {
   return (
@@ -18,15 +20,16 @@ export default function FAQ() {
           <div className="container px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center mb-12">
               <h1 id="faq-heading" className="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
-              <p className="text-xl text-muted-foreground">
+              <div className="h-px w-24 bg-gradient-to-r from-transparent via-border to-transparent mx-auto mb-6"></div>
+              <p className="text-xl text-muted-foreground leading-relaxed">
                 Find answers to common questions about Gaapio.
               </p>
             </div>
 
-            <div className="max-w-3xl mx-auto glass-card p-8 rounded-xl">
+            <div className="max-w-3xl mx-auto glass-card p-8 rounded-2xl shadow-md hover:bg-secondary/30 transition-all duration-300">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     What types of memos can Gaapio create?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -37,7 +40,7 @@ export default function FAQ() {
                 </AccordionItem>
                 
                 <AccordionItem value="item-2">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     Can I customize the memo format?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -48,7 +51,7 @@ export default function FAQ() {
                 </AccordionItem>
                 
                 <AccordionItem value="item-3">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     Is it safe to upload confidential financial data?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -59,7 +62,7 @@ export default function FAQ() {
                 </AccordionItem>
                 
                 <AccordionItem value="item-4">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     Do you offer enterprise pricing?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -70,7 +73,7 @@ export default function FAQ() {
                 </AccordionItem>
                 
                 <AccordionItem value="item-5">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     How is this different from ChatGPT?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -81,7 +84,7 @@ export default function FAQ() {
                 </AccordionItem>
                 
                 <AccordionItem value="item-6">
-                  <AccordionTrigger className="text-lg font-medium">
+                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     What support resources are available?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
@@ -91,6 +94,15 @@ export default function FAQ() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
+            </div>
+            
+            <div className="mt-12 text-center animate-fade-in">
+              <p className="text-muted-foreground text-sm mb-4">
+                Still have questions? Contact us at info@gaapio.com or 
+              </p>
+              <Button asChild variant="blue" className="rounded-full">
+                <Link to="/request-demo">Request a Demo</Link>
+              </Button>
             </div>
           </div>
         </section>
