@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from "react";
 import Typed from "typed.js";
 
@@ -45,12 +46,12 @@ export const AnimatedMemo = () => {
           "7. Disclosures  \n" +
           "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
-        typeSpeed: 40,
+        typeSpeed: 24, // 40% faster than original 40
         backSpeed: 0,
         loop: false,
         showCursor: true,
         cursorChar: "|",
-        startDelay: 1000,
+        startDelay: 600, // Reduced from 1000ms to 600ms for quicker start
         smartBackspace: false,
       });
       
