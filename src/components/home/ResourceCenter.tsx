@@ -119,7 +119,7 @@ export function ResourceCenter() {
               <h3 className="text-xl font-semibold">Templates & Downloads</h3>
             </div>
             <Separator className="w-full mb-4" />
-            <ul className="space-y-3 text-center md:text-left w-full">
+            <ul className="space-y-3 text-center md:text-left w-full h-full flex flex-col">
               <li>
                 <Link 
                   to="#" 
@@ -136,7 +136,7 @@ export function ResourceCenter() {
                   <span>Audit-Ready Memo Checklist</span>
                 </Link>
               </li>
-              <li>
+              <li className="flex-grow">
                 <Link 
                   to="#" 
                   className="flex items-center justify-center md:justify-start hover:text-primary transition-colors"

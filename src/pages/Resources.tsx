@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FileSearch, FileText, FileCheck, Download, Book, BookOpen, ExternalLink } from "lucide-react";
@@ -25,6 +26,9 @@ export default function Resources() {
     animatedCards.forEach((card) => {
       observer.observe(card);
     });
+
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
     
     return () => {
       animatedCards.forEach((card) => {
@@ -272,7 +276,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><Download className="h-4 w-4" /> Download Guide</Link>
+                    <Link to="#"><Download className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -295,7 +299,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><FileText className="h-4 w-4" /> Access Overview</Link>
+                    <Link to="#"><FileText className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -317,7 +321,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><FileText className="h-4 w-4" /> View Resources</Link>
+                    <Link to="#"><FileText className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -333,7 +337,7 @@ export default function Resources() {
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                 {/* Card 1 */}
-                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]">
+                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626] flex flex-col">
                   <CardHeader>
                     <div className="flex items-start">
                       <FileSearch className="h-8 w-8 mb-3 text-primary mr-3 dark:text-[#339CFF]" />
@@ -343,20 +347,20 @@ export default function Resources() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground dark:text-gray-400">
                       Input contract details, performance obligations, and transaction price to get automatic calculations and recognition schedules.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="mt-auto">
                     <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                      <Link to="#"><FileSearch className="h-4 w-4" /> Launch Calculator</Link>
+                      <Link to="#"><FileSearch className="h-4 w-4" /> Coming Soon</Link>
                     </Button>
                   </CardFooter>
                 </Card>
                 
                 {/* Card 2 */}
-                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "100ms" }}>
+                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626] flex flex-col" style={{ animationDelay: "100ms" }}>
                   <CardHeader>
                     <div className="flex items-start">
                       <FileSearch className="h-8 w-8 mb-3 text-primary mr-3 dark:text-[#339CFF]" />
@@ -366,20 +370,20 @@ export default function Resources() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground dark:text-gray-400">
                       Ensure compliance with GAAP and SEC requirements with our checklist covering all required financial statement disclosures.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="mt-auto">
                     <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                      <Link to="#"><FileSearch className="h-4 w-4" /> Access Checklist</Link>
+                      <Link to="#"><FileSearch className="h-4 w-4" /> Coming Soon</Link>
                     </Button>
                   </CardFooter>
                 </Card>
                 
                 {/* Card 3 */}
-                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626]" style={{ animationDelay: "200ms" }}>
+                <Card className="animate-on-scroll border border-border/40 bg-card/50 backdrop-blur hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg dark:border-white/5 dark:bg-[#1c1c1c] dark:hover:bg-[#262626] flex flex-col" style={{ animationDelay: "200ms" }}>
                   <CardHeader>
                     <div className="flex items-start">
                       <FileSearch className="h-8 w-8 mb-3 text-primary mr-3 dark:text-[#339CFF]" />
@@ -389,14 +393,14 @@ export default function Resources() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground dark:text-gray-400">
                       Navigate ASC 350 and ASC 360 requirements with our tool that guides you through impairment indicators, testing procedures and calculations.
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="mt-auto">
                     <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                      <Link to="#"><FileSearch className="h-4 w-4" /> Use Tool</Link>
+                      <Link to="#"><FileSearch className="h-4 w-4" /> Coming Soon</Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -429,7 +433,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><Download className="h-4 w-4" /> Download Template</Link>
+                    <Link to="#"><Download className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -452,7 +456,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><Download className="h-4 w-4" /> Download White Paper</Link>
+                    <Link to="#"><Download className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -475,7 +479,7 @@ export default function Resources() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="blue" size="sm" className="w-full gap-2 rounded-full" asChild>
-                    <Link to="#"><Download className="h-4 w-4" /> Get Checklist</Link>
+                    <Link to="#"><Download className="h-4 w-4" /> Coming Soon</Link>
                   </Button>
                 </CardFooter>
               </Card>
