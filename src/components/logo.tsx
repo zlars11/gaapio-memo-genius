@@ -42,7 +42,9 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       width={480}
       height={144}
       className={`h-auto w-auto max-h-28 md:max-h-32 object-contain transition-all duration-200 ${className}`}
+      loading="eager"
       decoding="async"
+      fetchPriority="high"
       draggable={false}
     />
   );
