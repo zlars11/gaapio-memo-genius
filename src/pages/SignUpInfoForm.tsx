@@ -112,7 +112,7 @@ export function SignUpInfoForm({ isLoading, infoForm, onSubmit, ANNUAL_LABEL, pl
               </li>
               <li className="flex items-center">
                 <Check className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                Team collaboration tools
+                Internal approvals
               </li>
             </ul>
           </CardContent>

@@ -40,7 +40,7 @@ export const PLANS = [
 
 export const PLAN_FEATURES = [
   "Version history",
-  "Internal workflows",
+  "Internal approvals",
   "Audit package (Mid-Market and Enterprise)",
   "Compliance updates and training (Enterprise only)",
 ];

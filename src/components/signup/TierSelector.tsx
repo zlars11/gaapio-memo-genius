@@ -15,17 +15,17 @@ export function TierSelector({ selectedTier, onSelectTier }: TierSelectorProps) 
     {
       id: "emerging",
       title: "Emerging",
-      features: ["Up to 3 users", "Version history", "Internal workflows"]
+      features: ["Up to 3 users", "Version history", "Internal approvals"]
     },
     {
       id: "mid",
       title: "Mid-Market",
-      features: ["Up to 6 users", "Version history", "Internal workflows", "Audit package"]
+      features: ["Up to 6 users", "Version history", "Internal approvals", "Audit package"]
     },
     {
       id: "enterprise",
       title: "Enterprise",
-      features: ["Unlimited users", "Version history", "Internal workflows", "Audit package", "Compliance updates and training"]
+      features: ["Unlimited users", "Version history", "Internal approvals", "Audit package", "Compliance updates and training"]
     }
   ];
 
