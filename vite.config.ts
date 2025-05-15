@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
-      // Modified CSP to allow fonts from rsms.me and relaxed other restrictions
+      // Modified CSP to allow fonts from rsms.me and required scripts
       'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https://rsms.me; font-src 'self' https://rsms.me; img-src 'self' data: blob:; connect-src 'self' https://bxojxrcerefklsrqkmrs.supabase.co wss://bxojxrcerefklsrqkmrs.supabase.co; frame-src 'self'; media-src 'self';",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -32,8 +32,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Temporarily disable minification for debugging
-    minify: mode === 'production' ? false : false,
+    // Enable minification only in production mode
+    minify: mode === 'production' ? 'terser' : false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
@@ -57,11 +57,11 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-    // Disable Terser for now
+    // Configure Terser for production only
     terserOptions: {
       compress: {
-        drop_console: false,
-        drop_debugger: false,
+        drop_console: mode === 'production',
+        drop_debugger: mode === 'production',
       },
     },
   },

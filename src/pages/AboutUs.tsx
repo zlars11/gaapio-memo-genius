@@ -210,6 +210,9 @@ export default function AboutUs() {
                       src="/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png" 
                       alt="Two CPA accountants working together" 
                       className="rounded-lg shadow-lg max-w-full h-auto z-10 relative"
+                      width="600"
+                      height="400"
+                      decoding="async"
                     />
                     <div className="absolute -bottom-4 -right-4 w-full h-full border-2 border-[#339CFF]/20 rounded-lg z-0"></div>
                   </div>
