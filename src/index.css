@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -243,7 +244,6 @@
 
 .animate-fade-in {
     animation: fadeIn 0.8s ease-out forwards;
-  }
 }
 
 @keyframes fadeIn {
