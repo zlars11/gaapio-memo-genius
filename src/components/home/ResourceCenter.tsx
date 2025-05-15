@@ -3,14 +3,8 @@ import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { Link } from "react-router-dom";
 import { ExternalLink, FileText, Shield } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { useEffect } from "react";
 
 export function ResourceCenter() {
-  // Scroll to top on component mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <section 
       className="py-16 md:py-20 bg-accent/30 dark:bg-[#1A1F2B]"
