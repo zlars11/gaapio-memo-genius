@@ -1,41 +1,26 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BlogPostCard } from "@/components/blog/BlogPostCard";
-
-const samplePosts = [
-  {
-    id: 1,
-    title: "Why Technical Accounting Memos Matter",
-    excerpt: "Discover why thorough documentation is essential for audit readiness and regulatory compliance.",
-    date: "April 10, 2025",
-    author: "Zack Larsen, CPA",
-    imageUrl: "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png",
-    category: "Best Practices"
-  },
-  {
-    id: 2,
-    title: "5 Common ASC 606 Pitfalls",
-    excerpt: "Navigate the complexities of revenue recognition and avoid these frequent mistakes in your accounting memos.",
-    date: "October 29, 2025",
-    author: "Zack Larsen, CPA",
-    imageUrl: "/lovable-uploads/76a4d290-2102-4790-88a8-8783b2d8ae44.png",
-    category: "Accounting Standards"
-  },
-  {
-    id: 3,
-    title: "How AI Is Changing the Accounting Landscape",
-    excerpt: "Explore the impact of artificial intelligence on accounting workflows and documentation processes.",
-    date: "March 28, 2025",
-    author: "Zack Larsen, CPA",
-    imageUrl: "/lovable-uploads/0ca75d1e-cef9-48b9-b1fa-91dca93bbddc.png",
-    category: "Technology"
-  }
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function Blog() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [categories, setCategories] = useState<string[]>([]);
   const blogCardsRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchBlogPosts();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,7 +45,54 @@ export default function Blog() {
         observer.unobserve(card);
       });
     };
-  }, []);
+  }, [posts]);
+
+  const fetchBlogPosts = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("status", "published")
+        .order("publish_date", { ascending: false });
+      
+      if (error) throw error;
+      setPosts(data || []);
+
+      // Extract unique categories from posts
+      const uniqueCategories = Array.from(
+        new Set(data?.map(post => post.category || "General"))
+      ).filter(Boolean);
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load blog posts",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredPosts = selectedCategory === "all" 
+    ? posts 
+    : posts.filter(post => post.category === selectedCategory);
+
+  // Placeholder loading skeleton
+  const BlogCardSkeleton = () => (
+    <div className="flex flex-col gap-4">
+      <Skeleton className="h-48 w-full" />
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-3 w-1/2" />
+      <div className="space-y-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-4/5" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -81,28 +113,93 @@ export default function Blog() {
               </p>
             </div>
 
+            {categories.length > 0 && (
+              <div className="max-w-xl mx-auto mb-8">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-2 p-2">
+                  <Label htmlFor="category-filter" className="text-sm font-medium whitespace-nowrap">
+                    Filter by Topic:
+                  </Label>
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                  >
+                    <SelectTrigger id="category-filter" className="w-[200px]">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Topics</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedCategory !== "all" && (
+                    <Badge variant="outline" className="ml-2">
+                      Showing: {selectedCategory}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div 
               ref={blogCardsRef}
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto" 
               role="list" 
               aria-label="Blog posts"
             >
-              {samplePosts.map(post => (
-                <div 
-                  key={post.id} 
-                  role="listitem" 
-                  className="blog-card-item opacity-0 transform translate-y-4 transition-all duration-500"
-                >
-                  <BlogPostCard post={post} />
+              {isLoading ? (
+                // Display skeleton loaders while loading
+                Array(3).fill(0).map((_, i) => (
+                  <div key={i} className="blog-card-item">
+                    <BlogCardSkeleton />
+                  </div>
+                ))
+              ) : filteredPosts.length > 0 ? (
+                filteredPosts.map(post => (
+                  <div 
+                    key={post.id} 
+                    role="listitem" 
+                    className="blog-card-item opacity-0 transform translate-y-4 transition-all duration-500"
+                  >
+                    <BlogPostCard 
+                      post={{
+                        id: post.id,
+                        title: post.title,
+                        excerpt: post.excerpt || "Read more about this topic...",
+                        date: new Date(post.publish_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        }),
+                        author: post.author || "Gaapio Team",
+                        imageUrl: post.thumbnail_url || "/lovable-uploads/01273276-ea88-43e0-9d91-0cb238f997be.png",
+                        category: post.category || "General",
+                        slug: post.slug
+                      }} 
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground">
+                    {selectedCategory !== "all" 
+                      ? `No posts found in the "${selectedCategory}" category.` 
+                      : "No blog posts found."}
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
 
-            <div className="text-center mt-12 md:mt-16 animate-fade-in">
-              <p className="text-muted-foreground text-sm px-4 max-w-2xl mx-auto">
-                Stay tuned for more insights and articles from our team of accounting professionals.
-              </p>
-            </div>
+            {filteredPosts.length > 0 && (
+              <div className="text-center mt-12 md:mt-16 animate-fade-in">
+                <p className="text-muted-foreground text-sm px-4 max-w-2xl mx-auto">
+                  Stay tuned for more insights and articles from our team of accounting professionals.
+                </p>
+              </div>
+            )}
           </div>
         </section>
       </main>
