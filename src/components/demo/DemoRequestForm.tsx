@@ -4,8 +4,12 @@ import { Form } from "@/components/ui/form";
 import { useDemoRequestForm } from "./hooks/useDemoRequestForm";
 import { DemoRequestFormFields } from "./components/DemoRequestFormFields";
 
-export function DemoRequestForm() {
-  const { form, isLoading, onSubmit } = useDemoRequestForm();
+interface DemoRequestFormProps {
+  onSuccess?: () => void;
+}
+
+export function DemoRequestForm({ onSuccess }: DemoRequestFormProps) {
+  const { form, isLoading, onSubmit } = useDemoRequestForm(onSuccess);
 
   return (
     <Form {...form}>

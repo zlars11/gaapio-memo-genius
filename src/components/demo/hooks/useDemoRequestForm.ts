@@ -5,7 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { DemoRequestFormData } from "../types/demoRequestTypes";
 
-export function useDemoRequestForm() {
+export function useDemoRequestForm(onSuccess?: () => void) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
@@ -100,6 +100,11 @@ export function useDemoRequestForm() {
       });
       
       form.reset();
+      
+      // Call the success callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error: any) {
       console.error("Form submission error:", error);
       toast({

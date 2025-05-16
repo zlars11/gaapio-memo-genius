@@ -1,9 +1,13 @@
 
 
 
+
 # trigger rebuild
 # Removed pricing page and pricing tab from admin portal
 # Added edit and delete functionality to contact submissions in admin portal
 # Added delete functionality to companies, users, and firms in admin portal
 # Cleared data from companies, users, contacts, and firm signups tables
+# Added success screens for contact form and demo request form submissions
+# Fixed contact deletion functionality
+
 

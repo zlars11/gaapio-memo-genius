@@ -33,7 +33,10 @@ export function DeleteContactDialog({ contact, onDelete, onClose }: DeleteContac
         .delete()
         .eq("id", contact.id);
         
-      if (error) throw error;
+      if (error) {
+        console.error("Delete error:", error);
+        throw error;
+      }
       
       toast({
         title: "Contact deleted",
@@ -42,6 +45,7 @@ export function DeleteContactDialog({ contact, onDelete, onClose }: DeleteContac
       
       onDelete();
     } catch (error: any) {
+      console.error("Error deleting contact:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to delete contact",
