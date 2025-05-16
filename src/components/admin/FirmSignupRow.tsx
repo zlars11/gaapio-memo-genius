@@ -1,41 +1,25 @@
 
-import { FirmSignup } from "./types/userTypes";
-import { TableRow, TableCell } from "@/components/ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/utils/dateUtils";
-
-interface FirmSignupRowProps {
-  signup: FirmSignup;
-  onEdit: (signup: FirmSignup) => void;
-}
+import { Pen } from "lucide-react";
+import { FirmSignupRowProps } from "./types/userTypes";
 
 export function FirmSignupRow({ signup, onEdit }: FirmSignupRowProps) {
-  const handleEditClick = () => {
-    onEdit(signup);
-  };
-  
   return (
-    <TableRow>
-      <TableCell className="font-medium">
-        {signup.company || "Not provided"}
-      </TableCell>
-      <TableCell>
-        {signup.first_name || signup.last_name
-          ? `${signup.first_name || ""} ${signup.last_name || ""}`
-          : "Not provided"}
-      </TableCell>
-      <TableCell>{signup.email || "Not provided"}</TableCell>
-      <TableCell>{signup.phone || "Not provided"}</TableCell>
-      <TableCell>
-        {formatDate(signup.created_at)}
-      </TableCell>
+    <TableRow key={signup.id}>
+      <TableCell>{signup.company}</TableCell>
+      <TableCell>{`${signup.first_name || ''} ${signup.last_name || ''}`.trim()}</TableCell>
+      <TableCell>{signup.email}</TableCell>
+      <TableCell>{signup.phone}</TableCell>
+      <TableCell>{signup.created_at ? new Date(signup.created_at).toLocaleDateString() : 'N/A'}</TableCell>
+      <TableCell>{signup.user_type}</TableCell>
       <TableCell>
         <Button
           variant="outline"
           size="sm"
-          onClick={handleEditClick}
+          onClick={() => onEdit(signup)}
         >
-          Edit
+          <Pen className="w-4 h-4 mr-1" /> Edit
         </Button>
       </TableCell>
     </TableRow>

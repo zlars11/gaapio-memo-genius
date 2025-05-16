@@ -1,91 +1,58 @@
-
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { SupabaseAuthUser } from "@/types/supabaseTypes";
+import { AdminUser } from "@/types/adminTypes";
 
 /**
- * Check if a user has admin role
- * @param userId User ID to check
- * @returns Promise resolving to boolean indicating if user is admin
+ * Checks if a user has admin role
  */
 export async function checkAdminRole(userId: string): Promise<boolean> {
   try {
-    // First check for admin_users table entry - direct query
-    const { data: adminRecord, error: adminError } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('user_id', userId)
-      .maybeSingle();
+    console.log("Checking admin role for user:", userId);
+    const { data: isAdmin, error } = await supabase.rpc('has_role', {
+      user_id: userId,
+      role: 'admin'
+    });
     
-    if (adminError) {
-      console.error("Error checking admin role:", adminError);
+    if (error) {
+      console.error("Error checking admin status:", error);
+      return false;
     }
     
-    return !!adminRecord; // If record exists, user is admin
+    console.log("Admin role check result:", isAdmin);
+    return !!isAdmin;
   } catch (error) {
-    console.error("Error checking admin status:", error);
+    console.error("Unexpected error checking admin role:", error);
     return false;
   }
 }
 
 /**
- * Find a user by email in auth system
- * @param email Email to find
- * @returns Promise resolving to user ID if found, null otherwise
+ * Get Supabase Auth user by ID
  */
-export async function findUserByEmail(email: string): Promise<string | null> {
+export async function getAuthUser(userId: string): Promise<User | null> {
   try {
-    // First try public.users table
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
+    const { data, error } = await supabase.auth.admin.getUserById(userId);
     
-    if (!userError && userData?.id) {
-      return userData.id;
-    }
-    
-    // If above fails, try via auth admin API
-    const { data, error } = await supabase.auth.admin.listUsers();
-    
-    if (error) {
-      console.error("Error listing users:", error);
+    if (error || !data?.user) {
+      console.error("Error fetching auth user:", error);
       return null;
     }
     
-    const user = data?.users?.find(user => user.email === email);
-    return user?.id || null;
+    return data.user;
   } catch (error) {
-    console.error("Error finding user by email:", error);
+    console.error("Error fetching auth user:", error);
     return null;
   }
 }
 
 /**
- * Get user email from auth
- * @param userId User ID to lookup
- * @returns Promise resolving to email or null
+ * Get user email from auth user
  */
 export async function getUserEmail(userId: string): Promise<string | null> {
   try {
-    // First check if we can get it from the session
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (sessionData?.session?.user?.id === userId && sessionData?.session?.user?.email) {
-      return sessionData.session.user.email;
-    }
-    
-    // Otherwise try to get from users table (public schema)
-    const { data, error } = await supabase
-      .from('users')
-      .select('email')
-      .eq('id', userId)
-      .maybeSingle();
-    
-    if (error) {
-      console.error("Error getting user email from users table:", error);
-      return null;
-    }
-    
-    return data?.email || null;
+    const authUser = await getAuthUser(userId);
+    return authUser?.email || null;
   } catch (error) {
     console.error("Error getting user email:", error);
     return null;
@@ -94,64 +61,116 @@ export async function getUserEmail(userId: string): Promise<string | null> {
 
 /**
  * Ensure user exists in users table
- * @param userId User ID to ensure
- * @param firstName User's first name
- * @param lastName User's last name
- * @param email User's email
  */
 export async function ensureUserInUsersTable(
-  userId: string,
-  firstName: string,
+  userId: string, 
+  firstName: string, 
   lastName: string,
-  email: string
-): Promise<void> {
+  email?: string | null
+): Promise<boolean> {
   try {
-    // Check if user already exists in users table
+    // Get email if not provided
+    const userEmail = email || await getUserEmail(userId);
+    
+    // Check if user already exists
     const { data: existingUser, error: checkError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('id', userId)
+      .from("users")
+      .select("id")
+      .eq("id", userId)
       .maybeSingle();
     
     if (checkError) {
       console.error("Error checking if user exists:", checkError);
-      return;
+      return false;
     }
     
     if (existingUser) {
-      // User exists, update their info
+      // Update existing user
       const { error: updateError } = await supabase
-        .from('users')
+        .from("users")
         .update({
+          email: userEmail || 'unknown@email.com',
           first_name: firstName,
           last_name: lastName,
-          email: email,
-          user_type: 'admin',
-          status: 'active'
+          status: 'active',
+          user_type: 'admin'
         })
         .eq('id', userId);
       
       if (updateError) {
-        console.error("Error updating user in users table:", updateError);
+        console.error("Error updating user record:", updateError);
+        return false;
       }
     } else {
-      // User doesn't exist, insert them
+      // Create new user
       const { error: insertError } = await supabase
-        .from('users')
+        .from("users")
         .insert({
           id: userId,
+          email: userEmail || 'unknown@email.com',
           first_name: firstName,
           last_name: lastName,
-          email: email,
-          user_type: 'admin',
-          status: 'active'
+          status: 'active',
+          user_type: 'admin'
         });
       
       if (insertError) {
-        console.error("Error inserting user to users table:", insertError);
+        console.error("Error creating user record:", insertError);
+        return false;
       }
     }
+    
+    return true;
   } catch (error) {
-    console.error("Error ensuring user in users table:", error);
+    console.error("Error in ensureUserInUsersTable:", error);
+    return false;
+  }
+}
+
+/**
+ * Find a Supabase Auth user by email
+ */
+export async function findUserByEmail(email: string): Promise<string | null> {
+  try {
+    console.log("Searching for user with email:", email);
+    
+    // Check in users table first
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .ilike('email', email)
+      .maybeSingle();
+    
+    if (!userError && userData) {
+      console.log("Found user in users table:", userData.id);
+      return userData.id;
+    }
+    
+    // Try auth admin API
+    try {
+      const { data, error } = await supabase.auth.admin.listUsers({
+        page: 1,
+        perPage: 100
+      });
+      
+      if (!error && data?.users) {
+        const user = data.users.find((u: SupabaseAuthUser) => 
+          u.email?.toLowerCase() === email.toLowerCase()
+        );
+        
+        if (user) {
+          console.log("Found user via auth list:", user.id);
+          return user.id;
+        }
+      }
+    } catch (authApiError) {
+      console.log("Unable to use admin list API:", authApiError);
+    }
+    
+    console.log("User not found with email:", email);
+    return null;
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    return null;
   }
 }

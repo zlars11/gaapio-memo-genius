@@ -5,7 +5,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Check } from "lucide-react";
 
 export interface AdminTab {
   id: string;
@@ -16,7 +15,6 @@ export interface AdminTab {
 
 export function TabVisibilitySettings() {
   const { toast } = useToast();
-  const [saving, setSaving] = useState(false);
   
   const [tabs, setTabs] = useState<AdminTab[]>([
     {
@@ -100,7 +98,7 @@ export function TabVisibilitySettings() {
     ));
   };
   
-  const saveSettings = async () => {
+  const saveSettings = () => {
     // Ensure at least one tab remains visible - settings tab should always be visible
     const hasVisibleTabs = tabs.some(tab => tab.visible);
     
@@ -113,30 +111,12 @@ export function TabVisibilitySettings() {
       return;
     }
     
-    try {
-      setSaving(true);
-      localStorage.setItem("adminTabVisibility", JSON.stringify(tabs));
-      
-      // Add a small delay to show the saving state
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      toast({
-        title: "Settings saved",
-        description: "Tab visibility settings have been updated.",
-      });
-      
-      // Force reload of the page to apply changes
-      window.location.reload();
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save settings.",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
+    localStorage.setItem("adminTabVisibility", JSON.stringify(tabs));
+    
+    toast({
+      title: "Settings saved",
+      description: "Tab visibility settings have been updated.",
+    });
   };
   
   const resetToDefault = () => {
@@ -177,20 +157,11 @@ export function TabVisibilitySettings() {
           ))}
           
           <div className="flex justify-end space-x-2 pt-6 mt-4 border-t">
-            <Button 
-              variant="outline" 
-              onClick={resetToDefault}
-              disabled={saving}
-            >
+            <Button variant="outline" onClick={resetToDefault}>
               Reset to Default
             </Button>
-            <Button 
-              onClick={saveSettings}
-              disabled={saving}
-              className="flex items-center gap-2"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-              {!saving && <Check className="h-4 w-4" />}
+            <Button onClick={saveSettings}>
+              Save Changes
             </Button>
           </div>
         </div>

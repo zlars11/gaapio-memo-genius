@@ -6,14 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Eye, EyeOff, Check } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 export function PasswordProtectionSettings() {
   const [isProtectionEnabled, setIsProtectionEnabled] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [savingPassword, setSavingPassword] = useState(false);
-  const [expiringSession, setExpiringSession] = useState(false);
   const { toast } = useToast();
   
   // Load settings on component mount
@@ -33,28 +31,19 @@ export function PasswordProtectionSettings() {
   
   // Handle protection toggle
   const handleToggleProtection = (checked: boolean) => {
-    try {
-      setIsProtectionEnabled(checked);
-      localStorage.setItem("password_protection_enabled", checked.toString());
-      
-      toast({
-        title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
-        description: checked 
-          ? "The site is now password protected" 
-          : "The site is now publicly accessible",
-      });
-    } catch (error) {
-      console.error("Error toggling protection:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update password protection setting",
-        variant: "destructive",
-      });
-    }
+    setIsProtectionEnabled(checked);
+    localStorage.setItem("password_protection_enabled", checked.toString());
+    
+    toast({
+      title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
+      description: checked 
+        ? "The site is now password protected" 
+        : "The site is now publicly accessible",
+    });
   };
   
   // Save password
-  const handleSavePassword = async () => {
+  const handleSavePassword = () => {
     if (password.length < 4) {
       toast({
         title: "Invalid Password",
@@ -64,55 +53,23 @@ export function PasswordProtectionSettings() {
       return;
     }
     
-    try {
-      setSavingPassword(true);
-      
-      // Simulate an API call with a small delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      localStorage.setItem("site_password", password);
-      toast({
-        title: "Password Updated",
-        description: "The site password has been updated",
-      });
-    } catch (error) {
-      console.error("Error saving password:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save password",
-        variant: "destructive",
-      });
-    } finally {
-      setSavingPassword(false);
-    }
+    localStorage.setItem("site_password", password);
+    toast({
+      title: "Password Updated",
+      description: "The site password has been updated",
+    });
   };
   
   // Expire all sessions
-  const handleExpireSessions = async () => {
-    try {
-      setExpiringSession(true);
-      
-      // Simulate an API call with a small delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Update the version number to invalidate all current sessions
-      const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
-      localStorage.setItem("session_version", (currentVersion + 1).toString());
-      
-      toast({
-        title: "Sessions Expired",
-        description: "All user sessions have been expired",
-      });
-    } catch (error) {
-      console.error("Error expiring sessions:", error);
-      toast({
-        title: "Error",
-        description: "Failed to expire sessions",
-        variant: "destructive",
-      });
-    } finally {
-      setExpiringSession(false);
-    }
+  const handleExpireSessions = () => {
+    // Update the version number to invalidate all current sessions
+    const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
+    localStorage.setItem("session_version", (currentVersion + 1).toString());
+    
+    toast({
+      title: "Sessions Expired",
+      description: "All user sessions have been expired",
+    });
   };
   
   return (
@@ -159,11 +116,10 @@ export function PasswordProtectionSettings() {
             </div>
             <Button 
               onClick={handleSavePassword}
-              className="ml-2 flex items-center gap-2"
-              disabled={!isProtectionEnabled || password.length < 4 || savingPassword}
+              className="ml-2"
+              disabled={!isProtectionEnabled || password.length < 4}
             >
-              {savingPassword ? "Saving..." : "Save"}
-              {!savingPassword && <Check className="h-4 w-4" />}
+              Save
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -175,10 +131,9 @@ export function PasswordProtectionSettings() {
           <Button 
             variant="outline" 
             onClick={handleExpireSessions}
-            disabled={!isProtectionEnabled || expiringSession}
-            className="flex items-center gap-2"
+            disabled={!isProtectionEnabled}
           >
-            {expiringSession ? "Processing..." : "Expire All Sessions"}
+            Expire All Sessions
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
             Forces all users to re-enter the password

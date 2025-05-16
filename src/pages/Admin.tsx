@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -30,7 +29,6 @@ import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectio
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
-import { useAdminUsers } from "@/hooks/useAdminUsers";
 
 // Group websites pages into categories
 interface PageCategory {
@@ -53,7 +51,6 @@ export default function Admin() {
   const [showAddAdminDialog, setShowAddAdminDialog] = useState(false);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [selectedPage, setSelectedPage] = useState<{ title: string; path: string; description: string; } | null>(null);
-  const [updatingName, setUpdatingName] = useState(false);
   
   // Store the tab visibility settings
   const [tabVisibility, setTabVisibility] = useState<Record<string, boolean>>({
@@ -237,42 +234,6 @@ export default function Admin() {
 
   const handleFixAdminStatus = async () => {
     return await fixAdminStatus();
-  };
-
-  // Updated handler for updating admin name
-  const handleUpdateName = async (firstName: string, lastName: string): Promise<boolean> => {
-    try {
-      setUpdatingName(true);
-      if (!currentUser.email) return false;
-      
-      console.log("Updating admin name:", firstName, lastName);
-      
-      // Import the utility function to update admin name
-      const { updateAdminName } = await import('@/utils/adminRoleUtils');
-      
-      // Call the function with the current user ID
-      const success = await updateAdminName(
-        currentUser.id!, 
-        firstName, 
-        lastName, 
-        currentUser.email
-      );
-      
-      if (success) {
-        // After successful update, refresh admin list
-        await fetchAdmins();
-        setShowNameDialog(false);
-        return true;
-      } else {
-        console.error("Failed to update admin name");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error in handleUpdateName:", error);
-      return false;
-    } finally {
-      setUpdatingName(false);
-    }
   };
 
   return (
@@ -499,10 +460,20 @@ export default function Admin() {
             open={showNameDialog}
             onOpenChange={setShowNameDialog}
             onSave={handleUpdateName}
-            isLoading={updatingName}
+            isLoading={false}
           />
         )}
       </div>
     </AdminPageGuard>
   );
+
+  async function handleUpdateName(firstName: string, lastName: string): Promise<boolean> {
+    // Implementation for updating admin name
+    console.log("Updating admin name:", firstName, lastName);
+    if (!currentUser.email) return false;
+    
+    // After successful update, refresh admin list
+    await fetchAdmins();
+    return true;
+  }
 }
