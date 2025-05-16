@@ -9,11 +9,13 @@ import { format } from "date-fns";
 import { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SubscriptionAgreement() {
   const today = format(new Date(), "MMMM d, yyyy");
   const contentRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
+  const { toast } = useToast();
   
   const sections = [
     { id: "definitions", title: "1. Definitions" },
@@ -42,31 +44,81 @@ export default function SubscriptionAgreement() {
     if (!contentRef.current) return;
     
     setGenerating(true);
+    toast({
+      title: "Generating PDF",
+      description: "Please wait while we generate your PDF...",
+    });
+    
     try {
+      // Get the content div that contains the entire agreement
       const content = contentRef.current;
-      const canvas = await html2canvas(content, {
-        scale: 1,
-        useCORS: true,
-        logging: false,
-      });
       
-      const contentWidth = content.offsetWidth;
-      const contentHeight = content.offsetHeight;
-      
+      // Create a new jsPDF instance
       const pdf = new jsPDF({
-        orientation: contentWidth > contentHeight ? 'landscape' : 'portrait',
-        unit: 'px',
+        orientation: 'portrait',
+        unit: 'pt',
         format: 'a4',
       });
       
-      const imgData = canvas.toDataURL('image/png');
+      // Calculate the dimensions
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (contentHeight * pdfWidth) / contentWidth;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Get the total height of the content
+      const contentHeight = content.offsetHeight;
+      const contentWidth = content.offsetWidth;
+      
+      // Scale factor to fit content width to PDF width
+      const scale = pdfWidth / contentWidth;
+      
+      // Calculate number of pages needed
+      const totalPages = Math.ceil(contentHeight * scale / pdfHeight);
+      
+      let currentPosition = 0;
+      
+      // Function to add a page to the PDF
+      const addPage = async (position: number) => {
+        // Set the clip area for html2canvas
+        const canvas = await html2canvas(content, {
+          scale: 2, // Higher scale for better quality
+          y: position,
+          height: Math.min(pdfHeight / scale, contentHeight - position),
+          useCORS: true,
+          logging: false,
+          windowHeight: contentHeight,
+        });
+        
+        // Convert canvas to image
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Add image to PDF
+        if (position > 0) {
+          pdf.addPage();
+        }
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, (canvas.height * pdfWidth) / canvas.width);
+      };
+      
+      // Process each page
+      for (let i = 0; i < totalPages; i++) {
+        await addPage(currentPosition);
+        currentPosition += pdfHeight / scale;
+      }
+      
+      // Save the PDF
       pdf.save('Gaapio_Subscription_Agreement.pdf');
+      
+      toast({
+        title: "PDF Generated Successfully",
+        description: "Your subscription agreement has been downloaded.",
+        variant: "success",
+      });
     } catch (error) {
       console.error('Error generating PDF:', error);
+      toast({
+        title: "Error Generating PDF",
+        description: "An error occurred while generating the PDF. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setGenerating(false);
     }
