@@ -5,14 +5,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { ZapierWebhookSetup } from "./ZapierWebhookSetup";
 import { PaginatedTable } from "./PaginatedTable";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Edit, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { EditContactDialog } from "./EditContactDialog";
+import { DeleteContactDialog } from "./dialogs/DeleteContactDialog";
 
 interface ContactSubmission {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   message: string;
+  company: string;
+  phone: string;
   date: string;
-  company?: string;
 }
 
 export function ContactTable() {
@@ -20,26 +28,41 @@ export function ContactTable() {
   const [filteredSubmissions, setFilteredSubmissions] = useState<ContactSubmission[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedContact, setSelectedContact] = useState<ContactSubmission | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      // Try to fetch from the 'contact_submissions' table
-      const { data, error } = await (supabase as any)
-        .from("contact_submissions")
-        .select("*")
-        .order("date", { ascending: false });
-      if (error) {
-        setSubmissions([]);
-        setFilteredSubmissions([]);
-      } else {
-        setSubmissions(data);
-        setFilteredSubmissions(data);
-      }
-      setLoading(false);
-    }
-    fetchData();
+    fetchContactSubmissions();
   }, []);
+
+  async function fetchContactSubmissions() {
+    setLoading(true);
+    // Try to fetch from the 'contact_submissions' table
+    const { data, error } = await supabase
+      .from("contact_submissions")
+      .select("*")
+      .order("date", { ascending: false });
+    if (error) {
+      console.error("Error fetching contact submissions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch contact submissions",
+        variant: "destructive",
+      });
+      setSubmissions([]);
+      setFilteredSubmissions([]);
+    } else {
+      const formattedData = data.map((item: any) => ({
+        ...item,
+        name: `${item.firstname} ${item.lastname}`
+      }));
+      setSubmissions(formattedData);
+      setFilteredSubmissions(formattedData);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -47,7 +70,8 @@ export function ContactTable() {
     } else {
       const filtered = submissions.filter(
         (submission: ContactSubmission) =>
-          (submission.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (submission.firstname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (submission.lastname || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (submission.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (submission.message || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
           (submission.company || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -56,12 +80,37 @@ export function ContactTable() {
     }
   }, [searchQuery, submissions]);
 
+  const handleEditContact = (contact: ContactSubmission) => {
+    setSelectedContact(contact);
+    setEditDialogOpen(true);
+  };
+
+  const handleDeleteContact = (contact: ContactSubmission) => {
+    setSelectedContact(contact);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleContactUpdate = async () => {
+    await fetchContactSubmissions();
+    setEditDialogOpen(false);
+  };
+
+  const handleContactDelete = async () => {
+    await fetchContactSubmissions();
+    setDeleteDialogOpen(false);
+  };
+
   const columns = [
     {
       header: "Name",
       accessorKey: "name" as keyof ContactSubmission,
       cell: (submission: ContactSubmission) => (
-        <span className="font-medium">{submission.name}</span>
+        <button 
+          className="text-primary hover:underline text-left font-medium"
+          onClick={() => handleEditContact(submission)}
+        >
+          {submission.firstname} {submission.lastname}
+        </button>
       ),
     },
     {
@@ -91,6 +140,38 @@ export function ContactTable() {
           : "—"
       ),
     },
+    {
+      header: "",
+      accessorKey: "actions" as keyof ContactSubmission,
+      cell: (item: ContactSubmission) => (
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditContact(item);
+            }}
+            className="h-8 w-8 p-0"
+          >
+            <Edit className="h-4 w-4" />
+            <span className="sr-only">Edit contact</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteContact(item);
+            }}
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Delete contact</span>
+          </Button>
+        </div>
+      ),
+    }
   ];
 
   return (
@@ -122,6 +203,31 @@ export function ContactTable() {
           />
         </CardContent>
       </Card>
+      
+      {selectedContact && (
+        <>
+          <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <EditContactDialog 
+                contact={selectedContact}
+                onSave={handleContactUpdate}
+                onClose={() => setEditDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+          
+          <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <DialogContent>
+              <DeleteContactDialog 
+                contact={selectedContact}
+                onDelete={handleContactDelete}
+                onClose={() => setDeleteDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
+
       <ZapierWebhookSetup 
         webhookType="contact" 
         description="Connect your contact form to this admin dashboard" 

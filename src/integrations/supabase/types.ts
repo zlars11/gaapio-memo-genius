@@ -75,69 +75,6 @@ export type Database = {
         }
         Relationships: []
       }
-      blog_posts: {
-        Row: {
-          author: string | null
-          content: string | null
-          excerpt: string | null
-          id: string
-          publish_date: string
-          slug: string
-          status: string
-          thumbnail_url: string | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          author?: string | null
-          content?: string | null
-          excerpt?: string | null
-          id?: string
-          publish_date?: string
-          slug: string
-          status?: string
-          thumbnail_url?: string | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          author?: string | null
-          content?: string | null
-          excerpt?: string | null
-          id?: string
-          publish_date?: string
-          slug?: string
-          status?: string
-          thumbnail_url?: string | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      click_events: {
-        Row: {
-          element: string
-          id: string
-          page: string
-          session_id: string
-          timestamp: string
-        }
-        Insert: {
-          element: string
-          id?: string
-          page: string
-          session_id: string
-          timestamp?: string
-        }
-        Update: {
-          element?: string
-          id?: string
-          page?: string
-          session_id?: string
-          timestamp?: string
-        }
-        Relationships: []
-      }
       companies: {
         Row: {
           amount: number
@@ -294,33 +231,6 @@ export type Database = {
           sent_at?: string | null
           status?: string | null
           token?: string | null
-        }
-        Relationships: []
-      }
-      price_history: {
-        Row: {
-          created_at: string
-          effective_from: string
-          id: string
-          price: number
-          product_type: string
-          tier: string
-        }
-        Insert: {
-          created_at?: string
-          effective_from?: string
-          id?: string
-          price: number
-          product_type: string
-          tier: string
-        }
-        Update: {
-          created_at?: string
-          effective_from?: string
-          id?: string
-          price?: number
-          product_type?: string
-          tier?: string
         }
         Relationships: []
       }

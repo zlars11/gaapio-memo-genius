@@ -1,3 +1,6 @@
 
+
 # trigger rebuild
 # Removed pricing page and pricing tab from admin portal
+# Added edit and delete functionality to contact submissions in admin portal
+
