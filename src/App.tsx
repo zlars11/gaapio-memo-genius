@@ -1,80 +1,73 @@
 
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import { SecurityMiddleware } from "./middleware/securityMiddleware";
+import { PasswordProtection } from "./components/password-protection/PasswordProtection";
+
+// Pages
 import Index from "./pages/Index";
-import Pricing from "./pages/Pricing";
 import AboutUs from "./pages/AboutUs";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
 import Contact from "./pages/Contact";
-import RequestDemo from "./pages/RequestDemo";
-import Blog from "./pages/Blog";
-import AIAccounting from "./pages/AIAccounting";
-import ASC606Pitfalls from "./pages/ASC606Pitfalls";
-import FirmSignup from "./pages/FirmSignup";
+import FAQ from "./pages/FAQ";
+import Resources from "./pages/Resources";
+import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
-import Resources from "./pages/Resources";
-import FAQ from "./pages/FAQ";
-import Privacy from "./pages/Privacy";
-import DPA from "./pages/DPA";
-import SubscriptionAgreement from "./pages/SubscriptionAgreement";
+import AIAccounting from "./pages/AIAccounting";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import ASC606Pitfalls from "./pages/ASC606Pitfalls";
 import OnePager from "./pages/OnePager";
 import Status from "./pages/Status";
+import SubscriptionAgreement from "./pages/SubscriptionAgreement";
+import DPA from "./pages/DPA";
 import ChoosePlan from "./pages/ChoosePlan";
-import Success from "./pages/Success";
+import Login from "./pages/Login";
+import Pricing from "./pages/Pricing";
+import Privacy from "./pages/Privacy";
+import SignUp from "./pages/SignUp";
+import FirmSignup from "./pages/FirmSignup";
 import Cancel from "./pages/Cancel";
-import NotFound from "./pages/NotFound";
-import { SignUpInfoForm } from "./pages/SignUpInfoForm";
-import { SignUpPaymentForm } from "./pages/SignUpPaymentForm";
-import { SignUpSummary } from "./pages/SignUpSummary";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import BlogPost from "./pages/BlogPost";
+import Success from "./pages/Success";
+import RequestDemo from "./pages/RequestDemo";
 
-function App() {
-  const queryClient = new QueryClient();
-  
+const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="app">
-        <BrowserRouter>
+    <Router>
+      <SecurityMiddleware>
+        <PasswordProtection>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/request-demo" element={<RequestDemo />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/ai-accounting" element={<AIAccounting />} />
+            <Route path="/blog/why-technical-accounting-memos-matter" element={<BlogPost />} />
             <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
-            <Route path="/firm-signup" element={<FirmSignup />} />
+            <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
+            <Route path="/ssa" element={<SubscriptionAgreement />} />
+            <Route path="/dpa" element={<DPA />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/dpa" element={<DPA />} />
-            <Route path="/ssa" element={<SubscriptionAgreement />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/onepager" element={<OnePager />} />
-            <Route path="/status" element={<Status />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/request-demo" element={<RequestDemo />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/firm-signup" element={<FirmSignup />} />
             <Route path="/choose-plan" element={<ChoosePlan />} />
-            <Route path="/success" element={<Success />} />
+            <Route path="/status" element={<Status />} />
             <Route path="/cancel" element={<Cancel />} />
-            {/* For these signup form routes, we should use the parent SignUp component 
-                which will handle passing the correct props to these form components */}
-            <Route path="/signup/info" element={<SignUp />} />
-            <Route path="/signup/payment" element={<SignUp />} />
-            <Route path="/signup/summary" element={<SignUp />} />
+            <Route path="/success" element={<Success />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <Toaster />
-        </BrowserRouter>
-      </div>
-    </QueryClientProvider>
+        </PasswordProtection>
+      </SecurityMiddleware>
+    </Router>
   );
-}
+};
 
 export default App;

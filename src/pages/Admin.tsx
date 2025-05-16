@@ -29,7 +29,6 @@ import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectio
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
-import { BlogManagement } from "@/components/admin/BlogManagement";
 
 // Group websites pages into categories
 interface PageCategory {
@@ -63,7 +62,6 @@ export default function Admin() {
     firms: true,
     pricing: true,
     webpages: true,
-    blogs: true,  // Added blogs tab
     settings: true
   });
   
@@ -238,16 +236,6 @@ export default function Admin() {
     return await fixAdminStatus();
   };
 
-  async function handleUpdateName(firstName: string, lastName: string): Promise<boolean> {
-    // Implementation for updating admin name
-    console.log("Updating admin name:", firstName, lastName);
-    if (!currentUser.email) return false;
-    
-    // After successful update, refresh admin list
-    await fetchAdmins();
-    return true;
-  }
-
   return (
     <AdminPageGuard>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -281,7 +269,6 @@ export default function Admin() {
                 {tabVisibility.firms && <TabsTrigger value="firms">FirmSignupsTable</TabsTrigger>}
                 {tabVisibility.pricing && <TabsTrigger value="pricing">PricingManagement</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
-                {tabVisibility.blogs && <TabsTrigger value="blogs">Blog</TabsTrigger>}  {/* Added Blog tab */}
                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
 
@@ -387,12 +374,6 @@ export default function Admin() {
                 </TabsContent>
               )}
               
-              {tabVisibility.blogs && (
-                <TabsContent value="blogs" className="space-y-4">
-                  <BlogManagement />
-                </TabsContent>
-              )}
-              
               {tabVisibility.settings && (
                 <TabsContent value="settings" className="space-y-8">
                   <PasswordProtectionSettings />
@@ -485,4 +466,14 @@ export default function Admin() {
       </div>
     </AdminPageGuard>
   );
+
+  async function handleUpdateName(firstName: string, lastName: string): Promise<boolean> {
+    // Implementation for updating admin name
+    console.log("Updating admin name:", firstName, lastName);
+    if (!currentUser.email) return false;
+    
+    // After successful update, refresh admin list
+    await fetchAdmins();
+    return true;
+  }
 }
