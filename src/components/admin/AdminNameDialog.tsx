@@ -1,144 +1,123 @@
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
-import { useCurrentAdmin } from "@/hooks/useCurrentAdmin";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AdminNameDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (firstName: string, lastName: string, email: string) => Promise<boolean>;
-  isLoading: boolean;
+  onSave: (firstName: string, lastName: string) => Promise<boolean>;
+  isLoading?: boolean;
 }
 
-export function AdminNameDialog({ open, onOpenChange, onSave, isLoading }: AdminNameDialogProps) {
-  const { currentUser } = useCurrentAdmin();
+export function AdminNameDialog({
+  open,
+  onOpenChange,
+  onSave,
+  isLoading = false
+}: AdminNameDialogProps) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
 
   // Reset form when dialog opens
-  const handleOpenChange = (newOpen: boolean) => {
-    if (newOpen) {
+  useEffect(() => {
+    if (open) {
       setFirstName("");
       setLastName("");
-      setEmail(currentUser.email || "");
-      setError(null);
+      setIsSaving(false);
     }
-    onOpenChange(newOpen);
-  };
+  }, [open]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
-    // Validate inputs
-    if (!firstName.trim()) {
-      setError("First name is required");
+  const handleSave = async () => {
+    if (!firstName.trim() || !lastName.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please provide both first and last name",
+        variant: "destructive",
+      });
       return;
     }
 
-    if (!lastName.trim()) {
-      setError("Last name is required");
-      return;
-    }
-    
-    if (!email.trim()) {
-      setError("Email is required");
-      return;
-    }
-
-    // Submit data
     try {
-      const success = await onSave(firstName, lastName, email);
+      setIsSaving(true);
+      const success = await onSave(firstName.trim(), lastName.trim());
+      
       if (success) {
-        handleOpenChange(false);
+        toast({
+          title: "Success",
+          description: "Your name has been updated successfully",
+        });
+        onOpenChange(false);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to update your name",
+          variant: "destructive",
+        });
       }
-    } catch (err) {
-      console.error("Error saving name:", err);
-      setError("An error occurred while saving your information");
+    } catch (error) {
+      console.error("Error saving admin name:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Update Your Information</DialogTitle>
+          <DialogTitle>Set Your Name</DialogTitle>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+
+        <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label htmlFor="firstName" className="font-medium">First Name</Label>
+            <Label htmlFor="firstName">First Name</Label>
             <Input
               id="firstName"
+              placeholder="Enter your first name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Enter your first name"
-              disabled={isLoading}
+              disabled={isSaving || isLoading}
             />
           </div>
-          
+
           <div className="space-y-2">
-            <Label htmlFor="lastName" className="font-medium">Last Name</Label>
+            <Label htmlFor="lastName">Last Name</Label>
             <Input
               id="lastName"
+              placeholder="Enter your last name" 
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              placeholder="Enter your last name"
-              disabled={isLoading}
+              disabled={isSaving || isLoading}
             />
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="email" className="font-medium">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              disabled={isLoading || !!currentUser.email}
-            />
-            {currentUser.email && (
-              <p className="text-xs text-muted-foreground">Email is linked to your account and cannot be changed here.</p>
-            )}
-          </div>
-          
-          {error && (
-            <div className="text-red-500 text-sm pt-1">
-              {error}
-            </div>
-          )}
-          
-          <DialogFooter className="pt-4">
-            <Button 
-              variant="outline" 
-              onClick={() => handleOpenChange(false)}
-              type="button"
-              disabled={isLoading}
+
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isSaving || isLoading}
             >
               Cancel
             </Button>
             <Button 
-              type="submit"
-              disabled={isLoading}
+              onClick={handleSave} 
+              disabled={isSaving || isLoading || !firstName.trim() || !lastName.trim()}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Save'
-              )}
+              {isSaving || isLoading ? "Saving..." : "Save"}
             </Button>
-          </DialogFooter>
-        </form>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

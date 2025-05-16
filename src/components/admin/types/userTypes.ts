@@ -1,30 +1,28 @@
 
 export interface User {
   id: string;
+  company_id?: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  user_type: 'user' | 'approver' | 'admin';
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface FirmSignup {
+  id: string;
+  company: string;
   first_name: string;
   last_name: string;
   email: string;
   phone?: string;
   company_id?: string;
-  company?: string;
   user_type: 'user' | 'approver' | 'admin';
   status: 'active' | 'inactive';
-  created_at: string;
-  updated_at: string;
-}
-
-export interface UserRowProps {
-  user: User;
-  onEdit: (user: User) => void;
-}
-
-export interface FirmSignup extends User {
-  company: string;
   notes?: string;
-  plan?: string; // Adding the plan property that was missing
-}
-
-export interface FirmSignupRowProps {
-  signup: FirmSignup;
-  onEdit: (signup: FirmSignup) => void;
+  created_at: string;
+  updated_at?: string;
 }
