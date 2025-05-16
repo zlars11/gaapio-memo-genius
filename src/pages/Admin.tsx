@@ -264,10 +264,10 @@ export default function Admin() {
                 {tabVisibility.dashboard && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
                 {tabVisibility.companies && <TabsTrigger value="companies">Companies</TabsTrigger>}
                 {tabVisibility.users && <TabsTrigger value="users">Users</TabsTrigger>}
-                {tabVisibility.contacts && <TabsTrigger value="contacts">ContactTable</TabsTrigger>}
-                {tabVisibility.demos && <TabsTrigger value="demos">DemoRequestsTable</TabsTrigger>}
-                {tabVisibility.firms && <TabsTrigger value="firms">FirmSignupsTable</TabsTrigger>}
-                {tabVisibility.pricing && <TabsTrigger value="pricing">PricingManagement</TabsTrigger>}
+                {tabVisibility.contacts && <TabsTrigger value="contacts">Contacts</TabsTrigger>}
+                {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
+                {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
+                {tabVisibility.pricing && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
