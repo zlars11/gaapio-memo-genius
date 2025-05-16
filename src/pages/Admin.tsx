@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -29,13 +28,14 @@ import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilit
 import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectionSettings";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
 
 // Group websites pages into categories
 interface PageCategory {
   id: string;
   title: string;
   icon: React.ReactNode;
-  pages: { title: string; path: string; description: string }[];
+  pages: { title: string; path: string; description: string; seoStatus?: "missing" | "incomplete" | "complete" }[];
 }
 
 export default function Admin() {
@@ -79,11 +79,11 @@ export default function Admin() {
       title: "🏠 Core Site Pages",
       icon: <Home className="h-5 w-5" />,
       pages: [
-        { title: "Home Page", path: "/", description: "Main landing page" },
-        { title: "About Us", path: "/about-us", description: "Company information page" },
-        { title: "Contact", path: "/contact", description: "Contact form and information" },
-        { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
-        { title: "Resources", path: "/resources", description: "Blog and resource content" },
+        { title: "Home Page", path: "/", description: "Main landing page", seoStatus: "complete" },
+        { title: "About Us", path: "/about-us", description: "Company information page", seoStatus: "complete" },
+        { title: "Contact", path: "/contact", description: "Contact form and information", seoStatus: "complete" },
+        { title: "FAQ", path: "/faq", description: "Frequently asked questions", seoStatus: "incomplete" },
+        { title: "Resources", path: "/resources", description: "Blog and resource content", seoStatus: "incomplete" },
       ]
     },
     {
@@ -91,8 +91,8 @@ export default function Admin() {
       title: "📝 Legal & Compliance",
       icon: <Shield className="h-5 w-5" />,
       pages: [
-        { title: "Privacy Policy", path: "/privacy", description: "Privacy policy page" },
-        { title: "Terms of Service", path: "/ssa", description: "Subscription service agreement" },
+        { title: "Privacy Policy", path: "/privacy", description: "Privacy policy page", seoStatus: "complete" },
+        { title: "Terms of Service", path: "/ssa", description: "Subscription service agreement", seoStatus: "missing" },
       ]
     },
     {
@@ -100,10 +100,10 @@ export default function Admin() {
       title: "💳 Billing & Payment",
       icon: <CreditCard className="h-5 w-5" />,
       pages: [
-        { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
-        { title: "Choose Plan", path: "/choose-plan", description: "Plan selection page" },
-        { title: "Success", path: "/success", description: "Payment success page" },
-        { title: "Cancel", path: "/cancel", description: "Payment cancellation page" },
+        { title: "Pricing", path: "/pricing", description: "Pricing plans and options", seoStatus: "complete" },
+        { title: "Choose Plan", path: "/choose-plan", description: "Plan selection page", seoStatus: "missing" },
+        { title: "Success", path: "/success", description: "Payment success page", seoStatus: "missing" },
+        { title: "Cancel", path: "/cancel", description: "Payment cancellation page", seoStatus: "missing" },
       ]
     },
     {
@@ -111,9 +111,9 @@ export default function Admin() {
       title: "👥 User Access & Registration",
       icon: <Users className="h-5 w-5" />,
       pages: [
-        { title: "Login", path: "/login", description: "User login page" },
-        { title: "Sign Up", path: "/signup", description: "User registration flow" },
-        { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
+        { title: "Login", path: "/login", description: "User login page", seoStatus: "incomplete" },
+        { title: "Sign Up", path: "/signup", description: "User registration flow", seoStatus: "incomplete" },
+        { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page", seoStatus: "incomplete" },
       ]
     },
     {
@@ -121,7 +121,7 @@ export default function Admin() {
       title: "📩 Leads & Requests",
       icon: <Mail className="h-5 w-5" />,
       pages: [
-        { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
+        { title: "Request Demo", path: "/request-demo", description: "Demo request page", seoStatus: "missing" },
       ]
     },
     {
@@ -129,10 +129,10 @@ export default function Admin() {
       title: "📚 Blog & Articles",
       icon: <Book className="h-5 w-5" />,
       pages: [
-        { title: "Blog", path: "/blog", description: "Blog articles and posts" },
-        { title: "ASC 606 Pitfalls", path: "/blog/5-common-asc-606-pitfalls", description: "Blog article on ASC 606 pitfalls" },
-        { title: "Tech Accounting Memos", path: "/blog/why-technical-accounting-memos-matter", description: "Blog article on technical accounting memos" },
-        { title: "AI in Accounting", path: "/blog/how-ai-is-changing-the-accounting-landscape", description: "Blog article on AI in accounting" },
+        { title: "Blog", path: "/blog", description: "Blog articles and posts", seoStatus: "complete" },
+        { title: "ASC 606 Pitfalls", path: "/blog/5-common-asc-606-pitfalls", description: "Blog article on ASC 606 pitfalls", seoStatus: "complete" },
+        { title: "Tech Accounting Memos", path: "/blog/why-technical-accounting-memos-matter", description: "Blog article on technical accounting memos", seoStatus: "incomplete" },
+        { title: "AI in Accounting", path: "/blog/how-ai-is-changing-the-accounting-landscape", description: "Blog article on AI in accounting", seoStatus: "incomplete" },
       ]
     },
     {
@@ -140,7 +140,7 @@ export default function Admin() {
       title: "📄 Sales Materials",
       icon: <FileText className="h-5 w-5" />,
       pages: [
-        { title: "One Pager", path: "/onepager", description: "Product one-pager" },
+        { title: "One Pager", path: "/onepager", description: "Product one-pager", seoStatus: "missing" },
       ]
     },
     {
@@ -148,8 +148,8 @@ export default function Admin() {
       title: "⚙️ System / Admin",
       icon: <FileText className="h-5 w-5" />,
       pages: [
-        { title: "Status", path: "/status", description: "System status page" },
-        { title: "Not Found (404)", path: "/404", description: "404 error page" },
+        { title: "Status", path: "/status", description: "System status page", seoStatus: "missing" },
+        { title: "Not Found (404)", path: "/404", description: "404 error page", seoStatus: "missing" },
       ]
     },
   ];
@@ -157,7 +157,6 @@ export default function Admin() {
   // Flatten all pages for other uses if needed
   const websitePages = websitePageCategories.flatMap(category => category.pages);
 
-  // Load tab visibility settings
   useEffect(() => {
     const savedSettings = localStorage.getItem("adminTabVisibility");
     if (savedSettings) {
@@ -201,6 +200,22 @@ export default function Admin() {
     const url = new URL(window.location.href);
     url.searchParams.set('tab', value);
     window.history.pushState({}, '', url);
+  };
+
+  // Render SEO status badge
+  const renderSeoStatusBadge = (status?: "missing" | "incomplete" | "complete") => {
+    if (!status) return null;
+    
+    switch (status) {
+      case "complete":
+        return <Badge variant="default" className="bg-green-500">SEO Complete</Badge>;
+      case "incomplete":
+        return <Badge variant="outline" className="text-amber-500 border-amber-500">SEO Incomplete</Badge>;
+      case "missing":
+        return <Badge variant="destructive">Missing SEO</Badge>;
+      default:
+        return null;
+    }
   };
 
   const renderFallback = (message: string) => (
@@ -249,10 +264,10 @@ export default function Admin() {
                 {tabVisibility.dashboard && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
                 {tabVisibility.companies && <TabsTrigger value="companies">Companies</TabsTrigger>}
                 {tabVisibility.users && <TabsTrigger value="users">Users</TabsTrigger>}
-                {tabVisibility.contacts && <TabsTrigger value="contacts">Contact</TabsTrigger>}
-                {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
-                {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
-                {tabVisibility.pricing && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
+                {tabVisibility.contacts && <TabsTrigger value="contacts">ContactTable</TabsTrigger>}
+                {tabVisibility.demos && <TabsTrigger value="demos">DemoRequestsTable</TabsTrigger>}
+                {tabVisibility.firms && <TabsTrigger value="firms">FirmSignupsTable</TabsTrigger>}
+                {tabVisibility.pricing && <TabsTrigger value="pricing">PricingManagement</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
@@ -322,7 +337,10 @@ export default function Admin() {
                               {category.pages.map((page) => (
                                 <Card key={page.path} className="overflow-hidden">
                                   <CardContent className="p-4">
-                                    <h3 className="font-medium text-lg mb-2">{page.title}</h3>
+                                    <div className="flex justify-between items-start mb-2">
+                                      <h3 className="font-medium text-lg">{page.title}</h3>
+                                      {renderSeoStatusBadge(page.seoStatus)}
+                                    </div>
                                     <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
                                     <div className="flex items-center justify-between mt-2">
                                       <Link 

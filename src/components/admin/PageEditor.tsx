@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Save, Eye, RotateCcw, Code, Type } from "lucide-react";
+import { Loader2, Save, Eye, RotateCcw, Code, Type, Wand2 } from "lucide-react";
 import { PageWysiwygEditor } from "./PageWysiwygEditor";
 import { PageSeoForm } from "./PageSeoForm";
+import { generateSeoMetadata } from "@/utils/seoUtils";
 
 interface PageData {
   title: string;
@@ -160,6 +161,21 @@ export function PageEditor({ page, onClose }: PageEditorProps) {
     setEditMode(prev => prev === "wysiwyg" ? "html" : "wysiwyg");
   };
 
+  const generateSeoData = () => {
+    const seoData = generateSeoMetadata(pageData.title, pageData.path, pageData.content);
+    
+    setPageData(prev => ({
+      ...prev,
+      metaTitle: seoData.title,
+      metaDescription: seoData.description
+    }));
+    
+    toast({
+      title: "SEO Data Generated",
+      description: "Title and description have been auto-populated",
+    });
+  };
+
   const hasChanges = originalData && (
     pageData.title !== originalData.title ||
     pageData.content !== originalData.content ||
@@ -255,6 +271,17 @@ export function PageEditor({ page, onClose }: PageEditorProps) {
           </TabsContent>
           
           <TabsContent value="seo" className="space-y-4">
+            <div className="flex justify-end mb-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={generateSeoData}
+                className="flex items-center"
+              >
+                <Wand2 className="h-4 w-4 mr-2" />
+                Auto-Generate SEO
+              </Button>
+            </div>
             <PageSeoForm 
               metaTitle={pageData.metaTitle}
               metaDescription={pageData.metaDescription}
