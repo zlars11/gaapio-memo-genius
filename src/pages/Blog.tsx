@@ -83,7 +83,7 @@ export default function Blog() {
 
       // Extract unique categories from posts
       const uniqueCategories = Array.from(
-        new Set(typedPosts.map(post => post.category))
+        new Set(typedPosts.map(post => post.category || "General"))
       );
       setCategories(uniqueCategories);
     } catch (error) {
