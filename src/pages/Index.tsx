@@ -82,6 +82,19 @@ export default function Index() {
     const enableSelfSignup = localStorage.getItem("enableSelfSignup") !== "false";
     localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
 
+    // Initialize password protection settings if not already set
+    if (localStorage.getItem("password_protection_enabled") === null) {
+      localStorage.setItem("password_protection_enabled", "false");
+    }
+    
+    if (localStorage.getItem("site_password") === null) {
+      localStorage.setItem("site_password", "Gaapio2025!");
+    }
+    
+    if (localStorage.getItem("session_version") === null) {
+      localStorage.setItem("session_version", "0");
+    }
+
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);
       observer.disconnect();

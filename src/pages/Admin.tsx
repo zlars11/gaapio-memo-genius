@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { ExternalLink, FileEdit } from "lucide-react";
 import { PageEditor } from "@/components/admin/PageEditor";
 import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilitySettings";
+import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectionSettings";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -287,6 +288,8 @@ export default function Admin() {
               
               {tabVisibility.settings && (
                 <TabsContent value="settings" className="space-y-8">
+                  <PasswordProtectionSettings />
+                  
                   <div className="border rounded-md p-6 bg-card">
                     <h2 className="text-2xl font-semibold mb-6">Admin Users</h2>
                     <div className="mb-6">
