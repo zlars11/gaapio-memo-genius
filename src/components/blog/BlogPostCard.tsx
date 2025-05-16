@@ -12,7 +12,7 @@ interface BlogPost {
   date: string;
   author: string;
   imageUrl: string;
-  category: string;
+  category?: string; // Made optional to match actual data structure
   slug: string;
 }
 
@@ -31,7 +31,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
         />
         <div className="absolute top-3 right-3">
           <Badge variant="secondary" className="font-medium">
-            {post.category}
+            {post.category || "General"}
           </Badge>
         </div>
       </div>
