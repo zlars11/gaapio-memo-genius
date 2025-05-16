@@ -164,7 +164,7 @@ export default function SubscriptionAgreement() {
       <main className="flex-1 pt-28" id="ssa-content">
         <ResponsiveContainer className="max-w-4xl my-8">
           <div className="bg-card border border-border rounded-xl p-8 shadow-sm mb-8">
-            {/* Add print-specific styles */}
+            {/* Updated print-specific styles with better page break handling */}
             <style dangerouslySetInnerHTML={{ __html: `
               @media print {
                 @page {
@@ -177,7 +177,7 @@ export default function SubscriptionAgreement() {
                   color: #000;
                   background: #fff;
                 }
-                /* Improved page break handling */
+                /* Enhanced page break handling */
                 h1, h2, h3, h4, h5, h6 {
                   page-break-after: avoid;
                   page-break-inside: avoid;
@@ -192,33 +192,50 @@ export default function SubscriptionAgreement() {
                   orphans: 3;
                   widows: 3;
                 }
-                section {
+                /* Keep sections together */
+                .section-container {
                   break-inside: avoid-page;
                   page-break-inside: avoid;
+                  page-break-before: auto;
+                  page-break-after: auto;
+                  margin-bottom: 20pt;
+                }
+                .subsection {
+                  break-inside: avoid-page;
+                  page-break-inside: avoid;
+                }
+                /* Make sure headers don't separate from their content */
+                h2.section-header {
+                  page-break-after: avoid;
+                  break-after: avoid;
+                  font-size: 14pt;
+                  font-weight: bold;
+                  margin-top: 20pt;
+                  margin-bottom: 10pt;
+                }
+                h3.subsection-header {
+                  page-break-after: avoid;
+                  break-after: avoid;
+                  font-size: 12pt;
+                  font-weight: bold;
+                  margin-top: 16pt;
+                  margin-bottom: 8pt;
                 }
                 /* Fix bullet formatting */
                 ul, ol {
                   margin-left: 0;
                   padding-left: 1.5em;
                 }
-                /* Match fonts and weights */
-                h2.section-header {
-                  font-size: 14pt;
-                  font-weight: bold;
-                  margin-top: 20pt;
-                  margin-bottom: 10pt;
-                  page-break-after: avoid;
-                }
-                h3.subsection-header {
-                  font-size: 12pt;
-                  font-weight: bold;
-                  margin-top: 16pt;
-                  margin-bottom: 8pt;
-                  page-break-after: avoid;
+                li {
+                  margin-bottom: 6pt;
                 }
                 /* Hide elements that shouldn't be printed */
                 button, .no-print {
                   display: none !important;
+                }
+                /* Ensure proper spacing between sections */
+                section {
+                  margin-bottom: 16pt;
                 }
                 /* Ensure full width */
                 .print-container {
