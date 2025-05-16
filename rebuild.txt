@@ -3,6 +3,7 @@
 
 
 
+
 # trigger rebuild
 # Removed pricing page and pricing tab from admin portal
 # Added edit and delete functionality to contact submissions in admin portal
@@ -10,6 +11,8 @@
 # Cleared data from companies, users, contacts, and firm signups tables
 # Added success screens for contact form and demo request form submissions
 # Fixed contact deletion functionality
+# Fixed TypeScript errors related to missing properties in User and FirmSignup types
+
 
 
 

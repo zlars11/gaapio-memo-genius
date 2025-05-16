@@ -8,6 +8,7 @@ export interface User {
   email: string;
   phone: string | null;
   company_id: string | null;
+  company?: string;  // Added property to fix build errors
   user_type: string;
   status: string;
   created_at: string;
@@ -27,6 +28,7 @@ export interface FirmSignup {
   created_at: string;
   updated_at: string;
   notes: string;
+  plan?: string;  // Added property to fix build errors
 }
 
 export interface FirmSignupRowProps {
