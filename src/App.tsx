@@ -27,7 +27,6 @@ import { SignUpInfoForm } from "./pages/SignUpInfoForm";
 import { SignUpPaymentForm } from "./pages/SignUpPaymentForm";
 import { SignUpSummary } from "./pages/SignUpSummary";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BlogPost from "./pages/BlogPost";
@@ -36,47 +35,45 @@ function App() {
   const queryClient = new QueryClient();
   
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <QueryClientProvider client={queryClient}>
-        <div className="app">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/request-demo" element={<RequestDemo />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/ai-accounting" element={<AIAccounting />} />
-              <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
-              <Route path="/firm-signup" element={<FirmSignup />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/dpa" element={<DPA />} />
-              <Route path="/ssa" element={<SubscriptionAgreement />} />
-              <Route path="/onepager" element={<OnePager />} />
-              <Route path="/status" element={<Status />} />
-              <Route path="/choose-plan" element={<ChoosePlan />} />
-              <Route path="/success" element={<Success />} />
-              <Route path="/cancel" element={<Cancel />} />
-              {/* For these signup form routes, we should use the parent SignUp component 
-                  which will handle passing the correct props to these form components */}
-              <Route path="/signup/info" element={<SignUp />} />
-              <Route path="/signup/payment" element={<SignUp />} />
-              <Route path="/signup/summary" element={<SignUp />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Toaster />
-          </BrowserRouter>
-        </div>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <div className="app">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/request-demo" element={<RequestDemo />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/ai-accounting" element={<AIAccounting />} />
+            <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+            <Route path="/firm-signup" element={<FirmSignup />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/dpa" element={<DPA />} />
+            <Route path="/ssa" element={<SubscriptionAgreement />} />
+            <Route path="/onepager" element={<OnePager />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/choose-plan" element={<ChoosePlan />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
+            {/* For these signup form routes, we should use the parent SignUp component 
+                which will handle passing the correct props to these form components */}
+            <Route path="/signup/info" element={<SignUp />} />
+            <Route path="/signup/payment" element={<SignUp />} />
+            <Route path="/signup/summary" element={<SignUp />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster />
+        </BrowserRouter>
+      </div>
+    </QueryClientProvider>
   );
 }
 
