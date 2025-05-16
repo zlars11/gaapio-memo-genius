@@ -73,8 +73,14 @@ export default function Index() {
       }
     }
     
-    // Always ensure Sign Up mode is set
-    localStorage.setItem("homepageCta", "signup");
+    // Initialize self-signup setting if not set
+    if (localStorage.getItem("enableSelfSignup") === null) {
+      localStorage.setItem("enableSelfSignup", "true");
+    }
+    
+    // Set homepageCta based on the self-signup setting
+    const enableSelfSignup = localStorage.getItem("enableSelfSignup") !== "false";
+    localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
 
     return () => {
       darkModeQuery.removeEventListener("change", handleChange);

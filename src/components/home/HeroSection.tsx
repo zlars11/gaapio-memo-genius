@@ -7,9 +7,32 @@ import { AnimatedMemo } from "./AnimatedMemo";
 
 export const HeroSection = memo(function HeroSection() {
   const [isClient, setIsClient] = useState(false);
+  const [enableSelfSignup, setEnableSelfSignup] = useState(true);
   
   useEffect(() => {
     setIsClient(true);
+    
+    // Load the self-signup setting
+    const loadSelfSignupSetting = () => {
+      const savedSetting = localStorage.getItem("enableSelfSignup");
+      setEnableSelfSignup(savedSetting !== null ? savedSetting === "true" : true);
+    };
+    
+    // Initial load
+    loadSelfSignupSetting();
+    
+    // Listen for storage changes (in case admin updates in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "enableSelfSignup") {
+        loadSelfSignupSetting();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   // Scroll to How It Works section when arrow is clicked
@@ -19,6 +42,10 @@ export const HeroSection = memo(function HeroSection() {
       howItWorksSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Determine secondary button text and link based on self-signup setting
+  const secondaryButtonText = enableSelfSignup ? "Sign Up Now" : "Contact Sales";
+  const secondaryButtonLink = enableSelfSignup ? "/signup" : "/contact";
 
   return (
     <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-12 dark:bg-background">
@@ -37,7 +64,7 @@ export const HeroSection = memo(function HeroSection() {
               <Link to="/request-demo">Request a demo</Link>
             </Button>
             <Button size="lg" variant="blueOutline" asChild>
-              <Link to="/signup">Sign Up Now</Link>
+              <Link to={secondaryButtonLink}>{secondaryButtonText}</Link>
             </Button>
           </div>
         </div>
