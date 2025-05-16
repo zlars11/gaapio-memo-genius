@@ -49,7 +49,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/request-demo" element={<RequestDemo />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} /> {/* Add BlogPost route */}
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/ai-accounting" element={<AIAccounting />} />
               <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
               <Route path="/firm-signup" element={<FirmSignup />} />
@@ -65,9 +65,11 @@ function App() {
               <Route path="/choose-plan" element={<ChoosePlan />} />
               <Route path="/success" element={<Success />} />
               <Route path="/cancel" element={<Cancel />} />
-              <Route path="/signup/info" element={<SignUpInfoForm />} />
-              <Route path="/signup/payment" element={<SignUpPaymentForm />} />
-              <Route path="/signup/summary" element={<SignUpSummary />} />
+              {/* For these signup form routes, we should use the parent SignUp component 
+                  which will handle passing the correct props to these form components */}
+              <Route path="/signup/info" element={<SignUp />} />
+              <Route path="/signup/payment" element={<SignUp />} />
+              <Route path="/signup/summary" element={<SignUp />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

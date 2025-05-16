@@ -72,12 +72,19 @@ export default function Blog() {
         .order("publish_date", { ascending: false });
       
       if (error) throw error;
-      setPosts(data || []);
+      
+      // Cast data to BlogPost[] type and ensure each post has a category
+      const typedPosts = (data || []).map(post => ({
+        ...post,
+        category: post.category || "General" // Ensure category exists, defaulting to "General"
+      })) as BlogPost[];
+      
+      setPosts(typedPosts);
 
       // Extract unique categories from posts
       const uniqueCategories = Array.from(
-        new Set(data?.map(post => post.category || "General"))
-      ).filter(Boolean);
+        new Set(typedPosts.map(post => post.category))
+      );
       setCategories(uniqueCategories);
     } catch (error) {
       console.error("Error fetching blog posts:", error);
