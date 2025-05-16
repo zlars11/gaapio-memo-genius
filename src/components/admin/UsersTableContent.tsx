@@ -7,6 +7,7 @@ interface UsersTableContentProps {
   loading: boolean;
   items: User[];
   onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
   searchQuery: string;
 }
 
@@ -14,6 +15,7 @@ export function UsersTableContent({
   loading, 
   items, 
   onEdit,
+  onDelete,
   searchQuery 
 }: UsersTableContentProps) {
   return (
@@ -41,6 +43,7 @@ export function UsersTableContent({
               key={user.id}
               user={user}
               onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))
         ) : (

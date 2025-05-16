@@ -10,12 +10,16 @@ import { UserSignupsSearch } from "./UserSignupsSearch";
 import { UsersTableContent } from "./UsersTableContent";
 import { useUserSignups } from "@/hooks/useUserSignups";
 import EditUserDialog from "./EditUserDialog";
+import { DeleteUserDialog } from "./dialogs/DeleteUserDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export function UserSignupsTable() {
   const { filteredUsers, loading, searchQuery, setSearchQuery, refreshUsers } = useUserSignups();
   const [editUser, setEditUser] = useState<User | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
   
   const { 
     currentItems: paginatedUsers,
@@ -31,11 +35,20 @@ export function UserSignupsTable() {
 
   const handleOpenEdit = (user: User) => {
     setEditUser(user);
-    setDialogOpen(true);
+    setEditDialogOpen(true);
+  };
+
+  const handleOpenDelete = (user: User) => {
+    setEditUser(user);
+    setDeleteDialogOpen(true);
   };
 
   const handleCloseEdit = () => {
-    setDialogOpen(false);
+    setEditDialogOpen(false);
+  };
+
+  const handleCloseDelete = () => {
+    setDeleteDialogOpen(false);
   };
 
   const handleSaveUser = async (updatedUser: User) => {
@@ -53,27 +66,25 @@ export function UserSignupsTable() {
       
       if (error) throw error;
       
+      toast({
+        title: "User updated",
+        description: "The user has been updated successfully."
+      });
+      
       await refreshUsers();
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Error updating user:", error);
+      setEditDialogOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update user",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from("users")
-        .delete()
-        .eq("id", userId);
-      
-      if (error) throw error;
-      
-      await refreshUsers();
-      setDialogOpen(false);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+  const handleDeleteUser = async () => {
+    await refreshUsers();
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -93,6 +104,7 @@ export function UserSignupsTable() {
             loading={loading}
             items={paginatedUsers}
             onEdit={handleOpenEdit}
+            onDelete={handleOpenDelete}
             searchQuery={searchQuery}
           />
         </Table>
@@ -105,18 +117,30 @@ export function UserSignupsTable() {
           onItemsPerPageChange={setItemsPerPage}
         />
 
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          {editUser && (
-            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-              <EditUserDialog
-                user={editUser}
-                onSave={handleSaveUser}
-                onDelete={() => handleDeleteUser(editUser.id)}
-                onClose={handleCloseEdit}
-              />
-            </DialogContent>
-          )}
-        </Dialog>
+        {editUser && (
+          <>
+            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+              <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+                <EditUserDialog
+                  user={editUser}
+                  onSave={handleSaveUser}
+                  onDelete={() => handleOpenDelete(editUser)}
+                  onClose={handleCloseEdit}
+                />
+              </DialogContent>
+            </Dialog>
+            
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <DialogContent>
+                <DeleteUserDialog
+                  user={editUser}
+                  onDelete={handleDeleteUser}
+                  onClose={handleCloseDelete}
+                />
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
       </CardContent>
     </Card>
   );

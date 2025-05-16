@@ -4,15 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Company } from "@/components/admin/types/companyTypes";
+import { FirmSignup } from "../types/userTypes";
 
-interface DeleteCompanyDialogProps {
-  company: Company;
+interface DeleteFirmDialogProps {
+  firm: FirmSignup;
   onDelete: () => void;
   onClose: () => void;
 }
 
-export function DeleteCompanyDialog({ company, onDelete, onClose }: DeleteCompanyDialogProps) {
+export function DeleteFirmDialog({ firm, onDelete, onClose }: DeleteFirmDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
@@ -21,22 +21,22 @@ export function DeleteCompanyDialog({ company, onDelete, onClose }: DeleteCompan
     
     try {
       const { error } = await supabase
-        .from("companies")
+        .from("users")
         .delete()
-        .eq("id", company.id);
+        .eq("id", firm.id);
         
       if (error) throw error;
       
       toast({
-        title: "Company deleted",
-        description: "The company has been deleted successfully."
+        title: "Firm deleted",
+        description: "The firm has been deleted successfully."
       });
       
       onDelete();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to delete company",
+        description: error.message || "Failed to delete firm",
         variant: "destructive",
       });
     } finally {
@@ -47,17 +47,17 @@ export function DeleteCompanyDialog({ company, onDelete, onClose }: DeleteCompan
   return (
     <div className="p-6">
       <DialogHeader>
-        <DialogTitle>Delete Company</DialogTitle>
+        <DialogTitle>Delete Firm</DialogTitle>
         <DialogDescription>
-          Are you sure you want to delete this company? This action cannot be undone.
+          Are you sure you want to delete this firm? This action cannot be undone.
         </DialogDescription>
       </DialogHeader>
       
       <div className="mt-6">
         <div className="bg-muted p-4 rounded-md mb-6">
-          <p><strong>Company:</strong> {company.name}</p>
-          <p><strong>Plan:</strong> {company.plan}</p>
-          <p><strong>Status:</strong> {company.status}</p>
+          <p><strong>Company:</strong> {firm.company}</p>
+          <p><strong>Contact:</strong> {firm.first_name} {firm.last_name}</p>
+          <p><strong>Email:</strong> {firm.email}</p>
         </div>
       </div>
       
@@ -70,7 +70,7 @@ export function DeleteCompanyDialog({ company, onDelete, onClose }: DeleteCompan
           onClick={handleDelete}
           disabled={isDeleting}
         >
-          {isDeleting ? "Deleting..." : "Delete Company"}
+          {isDeleting ? "Deleting..." : "Delete Firm"}
         </Button>
       </div>
     </div>

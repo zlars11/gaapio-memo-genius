@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -14,9 +13,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { usePagination } from "@/hooks/usePagination";
 import { PaginationControls } from "./PaginationControls";
 import { EditFirmDialog } from "./EditFirmDialog";
+import { DeleteFirmDialog } from "./dialogs/DeleteFirmDialog";
 import { FirmSignupRow } from "./FirmSignupRow";
 import { FirmSignup } from "./types/userTypes";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export function FirmSignupsTable() {
   const [firmSignups, setFirmSignups] = useState<FirmSignup[]>([]);
@@ -24,7 +25,8 @@ export function FirmSignupsTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editingFirm, setEditingFirm] = useState<FirmSignup | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<FirmSignup>>({});
   const { toast } = useToast();
 
@@ -129,7 +131,12 @@ export function FirmSignupsTable() {
       phone: firm.phone,
       notes: firm.notes
     });
-    setIsDialogOpen(true);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteFirm = (firm: FirmSignup) => {
+    setEditingFirm(firm);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleSaveFirmChanges = async () => {
@@ -153,7 +160,7 @@ export function FirmSignupsTable() {
         description: "Firm information updated successfully",
       });
 
-      setIsDialogOpen(false);
+      setIsEditDialogOpen(false);
       fetchFirmSignups();
     } catch (error: any) {
       toast({
@@ -162,6 +169,11 @@ export function FirmSignupsTable() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleFirmDelete = async () => {
+    setIsDeleteDialogOpen(false);
+    fetchFirmSignups();
   };
 
   return (
@@ -207,6 +219,7 @@ export function FirmSignupsTable() {
                     key={signup.id}
                     signup={signup}
                     onEdit={handleEditFirm}
+                    onDelete={handleDeleteFirm}
                   />
                 ))
               ) : (
@@ -229,12 +242,24 @@ export function FirmSignupsTable() {
         />
 
         <EditFirmDialog
-          isOpen={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
+          isOpen={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
           formData={formData}
           onInputChange={handleInputChange}
           onSave={handleSaveFirmChanges}
         />
+
+        {editingFirm && (
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogContent>
+              <DeleteFirmDialog
+                firm={editingFirm}
+                onDelete={handleFirmDelete}
+                onClose={() => setIsDeleteDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </CardContent>
     </Card>
   );

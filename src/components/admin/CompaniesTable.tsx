@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { PaginatedTable } from "./PaginatedTable";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { EditCompanyDialog } from "./EditCompanyDialog";
+import { DeleteCompanyDialog } from "./dialogs/DeleteCompanyDialog";
 import { formatDate } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { Company } from "./types/companyTypes";
@@ -19,6 +20,7 @@ export function CompaniesTable() {
   const [loading, setLoading] = useState(true);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -81,9 +83,19 @@ export function CompaniesTable() {
     setEditDialogOpen(true);
   };
 
+  const handleDeleteCompany = (company: Company) => {
+    setSelectedCompany(company);
+    setDeleteDialogOpen(true);
+  };
+
   const handleCompanyUpdate = async () => {
     await fetchCompanies();
     setEditDialogOpen(false);
+  };
+
+  const handleCompanyDelete = async () => {
+    await fetchCompanies();
+    setDeleteDialogOpen(false);
   };
 
   const columns = [
@@ -124,18 +136,32 @@ export function CompaniesTable() {
       header: "",
       accessorKey: "actions" as keyof Company,
       cell: (item: Company) => (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEditCompany(item);
-          }}
-          className="h-8 w-8 p-0 float-right"
-        >
-          <Edit className="h-4 w-4" />
-          <span className="sr-only">Edit company</span>
-        </Button>
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditCompany(item);
+            }}
+            className="h-8 w-8 p-0"
+          >
+            <Edit className="h-4 w-4" />
+            <span className="sr-only">Edit company</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteCompany(item);
+            }}
+            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Delete company</span>
+          </Button>
+        </div>
       ),
     }
   ];
@@ -168,15 +194,27 @@ export function CompaniesTable() {
         />
 
         {selectedCompany && (
-          <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-              <EditCompanyDialog 
-                company={selectedCompany}
-                onSave={handleCompanyUpdate}
-                onClose={() => setEditDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <>
+            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+                <EditCompanyDialog 
+                  company={selectedCompany}
+                  onSave={handleCompanyUpdate}
+                  onClose={() => setEditDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+            
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <DialogContent>
+                <DeleteCompanyDialog 
+                  company={selectedCompany}
+                  onDelete={handleCompanyDelete}
+                  onClose={() => setDeleteDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          </>
         )}
       </CardContent>
     </Card>

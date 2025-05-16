@@ -1,30 +1,52 @@
 
+import { Company } from "./companyTypes";
+
 export interface User {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
-  phone?: string;
-  company_id?: string;
-  company?: string;
-  user_type: 'user' | 'approver' | 'admin';
-  status: 'active' | 'inactive';
+  phone: string | null;
+  company_id: string | null;
+  user_type: string;
+  status: string;
   created_at: string;
   updated_at: string;
 }
 
-export interface UserRowProps {
-  user: User;
-  onEdit: (user: User) => void;
-}
-
-export interface FirmSignup extends User {
+export interface FirmSignup {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  company_id: string;
   company: string;
-  notes?: string;
-  plan?: string; // Adding the plan property that was missing
+  user_type: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  notes: string;
 }
 
 export interface FirmSignupRowProps {
   signup: FirmSignup;
   onEdit: (signup: FirmSignup) => void;
+  onDelete: (signup: FirmSignup) => void;
+}
+
+export interface UserFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company: Company | null;
+  userType: string;
+  status: string;
+}
+
+export interface UserVerificationStatus {
+  exists: boolean;
+  isActive: boolean;
+  isAdmin: boolean;
 }
