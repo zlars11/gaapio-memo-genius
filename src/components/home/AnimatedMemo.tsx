@@ -61,7 +61,7 @@ export const AnimatedMemo = () => {
           "<strong>7. Disclosures</strong>  \n" +
           "Footnote 12 will reflect the updated policy disclosures accordingly."
         ],
-        typeSpeed: 7, // Even faster (was 12 before)
+        typeSpeed: 7, // Keep the fast typing speed
         backSpeed: 0,
         loop: false,
         showCursor: true,
@@ -100,7 +100,7 @@ export const AnimatedMemo = () => {
         if (footnoteElement) {
           footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
             strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery, depending on the terms of the contract.\n\nThe Company's contracts generally include a single performance obligation, and pricing is fixed and determinable. No significant financing components, variable consideration, or rights of return exist within the standard terms."],
-            typeSpeed: 10, // Faster typing speed (was 18 before)
+            typeSpeed: 10, // Keep the fast typing speed
             backSpeed: 0,
             loop: false,
             showCursor: true,
@@ -144,7 +144,7 @@ export const AnimatedMemo = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center overflow-hidden pointer-events-none">
+    <div className="flex items-center justify-center overflow-visible"> {/* Changed from overflow-hidden to overflow-visible */}
       <div 
         ref={memoContainerRef}
         className="w-[900px] max-w-full p-6 md:p-10 bg-white rounded-lg transform rotate-[-7deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)]"
@@ -152,7 +152,8 @@ export const AnimatedMemo = () => {
           fontFamily: 'monospace',
           opacity: 0.85,
           transition: 'all 0.3s ease',
-          minHeight: '800px', // Increased height to ensure no cut-offs
+          minHeight: '920px', // Increased fixed height to ensure nothing gets cut off
+          overflow: 'visible', // Ensure content doesn't get clipped
         }}
       >
         <div 
@@ -164,7 +165,8 @@ export const AnimatedMemo = () => {
         {memoCompleted && (
           <div 
             ref={footnoteRef} 
-            className={`mt-8 pt-10 text-left transition-opacity duration-300 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`} // Increased top padding (pt-10)
+            className={`mt-8 pt-10 text-left transition-opacity duration-300 ${footnoteVisible ? 'opacity-100' : 'opacity-0'}`}
+            style={{ paddingBottom: '48px' }} // Added significant bottom padding to prevent cutoff
           >
             <hr className="border-t border-black my-4" />
             
@@ -176,7 +178,8 @@ export const AnimatedMemo = () => {
               className="footnote-content font-mono text-sm md:text-base text-justify pl-1"
               style={{ 
                 textIndent: '1.5em',
-                lineHeight: 1.6 
+                lineHeight: 1.6,
+                overflow: 'visible', // Ensure footnote content doesn't get clipped
               }}
             ></div>
           </div>
