@@ -175,7 +175,7 @@ export default function DPA() {
                   color: #000;
                   background: #fff;
                 }
-                /* Prevent awkward page breaks */
+                /* Improved page break handling */
                 h1, h2, h3, h4, h5, h6 {
                   page-break-after: avoid;
                   page-break-inside: avoid;
@@ -190,6 +190,10 @@ export default function DPA() {
                   orphans: 3;
                   widows: 3;
                 }
+                section {
+                  break-inside: avoid-page;
+                  page-break-inside: avoid;
+                }
                 /* Fix bullet formatting */
                 ul, ol {
                   margin-left: 0;
@@ -201,6 +205,7 @@ export default function DPA() {
                   font-weight: bold;
                   margin-top: 20pt;
                   margin-bottom: 10pt;
+                  page-break-after: avoid;
                 }
                 /* Hide elements that shouldn't be printed */
                 button, .no-print {
@@ -265,7 +270,7 @@ export default function DPA() {
             </div>
             
             <div className="p-4 print-container" ref={contentRef}>
-              <section className="mb-10" id="purpose">
+              <section className="mb-10 section-container" id="purpose">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">1. PURPOSE & SCOPE</h2>
                 <p className="mb-3">
                   This DPA governs the processing of personal data by Gaapio on behalf of Customer in connection with
@@ -274,7 +279,7 @@ export default function DPA() {
                 </p>
               </section>
               
-              <section className="mb-10" id="roles">
+              <section className="mb-10 section-container" id="roles">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">2. ROLES OF THE PARTIES</h2>
                 <p className="mb-3">
                   Customer is the "Controller" of Customer Personal Data. Gaapio is the "Processor" and shall 
@@ -282,53 +287,59 @@ export default function DPA() {
                 </p>
               </section>
               
-              <section className="mb-10" id="types">
+              <section className="mb-10 section-container" id="types">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">3. TYPES OF DATA AND DATA SUBJECTS</h2>
-                <p className="mb-3">Customer Personal Data may include:</p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Names, email addresses, and professional data of Customer's employees or clients</li>
-                  <li>Content provided through uploaded documents, memos, and footnotes</li>
-                </ul>
-                <p className="mb-3">Data subjects may include:</p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Customer's employees</li>
-                  <li>Customer's clients and stakeholders</li>
-                </ul>
-                <p className="mb-3">
-                  Gaapio does not knowingly process special categories of personal data (e.g., health, political, biometric data).
-                </p>
+                <div>
+                  <p className="mb-3">Customer Personal Data may include:</p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Names, email addresses, and professional data of Customer's employees or clients</li>
+                    <li>Content provided through uploaded documents, memos, and footnotes</li>
+                  </ul>
+                  <p className="mb-3">Data subjects may include:</p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Customer's employees</li>
+                    <li>Customer's clients and stakeholders</li>
+                  </ul>
+                  <p className="mb-3">
+                    Gaapio does not knowingly process special categories of personal data (e.g., health, political, biometric data).
+                  </p>
+                </div>
               </section>
               
-              <section className="mb-10" id="subprocessors">
+              <section className="mb-10 section-container" id="subprocessors">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">4. SUBPROCESSORS</h2>
-                <p className="mb-3">
-                  Customer authorizes Gaapio to use subprocessors in connection with the provision of Services. 
-                  As of the effective date, the following subprocessors are used:
-                </p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Supabase – data hosting and storage (U.S.-based)</li>
-                  <li>Vercel – application frontend hosting (U.S.-based)</li>
-                </ul>
-                <p className="mb-3">
-                  Gaapio will ensure that subprocessors are bound by written agreements with data protection 
-                  obligations no less protective than those in this DPA.
-                </p>
+                <div>
+                  <p className="mb-3">
+                    Customer authorizes Gaapio to use subprocessors in connection with the provision of Services. 
+                    As of the effective date, the following subprocessors are used:
+                  </p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Supabase – data hosting and storage (U.S.-based)</li>
+                    <li>Vercel – application frontend hosting (U.S.-based)</li>
+                  </ul>
+                  <p className="mb-3">
+                    Gaapio will ensure that subprocessors are bound by written agreements with data protection 
+                    obligations no less protective than those in this DPA.
+                  </p>
+                </div>
               </section>
               
-              <section className="mb-10" id="security">
+              <section className="mb-10 section-container" id="security">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">5. SECURITY MEASURES</h2>
-                <p className="mb-3">
-                  Gaapio will implement appropriate technical and organizational measures to protect Customer Personal Data, including:
-                </p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Role-based access control</li>
-                  <li>Encrypted data storage</li>
-                  <li>Secure transmission protocols</li>
-                  <li>Logging and monitoring</li>
-                </ul>
+                <div>
+                  <p className="mb-3">
+                    Gaapio will implement appropriate technical and organizational measures to protect Customer Personal Data, including:
+                  </p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Role-based access control</li>
+                    <li>Encrypted data storage</li>
+                    <li>Secure transmission protocols</li>
+                    <li>Logging and monitoring</li>
+                  </ul>
+                </div>
               </section>
               
-              <section className="mb-10" id="rights">
+              <section className="mb-10 section-container" id="rights">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">6. DATA SUBJECT RIGHTS</h2>
                 <p className="mb-3">
                   Gaapio shall, to the extent legally permitted and technically feasible, assist Customer in responding 
@@ -336,28 +347,32 @@ export default function DPA() {
                 </p>
               </section>
               
-              <section className="mb-10" id="transfers">
+              <section className="mb-10 section-container" id="transfers">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">7. DATA TRANSFERS</h2>
-                <p className="mb-3">
-                  If Customer Personal Data originates from the EEA, UK, or Switzerland and is transferred to the United States, 
-                  Gaapio shall rely on:
-                </p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Standard Contractual Clauses (SCCs) for such transfers</li>
-                  <li>Industry-standard safeguards for U.S.-hosted environments</li>
-                </ul>
+                <div>
+                  <p className="mb-3">
+                    If Customer Personal Data originates from the EEA, UK, or Switzerland and is transferred to the United States, 
+                    Gaapio shall rely on:
+                  </p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Standard Contractual Clauses (SCCs) for such transfers</li>
+                    <li>Industry-standard safeguards for U.S.-hosted environments</li>
+                  </ul>
+                </div>
               </section>
               
-              <section className="mb-10" id="retention">
+              <section className="mb-10 section-container" id="retention">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">8. RETENTION AND DELETION</h2>
-                <p className="mb-3">Upon expiration or termination of the Agreement, Gaapio shall:</p>
-                <ul className="list-disc pl-8 mb-6 space-y-2">
-                  <li>Delete or return all Customer Personal Data within 30 days</li>
-                  <li>Unless otherwise required by law or regulatory obligations</li>
-                </ul>
+                <div>
+                  <p className="mb-3">Upon expiration or termination of the Agreement, Gaapio shall:</p>
+                  <ul className="list-disc pl-8 mb-6 space-y-2">
+                    <li>Delete or return all Customer Personal Data within 30 days</li>
+                    <li>Unless otherwise required by law or regulatory obligations</li>
+                  </ul>
+                </div>
               </section>
               
-              <section className="mb-10" id="audit">
+              <section className="mb-10 section-container" id="audit">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">9. AUDIT RIGHTS</h2>
                 <p className="mb-3">
                   Upon written request and subject to confidentiality obligations, Customer may review Gaapio's data processing practices.
@@ -365,7 +380,7 @@ export default function DPA() {
                 </p>
               </section>
               
-              <section className="mb-10" id="governing">
+              <section className="mb-10 section-container" id="governing">
                 <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">10. GOVERNING LAW</h2>
                 <p className="mb-3">
                   This DPA is governed by the same law that governs the Agreement (Delaware, unless otherwise stated).
