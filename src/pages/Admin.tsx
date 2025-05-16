@@ -21,12 +21,22 @@ import { Button } from "@/components/ui/button";
 import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { Header } from "@/components/header";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ExternalLink, FileEdit } from "lucide-react";
+import { ExternalLink, FileEdit, Home, FileText, Shield, CreditCard, Users, Mail, Book, ChevronDown } from "lucide-react";
 import { PageEditor } from "@/components/admin/PageEditor";
 import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilitySettings";
 import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectionSettings";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
+// Group websites pages into categories
+interface PageCategory {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  pages: { title: string; path: string; description: string }[];
+}
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -62,40 +72,90 @@ export default function Admin() {
     fetchAdmins
   } = useFetchAdmins(currentUser);
 
-  // Complete list of website pages, including all live pages
-  const websitePages = [
-    // Main site pages
-    { title: "Home Page", path: "/", description: "Main landing page" },
-    { title: "About Us", path: "/about-us", description: "Company information page" },
-    { title: "Contact", path: "/contact", description: "Contact form and information" },
-    { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
-    { title: "Resources", path: "/resources", description: "Blog and resource content" },
-    { title: "Blog", path: "/blog", description: "Blog articles and posts" },
-    { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
-    { title: "Login", path: "/login", description: "User login page" },
-    { title: "Sign Up", path: "/signup", description: "User registration flow" },
-    { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
-    { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
-    
-    // Legal pages
-    { title: "Privacy Policy", path: "/privacy", description: "Privacy policy page" },
-    { title: "Terms of Service", path: "/ssa", description: "Subscription service agreement" },
-    
-    // Transaction pages
-    { title: "Success", path: "/success", description: "Payment success page" },
-    { title: "Cancel", path: "/cancel", description: "Payment cancellation page" },
-    
-    // Blog article pages
-    { title: "ASC 606 Pitfalls", path: "/blog/5-common-asc-606-pitfalls", description: "Blog article on ASC 606 pitfalls" },
-    { title: "Tech Accounting Memos", path: "/blog/why-technical-accounting-memos-matter", description: "Blog article on technical accounting memos" },
-    { title: "AI in Accounting", path: "/blog/how-ai-is-changing-the-accounting-landscape", description: "Blog article on AI in accounting" },
-    
-    // Utility pages
-    { title: "Choose Plan", path: "/choose-plan", description: "Plan selection page" },
-    { title: "One Pager", path: "/onepager", description: "Product one-pager" },
-    { title: "Status", path: "/status", description: "System status page" },
-    { title: "Not Found (404)", path: "/404", description: "404 error page" },
+  // Categorized website pages
+  const websitePageCategories: PageCategory[] = [
+    {
+      id: "core",
+      title: "🏠 Core Site Pages",
+      icon: <Home className="h-5 w-5" />,
+      pages: [
+        { title: "Home Page", path: "/", description: "Main landing page" },
+        { title: "About Us", path: "/about-us", description: "Company information page" },
+        { title: "Contact", path: "/contact", description: "Contact form and information" },
+        { title: "FAQ", path: "/faq", description: "Frequently asked questions" },
+        { title: "Resources", path: "/resources", description: "Blog and resource content" },
+      ]
+    },
+    {
+      id: "legal",
+      title: "📝 Legal & Compliance",
+      icon: <Shield className="h-5 w-5" />,
+      pages: [
+        { title: "Privacy Policy", path: "/privacy", description: "Privacy policy page" },
+        { title: "Terms of Service", path: "/ssa", description: "Subscription service agreement" },
+      ]
+    },
+    {
+      id: "billing",
+      title: "💳 Billing & Payment",
+      icon: <CreditCard className="h-5 w-5" />,
+      pages: [
+        { title: "Pricing", path: "/pricing", description: "Pricing plans and options" },
+        { title: "Choose Plan", path: "/choose-plan", description: "Plan selection page" },
+        { title: "Success", path: "/success", description: "Payment success page" },
+        { title: "Cancel", path: "/cancel", description: "Payment cancellation page" },
+      ]
+    },
+    {
+      id: "access",
+      title: "👥 User Access & Registration",
+      icon: <Users className="h-5 w-5" />,
+      pages: [
+        { title: "Login", path: "/login", description: "User login page" },
+        { title: "Sign Up", path: "/signup", description: "User registration flow" },
+        { title: "Firm Signup", path: "/firm-signup", description: "CPA firm signup page" },
+      ]
+    },
+    {
+      id: "leads",
+      title: "📩 Leads & Requests",
+      icon: <Mail className="h-5 w-5" />,
+      pages: [
+        { title: "Request Demo", path: "/request-demo", description: "Demo request page" },
+      ]
+    },
+    {
+      id: "blog",
+      title: "📚 Blog & Articles",
+      icon: <Book className="h-5 w-5" />,
+      pages: [
+        { title: "Blog", path: "/blog", description: "Blog articles and posts" },
+        { title: "ASC 606 Pitfalls", path: "/blog/5-common-asc-606-pitfalls", description: "Blog article on ASC 606 pitfalls" },
+        { title: "Tech Accounting Memos", path: "/blog/why-technical-accounting-memos-matter", description: "Blog article on technical accounting memos" },
+        { title: "AI in Accounting", path: "/blog/how-ai-is-changing-the-accounting-landscape", description: "Blog article on AI in accounting" },
+      ]
+    },
+    {
+      id: "sales",
+      title: "📄 Sales Materials",
+      icon: <FileText className="h-5 w-5" />,
+      pages: [
+        { title: "One Pager", path: "/onepager", description: "Product one-pager" },
+      ]
+    },
+    {
+      id: "system",
+      title: "⚙️ System / Admin",
+      icon: <FileText className="h-5 w-5" />,
+      pages: [
+        { title: "Status", path: "/status", description: "System status page" },
+        { title: "Not Found (404)", path: "/404", description: "404 error page" },
+      ]
+    },
   ];
+
+  // Flatten all pages for other uses if needed
+  const websitePages = websitePageCategories.flatMap(category => category.pages);
 
   // Load tab visibility settings
   useEffect(() => {
@@ -251,34 +311,44 @@ export default function Admin() {
                       <h2 className="text-2xl font-semibold mb-4">Website Pages Management</h2>
                       <p className="text-muted-foreground mb-6">Manage website pages content and SEO settings</p>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                        {websitePages.map((page) => (
-                          <Card key={page.path} className="overflow-hidden">
-                            <CardContent className="p-4">
-                              <h3 className="font-medium text-lg mb-2">{page.title}</h3>
-                              <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
-                              <div className="flex items-center justify-between mt-2">
-                                <Link 
-                                  to={page.path} 
-                                  className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="h-4 w-4 mr-1" />
-                                  View Page
-                                </Link>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="flex items-center"
-                                  onClick={() => setSelectedPage(page)}
-                                >
-                                  <FileEdit className="h-4 w-4 mr-1" />
-                                  Edit
-                                </Button>
-                              </div>
-                            </CardContent>
-                          </Card>
+                      <div className="space-y-8 mt-6">
+                        {websitePageCategories.map((category) => (
+                          <div key={category.id} className="space-y-4">
+                            <div className="flex items-center gap-2 pb-2 border-b">
+                              {category.icon}
+                              <h3 className="text-xl font-semibold">{category.title}</h3>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {category.pages.map((page) => (
+                                <Card key={page.path} className="overflow-hidden">
+                                  <CardContent className="p-4">
+                                    <h3 className="font-medium text-lg mb-2">{page.title}</h3>
+                                    <p className="text-muted-foreground text-sm mb-3">{page.description}</p>
+                                    <div className="flex items-center justify-between mt-2">
+                                      <Link 
+                                        to={page.path} 
+                                        className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        <ExternalLink className="h-4 w-4 mr-1" />
+                                        View Page
+                                      </Link>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="flex items-center"
+                                        onClick={() => setSelectedPage(page)}
+                                      >
+                                        <FileEdit className="h-4 w-4 mr-1" />
+                                        Edit
+                                      </Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
