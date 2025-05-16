@@ -28,6 +28,8 @@ export function DeleteContactDialog({ contact, onDelete, onClose }: DeleteContac
     setIsDeleting(true);
     
     try {
+      console.log("Deleting contact with ID:", contact.id);
+      
       const { error } = await supabase
         .from("contact_submissions")
         .delete()
@@ -35,15 +37,21 @@ export function DeleteContactDialog({ contact, onDelete, onClose }: DeleteContac
         
       if (error) {
         console.error("Delete error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to delete contact",
+          variant: "destructive",
+        });
         throw error;
+      } else {
+        console.log("Contact deleted successfully");
+        toast({
+          title: "Contact deleted",
+          description: "The contact submission has been deleted successfully."
+        });
+        
+        onDelete();
       }
-      
-      toast({
-        title: "Contact deleted",
-        description: "The contact submission has been deleted successfully."
-      });
-      
-      onDelete();
     } catch (error: any) {
       console.error("Error deleting contact:", error);
       toast({
