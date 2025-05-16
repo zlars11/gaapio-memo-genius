@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContactSubmission {
   id: string;
@@ -53,6 +53,7 @@ export function DeleteContactDialog({ contact, onDelete, onClose }: DeleteContac
       });
     } finally {
       setIsDeleting(false);
+      onClose();
     }
   };
 
