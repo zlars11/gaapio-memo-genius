@@ -55,31 +55,35 @@ export default function DPA() {
         orientation: 'portrait',
         unit: 'pt',
         format: 'a4',
+        compress: true,
       });
       
       // Calculate the dimensions
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
+      // Set margins (72 points = 1 inch)
+      const margin = 72;
+      const contentWidth = pdfWidth - (margin * 2);
+      
       // Get the total height of the content
       const contentHeight = content.offsetHeight;
-      const contentWidth = content.offsetWidth;
       
-      // Scale factor to fit content width to PDF width
-      const scale = pdfWidth / contentWidth;
+      // Scale factor to fit content width to PDF width (accounting for margins)
+      const scale = contentWidth / content.offsetWidth;
       
       // Calculate number of pages needed
-      const totalPages = Math.ceil(contentHeight * scale / pdfHeight);
+      const totalPages = Math.ceil(contentHeight * scale / (pdfHeight - (margin * 2)));
       
       let currentPosition = 0;
       
       // Function to add a page to the PDF
-      const addPage = async (position: number) => {
+      const addPage = async (position: number, pageNum: number) => {
         // Set the clip area for html2canvas
         const canvas = await html2canvas(content, {
           scale: 2, // Higher scale for better quality
           y: position,
-          height: Math.min(pdfHeight / scale, contentHeight - position),
+          height: Math.min((pdfHeight - (margin * 2)) / scale, contentHeight - position),
           useCORS: true,
           logging: false,
           windowHeight: contentHeight,
@@ -92,14 +96,45 @@ export default function DPA() {
         if (position > 0) {
           pdf.addPage();
         }
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, (canvas.height * pdfWidth) / canvas.width);
+        
+        // Add image with margins
+        pdf.addImage(
+          imgData, 
+          'PNG', 
+          margin, 
+          margin, 
+          contentWidth, 
+          (canvas.height * contentWidth) / canvas.width
+        );
+        
+        // Add footer
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        
+        // Page number (center)
+        pdf.text(`Page ${pageNum} of ${totalPages}`, pdfWidth / 2, pdfHeight - 30, { align: 'center' });
+        
+        // Website URL (right)
+        pdf.text('https://gaapio.com', pdfWidth - margin, pdfHeight - 30, { align: 'right' });
+        
+        // Company name (left)
+        pdf.text('Gaapio', margin, pdfHeight - 30, { align: 'left' });
       };
       
       // Process each page
       for (let i = 0; i < totalPages; i++) {
-        await addPage(currentPosition);
-        currentPosition += pdfHeight / scale;
+        await addPage(currentPosition, i + 1);
+        currentPosition += (pdfHeight - (margin * 2)) / scale;
       }
+      
+      // Add custom styling for PDF
+      pdf.setProperties({
+        title: 'Gaapio Data Processing Addendum',
+        subject: 'Data Processing Addendum',
+        author: 'Gaapio',
+        keywords: 'gaapio, dpa, data processing',
+        creator: 'Gaapio'
+      });
       
       // Save the PDF
       pdf.save('Gaapio_Data_Processing_Addendum.pdf');
@@ -127,6 +162,59 @@ export default function DPA() {
       <main className="flex-1 pt-28" id="dpa-content">
         <ResponsiveContainer className="max-w-4xl my-8">
           <div className="bg-card border border-border rounded-xl p-8 shadow-sm mb-8">
+            {/* Add print-specific styles */}
+            <style dangerouslySetInnerHTML={{ __html: `
+              @media print {
+                @page {
+                  size: letter;
+                  margin: 1in;
+                }
+                body {
+                  font-size: 12pt;
+                  line-height: 1.5;
+                  color: #000;
+                  background: #fff;
+                }
+                /* Prevent awkward page breaks */
+                h1, h2, h3, h4, h5, h6 {
+                  page-break-after: avoid;
+                  page-break-inside: avoid;
+                }
+                ul, ol, dl {
+                  page-break-before: avoid;
+                }
+                li, dd, dt {
+                  page-break-inside: avoid;
+                }
+                p, ul, ol, dl {
+                  orphans: 3;
+                  widows: 3;
+                }
+                /* Fix bullet formatting */
+                ul, ol {
+                  margin-left: 0;
+                  padding-left: 1.5em;
+                }
+                /* Match fonts and weights */
+                h2.section-header {
+                  font-size: 14pt;
+                  font-weight: bold;
+                  margin-top: 20pt;
+                  margin-bottom: 10pt;
+                }
+                /* Hide elements that shouldn't be printed */
+                button, .no-print {
+                  display: none !important;
+                }
+                /* Ensure full width */
+                .print-container {
+                  width: 100% !important;
+                  padding: 0 !important;
+                  margin: 0 !important;
+                }
+              }
+            `}} />
+            
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold mb-2">GAAPIO DATA PROCESSING ADDENDUM</h1>
               <p className="text-muted-foreground mb-6">
@@ -136,7 +224,7 @@ export default function DPA() {
                 <Button 
                   onClick={generatePDF} 
                   disabled={generating}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 no-print"
                   variant="outline"
                 >
                   <Download className="h-4 w-4" /> 
@@ -144,7 +232,7 @@ export default function DPA() {
                 </Button>
                 <Button 
                   onClick={() => document.getElementById("toc")?.scrollIntoView({ behavior: "smooth" })}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 no-print"
                   variant="secondary"
                 >
                   <List className="h-4 w-4" /> 
@@ -156,7 +244,7 @@ export default function DPA() {
               </p>
             </div>
             
-            <div className="mb-10 border border-border rounded-lg p-6 bg-muted/20" id="toc">
+            <div className="mb-10 border border-border rounded-lg p-6 bg-muted/20 no-print" id="toc">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
                 <FileText className="mr-2 h-5 w-5" />
                 Table of Contents
@@ -176,9 +264,9 @@ export default function DPA() {
               </ul>
             </div>
             
-            <div className="p-4" ref={contentRef}>
+            <div className="p-4 print-container" ref={contentRef}>
               <section className="mb-10" id="purpose">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">1. PURPOSE & SCOPE</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">1. PURPOSE & SCOPE</h2>
                 <p className="mb-3">
                   This DPA governs the processing of personal data by Gaapio on behalf of Customer in connection with
                   the Services provided under the Agreement. This DPA applies to the extent Gaapio processes Customer
@@ -187,7 +275,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="roles">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">2. ROLES OF THE PARTIES</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">2. ROLES OF THE PARTIES</h2>
                 <p className="mb-3">
                   Customer is the "Controller" of Customer Personal Data. Gaapio is the "Processor" and shall 
                   process data only on behalf of and in accordance with Customer's documented instructions.
@@ -195,7 +283,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="types">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">3. TYPES OF DATA AND DATA SUBJECTS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">3. TYPES OF DATA AND DATA SUBJECTS</h2>
                 <p className="mb-3">Customer Personal Data may include:</p>
                 <ul className="list-disc pl-8 mb-6 space-y-2">
                   <li>Names, email addresses, and professional data of Customer's employees or clients</li>
@@ -212,7 +300,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="subprocessors">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">4. SUBPROCESSORS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">4. SUBPROCESSORS</h2>
                 <p className="mb-3">
                   Customer authorizes Gaapio to use subprocessors in connection with the provision of Services. 
                   As of the effective date, the following subprocessors are used:
@@ -228,7 +316,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="security">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">5. SECURITY MEASURES</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">5. SECURITY MEASURES</h2>
                 <p className="mb-3">
                   Gaapio will implement appropriate technical and organizational measures to protect Customer Personal Data, including:
                 </p>
@@ -241,7 +329,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="rights">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">6. DATA SUBJECT RIGHTS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">6. DATA SUBJECT RIGHTS</h2>
                 <p className="mb-3">
                   Gaapio shall, to the extent legally permitted and technically feasible, assist Customer in responding 
                   to requests to access, correct, or delete Personal Data in accordance with Data Protection Laws.
@@ -249,7 +337,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="transfers">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">7. DATA TRANSFERS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">7. DATA TRANSFERS</h2>
                 <p className="mb-3">
                   If Customer Personal Data originates from the EEA, UK, or Switzerland and is transferred to the United States, 
                   Gaapio shall rely on:
@@ -261,7 +349,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="retention">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">8. RETENTION AND DELETION</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">8. RETENTION AND DELETION</h2>
                 <p className="mb-3">Upon expiration or termination of the Agreement, Gaapio shall:</p>
                 <ul className="list-disc pl-8 mb-6 space-y-2">
                   <li>Delete or return all Customer Personal Data within 30 days</li>
@@ -270,7 +358,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="audit">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">9. AUDIT RIGHTS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">9. AUDIT RIGHTS</h2>
                 <p className="mb-3">
                   Upon written request and subject to confidentiality obligations, Customer may review Gaapio's data processing practices.
                   Gaapio shall provide documentation necessary to demonstrate compliance with this DPA and Data Protection Laws.
@@ -278,7 +366,7 @@ export default function DPA() {
               </section>
               
               <section className="mb-10" id="governing">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">10. GOVERNING LAW</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">10. GOVERNING LAW</h2>
                 <p className="mb-3">
                   This DPA is governed by the same law that governs the Agreement (Delaware, unless otherwise stated).
                 </p>

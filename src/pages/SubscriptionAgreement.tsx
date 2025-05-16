@@ -57,31 +57,35 @@ export default function SubscriptionAgreement() {
         orientation: 'portrait',
         unit: 'pt',
         format: 'a4',
+        compress: true,
       });
       
       // Calculate the dimensions
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
+      // Set margins (72 points = 1 inch)
+      const margin = 72;
+      const contentWidth = pdfWidth - (margin * 2);
+      
       // Get the total height of the content
       const contentHeight = content.offsetHeight;
-      const contentWidth = content.offsetWidth;
       
-      // Scale factor to fit content width to PDF width
-      const scale = pdfWidth / contentWidth;
+      // Scale factor to fit content width to PDF width (accounting for margins)
+      const scale = contentWidth / content.offsetWidth;
       
       // Calculate number of pages needed
-      const totalPages = Math.ceil(contentHeight * scale / pdfHeight);
+      const totalPages = Math.ceil(contentHeight * scale / (pdfHeight - (margin * 2)));
       
       let currentPosition = 0;
       
       // Function to add a page to the PDF
-      const addPage = async (position: number) => {
+      const addPage = async (position: number, pageNum: number) => {
         // Set the clip area for html2canvas
         const canvas = await html2canvas(content, {
           scale: 2, // Higher scale for better quality
           y: position,
-          height: Math.min(pdfHeight / scale, contentHeight - position),
+          height: Math.min((pdfHeight - (margin * 2)) / scale, contentHeight - position),
           useCORS: true,
           logging: false,
           windowHeight: contentHeight,
@@ -94,14 +98,45 @@ export default function SubscriptionAgreement() {
         if (position > 0) {
           pdf.addPage();
         }
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, (canvas.height * pdfWidth) / canvas.width);
+        
+        // Add image with margins
+        pdf.addImage(
+          imgData, 
+          'PNG', 
+          margin, 
+          margin, 
+          contentWidth, 
+          (canvas.height * contentWidth) / canvas.width
+        );
+        
+        // Add footer
+        pdf.setFontSize(10);
+        pdf.setTextColor(100, 100, 100);
+        
+        // Page number (center)
+        pdf.text(`Page ${pageNum} of ${totalPages}`, pdfWidth / 2, pdfHeight - 30, { align: 'center' });
+        
+        // Website URL (right)
+        pdf.text('https://gaapio.com', pdfWidth - margin, pdfHeight - 30, { align: 'right' });
+        
+        // Company name (left)
+        pdf.text('Gaapio', margin, pdfHeight - 30, { align: 'left' });
       };
       
       // Process each page
       for (let i = 0; i < totalPages; i++) {
-        await addPage(currentPosition);
-        currentPosition += pdfHeight / scale;
+        await addPage(currentPosition, i + 1);
+        currentPosition += (pdfHeight - (margin * 2)) / scale;
       }
+      
+      // Add custom styling for PDF
+      pdf.setProperties({
+        title: 'Gaapio Subscription Agreement',
+        subject: 'Subscription Agreement',
+        author: 'Gaapio',
+        keywords: 'gaapio, subscription, agreement',
+        creator: 'Gaapio'
+      });
       
       // Save the PDF
       pdf.save('Gaapio_Subscription_Agreement.pdf');
@@ -129,6 +164,65 @@ export default function SubscriptionAgreement() {
       <main className="flex-1 pt-28" id="ssa-content">
         <ResponsiveContainer className="max-w-4xl my-8">
           <div className="bg-card border border-border rounded-xl p-8 shadow-sm mb-8">
+            {/* Add print-specific styles */}
+            <style dangerouslySetInnerHTML={{ __html: `
+              @media print {
+                @page {
+                  size: letter;
+                  margin: 1in;
+                }
+                body {
+                  font-size: 12pt;
+                  line-height: 1.5;
+                  color: #000;
+                  background: #fff;
+                }
+                /* Prevent awkward page breaks */
+                h1, h2, h3, h4, h5, h6 {
+                  page-break-after: avoid;
+                  page-break-inside: avoid;
+                }
+                ul, ol, dl {
+                  page-break-before: avoid;
+                }
+                li, dd, dt {
+                  page-break-inside: avoid;
+                }
+                p, ul, ol, dl {
+                  orphans: 3;
+                  widows: 3;
+                }
+                /* Fix bullet formatting */
+                ul, ol {
+                  margin-left: 0;
+                  padding-left: 1.5em;
+                }
+                /* Match fonts and weights */
+                h2.section-header {
+                  font-size: 14pt;
+                  font-weight: bold;
+                  margin-top: 20pt;
+                  margin-bottom: 10pt;
+                }
+                h3.subsection-header {
+                  font-size: 12pt;
+                  font-weight: bold;
+                  margin-top: 16pt;
+                  margin-bottom: 8pt;
+                }
+                /* Hide elements that shouldn't be printed */
+                button, .no-print {
+                  display: none !important;
+                }
+                /* Ensure full width */
+                .print-container {
+                  width: 100% !important;
+                  padding: 0 !important;
+                  margin: 0 !important;
+                }
+              }
+            `}} />
+            
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold mb-2">GAAPIO SOFTWARE SUBSCRIPTION AGREEMENT</h1>
               <p className="text-muted-foreground mb-6">
@@ -138,7 +232,7 @@ export default function SubscriptionAgreement() {
                 <Button 
                   onClick={generatePDF} 
                   disabled={generating}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 no-print"
                   variant="outline"
                 >
                   <Download className="h-4 w-4" /> 
@@ -146,7 +240,7 @@ export default function SubscriptionAgreement() {
                 </Button>
                 <Button 
                   onClick={() => document.getElementById("toc")?.scrollIntoView({ behavior: "smooth" })}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 no-print"
                   variant="secondary"
                 >
                   <List className="h-4 w-4" /> 
@@ -158,7 +252,7 @@ export default function SubscriptionAgreement() {
               </p>
             </div>
             
-            <div className="mb-10 border border-border rounded-lg p-6 bg-muted/20" id="toc">
+            <div className="mb-10 border border-border rounded-lg p-6 bg-muted/20 no-print" id="toc">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
                 <FileText className="mr-2 h-5 w-5" />
                 Table of Contents
@@ -178,7 +272,7 @@ export default function SubscriptionAgreement() {
               </ul>
             </div>
             
-            <div className="p-4" ref={contentRef}>
+            <div className="p-4 print-container" ref={contentRef}>
               <p className="mb-8">
                 This Subscription Services Agreement ("Agreement") is entered into by and between Gaapio, Inc., 
                 a Delaware corporation ("Gaapio"), and the subscribing entity identified in an executed ordering 
@@ -187,7 +281,7 @@ export default function SubscriptionAgreement() {
               </p>
               
               <section className="mb-10" id="definitions">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">1. DEFINITIONS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">1. DEFINITIONS</h2>
                 <p className="mb-3">
                   "AI Services" means Gaapio's proprietary AI-powered platform for automating accounting memo 
                   generation and related analysis, including all features, tools, modules, and enhancements 
@@ -222,7 +316,7 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="access-use">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">2. ACCESS & USE RIGHTS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">2. ACCESS & USE RIGHTS</h2>
                 <p className="mb-3">
                   Subject to the terms of this Agreement, Gaapio grants Customer a limited, non-exclusive, 
                   non-transferable right to access and use the AI Services and Deliverables during the Subscription 
@@ -236,7 +330,7 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="customer-responsibilities">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">3. CUSTOMER RESPONSIBILITIES</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">3. CUSTOMER RESPONSIBILITIES</h2>
                 <p className="mb-3">Customer is responsible for:</p>
                 <ul className="list-disc pl-8 mb-6 space-y-2">
                   <li>Maintaining the confidentiality of login credentials and restricting access to authorized Users.</li>
@@ -252,21 +346,21 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="fees">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">4. FEES, BILLING & TAXES</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">4. FEES, BILLING & TAXES</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">4.1 Fees and Payment</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">4.1 Fees and Payment</h3>
                 <p className="mb-3">
                   All fees are due in accordance with the Order Form and payable within 30 days of invoice unless 
                   otherwise specified. Late payments may incur a monthly interest charge of 1.5%.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">4.2 Usage-Based Adjustments</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">4.2 Usage-Based Adjustments</h3>
                 <p className="mb-3">
                   If Customer exceeds usage volumes specified in the Order Form, Gaapio may invoice for the excess 
                   usage at the rates stated in the Order Form or Gaapio's then-current pricing.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">4.3 Taxes</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">4.3 Taxes</h3>
                 <p className="mb-3">
                   Fees are exclusive of all applicable taxes. Customer shall be responsible for payment of all taxes 
                   except those based on Gaapio's income.
@@ -274,9 +368,9 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="term">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">5. TERM & TERMINATION</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">5. TERM & TERMINATION</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">5.1 Term</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">5.1 Term</h3>
                 <p className="mb-3">
                   This Agreement shall remain in effect for the duration of all active Subscription Terms unless 
                   earlier terminated. Unless otherwise specified in the Order Form, each Subscription Term shall 
@@ -284,7 +378,7 @@ export default function SubscriptionAgreement() {
                   written notice of non-renewal at least 30 days prior to the end of the then-current term.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">5.2 Termination</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">5.2 Termination</h3>
                 <p className="mb-3">Either party may terminate this Agreement:</p>
                 <ul className="list-disc pl-8 mb-3 space-y-2">
                   <li>With written notice of non-renewal delivered at least 30 days before the end of a Subscription Term;</li>
@@ -292,7 +386,7 @@ export default function SubscriptionAgreement() {
                   <li>Immediately upon the other party's insolvency or bankruptcy.</li>
                 </ul>
                 
-                <h3 className="text-lg font-semibold mb-3">5.3 Effect of Termination</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">5.3 Effect of Termination</h3>
                 <p className="mb-3">Upon termination:</p>
                 <ul className="list-disc pl-8 space-y-2">
                   <li>All access rights are revoked;</li>
@@ -302,28 +396,28 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="ip">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">6. INTELLECTUAL PROPERTY</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">6. INTELLECTUAL PROPERTY</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">6.1 Ownership</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">6.1 Ownership</h3>
                 <p className="mb-3">
                   Customer retains ownership of Customer Content. Gaapio retains ownership of the AI Services, 
                   platform, and any improvements or feedback provided.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">6.2 License to Data</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">6.2 License to Data</h3>
                 <p className="mb-3">
                   Customer grants Gaapio a limited license to use Customer Content for the purpose of providing 
                   the AI Services.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">6.3 Usage Data and Improvements</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">6.3 Usage Data and Improvements</h3>
                 <p className="mb-3">
                   Gaapio may use aggregated, de-identified usage data to improve the AI Services.
                 </p>
               </section>
               
               <section className="mb-10" id="confidentiality">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">7. CONFIDENTIALITY</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">7. CONFIDENTIALITY</h2>
                 <p className="mb-3">
                   Each party agrees to maintain in confidence any non-public information received from the other 
                   party that is designated as confidential or that reasonably should be understood to be confidential. 
@@ -332,22 +426,22 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="warranties">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">8. WARRANTIES & DISCLAIMERS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">8. WARRANTIES & DISCLAIMERS</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">8.1 Limited Warranty</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">8.1 Limited Warranty</h3>
                 <p className="mb-3">
                   Gaapio warrants that the AI Services will materially conform to the applicable Documentation 
                   during the Subscription Term.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">8.2 Disclaimers</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">8.2 Disclaimers</h3>
                 <p className="mb-3 uppercase">
                   Except as expressly provided, Gaapio disclaims all other warranties, including implied 
                   warranties of merchantability, fitness for a particular purpose, and non-infringement. 
                   The AI Services are provided "as is."
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">8.3 Outputs and Reliance</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">8.3 Outputs and Reliance</h3>
                 <p className="mb-3">
                   Deliverables generated by the AI Services are for informational purposes only. They are not 
                   intended to constitute accounting or legal advice, and Customer is solely responsible for 
@@ -356,7 +450,7 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="liability">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">9. LIMITATION OF LIABILITY</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">9. LIMITATION OF LIABILITY</h2>
                 <p className="uppercase mb-3">
                   In no event shall either party be liable for indirect, incidental, or consequential damages. 
                   Gaapio's aggregate liability shall not exceed the amounts paid by Customer in the twelve (12) 
@@ -365,7 +459,7 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="indemnification">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">10. INDEMNIFICATION</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">10. INDEMNIFICATION</h2>
                 <p className="mb-3">
                   Each party agrees to indemnify, defend, and hold the other party harmless from third-party claims 
                   arising from breach of this Agreement, violation of applicable law, or infringement caused by 
@@ -374,27 +468,27 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="compliance">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">11. COMPLIANCE, SECURITY, & DATA PROCESSING</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">11. COMPLIANCE, SECURITY, & DATA PROCESSING</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">11.1 Data Security</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">11.1 Data Security</h3>
                 <p className="mb-3">
                   Gaapio implements industry-standard technical and organizational safeguards to protect Customer Content.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">11.2 Data Processing</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">11.2 Data Processing</h3>
                 <p className="mb-3">
                   If required by applicable law (e.g., GDPR or CCPA), the parties will execute a separate Data 
                   Processing Addendum.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">11.3 Export Compliance</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">11.3 Export Compliance</h3>
                 <p className="mb-3">
                   Customer shall not use the AI Services in violation of U.S. export laws or regulations.
                 </p>
               </section>
               
               <section className="mb-10" id="dispute">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">12. DISPUTE RESOLUTION & GOVERNING LAW</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">12. DISPUTE RESOLUTION & GOVERNING LAW</h2>
                 <p className="mb-3">
                   This Agreement is governed by the laws of Delaware without regard to conflict of laws. Any dispute 
                   shall be resolved by binding arbitration under the Commercial Rules of the American Arbitration 
@@ -403,34 +497,34 @@ export default function SubscriptionAgreement() {
               </section>
               
               <section className="mb-10" id="general">
-                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">13. GENERAL PROVISIONS</h2>
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2 section-header">13. GENERAL PROVISIONS</h2>
                 
-                <h3 className="text-lg font-semibold mb-3">13.1 Entire Agreement</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.1 Entire Agreement</h3>
                 <p className="mb-3">
                   This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">13.2 Assignment</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.2 Assignment</h3>
                 <p className="mb-3">
                   Neither party may assign this Agreement without written consent, except to a successor entity.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">13.3 Force Majeure</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.3 Force Majeure</h3>
                 <p className="mb-3">
                   Neither party shall be liable for delays due to causes beyond their reasonable control.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">13.4 Counterparts</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.4 Counterparts</h3>
                 <p className="mb-3">
                   This Agreement may be executed in counterparts, including electronically.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">13.5 No Legal Advice</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.5 No Legal Advice</h3>
                 <p className="mb-3">
                   Gaapio is not a licensed CPA firm and does not offer legal, tax, or accounting advice.
                 </p>
                 
-                <h3 className="text-lg font-semibold mb-3">13.6 Publicity Rights</h3>
+                <h3 className="text-lg font-semibold mb-3 subsection-header">13.6 Publicity Rights</h3>
                 <p className="mb-3">
                   Customer grants Gaapio the right to include Customer's name and logo in its public client list, 
                   case studies, and marketing materials, unless otherwise agreed in writing.
