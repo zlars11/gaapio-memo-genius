@@ -10,8 +10,23 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
+// Define the blog post type
+type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  publish_date: string;
+  updated_at: string;
+  status: string;
+  thumbnail_url: string;
+  category?: string; // Make category optional since it might not exist in older posts
+}
+
 export default function Blog() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [categories, setCategories] = useState<string[]>([]);

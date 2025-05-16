@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Image, Upload, X, RefreshCw, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { v4 as uuidv4 } from "uuid";
+import { Badge } from "@/components/ui/badge";
 
 interface BlogImageUploaderProps {
   currentImage: string | null;
