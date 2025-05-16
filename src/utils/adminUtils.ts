@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -22,6 +23,40 @@ export async function checkAdminRole(userId: string): Promise<boolean> {
   } catch (error) {
     console.error("Error checking admin status:", error);
     return false;
+  }
+}
+
+/**
+ * Find a user by email in auth system
+ * @param email Email to find
+ * @returns Promise resolving to user ID if found, null otherwise
+ */
+export async function findUserByEmail(email: string): Promise<string | null> {
+  try {
+    // First try public.users table
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+    
+    if (!userError && userData?.id) {
+      return userData.id;
+    }
+    
+    // If above fails, try via auth admin API
+    const { data, error } = await supabase.auth.admin.listUsers();
+    
+    if (error) {
+      console.error("Error listing users:", error);
+      return null;
+    }
+    
+    const user = data?.users?.find(user => user.email === email);
+    return user?.id || null;
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    return null;
   }
 }
 

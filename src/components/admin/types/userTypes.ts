@@ -10,6 +10,7 @@ export interface User {
   status: 'active' | 'inactive';
   created_at: string;
   updated_at?: string;
+  company?: string; // Added missing property
 }
 
 export interface FirmSignup {
@@ -25,4 +26,5 @@ export interface FirmSignup {
   notes?: string;
   created_at: string;
   updated_at?: string;
+  plan?: string; // Added missing property
 }
