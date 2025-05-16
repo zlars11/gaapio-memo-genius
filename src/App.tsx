@@ -21,6 +21,7 @@ import ASC606Pitfalls from "./pages/ASC606Pitfalls";
 import OnePager from "./pages/OnePager";
 import Status from "./pages/Status";
 import SubscriptionAgreement from "./pages/SubscriptionAgreement";
+import DPA from "./pages/DPA";
 import ChoosePlan from "./pages/ChoosePlan";
 import Login from "./pages/Login";
 import Pricing from "./pages/Pricing";
@@ -47,6 +48,7 @@ const App: React.FC = () => {
             <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
             <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
             <Route path="/ssa" element={<SubscriptionAgreement />} />
+            <Route path="/dpa" element={<DPA />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/login" element={<Login />} />

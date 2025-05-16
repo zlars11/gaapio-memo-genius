@@ -1,0 +1,294 @@
+
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
+import { Button } from "@/components/ui/button";
+import { FileText, Download, List } from "lucide-react";
+import { format } from "date-fns";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { useToast } from "@/components/ui/use-toast";
+
+export default function DPA() {
+  const today = format(new Date(), "MMMM d, yyyy");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [generating, setGenerating] = useState(false);
+  const { toast } = useToast();
+  
+  const sections = [
+    { id: "purpose", title: "1. Purpose & Scope" },
+    { id: "roles", title: "2. Roles of the Parties" },
+    { id: "types", title: "3. Types of Data and Data Subjects" },
+    { id: "subprocessors", title: "4. Subprocessors" },
+    { id: "security", title: "5. Security Measures" },
+    { id: "rights", title: "6. Data Subject Rights" },
+    { id: "transfers", title: "7. Data Transfers" },
+    { id: "retention", title: "8. Retention and Deletion" },
+    { id: "audit", title: "9. Audit Rights" },
+    { id: "governing", title: "10. Governing Law" },
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  
+  const generatePDF = async () => {
+    if (!contentRef.current) return;
+    
+    setGenerating(true);
+    toast({
+      title: "Generating PDF",
+      description: "Please wait while we generate your PDF...",
+    });
+    
+    try {
+      // Get the content div that contains the entire agreement
+      const content = contentRef.current;
+      
+      // Create a new jsPDF instance
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'a4',
+      });
+      
+      // Calculate the dimensions
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      // Get the total height of the content
+      const contentHeight = content.offsetHeight;
+      const contentWidth = content.offsetWidth;
+      
+      // Scale factor to fit content width to PDF width
+      const scale = pdfWidth / contentWidth;
+      
+      // Calculate number of pages needed
+      const totalPages = Math.ceil(contentHeight * scale / pdfHeight);
+      
+      let currentPosition = 0;
+      
+      // Function to add a page to the PDF
+      const addPage = async (position: number) => {
+        // Set the clip area for html2canvas
+        const canvas = await html2canvas(content, {
+          scale: 2, // Higher scale for better quality
+          y: position,
+          height: Math.min(pdfHeight / scale, contentHeight - position),
+          useCORS: true,
+          logging: false,
+          windowHeight: contentHeight,
+        });
+        
+        // Convert canvas to image
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Add image to PDF
+        if (position > 0) {
+          pdf.addPage();
+        }
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, (canvas.height * pdfWidth) / canvas.width);
+      };
+      
+      // Process each page
+      for (let i = 0; i < totalPages; i++) {
+        await addPage(currentPosition);
+        currentPosition += pdfHeight / scale;
+      }
+      
+      // Save the PDF
+      pdf.save('Gaapio_Data_Processing_Addendum.pdf');
+      
+      toast({
+        title: "PDF Generated Successfully",
+        description: "Your data processing addendum has been downloaded.",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error Generating PDF",
+        description: "An error occurred while generating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      
+      <main className="flex-1 pt-28" id="dpa-content">
+        <ResponsiveContainer className="max-w-4xl my-8">
+          <div className="bg-card border border-border rounded-xl p-8 shadow-sm mb-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">GAAPIO DATA PROCESSING ADDENDUM</h1>
+              <p className="text-muted-foreground mb-6">
+                Last Updated: {today}
+              </p>
+              <div className="flex justify-center space-x-4 mb-8">
+                <Button 
+                  onClick={generatePDF} 
+                  disabled={generating}
+                  className="flex items-center gap-2"
+                  variant="outline"
+                >
+                  <Download className="h-4 w-4" /> 
+                  {generating ? "Generating..." : "Download PDF"}
+                </Button>
+                <Button 
+                  onClick={() => document.getElementById("toc")?.scrollIntoView({ behavior: "smooth" })}
+                  className="flex items-center gap-2"
+                  variant="secondary"
+                >
+                  <List className="h-4 w-4" /> 
+                  Table of Contents
+                </Button>
+              </div>
+              <p className="text-muted-foreground">
+                This document outlines the terms for processing personal data when using Gaapio services.
+              </p>
+            </div>
+            
+            <div className="mb-10 border border-border rounded-lg p-6 bg-muted/20" id="toc">
+              <h2 className="text-xl font-semibold mb-4 flex items-center">
+                <FileText className="mr-2 h-5 w-5" />
+                Table of Contents
+              </h2>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {sections.map((section) => (
+                  <li key={section.id}>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-left"
+                      onClick={() => scrollToSection(section.id)}
+                    >
+                      {section.title}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="p-4" ref={contentRef}>
+              <section className="mb-10" id="purpose">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">1. PURPOSE & SCOPE</h2>
+                <p className="mb-3">
+                  This DPA governs the processing of personal data by Gaapio on behalf of Customer in connection with
+                  the Services provided under the Agreement. This DPA applies to the extent Gaapio processes Customer
+                  Personal Data subject to applicable Data Protection Laws.
+                </p>
+              </section>
+              
+              <section className="mb-10" id="roles">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">2. ROLES OF THE PARTIES</h2>
+                <p className="mb-3">
+                  Customer is the "Controller" of Customer Personal Data. Gaapio is the "Processor" and shall 
+                  process data only on behalf of and in accordance with Customer's documented instructions.
+                </p>
+              </section>
+              
+              <section className="mb-10" id="types">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">3. TYPES OF DATA AND DATA SUBJECTS</h2>
+                <p className="mb-3">Customer Personal Data may include:</p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Names, email addresses, and professional data of Customer's employees or clients</li>
+                  <li>Content provided through uploaded documents, memos, and footnotes</li>
+                </ul>
+                <p className="mb-3">Data subjects may include:</p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Customer's employees</li>
+                  <li>Customer's clients and stakeholders</li>
+                </ul>
+                <p className="mb-3">
+                  Gaapio does not knowingly process special categories of personal data (e.g., health, political, biometric data).
+                </p>
+              </section>
+              
+              <section className="mb-10" id="subprocessors">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">4. SUBPROCESSORS</h2>
+                <p className="mb-3">
+                  Customer authorizes Gaapio to use subprocessors in connection with the provision of Services. 
+                  As of the effective date, the following subprocessors are used:
+                </p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Supabase – data hosting and storage (U.S.-based)</li>
+                  <li>Vercel – application frontend hosting (U.S.-based)</li>
+                </ul>
+                <p className="mb-3">
+                  Gaapio will ensure that subprocessors are bound by written agreements with data protection 
+                  obligations no less protective than those in this DPA.
+                </p>
+              </section>
+              
+              <section className="mb-10" id="security">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">5. SECURITY MEASURES</h2>
+                <p className="mb-3">
+                  Gaapio will implement appropriate technical and organizational measures to protect Customer Personal Data, including:
+                </p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Role-based access control</li>
+                  <li>Encrypted data storage</li>
+                  <li>Secure transmission protocols</li>
+                  <li>Logging and monitoring</li>
+                </ul>
+              </section>
+              
+              <section className="mb-10" id="rights">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">6. DATA SUBJECT RIGHTS</h2>
+                <p className="mb-3">
+                  Gaapio shall, to the extent legally permitted and technically feasible, assist Customer in responding 
+                  to requests to access, correct, or delete Personal Data in accordance with Data Protection Laws.
+                </p>
+              </section>
+              
+              <section className="mb-10" id="transfers">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">7. DATA TRANSFERS</h2>
+                <p className="mb-3">
+                  If Customer Personal Data originates from the EEA, UK, or Switzerland and is transferred to the United States, 
+                  Gaapio shall rely on:
+                </p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Standard Contractual Clauses (SCCs) for such transfers</li>
+                  <li>Industry-standard safeguards for U.S.-hosted environments</li>
+                </ul>
+              </section>
+              
+              <section className="mb-10" id="retention">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">8. RETENTION AND DELETION</h2>
+                <p className="mb-3">Upon expiration or termination of the Agreement, Gaapio shall:</p>
+                <ul className="list-disc pl-8 mb-6 space-y-2">
+                  <li>Delete or return all Customer Personal Data within 30 days</li>
+                  <li>Unless otherwise required by law or regulatory obligations</li>
+                </ul>
+              </section>
+              
+              <section className="mb-10" id="audit">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">9. AUDIT RIGHTS</h2>
+                <p className="mb-3">
+                  Upon written request and subject to confidentiality obligations, Customer may review Gaapio's data processing practices.
+                  Gaapio shall provide documentation necessary to demonstrate compliance with this DPA and Data Protection Laws.
+                </p>
+              </section>
+              
+              <section className="mb-10" id="governing">
+                <h2 className="text-2xl font-bold mb-5 text-primary border-b pb-2">10. GOVERNING LAW</h2>
+                <p className="mb-3">
+                  This DPA is governed by the same law that governs the Agreement (Delaware, unless otherwise stated).
+                </p>
+              </section>
+            </div>
+          </div>
+        </ResponsiveContainer>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
