@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
@@ -7,7 +8,6 @@ import { ContactTable } from "@/components/admin/ContactTable";
 import { DemoRequestsTable } from "@/components/admin/DemoRequestsTable";
 import { AdminPageGuard } from "@/components/admin/AdminPageGuard";
 import { AdminSecurityAlert } from "@/components/admin/AdminSecurityAlert";
-import { PricingManagement } from "@/components/admin/PricingManagement";
 import { FirmSignupsTable } from "@/components/admin/FirmSignupsTable";
 import { AdminFetchErrorAlert } from "@/components/admin/AdminFetchErrorAlert";
 import { ZapierWebhookSetup } from "@/components/admin/ZapierWebhookSetup";
@@ -60,7 +60,6 @@ export default function Admin() {
     contacts: true,
     demos: true,
     firms: true,
-    pricing: true,
     webpages: true,
     settings: true
   });
@@ -100,7 +99,6 @@ export default function Admin() {
       title: "💳 Billing & Payment",
       icon: <CreditCard className="h-5 w-5" />,
       pages: [
-        { title: "Pricing", path: "/pricing", description: "Pricing plans and options", seoStatus: "complete" },
         { title: "Choose Plan", path: "/choose-plan", description: "Plan selection page", seoStatus: "missing" },
         { title: "Success", path: "/success", description: "Payment success page", seoStatus: "missing" },
         { title: "Cancel", path: "/cancel", description: "Payment cancellation page", seoStatus: "missing" },
@@ -267,7 +265,6 @@ export default function Admin() {
                 {tabVisibility.contacts && <TabsTrigger value="contacts">Contacts</TabsTrigger>}
                 {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
                 {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
-                {tabVisibility.pricing && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
@@ -305,12 +302,6 @@ export default function Admin() {
               {tabVisibility.firms && (
                 <TabsContent value="firms" className="space-y-4">
                   <FirmSignupsTable />
-                </TabsContent>
-              )}
-              
-              {tabVisibility.pricing && (
-                <TabsContent value="pricing" className="space-y-4">
-                  <PricingManagement />
                 </TabsContent>
               )}
               

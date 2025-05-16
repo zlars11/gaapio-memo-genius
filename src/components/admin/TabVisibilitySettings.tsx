@@ -54,12 +54,6 @@ export function TabVisibilitySettings() {
       visible: true
     },
     {
-      id: "pricing",
-      name: "Pricing",
-      description: "Manage product pricing",
-      visible: true
-    },
-    {
       id: "webpages",
       name: "Webpages",
       description: "Manage website content",

@@ -24,7 +24,6 @@ import SubscriptionAgreement from "./pages/SubscriptionAgreement";
 import DPA from "./pages/DPA";
 import ChoosePlan from "./pages/ChoosePlan";
 import Login from "./pages/Login";
-import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import SignUp from "./pages/SignUp";
 import FirmSignup from "./pages/FirmSignup";
@@ -53,7 +52,6 @@ const App: React.FC = () => {
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/login" element={<Login />} />
             <Route path="/onepager" element={<OnePager />} />
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/request-demo" element={<RequestDemo />} />
             <Route path="/signup" element={<SignUp />} />
