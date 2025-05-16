@@ -24,11 +24,11 @@ export function HomepageCtaToggle() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <p className="font-medium">Homepage CTA Button</p>
+          <p className="font-medium">Enable Self-Signup</p>
           <p className="text-sm text-muted-foreground">
             {enableSelfSignup 
-              ? "The secondary homepage button is set to \"Sign Up Now\""
-              : "The secondary homepage button is set to \"Contact Sales\""}
+              ? "Users can sign up directly on the website" 
+              : "Users must contact sales to get started"}
           </p>
         </div>
         <Switch 
@@ -39,7 +39,7 @@ export function HomepageCtaToggle() {
       </div>
       
       <div className="bg-muted p-4 rounded-lg">
-        <p className="text-sm font-medium mb-2">Current button text:</p>
+        <p className="text-sm font-medium mb-2">Secondary homepage button:</p>
         <div className="bg-primary text-primary-foreground rounded px-4 py-2 inline-block">
           {enableSelfSignup ? "Sign Up Now" : "Contact Sales"}
         </div>

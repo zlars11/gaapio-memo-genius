@@ -75,6 +75,69 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          author: string | null
+          content: string | null
+          excerpt: string | null
+          id: string
+          publish_date: string
+          slug: string
+          status: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author?: string | null
+          content?: string | null
+          excerpt?: string | null
+          id?: string
+          publish_date?: string
+          slug: string
+          status?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author?: string | null
+          content?: string | null
+          excerpt?: string | null
+          id?: string
+          publish_date?: string
+          slug?: string
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      click_events: {
+        Row: {
+          element: string
+          id: string
+          page: string
+          session_id: string
+          timestamp: string
+        }
+        Insert: {
+          element: string
+          id?: string
+          page: string
+          session_id: string
+          timestamp?: string
+        }
+        Update: {
+          element?: string
+          id?: string
+          page?: string
+          session_id?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           amount: number
