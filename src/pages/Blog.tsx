@@ -22,7 +22,7 @@ type BlogPost = {
   updated_at: string;
   status: string;
   thumbnail_url: string;
-  category?: string; // Make category optional since it might not exist in older posts
+  category?: string; // Added optional category field
 }
 
 export default function Blog() {
