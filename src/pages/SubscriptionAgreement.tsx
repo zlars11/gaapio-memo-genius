@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -110,7 +109,6 @@ export default function SubscriptionAgreement() {
       toast({
         title: "PDF Generated Successfully",
         description: "Your subscription agreement has been downloaded.",
-        variant: "success",
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
