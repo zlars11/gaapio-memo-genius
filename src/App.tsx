@@ -1,22 +1,23 @@
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Resources from "./pages/Resources";
 import Privacy from "./pages/Privacy";
-import SSA from "./pages/SSA";
+import SubscriptionAgreement from "./pages/SubscriptionAgreement";
 import ChoosePlan from "./pages/ChoosePlan";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import SignUp from "./pages/SignUp";
 import FirmSignup from "./pages/FirmSignup";
 import RequestDemo from "./pages/RequestDemo";
 import Blog from "./pages/Blog";
-import ArticleASC606 from "./pages/ArticleASC606";
-import ArticleTechMemos from "./pages/ArticleTechMemos";
-import ArticleAIinAccounting from "./pages/ArticleAIinAccounting";
+import ASC606Pitfalls from "./pages/ASC606Pitfalls";
+// ArticleTechMemos has been removed as it no longer exists
+import AIAccounting from "./pages/AIAccounting";
 import OnePager from "./pages/OnePager";
 import Status from "./pages/Status";
 import NotFound from "./pages/NotFound";
@@ -29,24 +30,24 @@ function App() {
       <InitializeWebhooks />
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Index />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/ssa" element={<SSA />} />
+          <Route path="/ssa" element={<SubscriptionAgreement />} />
           <Route path="/choose-plan" element={<ChoosePlan />} />
           <Route path="/success" element={<Success />} />
           <Route path="/cancel" element={<Cancel />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/firm-signup" element={<FirmSignup />} />
           <Route path="/request-demo" element={<RequestDemo />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/5-common-asc-606-pitfalls" element={<ArticleASC606 />} />
-          <Route path="/blog/why-technical-accounting-memos-matter" element={<ArticleTechMemos />} />
-          <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<ArticleAIinAccounting />} />
+          <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+          {/* Removed route for ArticleTechMemos as it no longer exists */}
+          <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
           <Route path="/onepager" element={<OnePager />} />
           <Route path="/status" element={<Status />} />
           <Route path="/admin" element={<Admin />} />
