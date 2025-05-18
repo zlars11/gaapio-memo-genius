@@ -23,9 +23,10 @@ export function PasswordProtectionSettings() {
     if (storedPassword) {
       setPassword(storedPassword);
     } else {
-      // Default password
-      setPassword("Gaapio2025!");
-      localStorage.setItem("site_password", "Gaapio2025!");
+      // Get default password from environment variable
+      const defaultPassword = import.meta.env.VITE_SITE_PASSWORD || "";
+      setPassword(defaultPassword);
+      localStorage.setItem("site_password", defaultPassword);
     }
   }, []);
   

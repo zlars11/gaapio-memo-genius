@@ -87,8 +87,14 @@ export default function Index() {
       localStorage.setItem("password_protection_enabled", "false");
     }
     
-    if (localStorage.getItem("site_password") === null) {
-      localStorage.setItem("site_password", "Gaapio2025!");
+    // Use environment variable for site password
+    const defaultPassword = import.meta.env.VITE_SITE_PASSWORD || "";
+    if (localStorage.getItem("site_password") === null && defaultPassword) {
+      localStorage.setItem("site_password", defaultPassword);
+    } else if (localStorage.getItem("site_password") === null) {
+      // If no env variable and no existing password, set an empty string
+      // This will require admins to set a password
+      localStorage.setItem("site_password", "");
     }
     
     if (localStorage.getItem("session_version") === null) {
