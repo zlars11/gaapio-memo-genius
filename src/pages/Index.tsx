@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -9,6 +8,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Button } from "@/components/ui/button";
 
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
