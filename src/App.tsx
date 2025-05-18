@@ -25,10 +25,13 @@ import { InitializeWebhooks } from "@/components/InitializeWebhooks";
 import { PasswordProtection } from "@/components/password-protection/PasswordProtection";
 
 function App() {
+  // Get the base URL from the environment or default to '/'
+  const basename = '/';
+  
   return (
     <div className="app">
       <InitializeWebhooks />
-      <Router>
+      <Router basename={basename}>
         <PasswordProtection>
           <Routes>
             <Route path="/" element={<Index />} />
