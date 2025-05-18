@@ -24,8 +24,11 @@ import Admin from "./pages/Admin";
 import { InitializeWebhooks } from "@/components/InitializeWebhooks";
 import { PasswordProtection } from "@/components/password-protection/PasswordProtection";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
+  console.log("App component initializing...");
+  
   // Get the base URL from the environment or default to '/'
   const basename = '/';
   

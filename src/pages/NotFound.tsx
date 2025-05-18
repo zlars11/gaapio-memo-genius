@@ -3,10 +3,97 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 
+// Extended debug info to help diagnose blank screen issues
+function DiagnoseSystem() {
+  const [systemInfo, setSystemInfo] = useState<Record<string, any>>({
+    browserInfo: {},
+    storageStatus: {},
+    networkStatus: {},
+    rendering: {}
+  });
+
+  useEffect(() => {
+    // Collect extensive system information
+    const info: Record<string, any> = {
+      browserInfo: {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        cookiesEnabled: navigator.cookieEnabled,
+        onLine: navigator.onLine,
+        doNotTrack: navigator.doNotTrack,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        maxTouchPoints: navigator.maxTouchPoints,
+      },
+      storageStatus: {},
+      networkStatus: {},
+      rendering: {
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+        pixelRatio: window.devicePixelRatio,
+        colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+        reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        isDark: document.documentElement.classList.contains("dark"),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cssTransforms: 'transform' in document.documentElement.style || 
+                       'webkitTransform' in document.documentElement.style,
+      }
+    };
+
+    // Check localStorage
+    try {
+      const testKey = "test_local_storage";
+      localStorage.setItem(testKey, "test");
+      info.storageStatus.localStorageWorks = localStorage.getItem(testKey) === "test";
+      localStorage.removeItem(testKey);
+      info.storageStatus.localStorageKeys = Object.keys(localStorage);
+      info.storageStatus.localStorageSize = JSON.stringify(localStorage).length;
+    } catch (e) {
+      info.storageStatus.localStorageWorks = false;
+      info.storageStatus.localStorageError = String(e);
+    }
+    
+    // Check sessionStorage
+    try {
+      const testKey = "test_session_storage";
+      sessionStorage.setItem(testKey, "test");
+      info.storageStatus.sessionStorageWorks = sessionStorage.getItem(testKey) === "test";
+      sessionStorage.removeItem(testKey);
+      info.storageStatus.sessionStorageSize = JSON.stringify(sessionStorage).length;
+    } catch (e) {
+      info.storageStatus.sessionStorageWorks = false;
+      info.storageStatus.sessionStorageError = String(e);
+    }
+
+    // Network diagnostics
+    const runNetworkDiagnostics = async () => {
+      try {
+        // Simple connectivity check with a timestamp to prevent caching
+        const startTime = performance.now();
+        const response = await fetch(`/favicon.ico?_=${Date.now()}`);
+        const endTime = performance.now();
+        
+        info.networkStatus.connected = true;
+        info.networkStatus.responseTime = Math.round(endTime - startTime);
+        info.networkStatus.status = response.status;
+        info.networkStatus.statusText = response.statusText;
+      } catch (e) {
+        info.networkStatus.connected = false;
+        info.networkStatus.error = String(e);
+      }
+      setSystemInfo(info);
+    };
+
+    runNetworkDiagnostics();
+  }, []);
+
+  return systemInfo;
+}
+
 export default function NotFound() {
   const location = useLocation();
   const [showDebug, setShowDebug] = useState(false);
   const [debugInfo, setDebugInfo] = useState<Record<string, any>>({});
+  const systemInfo = DiagnoseSystem();
 
   useEffect(() => {
     console.error(
@@ -24,6 +111,8 @@ export default function NotFound() {
       screenHeight: window.innerHeight,
       hasLocalStorage: !!window.localStorage,
       hasSessionStorage: !!window.sessionStorage,
+      timestamp: new Date().toISOString(),
+      referrer: document.referrer || 'none',
     };
     
     // Try to check if localStorage is actually working
@@ -74,6 +163,11 @@ export default function NotFound() {
             {JSON.stringify(debugInfo, null, 2)}
           </pre>
           
+          <h3 className="text-lg font-medium mt-6 mb-2">System Diagnostics</h3>
+          <pre className="text-xs whitespace-pre-wrap">
+            {JSON.stringify(systemInfo, null, 2)}
+          </pre>
+          
           <h4 className="text-md font-medium mt-4 mb-2">Local Storage Keys</h4>
           <div className="text-xs">
             {(() => {
@@ -95,6 +189,39 @@ export default function NotFound() {
                 return <p className="text-red-500">Error accessing localStorage: {String(e)}</p>;
               }
             })()}
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+            <h4 className="text-md font-medium mb-2">Test LocalStorage</h4>
+            <Button 
+              onClick={() => {
+                try {
+                  localStorage.setItem("test_write", new Date().toISOString());
+                  alert("LocalStorage write successful: " + localStorage.getItem("test_write"));
+                } catch (e) {
+                  alert("LocalStorage write failed: " + String(e));
+                }
+              }}
+              size="sm"
+              variant="outline"
+              className="mr-2"
+            >
+              Test Write
+            </Button>
+            <Button 
+              onClick={() => {
+                try {
+                  localStorage.clear();
+                  alert("LocalStorage cleared successfully");
+                } catch (e) {
+                  alert("LocalStorage clear failed: " + String(e));
+                }
+              }}
+              size="sm"
+              variant="destructive"
+            >
+              Clear Storage
+            </Button>
           </div>
         </div>
       )}

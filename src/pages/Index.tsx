@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -9,6 +10,43 @@ import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+
+// Helper function to safely access localStorage
+const safeLocalStorageGet = (key: string, defaultValue: string): string => {
+  try {
+    const value = localStorage.getItem(key);
+    return value !== null ? value : defaultValue;
+  } catch (error) {
+    console.error(`Error accessing localStorage for key "${key}":`, error);
+    return defaultValue;
+  }
+};
+
+const safeLocalStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error(`Error setting localStorage for key "${key}":`, error);
+    // Show a toast notification for storage errors
+    toast({
+      title: "Storage Error",
+      description: "Could not save settings. Some features may be limited.",
+      variant: "destructive",
+    });
+  }
+};
+
+// Helper to safely parse JSON
+const safeJsonParse = (json: string | null, fallback: any[] = []): any[] => {
+  if (!json) return fallback;
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    console.error("Error parsing JSON:", error);
+    return fallback;
+  }
+};
 
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
@@ -57,8 +95,8 @@ export default function Index() {
       window.addEventListener('storage', handleStorageEvent);
       
       // Check if metrics should be displayed
-      const shouldShowMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
-      const isAdmin = localStorage.getItem("admin_authenticated") === "true";
+      const shouldShowMetrics = safeLocalStorageGet("showMetricsOnHomepage", "false") === "true";
+      const isAdmin = safeLocalStorageGet("admin_authenticated", "false") === "true";
       
       setShowMetrics(shouldShowMetrics && isAdmin);
       console.log("Metrics display:", { shouldShowMetrics, isAdmin });
@@ -66,8 +104,8 @@ export default function Index() {
       if (shouldShowMetrics && isAdmin) {
         // Load metrics data
         try {
-          const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
-          const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
+          const contactData = safeJsonParse(localStorage.getItem("contactSubmissions"));
+          const userData = safeJsonParse(localStorage.getItem("userSignups"));
           
           setMetrics({
             contactCount: contactData.length,
@@ -86,18 +124,18 @@ export default function Index() {
       
       // Initialize self-signup setting if not set
       if (localStorage.getItem("enableSelfSignup") === null) {
-        localStorage.setItem("enableSelfSignup", "true");
+        safeLocalStorageSet("enableSelfSignup", "true");
         console.log("Self-signup setting initialized to true");
       }
       
       // Set homepageCta based on the self-signup setting
-      const enableSelfSignup = localStorage.getItem("enableSelfSignup") !== "false";
-      localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
+      const enableSelfSignup = safeLocalStorageGet("enableSelfSignup", "true") !== "false";
+      safeLocalStorageSet("homepageCta", enableSelfSignup ? "signup" : "contact");
       console.log("Homepage CTA set to:", enableSelfSignup ? "signup" : "contact");
 
       // Initialize password protection settings if not already set
       if (localStorage.getItem("password_protection_enabled") === null) {
-        localStorage.setItem("password_protection_enabled", "false");
+        safeLocalStorageSet("password_protection_enabled", "false");
         console.log("Password protection initialized to false");
       }
       
@@ -118,25 +156,25 @@ export default function Index() {
         }
         
         if (localStorage.getItem("site_password") === null && defaultPassword) {
-          localStorage.setItem("site_password", defaultPassword);
+          safeLocalStorageSet("site_password", defaultPassword);
           console.log("Site password initialized from environment variable");
         } else if (localStorage.getItem("site_password") === null) {
           // If no env variable and no existing password, set an empty string
           // This will require admins to set a password
-          localStorage.setItem("site_password", "");
+          safeLocalStorageSet("site_password", "");
           console.log("Site password initialized to empty string");
         }
       } catch (error) {
         console.error("Error setting up password from environment:", error);
         // If environment variable access fails, ensure we have a default
         if (localStorage.getItem("site_password") === null) {
-          localStorage.setItem("site_password", "");
+          safeLocalStorageSet("site_password", "");
           console.log("Site password fallback to empty string after error");
         }
       }
       
       if (localStorage.getItem("session_version") === null) {
-        localStorage.setItem("session_version", "0");
+        safeLocalStorageSet("session_version", "0");
         console.log("Session version initialized to 0");
       }
       
@@ -154,6 +192,12 @@ export default function Index() {
       // Ensure we're marked as client-side even if there's an error
       setIsClient(true);
       setInitComplete(true);
+      // Show toast notification for initialization error
+      toast({
+        title: "Initialization Error",
+        description: error instanceof Error ? error.message : String(error),
+        variant: "destructive",
+      });
     }
   }, []);
   
@@ -173,12 +217,12 @@ export default function Index() {
             <p className="mb-4 text-gray-700 dark:text-gray-300">
               The application encountered an error during initialization. This may be due to missing environment variables or browser storage issues.
             </p>
-            <button 
+            <Button 
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Reload Page
-            </button>
+            </Button>
           </div>
         </div>
       </div>
