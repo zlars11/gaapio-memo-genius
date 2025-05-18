@@ -21,10 +21,14 @@ export default function Login() {
   // Check if user is already logged in
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        // If logged in, redirect to admin
-        navigate('/admin');
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          // If logged in, redirect to admin
+          navigate('/admin');
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
       }
     };
     
