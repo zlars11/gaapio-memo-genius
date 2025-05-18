@@ -20,12 +20,10 @@ import AIAccounting from "./pages/AIAccounting";
 import OnePager from "./pages/OnePager";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
-import { InitializeWebhooks } from "./components/InitializeWebhooks";
 
 function App() {
   return (
     <>
-      <InitializeWebhooks />
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />
