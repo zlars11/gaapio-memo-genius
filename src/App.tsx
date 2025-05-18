@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import { InitializeWebhooks } from "@/components/InitializeWebhooks";
 import { PasswordProtection } from "@/components/password-protection/PasswordProtection";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 function App() {
   // Get the base URL from the environment or default to '/'
@@ -31,33 +32,46 @@ function App() {
   return (
     <div className="app">
       <InitializeWebhooks />
-      <Router basename={basename}>
-        <PasswordProtection>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/ssa" element={<SubscriptionAgreement />} />
-            <Route path="/choose-plan" element={<ChoosePlan />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/cancel" element={<Cancel />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/firm-signup" element={<FirmSignup />} />
-            <Route path="/request-demo" element={<RequestDemo />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
-            <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
-            <Route path="/onepager" element={<OnePager />} />
-            <Route path="/status" element={<Status />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </PasswordProtection>
-      </Router>
+      <ErrorBoundary fallback={
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+          <p className="mb-4">The application encountered an error. Please try refreshing the page.</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Refresh Page
+          </button>
+        </div>
+      }>
+        <Router basename={basename}>
+          <PasswordProtection>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/ssa" element={<SubscriptionAgreement />} />
+              <Route path="/choose-plan" element={<ChoosePlan />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/cancel" element={<Cancel />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/firm-signup" element={<FirmSignup />} />
+              <Route path="/request-demo" element={<RequestDemo />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+              <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
+              <Route path="/onepager" element={<OnePager />} />
+              <Route path="/status" element={<Status />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PasswordProtection>
+        </Router>
+      </ErrorBoundary>
     </div>
   );
 }
