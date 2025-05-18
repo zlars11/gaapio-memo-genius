@@ -17,11 +17,18 @@ export const PasswordProtectionPage = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if site password is configured
-    const sitePassword = localStorage.getItem("site_password");
-    if (!sitePassword || sitePassword.trim() === "") {
+    try {
+      // Check if site password is configured
+      const sitePassword = localStorage.getItem("site_password");
+      if (!sitePassword || sitePassword.trim() === "") {
+        setMissingPassword(true);
+        setError("No site password has been configured. Please contact the site administrator.");
+      }
+    } catch (error) {
+      console.error("Error checking site password:", error);
+      // If there's an error, allow access to admin to configure password
       setMissingPassword(true);
-      setError("No site password has been configured. Please contact the site administrator.");
+      setError("Error checking password configuration. Please try again or contact the site administrator.");
     }
   }, []);
 
@@ -36,6 +43,7 @@ export const PasswordProtectionPage = () => {
       
       if (!sitePassword || sitePassword.trim() === "") {
         setError("No site password has been configured. Please contact the site administrator.");
+        setIsSubmitting(false);
         return;
       }
       

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PasswordProtectionPage from "./PasswordProtectionPage";
@@ -13,32 +14,41 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children
   const location = useLocation();
 
   useEffect(() => {
-    // Check if site is password protected
-    const protectionEnabled = localStorage.getItem("password_protection_enabled");
-    
-    if (protectionEnabled === "true") {
-      setIsProtected(true);
+    try {
+      // Check if site is password protected
+      const protectionEnabled = localStorage.getItem("password_protection_enabled");
       
-      // Check if user has valid access
-      const accessData = sessionStorage.getItem("site_access");
-      if (accessData) {
-        try {
-          const { granted, expires, version } = JSON.parse(accessData);
-          const currentVersion = localStorage.getItem("session_version") || "0";
-          
-          // Check if access is granted, not expired, and not invalidated by version change
-          if (granted && expires > Date.now() && version === currentVersion) {
-            setHasAccess(true);
+      if (protectionEnabled === "true") {
+        setIsProtected(true);
+        
+        // Check if user has valid access
+        const accessData = sessionStorage.getItem("site_access");
+        if (accessData) {
+          try {
+            const { granted, expires, version } = JSON.parse(accessData);
+            const currentVersion = localStorage.getItem("session_version") || "0";
+            
+            // Check if access is granted, not expired, and not invalidated by version change
+            if (granted && expires > Date.now() && version === currentVersion) {
+              setHasAccess(true);
+            }
+          } catch (e) {
+            console.error("Error parsing access data:", e);
+            // If there's an error parsing, default to no access
+            setHasAccess(false);
           }
-        } catch (e) {
-          console.error("Error parsing access data:", e);
         }
+      } else {
+        // If protection is not enabled, grant access
+        setHasAccess(true);
       }
-    } else {
+    } catch (error) {
+      // If there's any error in the protection check, default to allowing access
+      console.error("Error in password protection check:", error);
       setHasAccess(true);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   }, []);
 
   // Don't protect admin routes or if protection is not enabled

@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 export default function NotFound() {
   const location = useLocation();
@@ -21,7 +21,7 @@ export default function NotFound() {
         The page you're looking for doesn't exist or has been moved.
       </p>
       <Button asChild>
-        <a href="/">Back to Home</a>
+        <Link to="/">Back to Home</Link>
       </Button>
     </div>
   );

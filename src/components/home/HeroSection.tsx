@@ -10,36 +10,47 @@ export const HeroSection = memo(function HeroSection() {
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
   
   useEffect(() => {
-    setIsClient(true);
-    
-    // Load the self-signup setting
-    const loadSelfSignupSetting = () => {
-      const savedSetting = localStorage.getItem("enableSelfSignup");
-      setEnableSelfSignup(savedSetting !== null ? savedSetting === "true" : true);
-    };
-    
-    // Initial load
-    loadSelfSignupSetting();
-    
-    // Listen for storage changes (in case admin updates in another tab)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "enableSelfSignup") {
-        loadSelfSignupSetting();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    try {
+      setIsClient(true);
+      
+      // Load the self-signup setting
+      const loadSelfSignupSetting = () => {
+        const savedSetting = localStorage.getItem("enableSelfSignup");
+        setEnableSelfSignup(savedSetting !== null ? savedSetting === "true" : true);
+      };
+      
+      // Initial load
+      loadSelfSignupSetting();
+      
+      // Listen for storage changes (in case admin updates in another tab)
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === "enableSelfSignup") {
+          loadSelfSignupSetting();
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    } catch (error) {
+      console.error("Error in HeroSection initialization:", error);
+      // Default to enabling self-signup in case of error
+      setIsClient(true);
+      setEnableSelfSignup(true);
+    }
   }, []);
   
   // Scroll to How It Works section when arrow is clicked
   const scrollToHowItWorks = () => {
-    const howItWorksSection = document.getElementById('how-it-works');
-    if (howItWorksSection) {
-      howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+    try {
+      const howItWorksSection = document.getElementById('how-it-works');
+      if (howItWorksSection) {
+        howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error("Error scrolling to How It Works section:", error);
     }
   };
 

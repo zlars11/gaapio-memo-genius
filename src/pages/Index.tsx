@@ -19,93 +19,107 @@ export default function Index() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Mark that we're in the client environment
-    setIsClient(true);
-    
-    // Initialize dark mode detection
-    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
-    
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDark(e.matches || document.documentElement.classList.contains("dark"));
-    };
-    
-    darkModeQuery.addEventListener("change", handleChange);
-    
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    
-    const handleStorageEvent = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-    
-    window.addEventListener('storage', handleStorageEvent);
-    
-    // Check if metrics should be displayed
-    const shouldShowMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
-    const isAdmin = localStorage.getItem("admin_authenticated") === "true";
-    
-    setShowMetrics(shouldShowMetrics && isAdmin);
-    
-    if (shouldShowMetrics && isAdmin) {
-      // Load metrics data
-      try {
-        const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
-        const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
-        
-        setMetrics({
-          contactCount: contactData.length,
-          userCount: userData.length
-        });
-      } catch (error) {
-        console.error("Error loading metrics data:", error);
-        // Fallback to default values if there's an error
-        setMetrics({
-          contactCount: 0,
-          userCount: 0
-        });
+    try {
+      // Mark that we're in the client environment
+      setIsClient(true);
+      
+      // Initialize dark mode detection
+      const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      setIsDark(darkModeQuery.matches || document.documentElement.classList.contains("dark"));
+      
+      const handleChange = (e: MediaQueryListEvent) => {
+        setIsDark(e.matches || document.documentElement.classList.contains("dark"));
+      };
+      
+      darkModeQuery.addEventListener("change", handleChange);
+      
+      const observer = new MutationObserver(() => {
+        setIsDark(document.documentElement.classList.contains("dark"));
+      });
+      
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+      
+      const handleStorageEvent = () => {
+        setIsDark(document.documentElement.classList.contains("dark"));
+      };
+      
+      window.addEventListener('storage', handleStorageEvent);
+      
+      // Check if metrics should be displayed
+      const shouldShowMetrics = localStorage.getItem("showMetricsOnHomepage") === "true";
+      const isAdmin = localStorage.getItem("admin_authenticated") === "true";
+      
+      setShowMetrics(shouldShowMetrics && isAdmin);
+      
+      if (shouldShowMetrics && isAdmin) {
+        // Load metrics data
+        try {
+          const contactData = JSON.parse(localStorage.getItem("contactSubmissions") || "[]");
+          const userData = JSON.parse(localStorage.getItem("userSignups") || "[]");
+          
+          setMetrics({
+            contactCount: contactData.length,
+            userCount: userData.length
+          });
+        } catch (error) {
+          console.error("Error loading metrics data:", error);
+          // Fallback to default values if there's an error
+          setMetrics({
+            contactCount: 0,
+            userCount: 0
+          });
+        }
       }
-    }
-    
-    // Initialize self-signup setting if not set
-    if (localStorage.getItem("enableSelfSignup") === null) {
-      localStorage.setItem("enableSelfSignup", "true");
-    }
-    
-    // Set homepageCta based on the self-signup setting
-    const enableSelfSignup = localStorage.getItem("enableSelfSignup") !== "false";
-    localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
+      
+      // Initialize self-signup setting if not set
+      if (localStorage.getItem("enableSelfSignup") === null) {
+        localStorage.setItem("enableSelfSignup", "true");
+      }
+      
+      // Set homepageCta based on the self-signup setting
+      const enableSelfSignup = localStorage.getItem("enableSelfSignup") !== "false";
+      localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
 
-    // Initialize password protection settings if not already set
-    if (localStorage.getItem("password_protection_enabled") === null) {
-      localStorage.setItem("password_protection_enabled", "false");
-    }
-    
-    // Use environment variable for site password
-    const defaultPassword = import.meta.env.VITE_SITE_PASSWORD || "";
-    if (localStorage.getItem("site_password") === null && defaultPassword) {
-      localStorage.setItem("site_password", defaultPassword);
-    } else if (localStorage.getItem("site_password") === null) {
-      // If no env variable and no existing password, set an empty string
-      // This will require admins to set a password
-      localStorage.setItem("site_password", "");
-    }
-    
-    if (localStorage.getItem("session_version") === null) {
-      localStorage.setItem("session_version", "0");
-    }
+      // Initialize password protection settings if not already set
+      if (localStorage.getItem("password_protection_enabled") === null) {
+        localStorage.setItem("password_protection_enabled", "false");
+      }
+      
+      // Use environment variable for site password
+      try {
+        const defaultPassword = import.meta.env.VITE_SITE_PASSWORD || "";
+        if (localStorage.getItem("site_password") === null && defaultPassword) {
+          localStorage.setItem("site_password", defaultPassword);
+        } else if (localStorage.getItem("site_password") === null) {
+          // If no env variable and no existing password, set an empty string
+          // This will require admins to set a password
+          localStorage.setItem("site_password", "");
+        }
+      } catch (error) {
+        console.error("Error setting up password from environment:", error);
+        // If environment variable access fails, ensure we have a default
+        if (localStorage.getItem("site_password") === null) {
+          localStorage.setItem("site_password", "");
+        }
+      }
+      
+      if (localStorage.getItem("session_version") === null) {
+        localStorage.setItem("session_version", "0");
+      }
 
-    return () => {
-      darkModeQuery.removeEventListener("change", handleChange);
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageEvent);
-    };
+      return () => {
+        darkModeQuery.removeEventListener("change", handleChange);
+        observer.disconnect();
+        window.removeEventListener('storage', handleStorageEvent);
+      };
+    } catch (error) {
+      console.error("Error in Index page initialization:", error);
+      // Ensure we're marked as client-side even if there's an error
+      setIsClient(true);
+    }
   }, []);
   
   return (
