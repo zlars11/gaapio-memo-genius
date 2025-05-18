@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 export async function createFirmSignup(formData: any) {
   try {
@@ -153,8 +154,8 @@ export async function handleSignup(formData: any): Promise<{
 export async function triggerZapier(allData: any, isFirm: boolean = false) {
   try {
     const webhookUrl = isFirm ? 
-      getFirmSignupZapierWebhookUrl() : 
-      getUserSignupZapierWebhookUrl();
+      getWebhookUrl(WebhookTypes.FIRM_SIGNUP) : 
+      getWebhookUrl(WebhookTypes.USER_SIGNUP);
 
     if (!webhookUrl) {
       console.warn(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
@@ -191,18 +192,4 @@ export async function triggerZapier(allData: any, isFirm: boolean = false) {
     console.error("Error triggering Zapier webhook:", err);
     // Don't block the signup process, log error only
   }
-}
-
-export function getUserSignupZapierWebhookUrl() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("userSignupWebhookUrl") || "";
-  }
-  return "";
-}
-
-export function getFirmSignupZapierWebhookUrl() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("firmSignupWebhookUrl") || "";
-  }
-  return "";
 }

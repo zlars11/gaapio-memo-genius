@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { DemoRequestFormData } from "../types/demoRequestTypes";
+import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 export function useDemoRequestForm(onSuccess?: () => void) {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,22 +20,13 @@ export function useDemoRequestForm(onSuccess?: () => void) {
     },
   });
 
-  const getDemoWebhookUrl = () => {
-    if (typeof window !== "undefined") {
-      const url = localStorage.getItem("demoRequestWebhookUrl") || "";
-      console.log("Retrieved webhook URL from localStorage:", url);
-      return url;
-    }
-    return "";
-  };
-
   const onSubmit = async (data: DemoRequestFormData) => {
     setIsLoading(true);
     console.log("Form submitted with data:", data);
     
     try {
       // First, trigger Zapier webhook if URL is set
-      const webhookUrl = getDemoWebhookUrl();
+      const webhookUrl = getWebhookUrl(WebhookTypes.DEMO_REQUEST);
       
       if (webhookUrl) {
         console.log("Attempting to trigger Zapier webhook:", webhookUrl);

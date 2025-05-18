@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { triggerZapier } from "@/utils/signupUtils";
+import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 interface ContactFormProps {
   onSubmitSuccess?: (data: any) => void;
@@ -124,21 +123,41 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
 
       if (userError) throw userError;
       
-      // Trigger Zapier webhook
-      const zapierData = {
-        "Firm Name": cleanedData.company,
-        "Contact Name": `${cleanedData.first_name} ${cleanedData.last_name}`,
-        "Email": cleanedData.email,
-        "Phone": cleanedData.phone,
-        "Message": cleanedData.message,
-        "Submission Date": new Date().toISOString(),
-      };
+      // Get contact form webhook URL
+      const webhookUrl = getWebhookUrl(WebhookTypes.CONTACT_FORM);
       
-      // Queue webhook without awaiting (don't block user experience)
-      triggerZapier(zapierData, true).catch(err => {
-        console.error("Error queueing webhook:", err);
-        // Don't block form submission if webhook fails
-      });
+      if (webhookUrl) {
+        console.log("Triggering contact form webhook:", webhookUrl);
+        
+        // Format data for Zapier
+        const zapierData = {
+          "Firm Name": cleanedData.company,
+          "Contact Name": `${cleanedData.first_name} ${cleanedData.last_name}`,
+          "Email": cleanedData.email,
+          "Phone": cleanedData.phone,
+          "Message": cleanedData.message,
+          "Submission Date": new Date().toISOString(),
+        };
+        
+        try {
+          // Send to Zapier directly
+          await fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            mode: "no-cors",
+            body: JSON.stringify(zapierData),
+          });
+          
+          console.log("Contact form webhook triggered successfully");
+        } catch (webhookErr) {
+          console.error("Error triggering contact form webhook:", webhookErr);
+          // Don't block form submission if webhook fails
+        }
+      } else {
+        console.warn("No webhook URL configured for contact form");
+      }
       
       if (onSubmitSuccess) {
         onSubmitSuccess({

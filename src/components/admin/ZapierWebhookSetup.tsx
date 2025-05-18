@@ -1,9 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { saveWebhookUrl, getWebhookUrl } from "@/utils/webhookUtils";
 
 interface ZapierWebhookSetupProps {
   webhookType: string;
@@ -11,11 +12,15 @@ interface ZapierWebhookSetupProps {
 }
 
 export function ZapierWebhookSetup({ webhookType, description }: ZapierWebhookSetupProps) {
-  const [webhookUrl, setWebhookUrl] = useState(() => {
-    return localStorage.getItem(`${webhookType}WebhookUrl`) || "";
-  });
+  const [webhookUrl, setWebhookUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Load the webhook URL when component mounts
+    const savedUrl = getWebhookUrl(webhookType);
+    setWebhookUrl(savedUrl);
+  }, [webhookType]);
 
   const handleSaveWebhook = () => {
     if (!webhookUrl) {
@@ -28,8 +33,8 @@ export function ZapierWebhookSetup({ webhookType, description }: ZapierWebhookSe
     }
 
     try {
-      // Save webhook URL to localStorage
-      localStorage.setItem(`${webhookType}WebhookUrl`, webhookUrl);
+      // Save webhook URL to localStorage using our utility
+      saveWebhookUrl(webhookType, webhookUrl);
       
       toast({
         title: "Webhook updated",
@@ -63,6 +68,8 @@ export function ZapierWebhookSetup({ webhookType, description }: ZapierWebhookSe
         source: "admin_dashboard",
       };
 
+      console.log("Sending test to webhook:", webhookUrl);
+
       // Since we're using no-cors, we won't get a proper response status
       await fetch(webhookUrl, {
         method: "POST",
@@ -78,6 +85,7 @@ export function ZapierWebhookSetup({ webhookType, description }: ZapierWebhookSe
         description: "A test notification was sent to your Zapier webhook",
       });
     } catch (error) {
+      console.error("Error sending test to webhook:", error);
       toast({
         title: "Error",
         description: "Failed to send test to webhook",
