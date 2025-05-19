@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -33,7 +32,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Enable minification only in production mode
     minify: mode === 'production' ? 'terser' : false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
@@ -58,7 +56,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-    // Configure Terser for production only
     terserOptions: {
       compress: {
         drop_console: mode === 'production',
