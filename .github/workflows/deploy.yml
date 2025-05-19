@@ -26,6 +26,11 @@ jobs:
       - name: Add .nojekyll file
         run: touch dist/.nojekyll
         
+      - name: Create proper MIME type configuration
+        run: |
+          echo "/* /index.html 200" > dist/_redirects
+          echo '{ "*.js": { "Content-Type": "application/javascript" }, "*.css": { "Content-Type": "text/css" }, "*.json": { "Content-Type": "application/json" } }' > dist/_headers
+      
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
