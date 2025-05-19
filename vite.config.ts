@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/', // Use absolute paths for custom domain
+  base: 'https://gaapio.com/',
   server: {
     host: "::",
     port: 8080,
@@ -33,9 +33,9 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    assetsDir: 'assets',
     minify: mode === 'production' ? 'terser' : false,
     chunkSizeWarningLimit: 1000,
-    assetsDir: 'assets', // Ensure assets are in a predictable directory
     copyPublicDir: true, // Copy all files from public directory
     rollupOptions: {
       output: {

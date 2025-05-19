@@ -38,7 +38,7 @@ jobs:
       - name: Add .nojekyll file
         run: touch dist/.nojekyll
         
-      - name: Ensure assets directories exist
+      - name: Setup Build Directory
         run: |
           mkdir -p dist/assets/images
           
