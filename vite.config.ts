@@ -5,7 +5,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig({
-  base: '/', // Use root path since we're on a custom domain
+  base: '/', // Ensure base URL is set to '/' for client-side routing
   server: {
     host: "::",
     port: 8080,

@@ -37,6 +37,9 @@ jobs:
         run: |
           mkdir -p dist/assets/images
           cp -r public/assets/images/* dist/assets/images/ || true
+      - name: Copy index.html to 404.html for client-side routing
+        run: |
+          cp dist/index.html dist/404.html
       - name: Create _headers file
         run: |
           cat > dist/_headers << EOL
