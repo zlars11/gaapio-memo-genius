@@ -57,3 +57,26 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Dark mode form styling */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #2a2a2a;
+  border-color: #404040;
+  color: white;
+}
+
+.dark input:hover,
+.dark textarea:hover,
+.dark select:hover {
+  background-color: #333333;
+  border-color: #505050;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: #333333;
+  border-color: #2196f3;
+}

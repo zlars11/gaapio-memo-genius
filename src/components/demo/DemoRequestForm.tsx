@@ -17,7 +17,7 @@ export function DemoRequestForm({ onSuccess }: DemoRequestFormProps) {
         <DemoRequestFormFields form={form} />
         <Button 
           type="submit" 
-          className="w-full" 
+          className="w-full dark:text-white dark:hover:bg-primary/60" 
           size="lg"
           variant="blue"
           disabled={isLoading}
