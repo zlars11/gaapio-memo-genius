@@ -5,14 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 export const PasswordProtectionPage = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [sitePassword, setSitePassword] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Load the site password when component mounts
+  useEffect(() => {
+    const storedPassword = localStorage.getItem("site_password");
+    console.log("Site password found:", storedPassword ? "Yes" : "No");
+    setSitePassword(storedPassword);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,29 +29,21 @@ export const PasswordProtectionPage = () => {
     setError("");
 
     try {
-      // Get the stored site password
-      const sitePassword = localStorage.getItem("site_password");
+      // First, recheck if protection is still enabled (in case it was disabled in another tab)
+      const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
+      if (!protectionEnabled) {
+        console.log("Protection has been disabled, granting access");
+        grantAccess();
+        return;
+      }
+
+      console.log("Validating password...");
       
       if (password === sitePassword) {
-        // Password is correct, set session and redirect
-        const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-        const currentVersion = localStorage.getItem("session_version") || "0";
-        
-        sessionStorage.setItem("site_access", JSON.stringify({ 
-          granted: true, 
-          expires: expiry,
-          version: currentVersion
-        }));
-        
-        // Redirect back to the original URL or to the homepage
-        const redirectPath = location.state?.from || "/";
-        navigate(redirectPath);
-
-        toast({
-          title: "Access granted",
-          description: "Welcome to the site",
-        });
+        console.log("Password correct, granting access");
+        grantAccess();
       } else {
+        console.log("Incorrect password provided");
         setError("Incorrect password");
         toast({
           title: "Access denied",
@@ -56,6 +57,30 @@ export const PasswordProtectionPage = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+  
+  const grantAccess = () => {
+    // Set session access with 24 hour expiry
+    const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    const currentVersion = localStorage.getItem("session_version") || "0";
+    
+    const accessData = {
+      granted: true,
+      expires: expiry,
+      version: currentVersion
+    };
+    
+    console.log("Setting access data:", accessData);
+    sessionStorage.setItem("site_access", JSON.stringify(accessData));
+    
+    // Redirect back to the original URL or to the homepage
+    const redirectPath = location.state?.from || "/";
+    navigate(redirectPath);
+
+    toast({
+      title: "Access granted",
+      description: "Welcome to the site",
+    });
   };
 
   return (
@@ -96,10 +121,17 @@ export const PasswordProtectionPage = () => {
           <div>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !sitePassword}
               className="group relative w-full"
             >
-              {isSubmitting ? "Checking..." : "Submit"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Checking...
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </div>
         </form>

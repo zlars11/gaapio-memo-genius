@@ -6,70 +6,132 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export function PasswordProtectionSettings() {
   const [isProtectionEnabled, setIsProtectionEnabled] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExpiring, setIsExpiring] = useState(false);
   const { toast } = useToast();
   
   // Load settings on component mount
   useEffect(() => {
-    const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
-    setIsProtectionEnabled(protectionEnabled);
+    const loadSettings = () => {
+      const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
+      console.log("Admin: Loading protection settings, enabled:", protectionEnabled);
+      setIsProtectionEnabled(protectionEnabled);
+      
+      const storedPassword = localStorage.getItem("site_password");
+      if (storedPassword) {
+        setPassword(storedPassword);
+      } else {
+        // Default password
+        const defaultPassword = "Gaapio2025!";
+        setPassword(defaultPassword);
+        localStorage.setItem("site_password", defaultPassword);
+      }
+    };
     
-    const storedPassword = localStorage.getItem("site_password");
-    if (storedPassword) {
-      setPassword(storedPassword);
-    } else {
-      // Default password
-      setPassword("Gaapio2025!");
-      localStorage.setItem("site_password", "Gaapio2025!");
-    }
+    loadSettings();
   }, []);
   
   // Handle protection toggle
-  const handleToggleProtection = (checked: boolean) => {
-    setIsProtectionEnabled(checked);
-    localStorage.setItem("password_protection_enabled", checked.toString());
+  const handleToggleProtection = async (checked: boolean) => {
+    setIsSaving(true);
     
-    toast({
-      title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
-      description: checked 
-        ? "The site is now password protected" 
-        : "The site is now publicly accessible",
-    });
+    try {
+      localStorage.setItem("password_protection_enabled", checked.toString());
+      setIsProtectionEnabled(checked);
+      
+      // Force version change to invalidate existing sessions if protection is being enabled
+      if (checked) {
+        await handleExpireSessions();
+      }
+      
+      toast({
+        title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
+        description: checked 
+          ? "The site is now password protected" 
+          : "The site is now publicly accessible",
+      });
+    } catch (error) {
+      console.error("Error toggling protection:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update protection setting",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
   
   // Save password
   const handleSavePassword = () => {
-    if (password.length < 4) {
-      toast({
-        title: "Invalid Password",
-        description: "Password must be at least 4 characters long",
-        variant: "destructive",
-      });
-      return;
-    }
+    setIsSaving(true);
     
-    localStorage.setItem("site_password", password);
-    toast({
-      title: "Password Updated",
-      description: "The site password has been updated",
-    });
+    try {
+      if (password.length < 4) {
+        toast({
+          title: "Invalid Password",
+          description: "Password must be at least 4 characters long",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
+      
+      localStorage.setItem("site_password", password);
+      
+      // Also expire all sessions when password is changed
+      handleExpireSessions();
+      
+      toast({
+        title: "Password Updated",
+        description: "The site password has been updated",
+      });
+    } catch (error) {
+      console.error("Error saving password:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save password",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
   
   // Expire all sessions
-  const handleExpireSessions = () => {
-    // Update the version number to invalidate all current sessions
-    const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
-    localStorage.setItem("session_version", (currentVersion + 1).toString());
+  const handleExpireSessions = async () => {
+    setIsExpiring(true);
     
-    toast({
-      title: "Sessions Expired",
-      description: "All user sessions have been expired",
-    });
+    try {
+      // Update the version number to invalidate all current sessions
+      const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
+      const newVersion = (currentVersion + 1).toString();
+      localStorage.setItem("session_version", newVersion);
+      console.log(`Admin: Expired all sessions. Version changed from ${currentVersion} to ${newVersion}`);
+      
+      toast({
+        title: "Sessions Expired",
+        description: "All user sessions have been expired",
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Error expiring sessions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to expire sessions",
+        variant: "destructive"
+      });
+      return false;
+    } finally {
+      setIsExpiring(false);
+    }
   };
   
   return (
@@ -86,9 +148,10 @@ export function PasswordProtectionSettings() {
             id="password-protection"
             checked={isProtectionEnabled}
             onCheckedChange={handleToggleProtection}
+            disabled={isSaving}
           />
           <Label htmlFor="password-protection">
-            Enable password protection
+            {isSaving ? "Updating..." : "Enable password protection"}
           </Label>
         </div>
         
@@ -103,13 +166,13 @@ export function PasswordProtectionSettings() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter site password"
                 className="pr-10"
-                disabled={!isProtectionEnabled}
+                disabled={!isProtectionEnabled || isSaving}
               />
               <button 
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                disabled={!isProtectionEnabled}
+                disabled={!isProtectionEnabled || isSaving}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -117,9 +180,9 @@ export function PasswordProtectionSettings() {
             <Button 
               onClick={handleSavePassword}
               className="ml-2"
-              disabled={!isProtectionEnabled || password.length < 4}
+              disabled={!isProtectionEnabled || password.length < 4 || isSaving}
             >
-              Save
+              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -131,9 +194,16 @@ export function PasswordProtectionSettings() {
           <Button 
             variant="outline" 
             onClick={handleExpireSessions}
-            disabled={!isProtectionEnabled}
+            disabled={!isProtectionEnabled || isExpiring}
           >
-            Expire All Sessions
+            {isExpiring ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Expiring Sessions...
+              </>
+            ) : (
+              "Expire All Sessions"
+            )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
             Forces all users to re-enter the password
