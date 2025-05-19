@@ -1,5 +1,6 @@
 
 import { createRoot } from 'react-dom/client'
+import React from 'react'
 import App from './App.tsx'
 import './index.css'
 import './App.css'  // Make sure App.css is imported
@@ -12,7 +13,9 @@ if (!rootElement) {
 }
 
 createRoot(rootElement).render(
-  <ThemeProvider defaultTheme="system" storageKey="gaapio-theme">
-    <App />
-  </ThemeProvider>
+  <React.StrictMode>
+    <ThemeProvider defaultTheme="system" storageKey="gaapio-theme">
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>
 );
