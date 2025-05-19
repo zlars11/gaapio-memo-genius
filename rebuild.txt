@@ -9,6 +9,7 @@
 
 
 
+
 # trigger rebuild
 # Removed pricing page and pricing tab from admin portal
 # Added edit and delete functionality to contact submissions in admin portal
@@ -21,7 +22,8 @@
 # Fixed Zapier webhook connections for demo requests, contact forms, and firm signups
 # Updated App.tsx imports to match renamed page files
 # Fixed build errors related to file paths
-# Fixed SSL certificate and asset loading issues - 2025-05-19
+# Fixed SSL certificate and asset loading issues for production site - 2025-05-20
+
 
 
 
