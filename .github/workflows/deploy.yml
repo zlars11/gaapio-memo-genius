@@ -33,15 +33,19 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Prepare assets
+      - name: Prepare asset directories
         run: |
           mkdir -p dist/assets/images
-          cp -r public/* dist/ || true
-          cp -r src/assets/* dist/assets/ || true
-      - name: Create SSL config
+          cp -r public/assets/images/* dist/assets/images/ || true
+      - name: Create _headers file
         run: |
-          echo "/*" > dist/_headers
-          echo "  Strict-Transport-Security: max-age=31536000; includeSubDomains" >> dist/_headers
+          cat > dist/_headers << EOL
+          /*
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+            X-Content-Type-Options: nosniff
+            X-Frame-Options: DENY
+            X-XSS-Protection: 1; mode=block
+          EOL
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

@@ -5,7 +5,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig({
-  base: 'https://gaapio.com/',
+  base: '/', // Use root path since we're on a custom domain
   server: {
     host: "::",
     port: 8080,
@@ -31,6 +31,20 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    copyPublicDir: true
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) return 'assets/[name].[hash][extname]';
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name].[hash][extname]`;
+          }
+          return `assets/[name].[hash][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name].[hash].js',
+        entryFileNames: 'assets/js/[name].[hash].js',
+      }
+    }
   }
 });
