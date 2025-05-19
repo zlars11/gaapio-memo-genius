@@ -4,13 +4,14 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// Forced redeployment - 2025-05-19T15:30:00
+// Forced redeployment - 2025-05-19T17:30:00
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: 'https://gaapio.com/',
+  base: '/', // Use root path since we're on a custom domain
   server: {
     host: "::",
     port: 8080,
+    https: true, // Enable HTTPS in development
     headers: {
       // Security headers
       'X-Content-Type-Options': 'nosniff',
@@ -38,12 +39,20 @@ export default defineConfig(({ mode }) => ({
     minify: mode === 'production' ? 'terser' : false,
     chunkSizeWarningLimit: 1000,
     copyPublicDir: true, // Copy all files from public directory
+    outDir: 'dist',
     rollupOptions: {
       output: {
-        // Use content hash for better caching
-        assetFileNames: 'assets/[name].[hash].[ext]',
-        chunkFileNames: 'assets/[name].[hash].js',
-        entryFileNames: '[name].[hash].js', // Entry files at root, not in assets
+        // Use content hash for better caching and proper asset paths
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name].[hash][extname]`;
+          }
+          return `assets/[name].[hash][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name].[hash].js',
+        entryFileNames: 'assets/js/[name].[hash].js',
         // Split vendor chunks for better caching
         manualChunks: (id) => {
           if (id.includes('node_modules')) {

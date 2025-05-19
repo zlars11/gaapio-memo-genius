@@ -33,6 +33,19 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Prepare asset directories
+        run: |
+          mkdir -p dist/assets/images
+          cp -r public/assets/images/* dist/assets/images/ || true
+      - name: Create _headers file
+        run: |
+          cat > dist/_headers << EOL
+          /*
+            Strict-Transport-Security: max-age=31536000; includeSubDomains
+            X-Content-Type-Options: nosniff
+            X-Frame-Options: DENY
+            X-XSS-Protection: 1; mode=block
+          EOL
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

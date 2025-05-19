@@ -31,7 +31,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Logo files with absolute paths using the base URL
+  // Logo files with updated absolute paths
   const darkModeLogo = "/assets/images/logo-dark.png";
   const lightModeLogo = "/assets/images/logo-light.png";
 
