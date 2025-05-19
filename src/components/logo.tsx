@@ -31,9 +31,9 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Logo files with relative paths (white for dark, black for light)
-  const darkModeLogo = "./lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png";
-  const lightModeLogo = "./lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png";
+  // Logo files with absolute paths (white for dark, black for light)
+  const darkModeLogo = "/lovable-uploads/4f7e5119-fbb1-4267-a6e5-ca8016310188.png";
+  const lightModeLogo = "/lovable-uploads/b61a102c-0c33-49dc-b64f-3147395ff740.png";
 
   return (
     <img
