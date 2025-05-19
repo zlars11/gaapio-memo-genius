@@ -16,14 +16,18 @@ import FirmSignup from "./pages/FirmSignup";
 import RequestDemo from "./pages/RequestDemo";
 import Blog from "./pages/Blog";
 import ASC606Pitfalls from "./pages/ASC606Pitfalls";
+// ArticleTechMemos has been removed as it no longer exists
 import AIAccounting from "./pages/AIAccounting";
 import OnePager from "./pages/OnePager";
-import Admin from "./pages/Admin";
+import Status from "./pages/Status";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import { InitializeWebhooks } from "@/components/InitializeWebhooks";
 
 function App() {
   return (
-    <>
+    <div className="app">
+      <InitializeWebhooks />
       <Router>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -42,13 +46,15 @@ function App() {
           <Route path="/request-demo" element={<RequestDemo />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+          {/* Removed route for ArticleTechMemos as it no longer exists */}
           <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
           <Route path="/onepager" element={<OnePager />} />
+          <Route path="/status" element={<Status />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </div>
   );
 }
 

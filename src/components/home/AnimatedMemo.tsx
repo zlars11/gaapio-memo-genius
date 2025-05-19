@@ -10,103 +10,80 @@ export const AnimatedMemo = () => {
   const [footnoteVisible, setFootnoteVisible] = useState(false);
   const footnoteRef = useRef<HTMLDivElement>(null);
   const footnoteTypedRef = useRef<Typed | null>(null);
-  const [initError, setInitError] = useState<Error | null>(null);
 
   // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
-    try {
-      const isDark = document.documentElement.classList.contains("dark");
-      
-      if (memoContainerRef.current) {
-        // Apply styles to the memo container
-        memoContainerRef.current.style.backgroundColor = isDark ? "#1a1a1a" : "#ffffff";
-        memoContainerRef.current.style.borderColor = isDark ? "#333333" : "#e5e7eb";
-        memoContainerRef.current.style.boxShadow = isDark 
-          ? "0 0 15px rgba(255,255,255,0.05)" 
-          : "0 0 15px rgba(0,0,0,0.1)";
-      }
-      
-      if (typedElementRef.current) {
-        // Apply styles to the typed text
-        typedElementRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
-      }
+    const isDark = document.documentElement.classList.contains("dark");
+    if (memoContainerRef.current) {
+      // Apply styles to the memo container
+      memoContainerRef.current.style.backgroundColor = isDark ? "#1a1a1a" : "#ffffff";
+      memoContainerRef.current.style.borderColor = isDark ? "#333333" : "#e5e7eb";
+      memoContainerRef.current.style.boxShadow = isDark 
+        ? "0 0 15px rgba(255,255,255,0.05)" 
+        : "0 0 15px rgba(0,0,0,0.1)";
+    }
+    
+    if (typedElementRef.current) {
+      // Apply styles to the typed text
+      typedElementRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
+    }
 
-      if (footnoteRef.current) {
-        // Apply styles to the footnote
-        footnoteRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
-        
-        // Apply specific styles to horizontal rule in different themes
-        const hr = footnoteRef.current.querySelector('hr');
-        if (hr) {
-          hr.style.borderColor = isDark ? "#444444" : "#000000";
-        }
+    if (footnoteRef.current) {
+      // Apply styles to the footnote
+      footnoteRef.current.style.color = isDark ? "#e5e7eb" : "#1f2937";
+      
+      // Apply specific styles to horizontal rule in different themes
+      const hr = footnoteRef.current.querySelector('hr');
+      if (hr) {
+        hr.style.borderColor = isDark ? "#444444" : "#000000";
       }
-    } catch (error) {
-      console.error("Error applying theme styles:", error);
-      setInitError(error instanceof Error ? error : new Error(String(error)));
     }
   };
 
   useEffect(() => {
-    console.log("AnimatedMemo: Initializing...");
-    
     // Initialize typed.js for the main memo
-    try {
-      if (typedElementRef.current) {
-        console.log("AnimatedMemo: Setting up Typed.js instance");
-        
-        typed.current = new Typed(typedElementRef.current, {
-          strings: [
-            "ASC 606 ACCOUNTING MEMO\n\n" +
-            "<strong>1. Background</strong>  \n" +
-            "The Company delivers bundled goods and services across multiple contracts...\n\n" +
-            "<strong>2. Scope / Purpose</strong>  \n" +
-            "This memo evaluates whether the Company's revenue recognition complies with ASC 606.\n\n" +
-            "<strong>3. Accounting Guidance</strong>  \n" +
-            "ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...\n\n" +
-            "<strong>4. Analysis</strong>  \n" +
-            "Based on the five-step model, the performance obligation is satisfied at a point in time...\n\n" +
-            "<strong>5. Conclusion</strong>  \n" +
-            "The Company's accounting treatment is consistent with ASC 606.\n\n" +
-            "<strong>6. Financial Statement Impact</strong>  \n" +
-            "The treatment results in $2.4M of revenue recognized in Q4 FY25...\n\n" +
-            "<strong>7. Disclosures</strong>  \n" +
-            "Footnote 12 will reflect the updated policy disclosures accordingly."
-          ],
-          typeSpeed: 7, // Keep the fast typing speed
-          backSpeed: 0,
-          loop: false,
-          showCursor: true,
-          cursorChar: "|",
-          startDelay: 600,
-          smartBackspace: false,
-          onComplete: () => {
-            console.log("AnimatedMemo: Main typing complete");
-            setMemoCompleted(true);
-          }
-        });
-        
-        // Apply theme styles immediately after initialization
-        applyThemeStyles();
-        console.log("AnimatedMemo: Initial theme styles applied");
-      }
-    } catch (error) {
-      console.error("Error initializing main Typed.js instance:", error);
-      setInitError(error instanceof Error ? error : new Error(String(error)));
+    if (typedElementRef.current) {
+      typed.current = new Typed(typedElementRef.current, {
+        strings: [
+          "ASC 606 ACCOUNTING MEMO\n\n" +
+          "<strong>1. Background</strong>  \n" +
+          "The Company delivers bundled goods and services across multiple contracts...\n\n" +
+          "<strong>2. Scope / Purpose</strong>  \n" +
+          "This memo evaluates whether the Company's revenue recognition complies with ASC 606.\n\n" +
+          "<strong>3. Accounting Guidance</strong>  \n" +
+          "ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...\n\n" +
+          "<strong>4. Analysis</strong>  \n" +
+          "Based on the five-step model, the performance obligation is satisfied at a point in time...\n\n" +
+          "<strong>5. Conclusion</strong>  \n" +
+          "The Company's accounting treatment is consistent with ASC 606.\n\n" +
+          "<strong>6. Financial Statement Impact</strong>  \n" +
+          "The treatment results in $2.4M of revenue recognized in Q4 FY25...\n\n" +
+          "<strong>7. Disclosures</strong>  \n" +
+          "Footnote 12 will reflect the updated policy disclosures accordingly."
+        ],
+        typeSpeed: 7, // Keep the fast typing speed
+        backSpeed: 0,
+        loop: false,
+        showCursor: true,
+        cursorChar: "|",
+        startDelay: 600,
+        smartBackspace: false,
+        onComplete: () => {
+          setMemoCompleted(true);
+        }
+      });
+      
+      // Apply theme styles immediately after initialization
+      applyThemeStyles();
     }
 
     // Clean up
     return () => {
-      try {
-        console.log("AnimatedMemo: Cleaning up");
-        if (typed.current) {
-          typed.current.destroy();
-        }
-        if (footnoteTypedRef.current) {
-          footnoteTypedRef.current.destroy();
-        }
-      } catch (error) {
-        console.error("Error in cleanup:", error);
+      if (typed.current) {
+        typed.current.destroy();
+      }
+      if (footnoteTypedRef.current) {
+        footnoteTypedRef.current.destroy();
       }
     };
   }, []);
@@ -114,83 +91,57 @@ export const AnimatedMemo = () => {
   // Initialize the footnote typing once the memo is completed
   useEffect(() => {
     if (memoCompleted && footnoteRef.current && !footnoteVisible) {
-      try {
-        // Small delay before showing footnote section
-        console.log("AnimatedMemo: Setting up footnote animation");
-        const timer = setTimeout(() => {
-          setFootnoteVisible(true);
-          
-          // Initialize typed.js for the footnote section
-          const footnoteElement = footnoteRef.current?.querySelector('.footnote-content');
-          if (footnoteElement) {
-            footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
-              strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery, depending on the terms of the contract.\n\nThe Company's contracts generally include a single performance obligation, and pricing is fixed and determinable. No significant financing components, variable consideration, or rights of return exist within the standard terms."],
-              typeSpeed: 10, // Keep the fast typing speed
-              backSpeed: 0,
-              loop: false,
-              showCursor: true,
-              cursorChar: "|",
-              startDelay: 800, // Slight delay after the divider appears
-              smartBackspace: false,
-            });
-            console.log("AnimatedMemo: Footnote typing initialized");
-          }
-        }, 500);
+      // Small delay before showing footnote section
+      const timer = setTimeout(() => {
+        setFootnoteVisible(true);
         
-        return () => clearTimeout(timer);
-      } catch (error) {
-        console.error("Error setting up footnote animation:", error);
-      }
+        // Initialize typed.js for the footnote section
+        const footnoteElement = footnoteRef.current.querySelector('.footnote-content');
+        if (footnoteElement) {
+          footnoteTypedRef.current = new Typed(footnoteElement as HTMLElement, {
+            strings: ["The Company recognizes revenue in accordance with ASC 606 when control of goods or services transfers to the customer. Revenue is typically recognized at a point in time upon shipment or delivery, depending on the terms of the contract.\n\nThe Company's contracts generally include a single performance obligation, and pricing is fixed and determinable. No significant financing components, variable consideration, or rights of return exist within the standard terms."],
+            typeSpeed: 10, // Keep the fast typing speed
+            backSpeed: 0,
+            loop: false,
+            showCursor: true,
+            cursorChar: "|",
+            startDelay: 800, // Slight delay after the divider appears
+            smartBackspace: false,
+          });
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
   }, [memoCompleted, footnoteVisible]);
 
   // Set up observer for theme changes
   useEffect(() => {
-    try {
-      console.log("AnimatedMemo: Setting up theme change observer");
-      
-      // Apply theme once when component mounts
+    // Apply theme once when component mounts
+    applyThemeStyles();
+    
+    // Set up observer to watch for theme changes
+    const observer = new MutationObserver(() => {
       applyThemeStyles();
-      
-      // Set up observer to watch for theme changes
-      const observer = new MutationObserver(() => {
-        applyThemeStyles();
-      });
-      
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-      
-      // Listen for storage events (for theme changes from other tabs)
-      const handleStorageEvent = () => {
-        applyThemeStyles();
-      };
-      
-      window.addEventListener('storage', handleStorageEvent);
-      
-      return () => {
-        observer.disconnect();
-        window.removeEventListener('storage', handleStorageEvent);
-      };
-    } catch (error) {
-      console.error("Error setting up theme observer:", error);
-      setInitError(error instanceof Error ? error : new Error(String(error)));
-    }
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    
+    // Listen for storage events (for theme changes from other tabs)
+    const handleStorageEvent = () => {
+      applyThemeStyles();
+    };
+    
+    window.addEventListener('storage', handleStorageEvent);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageEvent);
+    };
   }, []);
-
-  // If there was an initialization error, show a fallback UI
-  if (initError) {
-    return (
-      <div className="w-[900px] max-w-full p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-md text-center">
-        <p className="text-red-500 mb-4">Error initializing animated memo</p>
-        <p className="text-sm text-gray-500">{initError.message}</p>
-        <div className="mt-6 p-4 border-t border-gray-200 dark:border-gray-700">
-          <p className="font-mono text-sm">// Sample ASC 606 Memo (static fallback)</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center justify-center overflow-visible"> {/* Changed from overflow-hidden to overflow-visible */}

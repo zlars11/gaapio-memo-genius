@@ -16,101 +16,60 @@ export function PasswordProtectionSettings() {
   
   // Load settings on component mount
   useEffect(() => {
-    try {
-      const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
-      setIsProtectionEnabled(protectionEnabled);
-      
-      const storedPassword = localStorage.getItem("site_password");
-      if (storedPassword) {
-        setPassword(storedPassword);
-      } else {
-        // Get default password from environment variable
-        try {
-          const defaultPassword = import.meta.env.VITE_SITE_PASSWORD || "";
-          setPassword(defaultPassword);
-          localStorage.setItem("site_password", defaultPassword);
-        } catch (error) {
-          console.error("Error accessing environment variable:", error);
-          setPassword("");
-          localStorage.setItem("site_password", "");
-        }
-      }
-    } catch (error) {
-      console.error("Error loading password protection settings:", error);
-      // Set default values if there's an error
-      setIsProtectionEnabled(false);
-      setPassword("");
+    const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
+    setIsProtectionEnabled(protectionEnabled);
+    
+    const storedPassword = localStorage.getItem("site_password");
+    if (storedPassword) {
+      setPassword(storedPassword);
+    } else {
+      // Default password
+      setPassword("Gaapio2025!");
+      localStorage.setItem("site_password", "Gaapio2025!");
     }
   }, []);
   
   // Handle protection toggle
   const handleToggleProtection = (checked: boolean) => {
-    try {
-      setIsProtectionEnabled(checked);
-      localStorage.setItem("password_protection_enabled", checked.toString());
-      
-      toast({
-        title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
-        description: checked 
-          ? "The site is now password protected" 
-          : "The site is now publicly accessible",
-      });
-    } catch (error) {
-      console.error("Error toggling password protection:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update password protection settings",
-        variant: "destructive",
-      });
-    }
+    setIsProtectionEnabled(checked);
+    localStorage.setItem("password_protection_enabled", checked.toString());
+    
+    toast({
+      title: `Password Protection ${checked ? "Enabled" : "Disabled"}`,
+      description: checked 
+        ? "The site is now password protected" 
+        : "The site is now publicly accessible",
+    });
   };
   
   // Save password
   const handleSavePassword = () => {
-    try {
-      if (password.length < 4) {
-        toast({
-          title: "Invalid Password",
-          description: "Password must be at least 4 characters long",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      localStorage.setItem("site_password", password);
+    if (password.length < 4) {
       toast({
-        title: "Password Updated",
-        description: "The site password has been updated",
-      });
-    } catch (error) {
-      console.error("Error saving password:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save the password",
+        title: "Invalid Password",
+        description: "Password must be at least 4 characters long",
         variant: "destructive",
       });
+      return;
     }
+    
+    localStorage.setItem("site_password", password);
+    toast({
+      title: "Password Updated",
+      description: "The site password has been updated",
+    });
   };
   
   // Expire all sessions
   const handleExpireSessions = () => {
-    try {
-      // Update the version number to invalidate all current sessions
-      const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
-      localStorage.setItem("session_version", (currentVersion + 1).toString());
-      
-      toast({
-        title: "Sessions Expired",
-        description: "All user sessions have been expired",
-      });
-    } catch (error) {
-      console.error("Error expiring sessions:", error);
-      toast({
-        title: "Error",
-        description: "Failed to expire sessions",
-        variant: "destructive",
-      });
-    }
+    // Update the version number to invalidate all current sessions
+    const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
+    localStorage.setItem("session_version", (currentVersion + 1).toString());
+    
+    toast({
+      title: "Sessions Expired",
+      description: "All user sessions have been expired",
+    });
   };
   
   return (

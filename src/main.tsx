@@ -1,18 +1,18 @@
 
-import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import './App.css'
-import { ThemeProvider } from './components/theme-toggle'
-import { Toaster } from './components/ui/toaster'
+import './App.css'  // Make sure App.css is imported
+import { ThemeProvider } from './components/theme-toggle.tsx'
 
-const root = createRoot(document.getElementById('root') as HTMLElement)
-root.render(
-  <React.StrictMode>
-    <ThemeProvider>
-      <App />
-      <Toaster />
-    </ThemeProvider>
-  </React.StrictMode>
-)
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Failed to find the root element");
+}
+
+createRoot(rootElement).render(
+  <ThemeProvider defaultTheme="system" storageKey="gaapio-theme">
+    <App />
+  </ThemeProvider>
+);
