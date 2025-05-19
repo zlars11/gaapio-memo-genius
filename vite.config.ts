@@ -4,20 +4,15 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// Forced redeployment - 2025-05-19T17:30:00
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   base: '/', // Use root path since we're on a custom domain
   server: {
     host: "::",
     port: 8080,
-    https: true, // Enable HTTPS in development
     headers: {
-      // Security headers
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'X-XSS-Protection': '1; mode=block',
-      // Modified CSP to allow fonts from rsms.me and required scripts
       'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https://rsms.me; font-src 'self' https://rsms.me; img-src 'self' data: blob:; connect-src 'self' https://bxojxrcerefklsrqkmrs.supabase.co wss://bxojxrcerefklsrqkmrs.supabase.co; frame-src 'self'; media-src 'self';",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -26,8 +21,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    process.env.NODE_ENV === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -35,15 +29,12 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    assetsDir: 'assets',
-    minify: mode === 'production' ? 'terser' : false,
-    chunkSizeWarningLimit: 1000,
-    copyPublicDir: true, // Copy all files from public directory
     outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
-        // Use content hash for better caching and proper asset paths
         assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) return 'assets/[name].[hash][extname]';
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
@@ -53,27 +44,7 @@ export default defineConfig(({ mode }) => ({
         },
         chunkFileNames: 'assets/js/[name].[hash].js',
         entryFileNames: 'assets/js/[name].[hash].js',
-        // Split vendor chunks for better caching
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            } else if (id.includes('@radix-ui')) {
-              return 'vendor-radix';
-            } else if (id.includes('lucide')) {
-              return 'vendor-lucide';
-            } else {
-              return 'vendor';
-            }
-          }
-        },
-      },
-    },
-    terserOptions: {
-      compress: {
-        drop_console: mode === 'production',
-        drop_debugger: mode === 'production',
-      },
-    },
-  },
-}));
+      }
+    }
+  }
+});
