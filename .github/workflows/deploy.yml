@@ -45,26 +45,24 @@ jobs:
       - name: Create proper MIME type configuration
         run: |
           echo "/* /index.html 200" > dist/_redirects
-          if [ ! -f dist/_headers ]; then
-            cat > dist/_headers << EOL
-            /*
-              Content-Type: text/html
-            *.js
-              Content-Type: text/javascript
-            *.tsx
-              Content-Type: text/javascript
-            *.css
-              Content-Type: text/css
-            *.json
-              Content-Type: application/json
-            *.png
-              Content-Type: image/png
-            *.jpg
-              Content-Type: image/jpeg
-            *.svg
-              Content-Type: image/svg+xml
-            EOL
-          fi
+          cat > dist/_headers << 'EOL'
+/*
+  Content-Type: text/html
+*.js
+  Content-Type: text/javascript
+*.tsx
+  Content-Type: text/javascript
+*.css
+  Content-Type: text/css
+*.json
+  Content-Type: application/json
+*.png
+  Content-Type: image/png
+*.jpg
+  Content-Type: image/jpeg
+*.svg
+  Content-Type: image/svg+xml
+EOL
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
