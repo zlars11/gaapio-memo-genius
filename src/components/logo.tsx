@@ -31,9 +31,19 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Logo files with updated absolute paths
-  const darkModeLogo = "/assets/images/logo-dark.png";
-  const lightModeLogo = "/assets/images/logo-light.png";
+  // Base path handling for different environments
+  const getAssetPath = (filename: string) => {
+    // Check if we're in the Lovable preview environment
+    if (window.location.hostname.includes('lovable.app')) {
+      return `/lovable-uploads/${filename}`;
+    }
+    // Production environment
+    return `/assets/images/${filename}`;
+  };
+
+  // Logo files with environment-aware paths
+  const darkModeLogo = getAssetPath("logo-dark.png");
+  const lightModeLogo = getAssetPath("logo-light.png");
 
   return (
     <img
