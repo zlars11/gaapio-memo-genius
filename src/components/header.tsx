@@ -57,7 +57,7 @@ export function Header() {
       }`}
     >
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center" aria-label="Gaapio Homepage">
           <Logo className="h-8" />
         </Link>
 

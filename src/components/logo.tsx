@@ -4,6 +4,7 @@ import { useEffect, useState, memo } from "react";
 // Ensures proper sizing, day/night mode support, optimized for header
 export const Logo = memo(({ className = "" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -31,9 +32,26 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Logo files with updated absolute paths
+  // Logo files with correct absolute paths
   const darkModeLogo = "/assets/images/logo-dark.png";
   const lightModeLogo = "/assets/images/logo-light.png";
+
+  const handleImageError = () => {
+    console.error("Logo image failed to load");
+    setLogoError(true);
+  };
+
+  if (logoError) {
+    // Fallback to text if logo fails to load
+    return (
+      <span 
+        className={`text-2xl font-bold ${className}`}
+        style={{fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", fontSize: "24px"}}
+      >
+        Gaapio
+      </span>
+    );
+  }
 
   return (
     <img
@@ -46,6 +64,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       decoding="async"
       fetchPriority="high"
       draggable={false}
+      onError={handleImageError}
     />
   );
 });
