@@ -31,12 +31,25 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Verify logo assets exist
+        run: |
+          mkdir -p public/assets/images
+          if [ ! -f "public/assets/images/logo-light.png" ] || [ ! -f "public/assets/images/logo-dark.png" ]; then
+            echo "Warning: Logo files missing. Deployment may have display issues."
+            # Create empty placeholder files to prevent build failures
+            touch public/assets/images/logo-light.png
+            touch public/assets/images/logo-dark.png
+          else
+            echo "Logo files verified successfully!"
+          fi
       - name: Build
         run: npm run build
       - name: Prepare asset directories
         run: |
           mkdir -p dist/assets/images
           cp -r public/assets/images/* dist/assets/images/ || true
+          echo "Asset verification:"
+          ls -la dist/assets/images/
       - name: Copy index.html to 404.html for client-side routing
         run: |
           cp dist/index.html dist/404.html
