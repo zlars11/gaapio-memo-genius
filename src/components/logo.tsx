@@ -1,6 +1,10 @@
 
 import { useEffect, useState, memo } from "react";
 
+// Import the logo files directly
+import darkLogo from "/public/assets/images/logo-dark.png";
+import lightLogo from "/public/assets/images/logo-light.png";
+
 // Ensures proper sizing, day/night mode support, optimized for header
 export const Logo = memo(({ className = "" }: { className?: string }) => {
   const [isDark, setIsDark] = useState(false);
@@ -32,10 +36,6 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     };
   }, []);
 
-  // Logo files with correct absolute paths
-  const darkModeLogo = "/assets/images/logo-dark.png";
-  const lightModeLogo = "/assets/images/logo-light.png";
-
   const handleImageError = () => {
     console.error("Logo image failed to load");
     setLogoError(true);
@@ -56,7 +56,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
   return (
     <div className={`logo ${className}`}>
       <img
-        src={isDark ? darkModeLogo : lightModeLogo}
+        src={isDark ? darkLogo : lightLogo}
         alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
         width={140}
         height={32}
