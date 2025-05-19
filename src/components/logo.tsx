@@ -54,18 +54,20 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
   }
 
   return (
-    <img
-      src={isDark ? darkModeLogo : lightModeLogo}
-      alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-      width={480}
-      height={144}
-      className={`h-auto w-auto max-h-28 md:max-h-32 object-contain transition-all duration-200 ${className}`}
-      loading="eager"
-      decoding="async"
-      fetchPriority="high"
-      draggable={false}
-      onError={handleImageError}
-    />
+    <div className={`logo ${className}`}>
+      <img
+        src={isDark ? darkModeLogo : lightModeLogo}
+        alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
+        width={140}
+        height={32}
+        className="h-8 w-auto max-w-[140px] object-contain"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        draggable={false}
+        onError={handleImageError}
+      />
+    </div>
   );
 });
 Logo.displayName = 'Logo';

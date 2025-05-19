@@ -12,6 +12,7 @@
 
 
 
+
 # trigger rebuild
 # Removed pricing page and pricing tab from admin portal
 # Added edit and delete functionality to contact submissions in admin portal
@@ -27,7 +28,8 @@
 # Fixed SSL certificate and asset loading issues
 # Updated dark mode styling with improved background and form input styling
 # Added GitHub Pages client-side routing support
-# Updated logo implementation with fallback and proper paths - 2025-05-19
+# Updated logo implementation with precise sizing and placement - 2025-05-19
+
 
 
 
