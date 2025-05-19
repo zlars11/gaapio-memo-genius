@@ -26,10 +26,30 @@ jobs:
       - name: Add .nojekyll file
         run: touch dist/.nojekyll
         
+      - name: Copy public folder to assets
+        run: |
+          mkdir -p dist/lovable-uploads
+          cp -R public/lovable-uploads/* dist/lovable-uploads/ || true
+        
       - name: Create proper MIME type configuration
         run: |
           echo "/* /index.html 200" > dist/_redirects
-          echo '{ "*.js": { "Content-Type": "application/javascript" }, "*.css": { "Content-Type": "text/css" }, "*.json": { "Content-Type": "application/json" } }' > dist/_headers
+          cat > dist/_headers << EOL
+          /*
+            Content-Type: text/html
+          *.js
+            Content-Type: application/javascript
+          *.css
+            Content-Type: text/css
+          *.json
+            Content-Type: application/json
+          *.png
+            Content-Type: image/png
+          *.jpg
+            Content-Type: image/jpeg
+          *.svg
+            Content-Type: image/svg+xml
+          EOL
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

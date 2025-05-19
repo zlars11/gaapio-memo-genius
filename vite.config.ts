@@ -35,6 +35,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     minify: mode === 'production' ? 'terser' : false,
     chunkSizeWarningLimit: 1000,
+    assetsDir: 'assets', // Ensure assets are in a predictable directory
+    copyPublicDir: true, // Copy all files from public directory
     rollupOptions: {
       output: {
         // Use content hash for better caching
