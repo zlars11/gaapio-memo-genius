@@ -20,16 +20,26 @@ jobs:
       - name: Install Dependencies
         run: npm install
         
+      - name: Create assets directory for images
+        run: mkdir -p public/assets/images
+        
+      - name: Copy lovable-uploads to assets/images
+        run: cp -R public/lovable-uploads/* public/assets/images/ || true
+        
       - name: Build
         run: npm run build
         
       - name: Add .nojekyll file
         run: touch dist/.nojekyll
         
-      - name: Copy public folder to root
+      - name: Ensure assets directories exist
         run: |
-          mkdir -p dist/lovable-uploads
-          cp -R public/lovable-uploads/* dist/lovable-uploads/ || true
+          mkdir -p dist/assets/images
+          
+      - name: Copy public images to dist assets
+        run: |
+          cp -R public/assets/images/* dist/assets/images/ || true
+          cp -R public/lovable-uploads/* dist/assets/images/ || true
           cp -R public/_headers dist/ || true
         
       - name: Create proper MIME type configuration
