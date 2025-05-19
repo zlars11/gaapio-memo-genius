@@ -24,8 +24,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      // Configure React plugin for proper handling of useLayoutEffect
-      fastRefresh: true,
+      // Configure React plugin with appropriate options
+      // Note: Removed fastRefresh as it's not a valid option
     }),
     mode === 'development' &&
     componentTagger(),
