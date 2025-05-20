@@ -10,7 +10,7 @@ import FAQ from './pages/FAQ';
 import Resources from './pages/Resources';
 import Blog from './pages/Blog';
 import Pricing from './pages/Pricing';
-import Signup from './pages/Signup';
+import Signup from './pages/SignUp';
 import FirmSignup from './pages/FirmSignup';
 import Admin from './pages/Admin';
 import { InitializeWebhooks } from "./components/InitializeWebhooks";

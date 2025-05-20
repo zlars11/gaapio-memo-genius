@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { header as Header } from '@/components/header';
-import { footer as Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 
 const Signup: React.FC = () => {
   return (
