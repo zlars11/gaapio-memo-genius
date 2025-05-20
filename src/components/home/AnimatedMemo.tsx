@@ -33,12 +33,13 @@ export const AnimatedMemo = () => {
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            'Revenue Recognition Technical Memo\n\nBackground:\nThe Company enters into contracts with customers to provide software licenses and implementation services.\n\nTechnical Analysis:\nUnder ASC 606, we have determined that the software license represents a distinct performance obligation. The license provides the customer with a right to use the software, for which revenue is recognized at a point in time when control is transferred to the customer.\n\nThe implementation services represent a separate performance obligation, as they are not highly interdependent with the software license. Revenue for implementation services is recognized over time as the services are performed and the customer simultaneously receives and consumes the benefits.'
+            '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts...</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition complies with ASC 606.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the relevant criteria for revenue recognition...</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step model, the performance obligation is satisfied at a point in time...</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s accounting treatment is consistent with ASC 606.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The treatment results in $2.4M of revenue recognized in Q4 FY25...</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 will reflect the updated policy disclosures accordingly.</p>'
           ],
           typeSpeed: 20,
           showCursor: true,
           cursorChar: '|',
-          loop: false
+          loop: false,
+          contentType: 'html'
         });
       }
     }, 300);
@@ -87,13 +88,13 @@ export const AnimatedMemo = () => {
           className="w-full h-auto object-cover"
         />
         
-        {/* Overlay with typing animation */}
+        {/* Overlay with typing animation - positioned to appear in the white content area */}
         <div 
-          className="absolute top-[122px] left-[50px] right-[400px] bottom-[80px] overflow-auto text-left"
+          className="absolute top-[160px] left-[50px] right-[400px] bottom-[80px] overflow-auto text-left"
           style={{
             padding: '16px',
             fontSize: '14px',
-            lineHeight: '1.6',
+            lineHeight: '1.5',
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif'
           }}
