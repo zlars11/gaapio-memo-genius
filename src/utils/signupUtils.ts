@@ -47,7 +47,7 @@ export async function createFirmSignup(formData: any) {
       
     if (userError) throw userError;
 
-    // Trigger the webhook
+    // Queue the webhook
     await triggerZapier({
       ...formData,
       signupDate: new Date().toISOString(),
@@ -130,13 +130,11 @@ export async function handleSignup(formData: any): Promise<{
       return { success: false, error: userError.message };
     }
     
-    // Trigger Zapier webhook
-    try {
-      await triggerZapier(formData);
-    } catch (err) {
-      console.error("Error triggering webhook:", err);
+    // Queue webhook - don't await for immediate response
+    triggerZapier(formData).catch(err => {
+      console.error("Error queuing webhook:", err);
       // Error handled by webhook system, don't block user signup
-    }
+    });
     
     return { 
       success: true, 
@@ -176,23 +174,22 @@ export async function triggerZapier(allData: any, isFirm: boolean = false) {
       "Submission Date": new Date().toISOString(),
     } : allData;
     
-    // Send directly to Zapier
-    try {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      
-      console.log("Webhook triggered successfully");
-    } catch (err) {
-      console.error("Error triggering Zapier webhook:", err);
-      throw err;
+    // Call the queue-webhook edge function
+    const { error } = await supabase.functions.invoke('queue-webhook', {
+      body: {
+        payload,
+        target_url: webhookUrl
+      }
+    });
+    
+    if (error) {
+      console.error("Error queuing webhook:", error);
+      // Don't block the signup process, log error only
+    } else {
+      console.log("Webhook queued successfully");
     }
   } catch (err) {
-    console.error("Error in triggerZapier:", err);
+    console.error("Error triggering Zapier webhook:", err);
     // Don't block the signup process, log error only
   }
 }

@@ -25,26 +25,7 @@ export function useDemoRequestForm(onSuccess?: () => void) {
     console.log("Form submitted with data:", data);
     
     try {
-      console.log("Saving to database...");
-      // First, save to database
-      const { error } = await supabase
-        .from("demo_requests")
-        .insert({
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          notes: data.notes,
-        });
-
-      if (error) {
-        console.error("Database error:", error);
-        throw error;
-      }
-
-      console.log("Demo request saved successfully");
-      
-      // Then, trigger Zapier webhook if URL is set
+      // First, trigger Zapier webhook if URL is set
       const webhookUrl = getWebhookUrl(WebhookTypes.DEMO_REQUEST);
       
       if (webhookUrl) {
@@ -63,24 +44,48 @@ export function useDemoRequestForm(onSuccess?: () => void) {
 
           console.log("Sending data to Zapier:", zapierData);
 
-          // Use the fetch API to trigger the webhook
-          await fetch(webhookUrl, {
+          // Use the fetch API to trigger the webhook with better error handling
+          const zapierResponse = await fetch(webhookUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
+            mode: "no-cors", // Required for cross-origin requests
             body: JSON.stringify(zapierData),
+          }).catch(err => {
+            console.error("Fetch error:", err);
+            throw err;
           });
           
-          console.log("Zapier webhook triggered successfully");
+          console.log("Zapier webhook request completed");
+          // Cannot check status with mode: "no-cors" but log what we can
+          console.log("Response type:", zapierResponse?.type);
         } catch (err) {
           console.error("Error triggering Zapier webhook:", err);
-          // Don't throw error here as we still want to show success to the user
+          // Don't throw error here as we still want to save to the database
         }
       } else {
         console.warn("No Zapier webhook URL configured for demo requests");
       }
 
+      console.log("Saving to database...");
+      // Then, save to database
+      const { error } = await supabase
+        .from("demo_requests")
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          notes: data.notes,
+        });
+
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
+
+      console.log("Demo request saved successfully");
       toast({
         title: "Demo request submitted",
         description: "Thank you for your interest! We'll be in touch soon.",

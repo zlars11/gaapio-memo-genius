@@ -1,43 +1,63 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ErrorBoundary } from 'react-error-boundary';
-import Contact from './pages/Contact';
-import RequestDemo from './pages/RequestDemo';
-import Home from './pages/Home';
-import AboutUs from './pages/AboutUs';
-import FAQ from './pages/FAQ';
-import Resources from './pages/Resources';
-import Blog from './pages/Blog';
-import Pricing from './pages/Pricing';
-import Signup from './pages/Signup';
-import FirmSignup from './pages/FirmSignup';
-import Admin from './pages/Admin';
-import { InitializeWebhooks } from "./components/InitializeWebhooks";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Index from "./pages/Index";
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Resources from "./pages/Resources";
+import Privacy from "./pages/Privacy";
+import SubscriptionAgreement from "./pages/SubscriptionAgreement";
+import ChoosePlan from "./pages/ChoosePlan";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import FirmSignup from "./pages/FirmSignup";
+import RequestDemo from "./pages/RequestDemo";
+import Blog from "./pages/Blog";
+import ASC606Pitfalls from "./pages/ASC606Pitfalls";
+// ArticleTechMemos has been removed as it no longer exists
+import AIAccounting from "./pages/AIAccounting";
+import OnePager from "./pages/OnePager";
+import Status from "./pages/Status";
+import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import { InitializeWebhooks } from "@/components/InitializeWebhooks";
+import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 
 function App() {
   return (
-    <>
+    <div className="app">
       <InitializeWebhooks />
-      <ErrorBoundary>
-        <div className="min-h-screen flex flex-col">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/request-demo" element={<RequestDemo />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/firm-signup" element={<FirmSignup />} />
-              <Route path="/admin" element={<Admin />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
-      </ErrorBoundary>
-    </>
+      <Router>
+        <ProtectedLayout>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/ssa" element={<SubscriptionAgreement />} />
+            <Route path="/choose-plan" element={<ChoosePlan />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/firm-signup" element={<FirmSignup />} />
+            <Route path="/request-demo" element={<RequestDemo />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/5-common-asc-606-pitfalls" element={<ASC606Pitfalls />} />
+            {/* Removed route for ArticleTechMemos as it no longer exists */}
+            <Route path="/blog/how-ai-is-changing-the-accounting-landscape" element={<AIAccounting />} />
+            <Route path="/onepager" element={<OnePager />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ProtectedLayout>
+      </Router>
+    </div>
   );
 }
 
