@@ -88,13 +88,13 @@ export const AnimatedMemo = () => {
           className="w-full h-auto object-cover"
         />
         
-        {/* Overlay with typing animation - positioned to match the yellow highlighted area, adjusted left */}
+        {/* Overlay with typing animation - positioned to match the yellow line in the image */}
         <div 
-          className="absolute top-[210px] left-[270px] right-[30px] bottom-[50px] overflow-auto text-left"
+          className="absolute top-[210px] left-[250px] right-[30px] bottom-[50px] overflow-auto text-left"
           style={{
             padding: '16px',
-            fontSize: '14px',
-            lineHeight: '1.5',
+            fontSize: '12px',
+            lineHeight: '1.4',
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif'
           }}
