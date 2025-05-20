@@ -23,7 +23,20 @@ import PolicyDetail from "./pages/PolicyDetail";
 function App() {
   return (
     <Router>
-      <ErrorBoundary>
+      <ErrorBoundary fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <div className="text-center p-8 rounded-lg bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-red-500 mb-4">Something went wrong</h2>
+            <p className="mb-4">We're sorry, but an error has occurred.</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+            >
+              Reload page
+            </button>
+          </div>
+        </div>
+      }>
         <PasswordProtection>
           <Routes>
             <Route path="/" element={<Index />} />
