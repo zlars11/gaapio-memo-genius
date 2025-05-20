@@ -55,4 +55,40 @@ export const initializeDefaultWebhooks = (): void => {
   if (!getWebhookUrl(WebhookTypes.FIRM_SIGNUP)) {
     saveWebhookUrl(WebhookTypes.FIRM_SIGNUP, 'https://hooks.zapier.com/hooks/catch/22551110/2xni535/');
   }
+  
+  // User signup
+  if (!getWebhookUrl(WebhookTypes.USER_SIGNUP)) {
+    saveWebhookUrl(WebhookTypes.USER_SIGNUP, 'https://hooks.zapier.com/hooks/catch/22551110/2xni535/');
+  }
+};
+
+/**
+ * Send data to a Zapier webhook
+ * @param webhookUrl The webhook URL to send data to
+ * @param data The data to send
+ * @returns A promise that resolves when the request is complete
+ */
+export const sendToZapierWebhook = async (webhookUrl: string, data: any): Promise<Response | undefined> => {
+  if (!webhookUrl) {
+    console.warn('No webhook URL provided');
+    return undefined;
+  }
+  
+  console.log(`Sending data to webhook: ${webhookUrl}`, data);
+  
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    console.log('Webhook response:', response);
+    return response;
+  } catch (error) {
+    console.error('Error sending data to webhook:', error);
+    throw error;
+  }
 };

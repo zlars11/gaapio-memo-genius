@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 interface ContactFormProps {
   onSubmitSuccess?: (data: any) => void;
-  planType?: string; // Add a prop to specify the plan type
+  planType?: string;
 }
 
 interface ContactFormValues {
@@ -84,7 +85,7 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
         .from("companies")
         .insert([{
           name: normalizedCompanyName,
-          plan: planType, // Use the planType prop instead of hardcoding "firm"
+          plan: planType,
           amount: 0,
           status: "active",
           billing_frequency: "annual"
@@ -140,13 +141,12 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
         };
         
         try {
-          // Send to Zapier directly
+          // Send to Zapier
           await fetch(webhookUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            mode: "no-cors",
             body: JSON.stringify(zapierData),
           });
           

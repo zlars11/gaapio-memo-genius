@@ -70,13 +70,12 @@ export function ZapierWebhookSetup({ webhookType, description }: ZapierWebhookSe
 
       console.log("Sending test to webhook:", webhookUrl);
 
-      // Since we're using no-cors, we won't get a proper response status
+      // Make a proper POST request with JSON content type
       await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "no-cors",
         body: JSON.stringify(testPayload),
       });
 

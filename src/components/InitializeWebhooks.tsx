@@ -1,10 +1,10 @@
 
-import { useEffect } from "react";
-import { initializeDefaultWebhooks } from "@/utils/webhookUtils";
+import { useEffect } from 'react';
+import { initializeDefaultWebhooks } from '@/utils/webhookUtils';
 
 export function InitializeWebhooks() {
   useEffect(() => {
-    // Initialize default webhooks when the app loads
+    // Initialize default webhook URLs when the app starts
     initializeDefaultWebhooks();
   }, []);
 
