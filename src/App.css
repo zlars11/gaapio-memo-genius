@@ -7,27 +7,25 @@
   overflow-x: hidden;
 }
 
-/* Updated Logo styling with significantly larger dimensions */
-.logo {
-  height: 70px; /* Increased from 50px to 70px */
-  width: auto;
-  margin: 8px 0; /* Decreased margin for better vertical centering */
-  padding-left: 16px;
+/* Logo styling with direct size control */
+.logo-container {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  padding-left: 16px;
 }
 
-.logo img {
-  height: 100%;
-  width: auto;
+.logo-image {
+  /* Size directly applied to image in the component */
   object-fit: contain;
 }
 
 @media (max-width: 640px) {
-  .logo {
-    height: 50px; /* Increased from 40px for mobile */
+  .logo-container {
     padding-left: 8px;
   }
+  
+  /* Mobile sizing is handled in the component */
 }
 
 @keyframes logo-spin {
