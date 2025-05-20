@@ -36,6 +36,9 @@ const TabsTrigger = React.forwardRef<
       dark:data-[state=active]:bg-primary/10 dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:font-semibold
       data-[state=inactive]:bg-muted/60 data-[state=inactive]:text-foreground hover:bg-accent 
       border-r border-muted last:border-r-0
+      
+      /* Add icon alignment */
+      gap-2
       `,
       className
     )}
