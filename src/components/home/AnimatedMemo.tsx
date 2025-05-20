@@ -1,12 +1,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export const AnimatedMemo = () => {
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const typedElementRef = useRef<HTMLDivElement>(null);
   const typedInstanceRef = useRef<Typed | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const isMobile = useIsMobile();
+  const isSmallScreen = !useMediaQuery('md');
   
   // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
@@ -88,13 +92,17 @@ export const AnimatedMemo = () => {
           className="w-full h-auto object-cover"
         />
         
-        {/* Overlay with typing animation - perfectly aligned with the UI */}
+        {/* Overlay with typing animation - matched angle with the UI */}
         <div 
-          className="absolute top-[210px] left-[205px] right-[35px] bottom-[50px] overflow-hidden text-left"
+          className="absolute overflow-hidden text-left"
           style={{
-            padding: '10px 14px',
-            fontSize: '9.5px',
-            lineHeight: '1.2',
+            top: isSmallScreen ? '160px' : '210px',
+            left: isSmallScreen ? '160px' : '190px',
+            right: isSmallScreen ? '25px' : '35px',
+            bottom: isSmallScreen ? '40px' : '50px',
+            padding: isSmallScreen ? '8px 10px' : '10px 14px',
+            fontSize: isSmallScreen ? '7px' : '8.5px',
+            lineHeight: '1.15',
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
             transform: 'rotate(-8deg)', // Match the exact angle of the UI

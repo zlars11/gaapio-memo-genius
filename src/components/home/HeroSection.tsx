@@ -4,10 +4,12 @@ import { ArrowDownCircle } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatedMemo } from "./AnimatedMemo";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const HeroSection = memo(function HeroSection() {
   const [isClient, setIsClient] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     setIsClient(true);
@@ -52,7 +54,7 @@ export const HeroSection = memo(function HeroSection() {
       {/* Hero content with improved spacing */}
       <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
         {/* Text content centered */}
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-8 md:mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
             Audit Ready Memos and Disclosures
           </h1>
@@ -69,8 +71,8 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
         
-        {/* Animated memo display with wider sizing */}
-        <div className="flex justify-center items-center w-full mx-auto mb-8 overflow-visible">
+        {/* Animated memo display with responsive sizing */}
+        <div className={`flex justify-center items-center w-full mx-auto mb-8 overflow-visible ${isMobile ? 'scale-90' : ''}`}>
           {isClient && <AnimatedMemo />}
         </div>
       </div>
