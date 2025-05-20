@@ -56,13 +56,13 @@ export function Header() {
         scrolled ? "shadow-sm" : ""
       }`}
     >
-      <div className="container flex h-20 items-center justify-between"> {/* Increased height from h-16 to h-20 */}
+      <div className="container flex h-24 items-center justify-between"> {/* Increased height from h-20 to h-24 to accommodate larger logo */}
         <Link 
           to="/" 
-          className="flex items-center py-3" /* Removed pl-4 to give more space for larger logo */
+          className="flex items-center py-2" /* Updated padding for vertical centering */
           aria-label="Gaapio Homepage"
         >
-          <Logo className="ml-2" /> {/* Added margin-left for better spacing */}
+          <Logo className="ml-0" /> {/* Removed left margin as the logo itself has padding */}
         </Link>
 
         {isMobile ? (

@@ -45,8 +45,8 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
     // Fallback to text if logo fails to load
     return (
       <span 
-        className={`text-2xl font-bold ${className}`}
-        style={{fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", fontSize: "24px"}}
+        className={`text-3xl font-bold ${className}`}
+        style={{fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif", fontSize: "32px"}}
       >
         Gaapio
       </span>
@@ -58,9 +58,9 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
       <img
         src={isDark ? darkLogo : lightLogo}
         alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
-        width={140}
-        height={32}
-        className="h-8 w-auto max-w-[140px] object-contain"
+        width={240}
+        height={70}
+        className="h-full w-auto max-w-none object-contain"
         loading="eager"
         decoding="async"
         fetchPriority="high"

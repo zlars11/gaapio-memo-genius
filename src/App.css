@@ -1,3 +1,4 @@
+
 #root {
   max-width: 100%;
   margin: 0 auto;
@@ -6,11 +7,11 @@
   overflow-x: hidden;
 }
 
-/* Updated Logo styling with increased dimensions */
+/* Updated Logo styling with significantly larger dimensions */
 .logo {
-  height: 50px; /* Increased from 32px */
+  height: 70px; /* Increased from 50px to 70px */
   width: auto;
-  margin: 12px 0;
+  margin: 8px 0; /* Decreased margin for better vertical centering */
   padding-left: 16px;
   display: flex;
   align-items: center;
@@ -24,7 +25,7 @@
 
 @media (max-width: 640px) {
   .logo {
-    height: 40px; /* Increased from 28px for mobile */
+    height: 50px; /* Increased from 40px for mobile */
     padding-left: 8px;
   }
 }
