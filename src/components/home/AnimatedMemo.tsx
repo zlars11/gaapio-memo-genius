@@ -88,9 +88,9 @@ export const AnimatedMemo = () => {
           className="w-full h-auto object-cover"
         />
         
-        {/* Overlay with typing animation - positioned to appear in the white content area */}
+        {/* Overlay with typing animation - positioned to match the yellow highlighted area */}
         <div 
-          className="absolute top-[160px] left-[50px] right-[400px] bottom-[80px] overflow-auto text-left"
+          className="absolute top-[210px] left-[300px] right-[50px] bottom-[50px] overflow-auto text-left"
           style={{
             padding: '16px',
             fontSize: '14px',
