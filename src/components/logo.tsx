@@ -2,8 +2,8 @@
 import { useEffect, useState, memo } from "react";
 
 // Import the logo files directly
-import darkLogo from "/public/assets/images/logo-dark.png";
-import lightLogo from "/public/assets/images/logo-light.png";
+import darkLogo from "/public/assets/images/logo-dark.svg";
+import lightLogo from "/public/assets/images/logo-light.svg";
 
 // Ensures proper sizing, day/night mode support, optimized for header
 export const Logo = memo(({ className = "" }: { className?: string }) => {
