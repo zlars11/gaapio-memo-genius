@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/logo";
 import { Link, useLocation } from "react-router-dom";
@@ -55,7 +56,7 @@ export function Header() {
         scrolled ? "shadow-sm" : ""
       }`}
     >
-      <div className="container flex h-24 items-center justify-between">
+      <div className="container flex h-20 items-center justify-between">
         <Link 
           to="/" 
           className="flex items-center"
