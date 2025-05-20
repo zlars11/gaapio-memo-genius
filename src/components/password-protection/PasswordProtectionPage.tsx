@@ -50,11 +50,11 @@ export const PasswordProtectionPage = () => {
           description: "The password you entered is incorrect",
           variant: "destructive",
         });
+        setIsSubmitting(false);
       }
     } catch (err) {
       console.error("Error validating password:", err);
       setError("An error occurred. Please try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -73,14 +73,22 @@ export const PasswordProtectionPage = () => {
     console.log("Setting access data:", accessData);
     sessionStorage.setItem("site_access", JSON.stringify(accessData));
     
-    // Redirect back to the original URL or to the homepage
-    const redirectPath = location.state?.from || "/";
-    navigate(redirectPath);
-
+    // Show success toast
     toast({
       title: "Access granted",
       description: "Welcome to the site",
     });
+
+    // Redirect back to the original URL or to the homepage
+    const redirectPath = location.state?.from || "/";
+    
+    // Use window.location.reload() to ensure the page fully refreshes
+    // This ensures the PasswordProtection component re-evaluates access
+    setTimeout(() => {
+      window.location.href = redirectPath;
+      // Reload the page after a tiny delay to ensure the sessionStorage is saved
+      setTimeout(() => window.location.reload(), 100);
+    }, 100);
   };
 
   return (
