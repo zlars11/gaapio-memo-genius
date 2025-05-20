@@ -72,7 +72,7 @@ export const HeroSection = memo(function HeroSection() {
         </div>
         
         {/* Animated memo display with responsive sizing */}
-        <div className={`flex justify-center items-center w-full mx-auto mb-8 overflow-visible ${isMobile ? 'scale-90' : ''}`}>
+        <div className="flex justify-center items-center w-full mx-auto mb-8 overflow-visible">
           {isClient && <AnimatedMemo />}
         </div>
       </div>

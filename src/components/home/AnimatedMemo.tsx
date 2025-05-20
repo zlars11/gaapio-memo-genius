@@ -76,13 +76,12 @@ export const AnimatedMemo = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center overflow-visible">
+    <div className="flex items-center justify-center overflow-visible py-8 mx-4">
       <div 
         ref={memoContainerRef}
-        className={`w-[900px] max-w-full p-0 rounded-lg transform rotate-[-8deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full max-w-[900px] p-0 rounded-lg transform rotate-[-5deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'} overflow-hidden`}
         style={{
-          minHeight: '560px', 
-          overflow: 'hidden',
+          minHeight: isSmallScreen ? '400px' : '560px', 
           position: 'relative'
         }}
       >
@@ -94,19 +93,21 @@ export const AnimatedMemo = () => {
         
         {/* Overlay with typing animation - matched angle with the UI */}
         <div 
-          className="absolute overflow-hidden text-left"
+          className="absolute overflow-y-auto text-left"
           style={{
-            top: isSmallScreen ? '160px' : '210px',
-            left: isSmallScreen ? '160px' : '190px',
-            right: isSmallScreen ? '25px' : '35px',
-            bottom: isSmallScreen ? '40px' : '50px',
+            top: isSmallScreen ? '120px' : '210px',
+            left: isSmallScreen ? '40px' : '190px',
+            right: isSmallScreen ? '20px' : '35px',
+            bottom: isSmallScreen ? '30px' : '50px',
             padding: isSmallScreen ? '8px 10px' : '10px 14px',
-            fontSize: isSmallScreen ? '7px' : '8.5px',
-            lineHeight: '1.15',
+            fontSize: isSmallScreen ? '0.65rem' : '0.75rem',
+            lineHeight: 1.2,
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: 'rotate(-8deg)', // Match the exact angle of the UI
-            transformOrigin: 'top left'
+            transform: 'rotate(-5deg)', // Match the exact angle of the UI
+            transformOrigin: 'top left',
+            maxHeight: '100%',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
           <div ref={typedElementRef}></div>
