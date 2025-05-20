@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -19,7 +18,7 @@ function App() {
   return (
     <>
       <InitializeWebhooks />
-      <ErrorBoundary fallback={<div className="p-8 text-center">Something went wrong. Please refresh the page.</div>}>
+      <ErrorBoundary>
         <div className="min-h-screen flex flex-col">
           <BrowserRouter>
             <Routes>
