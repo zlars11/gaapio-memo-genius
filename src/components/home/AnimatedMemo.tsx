@@ -75,7 +75,7 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-visible">
       <div 
         ref={memoContainerRef}
-        className={`w-[900px] max-w-full p-0 rounded-lg transform rotate-[-10deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-[900px] max-w-full p-0 rounded-lg transform rotate-[-15deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           minHeight: '560px', 
           overflow: 'hidden',
@@ -88,13 +88,13 @@ export const AnimatedMemo = () => {
           className="w-full h-auto object-cover"
         />
         
-        {/* Overlay with typing animation - positioned to match the yellow line in the image */}
+        {/* Overlay with typing animation - shifted more to the left to match yellow line */}
         <div 
-          className="absolute top-[210px] left-[250px] right-[30px] bottom-[50px] overflow-auto text-left"
+          className="absolute top-[210px] left-[230px] right-[30px] bottom-[50px] overflow-hidden text-left"
           style={{
-            padding: '16px',
-            fontSize: '12px',
-            lineHeight: '1.4',
+            padding: '12px 16px',
+            fontSize: '10.5px',
+            lineHeight: '1.3',
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif'
           }}
@@ -105,3 +105,4 @@ export const AnimatedMemo = () => {
     </div>
   );
 };
+
