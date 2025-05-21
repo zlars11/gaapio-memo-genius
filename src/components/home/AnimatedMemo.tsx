@@ -106,7 +106,7 @@ export const AnimatedMemo = () => {
             lineHeight: 1.2,
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)', // 
+            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)', // 
             transformOrigin: 'top left',
             maxHeight: '100%',
             overflowY: 'hidden'
