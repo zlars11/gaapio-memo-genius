@@ -42,7 +42,7 @@ export const AnimatedMemo = () => {
           strings: [
             '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n\n<p>&nbsp;</p>\n\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 in the Company\'s financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>'
           ],
-          typeSpeed: .2, // Increased typing speed
+          typeSpeed: .2,
           backSpeed: 0,
           showCursor: true,
           cursorChar: '|',
@@ -88,14 +88,18 @@ export const AnimatedMemo = () => {
           minHeight: isSmallScreen ? '900px' : '1000px', 
           position: 'relative',
           maxHeight: '150vh',
-          maxWidth: '1800px',  // Added fixed maximum width
-          aspectRatio: '16/9'
+          maxWidth: '1800px',
+          aspectRatio: '16/9',
+          overflow: 'hidden'
         }}
       >
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
-          className="w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-fill"
+          style={{
+            objectFit: 'fill'
+          }}
         />
         
         {/* Overlay with typing animation - adjusted position and angle */}
@@ -111,7 +115,7 @@ export const AnimatedMemo = () => {
             lineHeight: 1.2,
             color: isDark ? '#FFFFFF' : '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)', // 
+            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)',
             transformOrigin: 'top left',
             maxHeight: '100%',
             overflowY: 'hidden',
@@ -124,3 +128,4 @@ export const AnimatedMemo = () => {
     </div>
   );
 };
+
