@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PasswordProtectionPage from "./PasswordProtectionPage";
@@ -9,26 +10,26 @@ interface PasswordProtectionProps {
 
 export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [isProtected, setIsProtected] = useState(false);
+  const [isProtected, setIsProtected] = useState(true); // Default to protected until we confirm otherwise
   const [hasAccess, setHasAccess] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const checkAccess = async () => {
-      // Check if site is password protected
+      // Check if site is password protected - with a more reliable detection
       const protectionEnabled = getProtectionStatus();
       console.log("Password protection status:", protectionEnabled ? "Enabled" : "Disabled");
       
+      setIsProtected(protectionEnabled);
+      
       if (protectionEnabled) {
-        setIsProtected(true);
-        
         // Check if user has valid access
         const accessValid = hasValidAccess();
         console.log("Access validation result:", accessValid ? "Valid" : "Invalid");
         setHasAccess(accessValid);
       } else {
+        // If protection is disabled, grant access
         console.log("Site is not password protected");
-        setIsProtected(false);
         setHasAccess(true);
       }
       
@@ -37,6 +38,11 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({ children
 
     // Check access when component mounts or location changes
     checkAccess();
+    
+    // Set up a periodic check to validate access hasn't expired
+    const intervalId = setInterval(checkAccess, 60000); // Check every minute
+    
+    return () => clearInterval(intervalId);
   }, [location.pathname]); // Re-check on path change
 
   // Determine if current path is an admin route

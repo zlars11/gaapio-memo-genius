@@ -11,7 +11,11 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
   
   // Wait for hydration to complete before rendering protection logic
   useEffect(() => {
-    setIsReady(true);
+    // Using requestAnimationFrame ensures the DOM is fully loaded
+    // before we attempt to render the protection logic
+    requestAnimationFrame(() => {
+      setIsReady(true);
+    });
   }, []);
   
   // During initial render, show nothing to prevent flashing content

@@ -84,14 +84,18 @@ export default function Index() {
     localStorage.setItem("homepageCta", enableSelfSignup ? "signup" : "contact");
 
     // Initialize password protection settings if not already set
+    // Using cookies as the primary storage with localStorage as backup
     if (localStorage.getItem("password_protection_enabled") === null) {
+      // Default to disabled for fresh installs
       setProtectionStatus(false);
     }
     
     if (localStorage.getItem("site_password") === null) {
+      // Set default password
       setSitePassword("Gaapio2025!");
     }
     
+    // Initialize session version for managing access tokens
     if (localStorage.getItem("session_version") === null || !getSessionVersion()) {
       localStorage.setItem("session_version", "0");
     }

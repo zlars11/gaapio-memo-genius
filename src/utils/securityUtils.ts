@@ -1,14 +1,25 @@
-
 /**
  * Security utility functions for the application
  */
 
-// Cookie management functions
+// Cookie management functions with enhanced security
 function setCookie(name: string, value: string, days: number = 7) {
   const date = new Date();
   date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
   const expires = `expires=${date.toUTCString()}`;
-  document.cookie = `${name}=${value};${expires};path=/;SameSite=Lax`;
+  
+  // Get the current domain
+  const domain = window.location.hostname;
+  // Don't set domain for localhost to allow testing
+  const domainAttr = domain === 'localhost' ? '' : `domain=${domain};`;
+  
+  // Enhanced cookie security:
+  // - httpOnly is omitted for cookies we need to access in JS
+  // - Secure flag added for HTTPS (skipped on localhost for testing)
+  // - SameSite=Strict for better security
+  const secureFlag = window.location.protocol === 'https:' ? 'Secure;' : '';
+  
+  document.cookie = `${name}=${value};${expires};path=/;${domainAttr}SameSite=Strict;${secureFlag}`;
 }
 
 function getCookie(name: string): string | null {
@@ -23,18 +34,23 @@ function getCookie(name: string): string | null {
 }
 
 function eraseCookie(name: string) {
-  document.cookie = `${name}=;Max-Age=-99999999;path=/`;
+  // Get the current domain
+  const domain = window.location.hostname;
+  // Don't set domain for localhost to allow testing
+  const domainAttr = domain === 'localhost' ? '' : `domain=${domain};`;
+  
+  document.cookie = `${name}=;Max-Age=-99999999;path=/;${domainAttr}SameSite=Strict;`;
 }
 
-// Password protection functions with fallbacks to localStorage for backward compatibility
+// Password protection functions with improved fallbacks and defaults
 export function getProtectionStatus(): boolean {
-  // First check cookie, then localStorage for backward compatibility
+  // Check cookie first
   const cookieValue = getCookie('password_protection_enabled');
   if (cookieValue !== null) {
     return cookieValue === 'true';
   }
   
-  // Fallback to localStorage
+  // Then check localStorage as fallback
   const localValue = localStorage.getItem('password_protection_enabled');
   if (localValue !== null) {
     // Migrate from localStorage to cookie
@@ -42,7 +58,13 @@ export function getProtectionStatus(): boolean {
     return localValue === 'true';
   }
   
-  return false;
+  // Default to false only if we have evidence protection was explicitly disabled
+  // Otherwise, we'll check if a password exists which indicates protection was intended
+  const hasPassword = getSitePassword() !== null;
+  
+  // If there's a password set but no explicit protection status,
+  // assume protection was intended to be enabled
+  return hasPassword;
 }
 
 export function setProtectionStatus(enabled: boolean): void {
@@ -151,17 +173,24 @@ export function hasValidAccess(): boolean {
 }
 
 export async function validateSitePassword(password: string): Promise<boolean> {
-  // Check if protection is enabled
+  // Always check if protection is enabled first
   const protectionEnabled = getProtectionStatus();
+  
   if (!protectionEnabled) {
-    // If protection is disabled, grant access
+    // If protection is explicitly disabled, grant access
     grantAccess();
     return true;
   }
 
   // Check password
   const sitePassword = getSitePassword();
-  const isValid = password === sitePassword;
+  
+  // If there's no password set but protection is enabled,
+  // default to the standard password
+  const defaultPassword = "Gaapio2025!";
+  const effectivePassword = sitePassword || defaultPassword;
+  
+  const isValid = password === effectivePassword;
   
   if (isValid) {
     grantAccess();
@@ -336,4 +365,4 @@ export class RateLimiter {
 }
 
 // Create singleton instance for login attempts
-export const loginRateLimiter = new RateLimiter(5, 60); // 5 attempts within 60 seconds
+export const loginRateLimiter = new RateLimiter(5, 60);

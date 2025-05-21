@@ -33,11 +33,13 @@ export const PasswordProtectionPage = () => {
         const redirectPath = location.state?.from || "/";
         
         // Use window.location.href to ensure the page fully refreshes
+        // This ensures the cookies are properly evaluated on the next page load
+        window.location.href = redirectPath;
+        
+        // If for some reason the redirect doesn't trigger, force a reload
         setTimeout(() => {
-          window.location.href = redirectPath;
-          // Reload the page after a tiny delay to ensure the cookie is saved
-          setTimeout(() => window.location.reload(), 100);
-        }, 100);
+          window.location.reload();
+        }, 300);
       } else {
         console.log("Incorrect password provided");
         setError("Incorrect password");
