@@ -102,7 +102,7 @@ export const AnimatedMemo = () => {
             right: isSmallScreen ? '25px' : '40px',
             bottom: isSmallScreen ? '35px' : '60px',
             padding: isSmallScreen ? '10px 12px' : '12px 16px',
-            fontSize: isSmallScreen ? '0.1rem' : '0.2rem',
+            fontSize: isSmallScreen ? '4px' : '9px',
             lineHeight: 1.2,
             color: '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
