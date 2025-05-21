@@ -1,27 +1,19 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
+import { validateSitePassword } from "@/utils/securityUtils";
 
 export const PasswordProtectionPage = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [sitePassword, setSitePassword] = useState<string | null>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
   const location = useLocation();
-
-  // Load the site password when component mounts
-  useEffect(() => {
-    const storedPassword = localStorage.getItem("site_password");
-    console.log("Site password found:", storedPassword ? "Yes" : "No");
-    setSitePassword(storedPassword);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,19 +21,23 @@ export const PasswordProtectionPage = () => {
     setError("");
 
     try {
-      // First, recheck if protection is still enabled (in case it was disabled in another tab)
-      const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
-      if (!protectionEnabled) {
-        console.log("Protection has been disabled, granting access");
-        grantAccess();
-        return;
-      }
-
-      console.log("Validating password...");
+      const isValid = await validateSitePassword(password);
       
-      if (password === sitePassword) {
-        console.log("Password correct, granting access");
-        grantAccess();
+      if (isValid) {
+        toast({
+          title: "Access granted",
+          description: "Welcome to the site",
+        });
+
+        // Redirect back to the original URL or to the homepage
+        const redirectPath = location.state?.from || "/";
+        
+        // Use window.location.href to ensure the page fully refreshes
+        setTimeout(() => {
+          window.location.href = redirectPath;
+          // Reload the page after a tiny delay to ensure the cookie is saved
+          setTimeout(() => window.location.reload(), 100);
+        }, 100);
       } else {
         console.log("Incorrect password provided");
         setError("Incorrect password");
@@ -57,38 +53,6 @@ export const PasswordProtectionPage = () => {
       setError("An error occurred. Please try again.");
       setIsSubmitting(false);
     }
-  };
-  
-  const grantAccess = () => {
-    // Set session access with 24 hour expiry
-    const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-    const currentVersion = localStorage.getItem("session_version") || "0";
-    
-    const accessData = {
-      granted: true,
-      expires: expiry,
-      version: currentVersion
-    };
-    
-    console.log("Setting access data:", accessData);
-    sessionStorage.setItem("site_access", JSON.stringify(accessData));
-    
-    // Show success toast
-    toast({
-      title: "Access granted",
-      description: "Welcome to the site",
-    });
-
-    // Redirect back to the original URL or to the homepage
-    const redirectPath = location.state?.from || "/";
-    
-    // Use window.location.reload() to ensure the page fully refreshes
-    // This ensures the PasswordProtection component re-evaluates access
-    setTimeout(() => {
-      window.location.href = redirectPath;
-      // Reload the page after a tiny delay to ensure the sessionStorage is saved
-      setTimeout(() => window.location.reload(), 100);
-    }, 100);
   };
 
   return (
@@ -129,7 +93,7 @@ export const PasswordProtectionPage = () => {
           <div>
             <Button
               type="submit"
-              disabled={isSubmitting || !sitePassword}
+              disabled={isSubmitting}
               className="group relative w-full"
             >
               {isSubmitting ? (

@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { PasswordProtection } from "./components/password-protection/PasswordProtection";
+import { ProtectedLayout } from "./components/layout/ProtectedLayout";
 
 // Pages
 import Index from "./pages/Index";
@@ -37,7 +37,7 @@ function App() {
           </div>
         </div>
       }>
-        <PasswordProtection>
+        <ProtectedLayout>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
@@ -54,7 +54,7 @@ function App() {
             <Route path="/policy-detail" element={<PolicyDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </PasswordProtection>
+        </ProtectedLayout>
       </ErrorBoundary>
     </Router>
   );

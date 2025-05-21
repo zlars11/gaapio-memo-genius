@@ -8,6 +8,7 @@ import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
+import { setProtectionStatus, setSitePassword, getSessionVersion } from "@/utils/securityUtils";
 
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
@@ -84,14 +85,14 @@ export default function Index() {
 
     // Initialize password protection settings if not already set
     if (localStorage.getItem("password_protection_enabled") === null) {
-      localStorage.setItem("password_protection_enabled", "false");
+      setProtectionStatus(false);
     }
     
     if (localStorage.getItem("site_password") === null) {
-      localStorage.setItem("site_password", "Gaapio2025!");
+      setSitePassword("Gaapio2025!");
     }
     
-    if (localStorage.getItem("session_version") === null) {
+    if (localStorage.getItem("session_version") === null || !getSessionVersion()) {
       localStorage.setItem("session_version", "0");
     }
 

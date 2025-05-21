@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { getProtectionStatus, setProtectionStatus, getSitePassword, setSitePassword, expireAllSessions } from "@/utils/securityUtils";
 
 export function PasswordProtectionSettings() {
   const [isProtectionEnabled, setIsProtectionEnabled] = useState(false);
@@ -19,18 +20,18 @@ export function PasswordProtectionSettings() {
   // Load settings on component mount
   useEffect(() => {
     const loadSettings = () => {
-      const protectionEnabled = localStorage.getItem("password_protection_enabled") === "true";
+      const protectionEnabled = getProtectionStatus();
       console.log("Admin: Loading protection settings, enabled:", protectionEnabled);
       setIsProtectionEnabled(protectionEnabled);
       
-      const storedPassword = localStorage.getItem("site_password");
+      const storedPassword = getSitePassword();
       if (storedPassword) {
         setPassword(storedPassword);
       } else {
         // Default password
         const defaultPassword = "Gaapio2025!";
         setPassword(defaultPassword);
-        localStorage.setItem("site_password", defaultPassword);
+        setSitePassword(defaultPassword);
       }
     };
     
@@ -42,7 +43,7 @@ export function PasswordProtectionSettings() {
     setIsSaving(true);
     
     try {
-      localStorage.setItem("password_protection_enabled", checked.toString());
+      setProtectionStatus(checked);
       setIsProtectionEnabled(checked);
       
       // Force version change to invalidate existing sessions if protection is being enabled
@@ -83,7 +84,7 @@ export function PasswordProtectionSettings() {
         return;
       }
       
-      localStorage.setItem("site_password", password);
+      setSitePassword(password);
       
       // Also expire all sessions when password is changed
       handleExpireSessions();
@@ -109,11 +110,7 @@ export function PasswordProtectionSettings() {
     setIsExpiring(true);
     
     try {
-      // Update the version number to invalidate all current sessions
-      const currentVersion = parseInt(localStorage.getItem("session_version") || "0");
-      const newVersion = (currentVersion + 1).toString();
-      localStorage.setItem("session_version", newVersion);
-      console.log(`Admin: Expired all sessions. Version changed from ${currentVersion} to ${newVersion}`);
+      expireAllSessions();
       
       toast({
         title: "Sessions Expired",
