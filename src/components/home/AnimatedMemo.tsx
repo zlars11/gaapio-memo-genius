@@ -98,7 +98,7 @@ export const AnimatedMemo = () => {
           className="absolute text-left"
           style={{
             top: isSmallScreen ? '80px' : '220px',
-            left: isSmallScreen ? '100px' : '220px',
+            left: isSmallScreen ? '80px' : '210px',
             right: isSmallScreen ? '25px' : '40px',
             bottom: isSmallScreen ? '35px' : '60px',
             padding: isSmallScreen ? '10px 12px' : '12px 16px',
