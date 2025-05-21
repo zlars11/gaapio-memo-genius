@@ -84,7 +84,7 @@ export const AnimatedMemo = () => {
         style={{
           minHeight: isSmallScreen ? '900px' : '1000px', 
           position: 'relative',
-          maxHeight: '150vh'
+          maxHeight: '150vh',
           width: '100%',  
           minWidth: isSmallScreen ? '180vw' : '1800px'
         }}
