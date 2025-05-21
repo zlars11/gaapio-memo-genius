@@ -80,11 +80,13 @@ export const AnimatedMemo = () => {
     <div className="flex items-center justify-center overflow-hidden py-4 mx-4">
       <div 
         ref={memoContainerRef}
-        className={`w-full max-w-[1900px] p-0 rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full max-w-[2000px] p-0 rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           minHeight: isSmallScreen ? '900px' : '1000px', 
           position: 'relative',
           maxHeight: '150vh'
+          width: '100%',  
+          minWidth: isSmallScreen ? '180vw' : '1800px'
         }}
       >
         <img 
