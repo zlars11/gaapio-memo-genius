@@ -85,12 +85,14 @@ export const AnimatedMemo = () => {
           minHeight: isSmallScreen ? '900px' : '1000px', 
           position: 'relative',
           maxHeight: '150vh',
+          maxWidth: '1800px',  // Added fixed maximum width
+          aspectRatio: '16/9'
         }}
       >
         <img 
           src="/assets/images/gaapio-app.png" 
           alt="Gaapio Revenue Recognition UI" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
         
         {/* Overlay with typing animation - adjusted position and angle */}
@@ -109,7 +111,8 @@ export const AnimatedMemo = () => {
             transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)', // 
             transformOrigin: 'top left',
             maxHeight: '100%',
-            overflowY: 'hidden'
+            overflowY: 'hidden',
+            maxWidth: '1600px'
           }}
         >
           <div ref={typedElementRef}></div>
