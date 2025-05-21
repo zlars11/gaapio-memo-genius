@@ -84,7 +84,7 @@ export const AnimatedMemo = () => {
         style={{
           minHeight: isSmallScreen ? '700px' : '800px', 
           position: 'relative',
-          maxHeight: '95vh'
+          maxHeight: '110vh'
         }}
       >
         <img 
@@ -100,7 +100,7 @@ export const AnimatedMemo = () => {
             top: isSmallScreen ? '80px' : '220px',
             left: isSmallScreen ? '80px' : '220px',
             right: isSmallScreen ? '25px' : '40px',
-            bottom: isSmallScreen ? '40px' : '45px',
+            bottom: isSmallScreen ? '20px' : '25px',
             padding: isSmallScreen ? '10px 12px' : '12px 16px',
             fontSize: isSmallScreen ? '4px' : '9px',
             lineHeight: 1.2,
