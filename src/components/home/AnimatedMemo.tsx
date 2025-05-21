@@ -11,15 +11,18 @@ export const AnimatedMemo = () => {
   const [loaded, setLoaded] = useState(false);
   const isMobile = useIsMobile();
   const isSmallScreen = !useMediaQuery('md');
+  const [isDark, setIsDark] = useState(false);
   
   // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
-    const isDark = document.documentElement.classList.contains("dark");
+    const isDarkMode = document.documentElement.classList.contains("dark");
+    setIsDark(isDarkMode);
+    
     if (memoContainerRef.current) {
       // Apply styles to the memo container
-      memoContainerRef.current.style.backgroundColor = isDark ? "#1a1a1a" : "#ffffff";
-      memoContainerRef.current.style.borderColor = isDark ? "#333333" : "#e5e7eb";
-      memoContainerRef.current.style.boxShadow = isDark 
+      memoContainerRef.current.style.backgroundColor = isDarkMode ? "#1a1a1a" : "#ffffff";
+      memoContainerRef.current.style.borderColor = isDarkMode ? "#333333" : "#e5e7eb";
+      memoContainerRef.current.style.boxShadow = isDarkMode 
         ? "0 0 15px rgba(255,255,255,0.05)" 
         : "0 0 15px rgba(0,0,0,0.1)";
     }
@@ -90,7 +93,7 @@ export const AnimatedMemo = () => {
         }}
       >
         <img 
-          src="/assets/images/gaapio-app.png" 
+          src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
           className="w-full h-full object-contain"
         />
@@ -106,7 +109,7 @@ export const AnimatedMemo = () => {
             padding: isSmallScreen ? '10px 12px' : '12px 16px',
             fontSize: isSmallScreen ? '4px' : '9px',
             lineHeight: 1.2,
-            color: '#333',
+            color: isDark ? '#FFFFFF' : '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
             transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)', // 
             transformOrigin: 'top left',
