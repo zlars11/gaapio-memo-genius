@@ -1,5 +1,5 @@
 
-iimport { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -48,7 +48,6 @@ Footnote 12 in the Company’s financial statements will be updated to reflect e
         typeSpeed: 1.5,
         showCursor: true,
         cursorChar: "|",
-        smartBackspace: false,
         loop: false,
       });
     }
