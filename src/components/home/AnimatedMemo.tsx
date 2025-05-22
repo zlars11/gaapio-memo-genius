@@ -90,16 +90,16 @@ export const AnimatedMemo = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-screen min-h-screen py-8 px-4">
+    <div className="flex items-center justify-center overflow-hidden py-4 mx-auto" style={{ width: '95%' }}>
       <div 
         ref={memoContainerRef}
         className={`w-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           position: 'relative',
           aspectRatio: '16/9',
-          width: isSmallScreen ? '95vw' : '90vw',
-          maxWidth: '2000px',
+          maxWidth: '1800px',
           minHeight: isSmallScreen ? '600px' : '800px',
+          margin: '0 auto',
           overflow: 'hidden'
         }}
       >
@@ -109,7 +109,8 @@ export const AnimatedMemo = () => {
           className="absolute inset-0 w-full h-full"
           style={{
             objectFit: 'cover',
-            transform: 'scale(1.02)' // Slight scale to prevent white edges during rotation
+            transform: 'scale(1.05)', // Increased scale to prevent background cutoff
+            transformOrigin: 'center'
           }}
         />
         
@@ -117,8 +118,8 @@ export const AnimatedMemo = () => {
           className="absolute text-left"
           style={{
             top: isSmallScreen ? '15%' : '20%',
-            left: isSmallScreen ? '10%' : '15%',
-            width: isSmallScreen ? '80%' : '70%',
+            left: isSmallScreen ? '20%' : '25%', // Increased left positioning
+            width: isSmallScreen ? '70%' : '60%', // Adjusted width to compensate
             height: 'auto',
             maxHeight: '70%',
             padding: calculatePadding(),
