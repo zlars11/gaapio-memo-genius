@@ -90,7 +90,7 @@ export const AnimatedMemo = () => {
   };
 
   return (
-    <div className="flex items-center justify-center overflow-hidden py-4 mx-auto" style={{ width: '95%' }}>
+    <div className="flex items-center justify-center overflow-hidden py-4" style={{ width: '100%' }}>
       <div 
         ref={memoContainerRef}
         className={`w-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
@@ -100,7 +100,8 @@ export const AnimatedMemo = () => {
           maxWidth: '1800px',
           minHeight: isSmallScreen ? '600px' : '800px',
           margin: '0 auto',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: '98%' // Increased from 95% to show more background
         }}
       >
         <img 
@@ -109,8 +110,12 @@ export const AnimatedMemo = () => {
           className="absolute inset-0 w-full h-full"
           style={{
             objectFit: 'cover',
-            transform: 'scale(1.05)', // Increased scale to prevent background cutoff
-            transformOrigin: 'center'
+            transform: 'scale(1.1)', // Increased scale to show more background
+            transformOrigin: 'center',
+            width: '102%', // Slightly wider than container
+            height: '102%', // Slightly taller than container
+            left: '-1%', // Offset to center the expanded image
+            top: '-1%' // Offset to center the expanded image
           }}
         />
         
@@ -118,8 +123,8 @@ export const AnimatedMemo = () => {
           className="absolute text-left"
           style={{
             top: isSmallScreen ? '15%' : '20%',
-            left: isSmallScreen ? '20%' : '25%', // Increased left positioning
-            width: isSmallScreen ? '70%' : '60%', // Adjusted width to compensate
+            left: isSmallScreen ? '25%' : '30%', // Moved further right
+            right: isSmallScreen ? '5%' : '8%', // Added right margin
             height: 'auto',
             maxHeight: '70%',
             padding: calculatePadding(),
