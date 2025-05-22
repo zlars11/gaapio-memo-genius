@@ -13,7 +13,6 @@ export const AnimatedMemo = () => {
   const isSmallScreen = !useMediaQuery('md');
   const [isDark, setIsDark] = useState(false);
   
-  // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
     const isDarkMode = document.documentElement.classList.contains("dark");
     setIsDark(isDarkMode);
@@ -73,7 +72,6 @@ export const AnimatedMemo = () => {
     };
   }, []);
 
-  // Calculate responsive font size based on viewport width
   const calculateFontSize = () => {
     if (isSmallScreen) {
       return 'clamp(10px, 1.8vw, 14px)';
@@ -81,7 +79,6 @@ export const AnimatedMemo = () => {
     return 'clamp(14px, 2.2vw, 18px)';
   };
 
-  // Calculate responsive padding based on viewport width
   const calculatePadding = () => {
     if (isSmallScreen) {
       return 'clamp(1.5rem, 4vw, 2.5rem)';
@@ -90,27 +87,29 @@ export const AnimatedMemo = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
-      <div 
-        className="absolute inset-0 w-full h-full"
-        style={{
-          overflow: 'hidden'
-        }}
-      >
+    <div className="fixed inset-0 w-full h-full overflow-hidden">
+      <div className="absolute inset-0 w-full h-full">
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
           className="w-full h-full object-cover"
+          style={{
+            transform: 'scale(1.1)',
+          }}
         />
       </div>
 
-      <div className="relative flex items-center justify-center min-h-screen py-8 px-4">
+      <div className="relative w-full h-full flex items-center justify-center p-8">
         <div 
           ref={memoContainerRef}
-          className={`relative w-[95vw] max-w-[2500px] rounded-lg transform rotate-[-2deg] border border-gray-200 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-[95vw] max-w-[2500px] rounded-lg border border-gray-200 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           style={{
             aspectRatio: '16/9',
             minHeight: isSmallScreen ? '800px' : '1000px',
+            transform: 'rotate(-2deg)',
+            position: 'relative',
+            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           <div 
@@ -126,7 +125,7 @@ export const AnimatedMemo = () => {
               lineHeight: '1.6',
               color: isDark ? '#FFFFFF' : '#333',
               fontFamily: 'system-ui, -apple-system, sans-serif',
-              transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.95' : '1'})`,
+              transform: 'rotate(0.5deg)',
               transformOrigin: 'top left',
               overflowY: 'auto',
               backgroundColor: isDark ? 'rgba(26, 26, 26, 0.97)' : 'rgba(255, 255, 255, 0.97)',
