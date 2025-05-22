@@ -8,10 +8,9 @@ export const AnimatedMemo = () => {
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const typedElementRef = useRef<HTMLDivElement>(null);
   const typedInstanceRef = useRef<Typed | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const isMobile = useIsMobile();
   const isSmallScreen = !useMediaQuery("md");
-  const [isDark, setIsDark] = useState(false);
 
   const applyThemeStyles = () => {
     const isDarkMode = document.documentElement.classList.contains("dark");
@@ -21,26 +20,29 @@ export const AnimatedMemo = () => {
   useEffect(() => {
     applyThemeStyles();
 
-    const timer = setTimeout(() => {
-      setLoaded(true);
+    if (typedElementRef.current) {
+      typedInstanceRef.current = new Typed(typedElementRef.current, {
+        strings: [
+          `<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>
+          <p>&nbsp;</p>
+          <p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>
+          <p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company's revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>
+          <p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>
+          <p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>
+          <p><strong>5. Conclusion</strong><br />The Company's revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>
+          <p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>
+          <p><strong>7. Disclosures</strong><br />Footnote 12 in the Company's financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>`
+        ],
+        typeSpeed: 0.2,
+        backSpeed: 0,
+        showCursor: true,
+        cursorChar: "|",
+        loop: false,
+        contentType: "html",
+      });
+    }
 
-      if (typedElementRef.current) {
-        typedInstanceRef.current = new Typed(typedElementRef.current, {
-          strings: [/* same content omitted for brevity */],
-          typeSpeed: 0.2,
-          backSpeed: 0,
-          showCursor: true,
-          cursorChar: "|",
-          loop: false,
-          contentType: "html",
-        });
-      }
-    }, 100);
-
-    const observer = new MutationObserver(() => {
-      applyThemeStyles();
-    });
-
+    const observer = new MutationObserver(() => applyThemeStyles());
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
@@ -49,33 +51,25 @@ export const AnimatedMemo = () => {
     window.addEventListener("storage", applyThemeStyles);
 
     return () => {
-      clearTimeout(timer);
-      observer.disconnect();
       window.removeEventListener("storage", applyThemeStyles);
-      if (typedInstanceRef.current) {
-        typedInstanceRef.current.destroy();
-      }
+      observer.disconnect();
+      typedInstanceRef.current?.destroy();
     };
   }, []);
 
-  const calculateFontSize = () => {
-    return isSmallScreen ? "clamp(10px, 1.5vw, 14px)" : "clamp(14px, 2vw, 18px)";
-  };
+  const calculateFontSize = () =>
+    isSmallScreen ? "clamp(10px, 1.5vw, 14px)" : "clamp(14px, 2vw, 18px)";
 
-  const calculatePadding = () => {
-    return isSmallScreen ? "clamp(1rem, 4vw, 2rem)" : "clamp(2rem, 5vw, 3rem)";
-  };
+  const calculatePadding = () =>
+    isSmallScreen ? "clamp(1rem, 4vw, 2rem)" : "clamp(2rem, 5vw, 3rem)";
 
   return (
-    <div className="relative w-full overflow-hidden flex justify-center items-center px-4 py-8">
+    <div className="relative w-full flex justify-center items-center px-4 py-8 overflow-visible min-h-[900px]">
       <div
-        className="relative w-full max-w-[2500px] transform rotate-[-2deg] transition-opacity duration-500"
-        style={{
-          aspectRatio: "16/9",
-          opacity: loaded ? 1 : 0,
-        }}
+        className="relative w-full max-w-[2500px] transform rotate-[-2deg]"
+        style={{ minHeight: isSmallScreen ? "800px" : "1000px" }}
       >
-        {/* Background Image */}
+        {/* Background UI */}
         <img
           src={
             isDark
