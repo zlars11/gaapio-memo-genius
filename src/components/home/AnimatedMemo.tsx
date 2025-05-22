@@ -90,67 +90,53 @@ export const AnimatedMemo = () => {
   };
 
   return (
-    <div className="flex items-center justify-center overflow-hidden py-8" style={{ width: '100vw', minHeight: '100vh' }}>
+    <div className="relative w-full min-h-screen overflow-hidden">
       <div 
-        ref={memoContainerRef}
-        className={`w-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className="absolute inset-0 w-full h-full"
         style={{
-          position: 'relative',
-          aspectRatio: '16/9',
-          maxWidth: '2500px',
-          minHeight: isSmallScreen ? '800px' : '1000px',
-          margin: '0 auto',
-          overflow: 'hidden',
-          width: '95vw'
+          overflow: 'hidden'
         }}
       >
+        <img 
+          src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
+          alt="Gaapio Revenue Recognition UI" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      <div className="relative flex items-center justify-center min-h-screen py-8 px-4">
         <div 
-          className="absolute inset-0"
+          ref={memoContainerRef}
+          className={`relative w-[95vw] max-w-[2500px] rounded-lg transform rotate-[-2deg] border border-gray-200 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           style={{
-            transform: 'scale(1.25) rotate(2deg)',
-            transformOrigin: 'center',
-            width: '120%',
-            height: '120%',
-            left: '-10%',
-            top: '-10%',
-            overflow: 'hidden'
+            aspectRatio: '16/9',
+            minHeight: isSmallScreen ? '800px' : '1000px',
           }}
         >
-          <img 
-            src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
-            alt="Gaapio Revenue Recognition UI" 
+          <div 
+            className="absolute text-left"
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center'
+              top: isSmallScreen ? '15%' : '20%',
+              left: isSmallScreen ? '25%' : '30%',
+              right: isSmallScreen ? '5%' : '8%',
+              height: 'auto',
+              maxHeight: '75%',
+              padding: calculatePadding(),
+              fontSize: calculateFontSize(),
+              lineHeight: '1.6',
+              color: isDark ? '#FFFFFF' : '#333',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.95' : '1'})`,
+              transformOrigin: 'top left',
+              overflowY: 'auto',
+              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.97)' : 'rgba(255, 255, 255, 0.97)',
+              borderRadius: '0.75rem',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              zIndex: 10
             }}
-          />
-        </div>
-        
-        <div 
-          className="absolute text-left"
-          style={{
-            top: isSmallScreen ? '15%' : '20%',
-            left: isSmallScreen ? '25%' : '30%',
-            right: isSmallScreen ? '5%' : '8%',
-            height: 'auto',
-            maxHeight: '75%',
-            padding: calculatePadding(),
-            fontSize: calculateFontSize(),
-            lineHeight: '1.6',
-            color: isDark ? '#FFFFFF' : '#333',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.95' : '1'})`,
-            transformOrigin: 'top left',
-            overflowY: 'auto',
-            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.97)' : 'rgba(255, 255, 255, 0.97)',
-            borderRadius: '0.75rem',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            zIndex: 10
-          }}
-        >
-          <div ref={typedElementRef}></div>
+          >
+            <div ref={typedElementRef}></div>
+          </div>
         </div>
       </div>
     </div>
