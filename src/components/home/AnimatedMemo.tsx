@@ -13,11 +13,13 @@ export const AnimatedMemo = () => {
   const isSmallScreen = !useMediaQuery('md');
   const [isDark, setIsDark] = useState(false);
   
+  // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
     const isDarkMode = document.documentElement.classList.contains("dark");
     setIsDark(isDarkMode);
     
     if (memoContainerRef.current) {
+      // Apply styles to the memo container
       memoContainerRef.current.style.backgroundColor = isDarkMode ? "#1a1a1a" : "#ffffff";
       memoContainerRef.current.style.borderColor = isDarkMode ? "#333333" : "#e5e7eb";
       memoContainerRef.current.style.boxShadow = isDarkMode 
@@ -27,11 +29,14 @@ export const AnimatedMemo = () => {
   };
 
   useEffect(() => {
+    // Apply theme once when component mounts
     applyThemeStyles();
     
+    // Simulate loading delay - reduced to 100ms for faster initial display
     const timer = setTimeout(() => {
       setLoaded(true);
       
+      // Initialize typed.js after loading delay with faster typing speed
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
@@ -47,6 +52,7 @@ export const AnimatedMemo = () => {
       }
     }, 100);
     
+    // Set up observer to watch for theme changes
     const observer = new MutationObserver(() => {
       applyThemeStyles();
     });
@@ -56,6 +62,7 @@ export const AnimatedMemo = () => {
       attributeFilter: ["class"],
     });
     
+    // Listen for storage events (for theme changes from other tabs)
     const handleStorageEvent = () => {
       applyThemeStyles();
     };
@@ -72,72 +79,53 @@ export const AnimatedMemo = () => {
     };
   }, []);
 
-  const calculateFontSize = () => {
-    if (isSmallScreen) {
-      return 'clamp(10px, 1.8vw, 14px)';
-    }
-    return 'clamp(14px, 2.2vw, 18px)';
-  };
-
-  const calculatePadding = () => {
-    if (isSmallScreen) {
-      return 'clamp(1.5rem, 4vw, 2.5rem)';
-    }
-    return 'clamp(2.5rem, 5vw, 3.5rem)';
-  };
-
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden">
-      <div className="absolute inset-0 w-full h-full">
+    <div className="flex items-center justify-center overflow-hidden py-4 mx-4">
+      <div 
+        ref={memoContainerRef}
+        className={`w-full max-w-[2500px] p-0 rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        style={{
+          minHeight: isSmallScreen ? '900px' : '1000px', 
+          position: 'relative',
+          maxHeight: '150vh',
+          maxWidth: '1800px',
+          aspectRatio: '16/9',
+          overflow: 'hidden'
+        }}
+      >
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
-          className="w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-fill"
           style={{
-            transform: 'scale(1.1)',
+            objectFit: 'fill'
           }}
         />
-      </div>
-
-      <div className="relative w-full h-full flex items-center justify-center p-8">
+        
+        {/* Overlay with typing animation - adjusted position and angle */}
         <div 
-          ref={memoContainerRef}
-          className={`w-[95vw] max-w-[2500px] rounded-lg border border-gray-200 transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className="absolute text-left"
           style={{
-            aspectRatio: '16/9',
-            minHeight: isSmallScreen ? '800px' : '1000px',
-            transform: 'rotate(-2deg)',
-            position: 'relative',
-            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.2)' : 'rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(8px)',
+            top: isSmallScreen ? '80px' : '220px',
+            left: isSmallScreen ? '80px' : '220px',
+            right: isSmallScreen ? '5px' : '5px',
+            bottom: isSmallScreen ? '5px' : '5px',
+            padding: isSmallScreen ? '10px 12px' : '12px 16px',
+            fontSize: isSmallScreen ? '4px' : '9px',
+            lineHeight: 1.2,
+            color: isDark ? '#FFFFFF' : '#333',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)',
+            transformOrigin: 'top left',
+            maxHeight: '100%',
+            overflowY: 'hidden',
+            maxWidth: '1600px'
           }}
         >
-          <div 
-            className="absolute text-left"
-            style={{
-              top: isSmallScreen ? '15%' : '20%',
-              left: isSmallScreen ? '25%' : '30%',
-              right: isSmallScreen ? '5%' : '8%',
-              height: 'auto',
-              maxHeight: '75%',
-              padding: calculatePadding(),
-              fontSize: calculateFontSize(),
-              lineHeight: '1.6',
-              color: isDark ? '#FFFFFF' : '#333',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              transform: 'rotate(0.5deg)',
-              transformOrigin: 'top left',
-              overflowY: 'auto',
-              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.97)' : 'rgba(255, 255, 255, 0.97)',
-              borderRadius: '0.75rem',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              zIndex: 10
-            }}
-          >
-            <div ref={typedElementRef}></div>
-          </div>
+          <div ref={typedElementRef}></div>
         </div>
       </div>
     </div>
   );
 };
+
