@@ -90,32 +90,32 @@ export const AnimatedMemo = () => {
   };
 
   return (
-    <div className="flex items-center justify-center overflow-hidden py-4" style={{ width: '100%' }}>
+    <div className="flex items-center justify-center overflow-hidden py-8" style={{ width: '100%', minHeight: '100vh' }}>
       <div 
         ref={memoContainerRef}
         className={`w-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           position: 'relative',
           aspectRatio: '16/9',
-          maxWidth: '1800px',
-          minHeight: isSmallScreen ? '600px' : '800px',
+          maxWidth: '2500px',
+          minHeight: isSmallScreen ? '800px' : '1000px',
           margin: '0 auto',
           overflow: 'hidden',
-          width: '98%' // Increased from 95% to show more background
+          width: '100%'
         }}
       >
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0"
           style={{
             objectFit: 'cover',
-            transform: 'scale(1.1)', // Increased scale to show more background
+            transform: 'scale(1.15)',
             transformOrigin: 'center',
-            width: '102%', // Slightly wider than container
-            height: '102%', // Slightly taller than container
-            left: '-1%', // Offset to center the expanded image
-            top: '-1%' // Offset to center the expanded image
+            width: '110%',
+            height: '110%',
+            left: '-5%',
+            top: '-5%',
           }}
         />
         
@@ -123,10 +123,10 @@ export const AnimatedMemo = () => {
           className="absolute text-left"
           style={{
             top: isSmallScreen ? '15%' : '20%',
-            left: isSmallScreen ? '25%' : '30%', // Moved further right
-            right: isSmallScreen ? '5%' : '8%', // Added right margin
+            left: isSmallScreen ? '25%' : '30%',
+            right: isSmallScreen ? '5%' : '8%',
             height: 'auto',
-            maxHeight: '70%',
+            maxHeight: '75%',
             padding: calculatePadding(),
             fontSize: calculateFontSize(),
             lineHeight: '1.6',
