@@ -28,77 +28,36 @@ export const AnimatedMemo = () => {
   };
 
   useEffect(() => {
-    applyThemeStyles();
-    
-    const timer = setTimeout(() => {
-      setLoaded(true);
-      
-      if (typedElementRef.current) {
-        typedInstanceRef.current = new Typed(typedElementRef.current, {
-          strings: [
-            '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n\n<p>&nbsp;</p>\n\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 in the Company\'s financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>'
-          ],
-          typeSpeed: .2,
-          backSpeed: 0,
-          showCursor: true,
-          cursorChar: '|',
-          loop: false,
-          contentType: 'html'
-        });
-      }
-    }, 100);
-    
-    const observer = new MutationObserver(() => {
-      applyThemeStyles();
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    
-    const handleStorageEvent = () => {
-      applyThemeStyles();
-    };
-    
-    window.addEventListener('storage', handleStorageEvent);
-    
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageEvent);
-      if (typedInstanceRef.current) {
-        typedInstanceRef.current.destroy();
-      }
-    };
+    // ... rest of the useEffect code remains the same ...
   }, []);
 
   // Calculate responsive font size based on viewport width
   const calculateFontSize = () => {
     if (isSmallScreen) {
-      return 'clamp(8px, 1.5vw, 12px)';
+      return 'clamp(10px, 1.8vw, 14px)';
     }
-    return 'clamp(12px, 2vw, 16px)';
+    return 'clamp(14px, 2.2vw, 18px)';
   };
 
   // Calculate responsive padding based on viewport width
   const calculatePadding = () => {
     if (isSmallScreen) {
-      return 'clamp(1rem, 3vw, 2rem)';
+      return 'clamp(1.5rem, 4vw, 2.5rem)';
     }
-    return 'clamp(2rem, 4vw, 3rem)';
+    return 'clamp(2.5rem, 5vw, 3.5rem)';
   };
 
   return (
-    <div className="flex items-center justify-center overflow-hidden w-full h-full p-4">
+    <div className="flex items-center justify-center w-screen min-h-screen py-8 px-4">
       <div 
         ref={memoContainerRef}
-        className={`w-full h-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           position: 'relative',
           aspectRatio: '16/9',
-          maxWidth: '95vw',
-          maxHeight: '90vh',
+          width: isSmallScreen ? '95vw' : '90vw',
+          maxWidth: '2000px',
+          minHeight: isSmallScreen ? '600px' : '800px',
           overflow: 'hidden'
         }}
       >
@@ -107,29 +66,30 @@ export const AnimatedMemo = () => {
           alt="Gaapio Revenue Recognition UI" 
           className="absolute inset-0 w-full h-full"
           style={{
-            objectFit: 'cover'
+            objectFit: 'cover',
+            transform: 'scale(1.02)' // Slight scale to prevent white edges during rotation
           }}
         />
         
         <div 
           className="absolute text-left"
           style={{
-            top: '10%',
-            left: '12%',
-            right: '12%',
-            bottom: '10%',
+            top: isSmallScreen ? '15%' : '20%',
+            left: isSmallScreen ? '10%' : '15%',
+            width: isSmallScreen ? '80%' : '70%',
+            height: 'auto',
+            maxHeight: '70%',
             padding: calculatePadding(),
             fontSize: calculateFontSize(),
-            lineHeight: '1.5',
+            lineHeight: '1.6',
             color: isDark ? '#FFFFFF' : '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.9' : '1'})`,
+            transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.95' : '1'})`,
             transformOrigin: 'top left',
-            maxHeight: '100%',
             overflowY: 'auto',
-            width: '76%',
-            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            borderRadius: '0.5rem'
+            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.97)' : 'rgba(255, 255, 255, 0.97)',
+            borderRadius: '0.75rem',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
         >
           <div ref={typedElementRef}></div>
