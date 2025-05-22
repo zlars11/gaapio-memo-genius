@@ -19,7 +19,6 @@ export const AnimatedMemo = () => {
     setIsDark(isDarkMode);
     
     if (memoContainerRef.current) {
-      // Apply styles to the memo container
       memoContainerRef.current.style.backgroundColor = isDarkMode ? "#1a1a1a" : "#ffffff";
       memoContainerRef.current.style.borderColor = isDarkMode ? "#333333" : "#e5e7eb";
       memoContainerRef.current.style.boxShadow = isDarkMode 
@@ -29,14 +28,11 @@ export const AnimatedMemo = () => {
   };
 
   useEffect(() => {
-    // Apply theme once when component mounts
     applyThemeStyles();
     
-    // Simulate loading delay - reduced to 100ms for faster initial display
     const timer = setTimeout(() => {
       setLoaded(true);
       
-      // Initialize typed.js after loading delay with faster typing speed
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
@@ -52,7 +48,6 @@ export const AnimatedMemo = () => {
       }
     }, 100);
     
-    // Set up observer to watch for theme changes
     const observer = new MutationObserver(() => {
       applyThemeStyles();
     });
@@ -62,7 +57,6 @@ export const AnimatedMemo = () => {
       attributeFilter: ["class"],
     });
     
-    // Listen for storage events (for theme changes from other tabs)
     const handleStorageEvent = () => {
       applyThemeStyles();
     };
@@ -79,47 +73,63 @@ export const AnimatedMemo = () => {
     };
   }, []);
 
+  // Calculate responsive font size based on viewport width
+  const calculateFontSize = () => {
+    if (isSmallScreen) {
+      return 'clamp(8px, 1.5vw, 12px)';
+    }
+    return 'clamp(12px, 2vw, 16px)';
+  };
+
+  // Calculate responsive padding based on viewport width
+  const calculatePadding = () => {
+    if (isSmallScreen) {
+      return 'clamp(1rem, 3vw, 2rem)';
+    }
+    return 'clamp(2rem, 4vw, 3rem)';
+  };
+
   return (
-    <div className="flex items-center justify-center overflow-hidden py-4 mx-4">
+    <div className="flex items-center justify-center overflow-hidden w-full h-full p-4">
       <div 
         ref={memoContainerRef}
-        className={`w-full max-w-[2500px] p-0 rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full h-full rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
-          minHeight: isSmallScreen ? '900px' : '1000px', 
           position: 'relative',
-          maxHeight: '150vh',
-          maxWidth: '1800px',
           aspectRatio: '16/9',
+          maxWidth: '95vw',
+          maxHeight: '90vh',
           overflow: 'hidden'
         }}
       >
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
-          className="absolute inset-0 w-full h-full object-fill"
+          className="absolute inset-0 w-full h-full"
           style={{
-            objectFit: 'fill'
+            objectFit: 'cover'
           }}
         />
         
-        {/* Overlay with typing animation - adjusted position and angle */}
         <div 
           className="absolute text-left"
           style={{
-            top: isSmallScreen ? '80px' : '220px',
-            left: isSmallScreen ? '80px' : '220px',
-            right: isSmallScreen ? '5px' : '5px',
-            bottom: isSmallScreen ? '5px' : '5px',
-            padding: isSmallScreen ? '10px 12px' : '12px 16px',
-            fontSize: isSmallScreen ? '4px' : '9px',
-            lineHeight: 1.2,
+            top: '10%',
+            left: '12%',
+            right: '12%',
+            bottom: '10%',
+            padding: calculatePadding(),
+            fontSize: calculateFontSize(),
+            lineHeight: '1.5',
             color: isDark ? '#FFFFFF' : '#333',
             fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)',
+            transform: `rotate(-.5deg) scale(${isSmallScreen ? '0.9' : '1'})`,
             transformOrigin: 'top left',
             maxHeight: '100%',
-            overflowY: 'hidden',
-            maxWidth: '1600px'
+            overflowY: 'auto',
+            width: '76%',
+            backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '0.5rem'
           }}
         >
           <div ref={typedElementRef}></div>
