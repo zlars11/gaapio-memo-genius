@@ -1,16 +1,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export const AnimatedMemo = () => {
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const typedElementRef = useRef<HTMLDivElement>(null);
   const typedInstanceRef = useRef<Typed | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const isMobile = useIsMobile();
-  const isSmallScreen = !useMediaQuery('md');
   const [isDark, setIsDark] = useState(false);
   
   // Apply theme styles directly using JavaScript
@@ -80,52 +76,34 @@ export const AnimatedMemo = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center overflow-hidden py-4 mx-4">
+    <div className="memo-animation-container">
       <div 
         ref={memoContainerRef}
-        className={`w-full max-w-[2500px] p-0 rounded-lg transform rotate-[-2deg] border border-gray-200 shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`memo-card ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
-          minHeight: isSmallScreen ? '900px' : '1000px', 
-          position: 'relative',
-          maxHeight: '150vh',
-          maxWidth: '1800px',
-          aspectRatio: '16/9',
-          overflow: 'hidden'
+          backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
+          borderColor: isDark ? "#333333" : "#e5e7eb",
+          boxShadow: isDark 
+            ? "0 0 15px rgba(255,255,255,0.05)" 
+            : "0 0 15px rgba(0,0,0,0.1)"
         }}
       >
         <img 
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
-          className="absolute inset-0 w-full h-full object-fill"
-          style={{
-            objectFit: 'fill'
-          }}
+          className="memo-background-image"
         />
         
-        {/* Overlay with typing animation - adjusted position and angle */}
-        <div 
-          className="absolute text-left"
-          style={{
-            top: isSmallScreen ? '80px' : '220px',
-            left: isSmallScreen ? '80px' : '220px',
-            right: isSmallScreen ? '5px' : '5px',
-            bottom: isSmallScreen ? '5px' : '5px',
-            padding: isSmallScreen ? '10px 12px' : '12px 16px',
-            fontSize: isSmallScreen ? '4px' : '9px',
-            lineHeight: 1.2,
-            color: isDark ? '#FFFFFF' : '#333',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            transform: isSmallScreen ? 'rotate(-.5deg) scale(0.3)' : 'rotate(-.5deg) scale(0.8)',
-            transformOrigin: 'top left',
-            maxHeight: '100%',
-            overflowY: 'hidden',
-            maxWidth: '1600px'
-          }}
-        >
-          <div ref={typedElementRef}></div>
+        {/* Overlay with typing animation */}
+        <div className="memo-text-overlay">
+          <div 
+            ref={typedElementRef}
+            style={{
+              color: isDark ? '#FFFFFF' : '#333'
+            }}
+          ></div>
         </div>
       </div>
     </div>
   );
 };
-

@@ -4,12 +4,10 @@ import { ArrowDownCircle } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatedMemo } from "./AnimatedMemo";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export const HeroSection = memo(function HeroSection() {
   const [isClient, setIsClient] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
-  const isMobile = useIsMobile();
   
   useEffect(() => {
     setIsClient(true);
@@ -71,8 +69,8 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
         
-        {/* Animated memo display with responsive sizing */}
-        <div className="flex justify-center items-center w-full mx-auto mb-8 overflow-visible">
+        {/* Constrained animated memo display */}
+        <div className="hero-memo-container">
           {isClient && <AnimatedMemo />}
         </div>
       </div>
