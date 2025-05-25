@@ -13,6 +13,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import AboutUs from "./pages/AboutUs";
+import Resources from "./pages/Resources";
 import FAQ from "./pages/FAQ";
 import SignUp from "./pages/SignUp";
 import RequestDemo from "./pages/RequestDemo";
@@ -49,7 +50,8 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/post" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<AboutUs />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/request-demo" element={<RequestDemo />} />
