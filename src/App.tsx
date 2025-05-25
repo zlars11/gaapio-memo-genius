@@ -6,6 +6,9 @@ import { ProtectedLayout } from "./components/layout/ProtectedLayout";
 
 // Pages
 import Index from "./pages/Index";
+import AccountingMemos from "./pages/AccountingMemos";
+import FootnoteDisclosures from "./pages/FootnoteDisclosures";
+import GuidanceUpdates from "./pages/GuidanceUpdates";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
@@ -40,6 +43,9 @@ function App() {
         <ProtectedLayout>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/accounting-memos" element={<AccountingMemos />} />
+            <Route path="/footnote-disclosures" element={<FootnoteDisclosures />} />
+            <Route path="/guidance-updates" element={<GuidanceUpdates />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/post" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />

@@ -5,7 +5,15 @@ import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatedMemo } from "./AnimatedMemo";
 
-export const HeroSection = memo(function HeroSection() {
+interface HeroSectionProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export const HeroSection = memo(function HeroSection({ 
+  title = "Audit Ready Memos and Disclosures",
+  subtitle = "AI-Powered. CPA-Approved."
+}: HeroSectionProps) {
   const [isClient, setIsClient] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
   
@@ -54,10 +62,10 @@ export const HeroSection = memo(function HeroSection() {
         {/* Text content centered */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-8 md:mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
-            Audit Ready Memos and Disclosures
+            {title}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-10 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
-            AI-Powered. CPA-Approved.
+            {subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" variant="blue" asChild>

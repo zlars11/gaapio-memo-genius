@@ -5,8 +5,16 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { AdminNavLink } from "@/components/admin/AdminNavLink";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -37,6 +45,12 @@ export function Header() {
     };
   }, []);
 
+  const productLinks = [
+    { name: "Accounting Memos", href: "/accounting-memos", description: "AI-powered technical accounting memos" },
+    { name: "Footnote Disclosures", href: "/footnote-disclosures", description: "Comprehensive footnote disclosures" },
+    { name: "Guidance Updates and Education", href: "/guidance-updates", description: "Stay current with guidance updates" }
+  ];
+
   const navLinks = [
     { name: "About", href: "/about-us" },
     { name: "Resources", href: "/resources" },
@@ -46,8 +60,11 @@ export function Header() {
   ];
 
   const isActive = (path: string) => {
-    // Check if current path matches the nav link path
     return location.pathname === path;
+  };
+
+  const isProductActive = () => {
+    return productLinks.some(link => location.pathname === link.href);
   };
 
   return (
@@ -79,6 +96,22 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right">
                 <nav className="mt-10 flex flex-col gap-4">
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-muted-foreground mb-2">Products</p>
+                    {productLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        className={`text-sm px-4 py-2 rounded-md transition-colors block ${
+                          isActive(link.href)
+                            ? "font-semibold text-primary bg-primary/10"
+                            : "text-foreground/70 hover:text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
                   {navLinks.map((link) => (
                     <Link
                       key={link.href}
@@ -103,7 +136,41 @@ export function Header() {
           </div>
         ) : (
           <div className="flex items-center gap-6">
-            <nav className="flex gap-1">
+            <nav className="flex gap-1 items-center">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className={`px-3 py-2 transition-colors relative ${
+                      isProductActive()
+                        ? "font-semibold text-primary"
+                        : "text-foreground/70 hover:text-foreground"
+                    }`}>
+                      <span className="relative z-10">Products</span>
+                      {isProductActive() && (
+                        <span className="absolute inset-0 bg-primary/10 rounded-md"></span>
+                      )}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid gap-3 p-6 w-[400px]">
+                        {productLinks.map((link) => (
+                          <NavigationMenuLink key={link.href} asChild>
+                            <Link
+                              to={link.href}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">{link.name}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {link.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        ))}
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+              
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
