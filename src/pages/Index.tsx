@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, BookOpen, TrendingUp } from "lucide-react";
+import { ArrowRight, FileText, BookOpen, Megaphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -74,23 +73,20 @@ export default function Index() {
     {
       icon: FileText,
       title: "Accounting Memos",
-      description: "AI-powered technical accounting memos that are audit-ready and CPA-approved.",
-      href: "/accounting-memos",
-      features: ["ASC 606 Revenue Recognition", "Lease Accounting", "Financial Instruments", "Business Combinations"]
+      description: "AI-powered technical accounting memos for ASC 606, leases, and more",
+      href: "/accounting-memos"
     },
     {
       icon: BookOpen,
       title: "Footnote Disclosures",
-      description: "Comprehensive footnote disclosures that ensure compliance and transparency.",
-      href: "/footnote-disclosures",
-      features: ["Risk Disclosures", "Significant Policies", "Subsequent Events", "Fair Value Measurements"]
+      description: "Comprehensive and audit-ready footnote disclosures",
+      href: "/footnote-disclosures"
     },
     {
-      icon: TrendingUp,
+      icon: Megaphone,
       title: "Guidance Updates",
-      description: "Stay current with the latest accounting guidance updates and educational resources.",
-      href: "/guidance-updates",
-      features: ["Real-time Updates", "Impact Analysis", "Educational Content", "Implementation Guidance"]
+      description: "Real-time alerts and insights on accounting standard changes",
+      href: "/guidance-updates"
     }
   ];
 
@@ -119,16 +115,38 @@ export default function Index() {
       )}
       
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-12 dark:bg-background">
+      <section className="relative min-h-[75vh] flex flex-col justify-center items-center pt-24 pb-16 dark:bg-background">
         <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-16">
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
-              AI-Powered Accounting Solutions
+              GAAP compliance powered by AI
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-10 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
               Comprehensive suite of tools for audit-ready memos, disclosures, and guidance updates.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
+            
+            {/* 3-Column Product Overview */}
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-up" style={{ animationDelay: "200ms" }}>
+              {products.map((product) => {
+                const Icon = product.icon;
+                return (
+                  <div key={product.title} className="bg-background rounded-lg p-6 shadow-sm border border-border/50 hover:shadow-md transition-all duration-300 hover:scale-105">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="p-3 bg-primary/10 rounded-lg mb-4">
+                        <Icon className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">{product.title}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {product.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "300ms" }}>
               <Button size="lg" variant="blue" asChild>
                 <Link to="/request-demo">Request a demo</Link>
               </Button>
@@ -140,50 +158,62 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Products Showcase */}
+      {/* Mini CTA Section 1 - Memo Focus */}
       <section className="py-16 bg-accent/10 dark:bg-accent/5">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Product Suite</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Comprehensive AI-powered solutions for all your accounting documentation needs.
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Spending too many hours preparing technical accounting memos?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              Let AI handle the drafting so you can focus on high-value work.
             </p>
+            <Button size="lg" variant="blue" asChild>
+              <Link to="/accounting-memos">
+                Generate a Memo
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {products.map((product, index) => {
-              const Icon = product.icon;
-              return (
-                <div key={product.title} className="bg-background rounded-lg p-6 shadow-sm border border-border/50 hover:shadow-md transition-shadow">
-                  <div className="flex items-center mb-4">
-                    <div className="p-2 bg-primary/10 rounded-lg mr-3">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold">{product.title}</h3>
-                  </div>
-                  
-                  <p className="text-muted-foreground mb-4">
-                    {product.description}
-                  </p>
-                  
-                  <ul className="space-y-2 mb-6">
-                    {product.features.map((feature) => (
-                      <li key={feature} className="text-sm text-muted-foreground flex items-center">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to={product.href}>
-                      Learn More
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              );
-            })}
+        </div>
+      </section>
+
+      {/* Mini CTA Section 2 - Disclosure Focus */}
+      <section className="py-16 bg-background">
+        <div className="container px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Footnote disclosures slowing down your reporting process?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              Instantly generate transparent, audit-ready disclosures.
+            </p>
+            <Button size="lg" variant="blue" asChild>
+              <Link to="/footnote-disclosures">
+                View Disclosure Templates
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Mini CTA Section 3 - Guidance Focus */}
+      <section className="py-16 bg-accent/10 dark:bg-accent/5">
+        <div className="container px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Stay ahead of new GAAP and SEC updates — automatically.
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              Get notified about changes that impact your team.
+            </p>
+            <Button size="lg" variant="blue" asChild>
+              <Link to="/guidance-updates">
+                See How It Works
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
