@@ -183,7 +183,7 @@ export default function Index() {
             <div className="ml-8">
               <Button size="lg" variant="blueOutline" asChild>
                 <Link to="/accounting-memos">
-                  Learn More
+                  Memos
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -207,7 +207,7 @@ export default function Index() {
             <div className="ml-8">
               <Button size="lg" variant="blueOutline" asChild>
                 <Link to="/footnote-disclosures">
-                  Learn More
+                  Disclosures
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -231,7 +231,7 @@ export default function Index() {
             <div className="ml-8">
               <Button size="lg" variant="blueOutline" asChild>
                 <Link to="/guidance-updates">
-                  See How It Works
+                  Guidance Updates
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

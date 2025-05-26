@@ -40,7 +40,7 @@ export function SocialProofSection() {
   return (
     <section 
       id="social-proof" 
-      className="py-12 md:py-16 bg-background border-t border-border/20 overflow-hidden"
+      className="py-12 md:py-16 border-t border-border/20 overflow-hidden"
       aria-labelledby="social-proof-heading"
     >
       <ResponsiveContainer>
@@ -79,8 +79,8 @@ export function SocialProofSection() {
           </div>
 
           {/* Add gradient overlays for a fade effect */}
-          <div className="absolute top-0 left-0 h-full w-16 bg-gradient-to-r from-background to-transparent"></div>
-          <div className="absolute top-0 right-0 h-full w-16 bg-gradient-to-l from-background to-transparent"></div>
+          <div className="absolute top-0 left-0 h-full w-16 bg-gradient-to-r from-transparent to-transparent"></div>
+          <div className="absolute top-0 right-0 h-full w-16 bg-gradient-to-l from-transparent to-transparent"></div>
         </div>
       </ResponsiveContainer>
       
