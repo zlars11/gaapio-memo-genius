@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -129,7 +128,11 @@ export default function Index() {
             {/* 3-Column Product Overview */}
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-up" style={{ animationDelay: "200ms" }}>
               {products.map((product) => (
-                <div key={product.title} className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20">
+                <Link 
+                  key={product.title} 
+                  to={product.href}
+                  className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20 cursor-pointer"
+                >
                   <div className="flex flex-col items-center text-center">
                     <div className="p-3 bg-gradient-to-br from-primary/10 to-blue-50 rounded-xl mb-4 border border-primary/10">
                       <img 
@@ -143,7 +146,7 @@ export default function Index() {
                       {product.description}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             
@@ -160,8 +163,13 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 1 - Memo Focus - Blue Gradient Background */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+      {/* Social Proof Section - HowItWorks-style Background */}
+      <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
+        <SocialProofSection />
+      </div>
+
+      {/* Mini CTA Section 1 - Memo Focus - White Background */}
+      <section className="py-16 bg-white dark:bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex-1">
@@ -175,7 +183,7 @@ export default function Index() {
             <div className="ml-8">
               <Button size="lg" variant="blueOutline" asChild>
                 <Link to="/accounting-memos">
-                  Generate a Memo
+                  Learn More
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -184,8 +192,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 2 - Disclosure Focus - White Background */}
-      <section className="py-16 bg-white dark:bg-background">
+      {/* Mini CTA Section 2 - Disclosure Focus - HowItWorks-style Background */}
+      <section className="py-16 bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex-1">
@@ -199,7 +207,7 @@ export default function Index() {
             <div className="ml-8">
               <Button size="lg" variant="blueOutline" asChild>
                 <Link to="/footnote-disclosures">
-                  View Disclosure Templates
+                  Learn More
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -208,8 +216,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 3 - Guidance Focus - Blue Gradient Background */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+      {/* Mini CTA Section 3 - Guidance Focus - White Background */}
+      <section className="py-16 bg-white dark:bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex-1">
@@ -232,13 +240,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Social Proof Section - White Background */}
-      <div className="bg-white dark:bg-background">
-        <SocialProofSection />
-      </div>
-
-      {/* Testimonials Section - Blue Gradient Background */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+      {/* Testimonials Section - HowItWorks-style Background */}
+      <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
         <TestimonialsSection />
       </div>
       

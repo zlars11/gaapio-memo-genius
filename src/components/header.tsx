@@ -140,7 +140,7 @@ export function Header() {
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground font-normal ${
+                    <NavigationMenuTrigger className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground ${
                       isProductActive()
                         ? "font-semibold text-primary"
                         : ""
@@ -185,7 +185,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground font-normal ${
+                  className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground ${
                     isActive(link.href)
                       ? "font-semibold text-primary"
                       : ""

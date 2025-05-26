@@ -22,8 +22,8 @@ export default function GuidanceUpdates() {
             />
           </div>
           
-          {/* How It Works Section - Blue Gradient Background */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+          {/* How It Works Section - HowItWorks-style Background */}
+          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
             <HowItWorksSection />
           </div>
           
@@ -32,8 +32,8 @@ export default function GuidanceUpdates() {
             <SocialProofSection />
           </div>
           
-          {/* Benefits Section - Blue Gradient Background */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+          {/* Benefits Section - HowItWorks-style Background */}
+          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
             <BenefitsSection />
           </div>
           
