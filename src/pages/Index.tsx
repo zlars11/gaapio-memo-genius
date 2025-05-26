@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -114,12 +115,12 @@ export default function Index() {
         </div>
       )}
       
-      {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex flex-col justify-center items-center pt-24 pb-16 dark:bg-background">
+      {/* Hero Section - White Background */}
+      <section className="relative min-h-[75vh] flex flex-col justify-center items-center pt-24 pb-16 bg-white dark:bg-background">
         <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
-              GAAP compliance powered by AI
+              Where GAAP meets AI
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
               Comprehensive suite of tools for audit-ready memos, disclosures, and guidance updates.
@@ -127,22 +128,23 @@ export default function Index() {
             
             {/* 3-Column Product Overview */}
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-up" style={{ animationDelay: "200ms" }}>
-              {products.map((product) => {
-                const Icon = product.icon;
-                return (
-                  <div key={product.title} className="bg-background rounded-lg p-6 shadow-sm border border-border/50 hover:shadow-md transition-all duration-300 hover:scale-105">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="p-3 bg-primary/10 rounded-lg mb-4">
-                        <Icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="text-lg font-semibold mb-2">{product.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {product.description}
-                      </p>
+              {products.map((product) => (
+                <div key={product.title} className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="p-3 bg-gradient-to-br from-primary/10 to-blue-50 rounded-xl mb-4 border border-primary/10">
+                      <img 
+                        src="/lovable-uploads/4517d8bb-511d-4a58-bdb0-19d826089109.png" 
+                        alt={`${product.title} screenshot`}
+                        className="h-8 w-8 object-cover rounded"
+                      />
                     </div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-900">{product.title}</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {product.description}
+                    </p>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
             
             {/* CTA Buttons */}
@@ -158,68 +160,87 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 1 - Memo Focus */}
-      <section className="py-16 bg-accent/10 dark:bg-accent/5">
+      {/* Mini CTA Section 1 - Memo Focus - Blue Gradient Background */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
         <div className="container px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Spending too many hours preparing technical accounting memos?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Let AI handle the drafting so you can focus on high-value work.
-            </p>
-            <Button size="lg" variant="blue" asChild>
-              <Link to="/accounting-memos">
-                Generate a Memo
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="flex items-center justify-between max-w-5xl mx-auto">
+            <div className="flex-1">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Spending too many hours preparing technical accounting memos?
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Let AI handle the drafting so you can focus on high-value work.
+              </p>
+            </div>
+            <div className="ml-8">
+              <Button size="lg" variant="blueOutline" asChild>
+                <Link to="/accounting-memos">
+                  Generate a Memo
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Mini CTA Section 2 - Disclosure Focus */}
-      <section className="py-16 bg-background">
+      {/* Mini CTA Section 2 - Disclosure Focus - White Background */}
+      <section className="py-16 bg-white dark:bg-background">
         <div className="container px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Footnote disclosures slowing down your reporting process?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Instantly generate transparent, audit-ready disclosures.
-            </p>
-            <Button size="lg" variant="blue" asChild>
-              <Link to="/footnote-disclosures">
-                View Disclosure Templates
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="flex items-center justify-between max-w-5xl mx-auto">
+            <div className="flex-1">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Footnote disclosures slowing down your reporting process?
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Instantly generate transparent, audit-ready disclosures.
+              </p>
+            </div>
+            <div className="ml-8">
+              <Button size="lg" variant="blueOutline" asChild>
+                <Link to="/footnote-disclosures">
+                  View Disclosure Templates
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Mini CTA Section 3 - Guidance Focus */}
-      <section className="py-16 bg-accent/10 dark:bg-accent/5">
+      {/* Mini CTA Section 3 - Guidance Focus - Blue Gradient Background */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
         <div className="container px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Stay ahead of new GAAP and SEC updates — automatically.
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Get notified about changes that impact your team.
-            </p>
-            <Button size="lg" variant="blue" asChild>
-              <Link to="/guidance-updates">
-                See How It Works
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+          <div className="flex items-center justify-between max-w-5xl mx-auto">
+            <div className="flex-1">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Stay ahead of new GAAP and SEC updates — automatically.
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Get notified about changes that impact your team.
+              </p>
+            </div>
+            <div className="ml-8">
+              <Button size="lg" variant="blueOutline" asChild>
+                <Link to="/guidance-updates">
+                  See How It Works
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      <SocialProofSection />
-      <TestimonialsSection />
+      {/* Social Proof Section - White Background */}
+      <div className="bg-white dark:bg-background">
+        <SocialProofSection />
+      </div>
+
+      {/* Testimonials Section - Blue Gradient Background */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+        <TestimonialsSection />
+      </div>
       
       <Footer />
     </div>

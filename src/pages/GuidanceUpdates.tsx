@@ -14,14 +14,33 @@ export default function GuidanceUpdates() {
       
       <div className="relative overflow-hidden">
         <div className="relative z-10">
-          <HeroSection 
-            title="Stay Current with Guidance Updates" 
-            subtitle="AI-Powered. Always Updated."
-          />
-          <HowItWorksSection />
-          <SocialProofSection />
-          <BenefitsSection />
-          <TestimonialsSection />
+          {/* Hero Section - White Background */}
+          <div className="bg-white dark:bg-background">
+            <HeroSection 
+              title="Stay Current with Guidance Updates" 
+              subtitle="AI-Powered. Always Updated."
+            />
+          </div>
+          
+          {/* How It Works Section - Blue Gradient Background */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+            <HowItWorksSection />
+          </div>
+          
+          {/* Social Proof Section - White Background */}
+          <div className="bg-white dark:bg-background">
+            <SocialProofSection />
+          </div>
+          
+          {/* Benefits Section - Blue Gradient Background */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
+            <BenefitsSection />
+          </div>
+          
+          {/* Testimonials Section - White Background */}
+          <div className="bg-white dark:bg-background">
+            <TestimonialsSection />
+          </div>
         </div>
       </div>
       

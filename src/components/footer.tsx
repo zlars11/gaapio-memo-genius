@@ -46,14 +46,6 @@ export function Footer() {
                     Demo
                   </Link>
                 </li>
-                <li>
-                  <Link 
-                    to="/signup" 
-                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
-                  >
-                    Pricing
-                  </Link>
-                </li>
               </ul>
             </div>
             
