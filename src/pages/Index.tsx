@@ -135,14 +135,14 @@ export default function Index() {
                 <Link 
                   key={product.title} 
                   to={product.href}
-                  className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20 cursor-pointer"
+                  className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20 cursor-pointer"
                 >
                   <div className="flex flex-col items-center text-center">
                     <div className="w-full h-20 mb-4 border border-primary/10 rounded-xl overflow-hidden">
                       <MiniAnimatedMemo type={product.memoType} />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 text-gray-900">{product.title}</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed">
+                    <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{product.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                       {product.description}
                     </p>
                   </div>
@@ -162,7 +162,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Social Proof Section - HowItWorks-style Background */}
+      {/* Social Proof Section - Gradient Background */}
       <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
         <SocialProofSection />
       </div>
@@ -191,20 +191,20 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 2 - Disclosure Focus - HowItWorks-style Background */}
-      <section className="py-16 bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
+      {/* Mini CTA Section 2 - Disclosure Focus - Solid Blue Background */}
+      <section className="py-16 bg-[#339CFF] text-white">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                 Footnote disclosures slowing down your reporting process?
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-white/90">
                 Instantly generate transparent, audit-ready disclosures.
               </p>
             </div>
             <div className="ml-8">
-              <Button size="lg" variant="blueOutline" asChild>
+              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-[#339CFF]">
                 <Link to="/footnote-disclosures">
                   Disclosures
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -215,7 +215,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 3 - Guidance Focus - White Background */}
+      {/* Mini CTA Section 3 - White Background */}
       <section className="py-16 bg-white dark:bg-background">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
@@ -239,7 +239,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Testimonials Section - HowItWorks-style Background */}
+      {/* Testimonials Section - Gradient Background */}
       <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
         <TestimonialsSection />
       </div>

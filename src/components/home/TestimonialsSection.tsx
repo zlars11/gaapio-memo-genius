@@ -92,7 +92,7 @@ export function TestimonialsSection() {
     <section 
       id="testimonials" 
       ref={sectionRef}
-      className="py-20 md:py-32 bg-background" 
+      className="py-20 md:py-32" 
       aria-labelledby="testimonials-heading"
     >
       <ResponsiveContainer>
