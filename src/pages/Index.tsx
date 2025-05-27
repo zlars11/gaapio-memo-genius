@@ -191,8 +191,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Mini CTA Section 2 - Disclosure Focus - Solid Blue Background */}
-      <section className="py-16 bg-[#339CFF] text-white">
+      {/* Mini CTA Section 2 - Disclosure Focus - Muted Blue Background */}
+      <section className="py-16 bg-slate-700 text-white">
         <div className="container px-4 md:px-6">
           <div className="flex items-center justify-between max-w-5xl mx-auto">
             <div className="flex-1">
@@ -204,7 +204,7 @@ export default function Index() {
               </p>
             </div>
             <div className="ml-8">
-              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-[#339CFF]">
+              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-slate-700">
                 <Link to="/footnote-disclosures">
                   Disclosures
                   <ArrowRight className="ml-2 h-4 w-4" />
