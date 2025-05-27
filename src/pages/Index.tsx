@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
+import { MiniAnimatedMemo } from "@/components/home/MiniAnimatedMemo";
 import { setProtectionStatus, setSitePassword, getSessionVersion } from "@/utils/securityUtils";
 
 export default function Index() {
@@ -74,19 +75,22 @@ export default function Index() {
       icon: FileText,
       title: "Accounting Memos",
       description: "AI-powered technical accounting memos for ASC 606, leases, and more",
-      href: "/accounting-memos"
+      href: "/accounting-memos",
+      memoType: "memo" as const
     },
     {
       icon: BookOpen,
       title: "Footnote Disclosures",
       description: "Comprehensive and audit-ready footnote disclosures",
-      href: "/footnote-disclosures"
+      href: "/footnote-disclosures",
+      memoType: "disclosure" as const
     },
     {
       icon: Megaphone,
       title: "Guidance Updates",
       description: "Real-time alerts and insights on accounting standard changes",
-      href: "/guidance-updates"
+      href: "/guidance-updates",
+      memoType: "guidance" as const
     }
   ];
 
@@ -125,7 +129,7 @@ export default function Index() {
               Comprehensive suite of tools for audit-ready memos, disclosures, and guidance updates.
             </p>
             
-            {/* 3-Column Product Overview */}
+            {/* 3-Column Product Overview with Mini Animated Memos */}
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-up" style={{ animationDelay: "200ms" }}>
               {products.map((product) => (
                 <Link 
@@ -134,12 +138,8 @@ export default function Index() {
                   className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20 cursor-pointer"
                 >
                   <div className="flex flex-col items-center text-center">
-                    <div className="p-3 bg-gradient-to-br from-primary/10 to-blue-50 rounded-xl mb-4 border border-primary/10">
-                      <img 
-                        src="/lovable-uploads/4517d8bb-511d-4a58-bdb0-19d826089109.png" 
-                        alt={`${product.title} screenshot`}
-                        className="h-8 w-8 object-cover rounded"
-                      />
+                    <div className="w-full h-20 mb-4 border border-primary/10 rounded-xl overflow-hidden">
+                      <MiniAnimatedMemo type={product.memoType} />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-gray-900">{product.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">
@@ -150,7 +150,6 @@ export default function Index() {
               ))}
             </div>
             
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "300ms" }}>
               <Button size="lg" variant="blue" asChild>
                 <Link to="/request-demo">Request a demo</Link>
