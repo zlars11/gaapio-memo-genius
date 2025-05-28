@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -115,6 +116,18 @@ export function Header() {
                     About
                   </Link>
                 </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link to="/faq" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    FAQ
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link to="/contact" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    Contact
+                  </Link>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -186,6 +199,20 @@ export function Header() {
                 onClick={closeMenu}
               >
                 About
+              </Link>
+              <Link
+                to="/faq"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/faq') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                FAQ
+              </Link>
+              <Link
+                to="/contact"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/contact') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Contact
               </Link>
               <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center px-3 space-x-3">
