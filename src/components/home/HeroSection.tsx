@@ -11,8 +11,8 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = memo(function HeroSection({ 
-  title = "AI That Speaks GAAP — Instantly Draft Audit-Ready Memos, Disclosures & Policies",
-  subtitle = "Your month-end close just got smarter. See why CPAs are ditching the templates."
+  title = "AI That Speaks GAAP — Audit-Ready Memos, Footnote Disclosures & Guidance Updates",
+  subtitle = "AI-Powered. CPA-Approved."
 }: HeroSectionProps) {
   const [isClient, setIsClient] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);

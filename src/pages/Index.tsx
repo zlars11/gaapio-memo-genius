@@ -8,7 +8,7 @@ import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { setProtectionStatus, setSitePassword, getSessionVersion } from "@/utils/securityUtils";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ProductHighlightsSection } from "@/components/home/ProductHighlightsSection";
-import { TrustBarSection } from "@/components/home/TrustBarSection";
+import { SocialProofSection } from "@/components/home/SocialProofSection";
 import { ComplianceSecuritySection } from "@/components/home/ComplianceSecuritySection";
 import { KeyBenefitsSection } from "@/components/home/KeyBenefitsSection";
 import { WhatYoullLearnSection } from "@/components/home/WhatYoullLearnSection";
@@ -102,8 +102,8 @@ export default function Index() {
       {/* Product Highlights Section */}
       <ProductHighlightsSection />
 
-      {/* Trust Bar Section */}
-      <TrustBarSection />
+      {/* Social Proof Section (Trusted by Companies) */}
+      <SocialProofSection />
 
       {/* Compliance & Security Section */}
       <ComplianceSecuritySection />
