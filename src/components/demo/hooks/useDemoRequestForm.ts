@@ -22,6 +22,8 @@ export function useDemoRequestForm(onSuccess?: () => void) {
 
   const sendFormsubmitEmail = async (data: DemoRequestFormData) => {
     try {
+      console.log("Starting Formsubmit email send for demo request with data:", data);
+      
       const formData = new FormData();
       
       // Add form fields
@@ -37,14 +39,38 @@ export function useDemoRequestForm(onSuccess?: () => void) {
       formData.append('_cc', 'zack@gaapio.com,jace@gaapio.com');
       formData.append('_captcha', 'false');
       
-      await fetch('https://formsubmit.co/info@gaapio.com', {
+      console.log("Formsubmit payload for demo request:", {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone || '',
+        notes: data.notes || '',
+        _template: 'table',
+        _subject: `New Demo Request from ${data.firstName} ${data.lastName}`,
+        _cc: 'zack@gaapio.com,jace@gaapio.com',
+        _captcha: 'false'
+      });
+      
+      const response = await fetch('https://formsubmit.co/info@gaapio.com', {
         method: 'POST',
         body: formData
       });
       
-      console.log("Formsubmit email sent for demo request");
+      console.log("Formsubmit response status:", response.status);
+      console.log("Formsubmit response ok:", response.ok);
+      
+      if (response.ok) {
+        const responseText = await response.text();
+        console.log("Formsubmit response text:", responseText);
+        console.log("Formsubmit email sent successfully for demo request");
+      } else {
+        console.error("Formsubmit request failed with status:", response.status);
+        const errorText = await response.text();
+        console.error("Formsubmit error response:", errorText);
+      }
+      
     } catch (error) {
-      console.error("Error sending Formsubmit email:", error);
+      console.error("Error sending Formsubmit email for demo request:", error);
       // Don't block the main form submission if email fails
     }
   };
@@ -114,7 +140,8 @@ export function useDemoRequestForm(onSuccess?: () => void) {
         throw error;
       }
 
-      // Send Formsubmit email notification
+      // Send Formsubmit email notification AFTER successful database save
+      console.log("Database save successful, now sending Formsubmit email...");
       await sendFormsubmitEmail(data);
 
       console.log("Demo request saved successfully");
