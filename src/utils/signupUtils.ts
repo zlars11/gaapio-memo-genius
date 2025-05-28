@@ -1,6 +1,5 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 export async function createFirmSignup(formData: any) {
   try {
@@ -46,13 +45,6 @@ export async function createFirmSignup(formData: any) {
       .insert([userData]);
       
     if (userError) throw userError;
-
-    // Queue the webhook
-    await triggerZapier({
-      ...formData,
-      signupDate: new Date().toISOString(),
-      type: "firm"
-    }, true);
     
     return { success: true, company_id: companyData.id };
   } catch (error: any) {
@@ -130,12 +122,6 @@ export async function handleSignup(formData: any): Promise<{
       return { success: false, error: userError.message };
     }
     
-    // Queue webhook - don't await for immediate response
-    triggerZapier(formData).catch(err => {
-      console.error("Error queuing webhook:", err);
-      // Error handled by webhook system, don't block user signup
-    });
-    
     return { 
       success: true, 
       company_id: companyData.id, 
@@ -148,48 +134,5 @@ export async function handleSignup(formData: any): Promise<{
       success: false, 
       error: err.message || "An unexpected error occurred during signup"
     };
-  }
-}
-
-export async function triggerZapier(allData: any, isFirm: boolean = false) {
-  try {
-    const webhookUrl = isFirm ? 
-      getWebhookUrl(WebhookTypes.FIRM_SIGNUP) : 
-      getWebhookUrl(WebhookTypes.USER_SIGNUP);
-
-    if (!webhookUrl) {
-      console.warn(`No Zapier webhook URL set for ${isFirm ? 'Firm' : 'User'} Signups`);
-      return;
-    }
-    
-    console.log(`Triggering ${isFirm ? 'firm' : 'user'} Zapier webhook:`, webhookUrl);
-    
-    // Format data
-    const payload = isFirm ? {
-      "Firm Name": allData.company,
-      "Contact Name": `${allData.firstName || allData.firstname} ${allData.lastName || allData.lastname}`,
-      "Email": allData.email,
-      "Phone": allData.phone,
-      "Notes": allData.message || "",
-      "Submission Date": new Date().toISOString(),
-    } : allData;
-    
-    // Call the queue-webhook edge function
-    const { error } = await supabase.functions.invoke('queue-webhook', {
-      body: {
-        payload,
-        target_url: webhookUrl
-      }
-    });
-    
-    if (error) {
-      console.error("Error queuing webhook:", error);
-      // Don't block the signup process, log error only
-    } else {
-      console.log("Webhook queued successfully");
-    }
-  } catch (err) {
-    console.error("Error triggering Zapier webhook:", err);
-    // Don't block the signup process, log error only
   }
 }
