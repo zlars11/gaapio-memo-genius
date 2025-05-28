@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -106,14 +105,14 @@ export function Header() {
 
                 {/* Other Navigation Items */}
                 <NavigationMenuItem>
-                  <Link to="/resources" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
-                    Resources
+                  <Link to="/about-us" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    About
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link to="/about-us" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
-                    About
+                  <Link to="/resources" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    Resources
                   </Link>
                 </NavigationMenuItem>
 
@@ -139,7 +138,7 @@ export function Header() {
               <Link to="/login">Login</Link>
             </Button>
             <Button variant="blue" asChild>
-              <Link to={secondaryButtonLink}>{secondaryButtonText}</Link>
+              <Link to="/request-demo">Request a Demo</Link>
             </Button>
           </div>
 
@@ -187,18 +186,18 @@ export function Header() {
                 Guidance Updates
               </Link>
               <Link
-                to="/resources"
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/resources') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                onClick={closeMenu}
-              >
-                Resources
-              </Link>
-              <Link
                 to="/about-us"
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/about-us') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                 onClick={closeMenu}
               >
                 About
+              </Link>
+              <Link
+                to="/resources"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/resources') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Resources
               </Link>
               <Link
                 to="/faq"
@@ -222,7 +221,7 @@ export function Header() {
                 </div>
                 <div className="mt-3 px-3">
                   <Button variant="blue" asChild className="w-full">
-                    <Link to={secondaryButtonLink} onClick={closeMenu}>{secondaryButtonText}</Link>
+                    <Link to="/request-demo" onClick={closeMenu}>Request a Demo</Link>
                   </Button>
                 </div>
               </div>
