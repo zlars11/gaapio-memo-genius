@@ -57,9 +57,9 @@ export function Header() {
                 {/* Products Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger
-                className="font-medium text-gray-700 dark:text-gray-200 px-3 py-2 hover:text-gray-900 dark:hover:text-white hover:underline transition-colors focus:outline-none focus:ring-0 focus:border-none"
->
-                  Products
+                className="font-medium text-sm px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:underline transition-colors focus:outline-none focus:ring-0 focus:border-none align-middle"
+                >
+                Products
                 </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid gap-3 p-4 w-[400px]">
