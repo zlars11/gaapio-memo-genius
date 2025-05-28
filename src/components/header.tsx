@@ -55,15 +55,15 @@ export function Header() {
             <NavigationMenu>
               <NavigationMenuList className="flex items-center space-x-4">
                 {/* Products Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger
-                asChild
-                  className="font-medium text-base px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:underline transition-colors focus:outline-none focus:ring-0 focus:border-none"
-                >
-                <button type="button">
-                  Products
-                   </button>
-                </NavigationMenuTrigger>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger
+                    asChild
+                    className="font-medium text-base px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:underline transition-colors focus:outline-none focus:ring-0 focus:border-none"
+                  >
+                    <button type="button">
+                      Products
+                    </button>
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid gap-3 p-4 w-[400px]">
                       <div className="grid gap-3">
