@@ -20,6 +20,35 @@ export function useDemoRequestForm(onSuccess?: () => void) {
     },
   });
 
+  const sendFormsubmitEmail = async (data: DemoRequestFormData) => {
+    try {
+      const formData = new FormData();
+      
+      // Add form fields
+      formData.append('firstName', data.firstName);
+      formData.append('lastName', data.lastName);
+      formData.append('email', data.email);
+      formData.append('phone', data.phone || '');
+      formData.append('notes', data.notes || '');
+      
+      // Add Formsubmit configuration
+      formData.append('_template', 'table');
+      formData.append('_subject', `New Demo Request from ${data.firstName} ${data.lastName}`);
+      formData.append('_cc', 'zack@gaapio.com,jace@gaapio.com');
+      formData.append('_captcha', 'false');
+      
+      await fetch('https://formsubmit.co/info@gaapio.com', {
+        method: 'POST',
+        body: formData
+      });
+      
+      console.log("Formsubmit email sent for demo request");
+    } catch (error) {
+      console.error("Error sending Formsubmit email:", error);
+      // Don't block the main form submission if email fails
+    }
+  };
+
   const onSubmit = async (data: DemoRequestFormData) => {
     setIsLoading(true);
     console.log("Form submitted with data:", data);
@@ -84,6 +113,9 @@ export function useDemoRequestForm(onSuccess?: () => void) {
         console.error("Database error:", error);
         throw error;
       }
+
+      // Send Formsubmit email notification
+      await sendFormsubmitEmail(data);
 
       console.log("Demo request saved successfully");
       toast({

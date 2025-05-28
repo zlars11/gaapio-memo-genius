@@ -33,6 +33,36 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
     formState: { errors },
   } = useForm<ContactFormValues>();
   
+  const sendFormsubmitEmail = async (data: ContactFormValues) => {
+    try {
+      const formData = new FormData();
+      
+      // Add form fields
+      formData.append('firstName', data.first_name);
+      formData.append('lastName', data.last_name);
+      formData.append('company', data.company);
+      formData.append('email', data.email);
+      formData.append('phone', data.phone || '');
+      formData.append('message', data.message);
+      
+      // Add Formsubmit configuration
+      formData.append('_template', 'table');
+      formData.append('_subject', `New Contact Request from ${data.first_name} ${data.last_name}`);
+      formData.append('_cc', 'zack@gaapio.com,jace@gaapio.com');
+      formData.append('_captcha', 'false');
+      
+      await fetch('https://formsubmit.co/info@gaapio.com', {
+        method: 'POST',
+        body: formData
+      });
+      
+      console.log("Formsubmit email sent for contact request");
+    } catch (error) {
+      console.error("Error sending Formsubmit email:", error);
+      // Don't block the main form submission if email fails
+    }
+  };
+  
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     
@@ -158,6 +188,9 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
       } else {
         console.warn("No webhook URL configured for contact form");
       }
+
+      // Send Formsubmit email notification
+      await sendFormsubmitEmail(cleanedData);
       
       if (onSubmitSuccess) {
         onSubmitSuccess({
