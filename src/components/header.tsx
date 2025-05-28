@@ -1,208 +1,204 @@
 import { useState, useEffect } from "react";
-import { Logo } from "@/components/logo";
-import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, ChevronDown, ArrowRight } from "lucide-react";
-import { AdminNavLink } from "@/components/admin/AdminNavLink";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+import { Logo } from "@/components/logo";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [enableSelfSignup, setEnableSelfSignup] = useState(true);
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin');
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+    const savedSetting = localStorage.getItem("enableSelfSignup");
+    setEnableSelfSignup(savedSetting !== null ? savedSetting === "true" : true);
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "enableSelfSignup") {
+        const newSetting = e.newValue !== null ? e.newValue === "true" : true;
+        setEnableSelfSignup(newSetting);
+      }
     };
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    // Set initial states
-    handleResize();
-    handleScroll();
-
-    // Add listeners
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("scroll", handleScroll);
-
+    window.addEventListener('storage', handleStorageChange);
     return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
-  const productLinks = [
-    { name: "Accounting Memos", href: "/accounting-memos", description: "AI-powered technical accounting memos" },
-    { name: "Footnote Disclosures", href: "/footnote-disclosures", description: "Comprehensive footnote disclosures" },
-    { name: "Guidance Updates and Education", href: "/guidance-updates", description: "Stay current with guidance updates" }
-  ];
-
-  const navLinks = [
-    { name: "About", href: "/about-us" },
-    { name: "Resources", href: "/resources" },
-    { name: "FAQ", href: "/faq" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/contact" }
-  ];
-
-  const isActive = (path: string) => {
-    return location.pathname === path;
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
-  const isProductActive = () => {
-    return productLinks.some(link => location.pathname === link.href);
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
+
+  const isActive = (path: string) => location.pathname === path;
+
+  const secondaryButtonText = enableSelfSignup ? "Sign Up" : "Contact";
+  const secondaryButtonLink = enableSelfSignup ? "/signup" : "/contact";
 
   return (
-    <header
-      className={`fixed top-0 z-50 w-full border-b bg-background/90 backdrop-blur-sm transition-all ${
-        scrolled ? "shadow-sm" : ""
-      }`}
-    >
-      <div className="container flex h-20 items-center justify-between">
-        <Link 
-          to="/" 
-          className="flex items-center"
-          aria-label="Gaapio Homepage"
-          style={{ height: '100%' }}
-        >
-          <Logo />
-        </Link>
-
-        {isMobile ? (
-          <div className="flex items-center gap-4">
-            <AdminNavLink />
-            <ModeToggle />
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="outline">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right">
-                <nav className="mt-10 flex flex-col gap-4">
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-muted-foreground mb-2">Products</p>
-                    {productLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        to={link.href}
-                        className={`text-sm px-4 py-2 rounded-md transition-colors block ${
-                          isActive(link.href)
-                            ? "font-semibold text-primary bg-primary/10"
-                            : "text-foreground/70 hover:text-foreground hover:bg-accent"
-                        }`}
-                      >
-                        {link.name}
-                      </Link>
-                    ))}
-                  </div>
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      to={link.href}
-                      className={`text-lg px-4 py-2 rounded-md transition-colors ${
-                        isActive(link.href)
-                          ? "font-semibold text-primary bg-primary/10"
-                          : "text-foreground/70 hover:text-foreground hover:bg-accent"
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                  <div className="mt-6 space-y-2">
-                    <Button asChild className="w-full" variant="blue">
-                      <Link to="/request-demo">Request a Demo</Link>
-                    </Button>
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" onClick={closeMenu}>
+              <Logo />
+            </Link>
           </div>
-        ) : (
-          <div className="flex items-center gap-6">
-            <nav className="flex gap-1 items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground text-sm ${
-                      isProductActive()
-                        ? "font-semibold text-primary"
-                        : ""
-                    }`}>
-                      <span className="relative z-10">Products</span>
-                      {isProductActive() && (
-                        <span className="absolute inset-0 bg-primary/10 rounded-md"></span>
-                      )}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="w-[480px] p-1 bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl border border-border/20 shadow-2xl rounded-xl">
-                        {productLinks.map((link, index) => (
-                          <div key={link.href}>
-                            <NavigationMenuLink key={link.href} asChild>
-                              <Link
-                                to={link.href}
-                                className="group block select-none rounded-lg p-4 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent/50 hover:shadow-sm focus:bg-accent focus:text-accent-foreground active:scale-[0.98]"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex-1">
-                                    <div className="text-base font-semibold leading-none text-foreground group-hover:text-primary transition-colors duration-200">{link.name}</div>
-                                    <p className="mt-2 text-xs leading-snug text-muted-foreground/80 group-hover:text-muted-foreground transition-colors duration-200">
-                                      {link.description}
-                                    </p>
-                                  </div>
-                                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
-                                </div>
-                              </Link>
-                            </NavigationMenuLink>
-                            {index < productLinks.length - 1 && (
-                              <div className="mx-4 h-px bg-border/30"></div>
-                            )}
-                          </div>
-                        ))}
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {/* Products Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-gray-700 dark:text-gray-200">
+                    Products
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid gap-3 p-4 w-[400px]">
+                      <div className="grid gap-3">
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/accounting-memos"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">Accounting Memos</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              AI-powered technical accounting memos
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/footnote-disclosures"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">Footnote Disclosures</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Comprehensive audit-ready disclosures
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/guidance-updates"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">Guidance Updates</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Real-time accounting standard alerts
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
                       </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-              
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className={`px-3 py-2 transition-colors relative text-foreground/70 hover:text-foreground text-sm ${
-                    isActive(link.href)
-                      ? "font-semibold text-primary"
-                      : ""
-                  }`}
-                >
-                  <span className="relative z-10">{link.name}</span>
-                  {isActive(link.href) && (
-                    <span className="absolute inset-0 bg-primary/10 rounded-md"></span>
-                  )}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex items-center gap-2">
-              <AdminNavLink />
-              <ModeToggle />
-              <Button asChild variant="blue">
-                <Link to="/request-demo">Request a Demo</Link>
-              </Button>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {/* Other Navigation Items */}
+                <NavigationMenuItem>
+                  <Link to="/resources" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    Resources
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link to="/about-us" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                    About
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          {/* Desktop Action Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            <ModeToggle />
+            <Button variant="ghost" asChild>
+              <Link to="/login">Login</Link>
+            </Button>
+            <Button variant="blue" asChild>
+              <Link to={secondaryButtonLink}>{secondaryButtonText}</Link>
+            </Button>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center space-x-2">
+            <ModeToggle />
+            <button
+              onClick={toggleMenu}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              aria-expanded="false"
+            >
+              <span className="sr-only">Open main menu</span>
+              {isMenuOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+              <Link
+                to="/accounting-memos"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/accounting-memos') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Accounting Memos
+              </Link>
+              <Link
+                to="/footnote-disclosures"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/footnote-disclosures') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Footnote Disclosures
+              </Link>
+              <Link
+                to="/guidance-updates"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/guidance-updates') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Guidance Updates
+              </Link>
+              <Link
+                to="/resources"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/resources') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                Resources
+              </Link>
+              <Link
+                to="/about-us"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/about-us') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                onClick={closeMenu}
+              >
+                About
+              </Link>
+              <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center px-3 space-x-3">
+                  <Button variant="ghost" asChild className="w-full justify-start">
+                    <Link to="/login" onClick={closeMenu}>Login</Link>
+                  </Button>
+                </div>
+                <div className="mt-3 px-3">
+                  <Button variant="blue" asChild className="w-full">
+                    <Link to={secondaryButtonLink} onClick={closeMenu}>{secondaryButtonText}</Link>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}

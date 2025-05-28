@@ -11,8 +11,8 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = memo(function HeroSection({ 
-  title = "Audit Ready Memos and Disclosures",
-  subtitle = "AI-Powered. CPA-Approved."
+  title = "AI That Speaks GAAP — Instantly Draft Audit-Ready Memos, Disclosures & Policies",
+  subtitle = "Your month-end close just got smarter. See why CPAs are ditching the templates."
 }: HeroSectionProps) {
   const [isClient, setIsClient] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
@@ -43,24 +43,20 @@ export const HeroSection = memo(function HeroSection({
     };
   }, []);
   
-  // Scroll to How It Works section when arrow is clicked
-  const scrollToHowItWorks = () => {
-    const howItWorksSection = document.getElementById('how-it-works');
-    if (howItWorksSection) {
-      howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+  // Scroll to Product Highlights section when arrow is clicked
+  const scrollToNextSection = () => {
+    const nextSection = document.getElementById('product-highlights');
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Determine secondary button text and link based on self-signup setting
-  const secondaryButtonText = enableSelfSignup ? "Sign Up Now" : "Contact Sales";
-  const secondaryButtonLink = enableSelfSignup ? "/signup" : "/contact";
-
   return (
-    <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-12 dark:bg-background">
+    <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-12 bg-white dark:bg-background overflow-hidden">
       {/* Hero content with improved spacing */}
       <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
         {/* Text content centered */}
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-8 md:mb-16">
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-8 md:mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
             {title}
           </h1>
@@ -69,10 +65,10 @@ export const HeroSection = memo(function HeroSection({
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" variant="blue" asChild>
-              <Link to="/request-demo">Request a demo</Link>
+              <Link to="/request-demo">Request a Demo</Link>
             </Button>
             <Button size="lg" variant="blueOutline" asChild>
-              <Link to={secondaryButtonLink}>{secondaryButtonText}</Link>
+              <Link to="#product-highlights" onClick={(e) => { e.preventDefault(); scrollToNextSection(); }}>See How It Works</Link>
             </Button>
           </div>
         </div>
@@ -83,11 +79,11 @@ export const HeroSection = memo(function HeroSection({
         </div>
       </div>
       
-      {/* Down arrow for scrolling to How It Works section */}
+      {/* Down arrow for scrolling to next section */}
       <div 
         className="animate-fade-up absolute bottom-6" 
         style={{ animationDelay: "400ms" }} 
-        onClick={scrollToHowItWorks}
+        onClick={scrollToNextSection}
       >
         <ArrowDownCircle className="h-10 w-10 text-muted-foreground/50 dark:text-gray-400/70 animate-pulse-slow cursor-pointer" aria-hidden="true" />
       </div>

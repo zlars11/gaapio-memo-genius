@@ -1,14 +1,19 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, BookOpen, Megaphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { SocialProofSection } from "@/components/home/SocialProofSection";
-import { MiniAnimatedMemo } from "@/components/home/MiniAnimatedMemo";
 import { setProtectionStatus, setSitePassword, getSessionVersion } from "@/utils/securityUtils";
+import { HeroSection } from "@/components/home/HeroSection";
+import { ProductHighlightsSection } from "@/components/home/ProductHighlightsSection";
+import { TrustBarSection } from "@/components/home/TrustBarSection";
+import { ComplianceSecuritySection } from "@/components/home/ComplianceSecuritySection";
+import { KeyBenefitsSection } from "@/components/home/KeyBenefitsSection";
+import { WhatYoullLearnSection } from "@/components/home/WhatYoullLearnSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { FinalCtaSection } from "@/components/home/FinalCtaSection";
 
 export default function Index() {
   const [showMetrics, setShowMetrics] = useState(false);
@@ -70,33 +75,6 @@ export default function Index() {
     }
   }, [enableSelfSignup]);
 
-  const products = [
-    {
-      icon: FileText,
-      title: "Accounting Memos",
-      description: "AI-powered technical accounting memos for ASC 606, leases, and more",
-      href: "/accounting-memos",
-      memoType: "memo" as const
-    },
-    {
-      icon: BookOpen,
-      title: "Footnote Disclosures",
-      description: "Comprehensive and audit-ready footnote disclosures",
-      href: "/footnote-disclosures",
-      memoType: "disclosure" as const
-    },
-    {
-      icon: Megaphone,
-      title: "Guidance Updates",
-      description: "Real-time alerts and insights on accounting standard changes",
-      href: "/guidance-updates",
-      memoType: "guidance" as const
-    }
-  ];
-
-  const secondaryButtonText = enableSelfSignup ? "Sign Up Now" : "Contact Sales";
-  const secondaryButtonLink = enableSelfSignup ? "/signup" : "/contact";
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -118,131 +96,29 @@ export default function Index() {
         </div>
       )}
       
-      {/* Hero Section - White Background */}
-      <section className="relative min-h-[75vh] flex flex-col justify-center items-center pt-24 pb-16 bg-white dark:bg-background">
-        <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
-              Where GAAP meets AI
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-12 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
-              Comprehensive suite of tools for audit-ready memos, disclosures, and guidance updates.
-            </p>
-            
-            {/* 3-Column Product Overview with Mini Animated Memos */}
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-up" style={{ animationDelay: "200ms" }}>
-              {products.map((product) => (
-                <Link 
-                  key={product.title} 
-                  to={product.href}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-primary/20 cursor-pointer"
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-full h-20 mb-4 border border-primary/10 rounded-xl overflow-hidden">
-                      <MiniAnimatedMemo type={product.memoType} />
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{product.title}</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "300ms" }}>
-              <Button size="lg" variant="blue" asChild>
-                <Link to="/request-demo">Request a demo</Link>
-              </Button>
-              <Button size="lg" variant="blueOutline" asChild>
-                <Link to={secondaryButtonLink}>{secondaryButtonText}</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section */}
+      <HeroSection />
 
-      {/* Social Proof Section - Gradient Background */}
-      <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-        <SocialProofSection />
-      </div>
+      {/* Product Highlights Section */}
+      <ProductHighlightsSection />
 
-      {/* Mini CTA Section 1 - Memo Focus - White Background */}
-      <section className="py-16 bg-white dark:bg-background">
-        <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between max-w-5xl mx-auto">
-            <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                Spending too many hours preparing technical accounting memos?
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Let AI handle the drafting so you can focus on high-value work.
-              </p>
-            </div>
-            <div className="ml-8">
-              <Button size="lg" variant="blueOutline" asChild>
-                <Link to="/accounting-memos">
-                  Memos
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Trust Bar Section */}
+      <TrustBarSection />
 
-      {/* Mini CTA Section 2 - Disclosure Focus - Muted Blue Background */}
-      <section className="py-16 bg-slate-700 text-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between max-w-5xl mx-auto">
-            <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                Footnote disclosures slowing down your reporting process?
-              </h2>
-              <p className="text-lg text-white/90">
-                Instantly generate transparent, audit-ready disclosures.
-              </p>
-            </div>
-            <div className="ml-8">
-              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-slate-700">
-                <Link to="/footnote-disclosures">
-                  Disclosures
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Compliance & Security Section */}
+      <ComplianceSecuritySection />
 
-      {/* Mini CTA Section 3 - White Background */}
-      <section className="py-16 bg-white dark:bg-background">
-        <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between max-w-5xl mx-auto">
-            <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                Stay ahead of new GAAP and SEC updates — automatically.
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Get notified about changes that impact your team.
-              </p>
-            </div>
-            <div className="ml-8">
-              <Button size="lg" variant="blueOutline" asChild>
-                <Link to="/guidance-updates">
-                  Guidance Updates
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Key Benefits Section */}
+      <KeyBenefitsSection />
 
-      {/* Testimonials Section - Gradient Background */}
-      <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-        <TestimonialsSection />
-      </div>
+      {/* What You'll Learn Section */}
+      <WhatYoullLearnSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
+      {/* Final CTA Section */}
+      <FinalCtaSection />
       
       <Footer />
     </div>
