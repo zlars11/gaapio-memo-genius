@@ -101,18 +101,29 @@ export const AnimatedMemo = () => {
           }}
         />
         
-        {/* Overlay with typing animation */}
+        {/* Overlay with typing animation positioned to start at the highlight */}
         <div 
           className="memo-text-overlay"
           style={{
+            position: "absolute",
+            top: "280px",
+            left: "45%",
+            right: "5%",
             textAlign: "left",
-            paddingLeft: "45%"
+            fontSize: "11px",
+            lineHeight: "1.4",
+            zIndex: 10
           }}
         >
           <div 
             ref={typedElementRef}
             style={{
-              color: isDark ? '#FFFFFF' : '#333'
+              color: isDark ? '#FFFFFF' : '#333',
+              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              padding: '8px',
+              borderRadius: '4px',
+              maxHeight: '400px',
+              overflowY: 'auto'
             }}
           ></div>
         </div>

@@ -50,13 +50,13 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex flex-1 justify-center">
+          {/* Desktop Navigation - Right Aligned */}
+          <div className="hidden md:flex items-center space-x-4">
             <NavigationMenu>
-              <NavigationMenuList className="flex items-center space-x-8">
+              <NavigationMenuList className="flex items-center space-x-4">
                 {/* Products Dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-700 dark:text-gray-200 font-medium">
+                  <NavigationMenuTrigger className="text-gray-700 dark:text-gray-200 font-medium px-3 py-2 hover:text-gray-900 dark:hover:text-white transition-colors">
                     Products
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -104,7 +104,7 @@ export function Header() {
                 <NavigationMenuItem>
                   <Link 
                     to="/about-us" 
-                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
                   >
                     About
                   </Link>
@@ -113,7 +113,7 @@ export function Header() {
                 <NavigationMenuItem>
                   <Link 
                     to="/resources" 
-                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
                   >
                     Resources
                   </Link>
@@ -122,7 +122,7 @@ export function Header() {
                 <NavigationMenuItem>
                   <Link 
                     to="/faq" 
-                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
                   >
                     FAQ
                   </Link>
@@ -131,24 +131,21 @@ export function Header() {
                 <NavigationMenuItem>
                   <Link 
                     to="/contact" 
-                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
                   >
                     Contact
                   </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-          </div>
 
-          {/* Desktop Action Buttons - Right Aligned */}
-          <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
-            <ModeToggle />
-            <Button variant="ghost" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button variant="blue" asChild>
-              <Link to="/request-demo">Request a Demo</Link>
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-4 ml-6">
+              <ModeToggle />
+              <Button variant="blue" asChild>
+                <Link to="/request-demo">Request a Demo</Link>
+              </Button>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -223,11 +220,6 @@ export function Header() {
                 Contact
               </Link>
               <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex items-center px-3 space-x-3">
-                  <Button variant="ghost" asChild className="w-full justify-start">
-                    <Link to="/login" onClick={closeMenu}>Login</Link>
-                  </Button>
-                </div>
                 <div className="mt-3 px-3">
                   <Button variant="blue" asChild className="w-full">
                     <Link to="/request-demo" onClick={closeMenu}>Request a Demo</Link>
