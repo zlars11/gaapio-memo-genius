@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 interface ContactFormProps {
   onSubmitSuccess?: (data: any) => void;
@@ -38,7 +36,8 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
     try {
       console.log("Starting Formsubmit email send for contact request with data:", data);
       
-      const formData = new FormData();
+      // Create URL-encoded form data for Formsubmit
+      const formData = new URLSearchParams();
       
       // Add form fields
       formData.append('firstName', data.first_name);
@@ -51,7 +50,7 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
       // Add Formsubmit configuration
       formData.append('_template', 'table');
       formData.append('_subject', `New Contact Request from ${data.first_name} ${data.last_name}`);
-      formData.append('_cc', 'zack@gaapio.com,jace@gaapio.com');
+      formData.append('_cc', 'jace@gaapio.com');
       formData.append('_captcha', 'false');
       
       console.log("Formsubmit payload for contact request:", {
@@ -63,13 +62,16 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
         message: data.message,
         _template: 'table',
         _subject: `New Contact Request from ${data.first_name} ${data.last_name}`,
-        _cc: 'zack@gaapio.com,jace@gaapio.com',
+        _cc: 'jace@gaapio.com',
         _captcha: 'false'
       });
       
-      const response = await fetch('https://formsubmit.co/info@gaapio.com', {
+      const response = await fetch('https://formsubmit.co/zack@gaapio.com', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString()
       });
       
       console.log("Formsubmit response status:", response.status);
@@ -180,42 +182,6 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
         }]);
 
       if (userError) throw userError;
-      
-      // Get contact form webhook URL
-      const webhookUrl = getWebhookUrl(WebhookTypes.CONTACT_FORM);
-      
-      if (webhookUrl) {
-        console.log("Triggering contact form webhook:", webhookUrl);
-        
-        // Format data for Zapier
-        const zapierData = {
-          "Firm Name": cleanedData.company,
-          "Contact Name": `${cleanedData.first_name} ${cleanedData.last_name}`,
-          "Email": cleanedData.email,
-          "Phone": cleanedData.phone,
-          "Message": cleanedData.message,
-          "Submission Date": new Date().toISOString(),
-        };
-        
-        try {
-          // Send to Zapier directly
-          await fetch(webhookUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            mode: "no-cors",
-            body: JSON.stringify(zapierData),
-          });
-          
-          console.log("Contact form webhook triggered successfully");
-        } catch (webhookErr) {
-          console.error("Error triggering contact form webhook:", webhookErr);
-          // Don't block form submission if webhook fails
-        }
-      } else {
-        console.warn("No webhook URL configured for contact form");
-      }
 
       // Send Formsubmit email notification AFTER successful database saves
       console.log("Database operations successful, now sending Formsubmit email...");
@@ -247,6 +213,7 @@ export function ContactForm({ onSubmitSuccess, planType = "firm" }: ContactFormP
   
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2.5">
           <Label htmlFor="first_name">First Name</Label>

@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { DemoRequestFormData } from "../types/demoRequestTypes";
-import { getWebhookUrl, WebhookTypes } from "@/utils/webhookUtils";
 
 export function useDemoRequestForm(onSuccess?: () => void) {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +23,8 @@ export function useDemoRequestForm(onSuccess?: () => void) {
     try {
       console.log("Starting Formsubmit email send for demo request with data:", data);
       
-      const formData = new FormData();
+      // Create URL-encoded form data for Formsubmit
+      const formData = new URLSearchParams();
       
       // Add form fields
       formData.append('firstName', data.firstName);
@@ -36,7 +36,7 @@ export function useDemoRequestForm(onSuccess?: () => void) {
       // Add Formsubmit configuration
       formData.append('_template', 'table');
       formData.append('_subject', `New Demo Request from ${data.firstName} ${data.lastName}`);
-      formData.append('_cc', 'zack@gaapio.com,jace@gaapio.com');
+      formData.append('_cc', 'jace@gaapio.com');
       formData.append('_captcha', 'false');
       
       console.log("Formsubmit payload for demo request:", {
@@ -47,13 +47,16 @@ export function useDemoRequestForm(onSuccess?: () => void) {
         notes: data.notes || '',
         _template: 'table',
         _subject: `New Demo Request from ${data.firstName} ${data.lastName}`,
-        _cc: 'zack@gaapio.com,jace@gaapio.com',
+        _cc: 'jace@gaapio.com',
         _captcha: 'false'
       });
       
-      const response = await fetch('https://formsubmit.co/info@gaapio.com', {
+      const response = await fetch('https://formsubmit.co/zack@gaapio.com', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString()
       });
       
       console.log("Formsubmit response status:", response.status);
@@ -80,51 +83,8 @@ export function useDemoRequestForm(onSuccess?: () => void) {
     console.log("Form submitted with data:", data);
     
     try {
-      // First, trigger Zapier webhook if URL is set
-      const webhookUrl = getWebhookUrl(WebhookTypes.DEMO_REQUEST);
-      
-      if (webhookUrl) {
-        console.log("Attempting to trigger Zapier webhook:", webhookUrl);
-        
-        try {
-          // Format data with field names for Zapier
-          const zapierData = {
-            "Name": `${data.firstName} ${data.lastName}`,
-            "Email": data.email,
-            "Phone": data.phone,
-            "Notes": data.notes || "",
-            "Submission Date": new Date().toISOString(),
-            "Source": "Demo Request Form"
-          };
-
-          console.log("Sending data to Zapier:", zapierData);
-
-          // Use the fetch API to trigger the webhook with better error handling
-          const zapierResponse = await fetch(webhookUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            mode: "no-cors", // Required for cross-origin requests
-            body: JSON.stringify(zapierData),
-          }).catch(err => {
-            console.error("Fetch error:", err);
-            throw err;
-          });
-          
-          console.log("Zapier webhook request completed");
-          // Cannot check status with mode: "no-cors" but log what we can
-          console.log("Response type:", zapierResponse?.type);
-        } catch (err) {
-          console.error("Error triggering Zapier webhook:", err);
-          // Don't throw error here as we still want to save to the database
-        }
-      } else {
-        console.warn("No Zapier webhook URL configured for demo requests");
-      }
-
       console.log("Saving to database...");
-      // Then, save to database
+      // Save to database first
       const { error } = await supabase
         .from("demo_requests")
         .insert({
