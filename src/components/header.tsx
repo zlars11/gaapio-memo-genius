@@ -39,9 +39,6 @@ export function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const secondaryButtonText = enableSelfSignup ? "Sign Up" : "Contact";
-  const secondaryButtonLink = enableSelfSignup ? "/signup" : "/contact";
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,13 +50,13 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex flex-1 justify-center">
             <NavigationMenu>
-              <NavigationMenuList>
+              <NavigationMenuList className="flex items-center space-x-8">
                 {/* Products Dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-700 dark:text-gray-200">
+                  <NavigationMenuTrigger className="text-gray-700 dark:text-gray-200 font-medium">
                     Products
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -105,25 +102,37 @@ export function Header() {
 
                 {/* Other Navigation Items */}
                 <NavigationMenuItem>
-                  <Link to="/about-us" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                  <Link 
+                    to="/about-us" 
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                  >
                     About
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link to="/resources" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                  <Link 
+                    to="/resources" 
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                  >
                     Resources
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link to="/faq" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                  <Link 
+                    to="/faq" 
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                  >
                     FAQ
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link to="/contact" className={cn(navigationMenuTriggerStyle(), "text-gray-700 dark:text-gray-200")}>
+                  <Link 
+                    to="/contact" 
+                    className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2"
+                  >
                     Contact
                   </Link>
                 </NavigationMenuItem>
@@ -131,8 +140,8 @@ export function Header() {
             </NavigationMenu>
           </div>
 
-          {/* Desktop Action Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Desktop Action Buttons - Right Aligned */}
+          <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
             <ModeToggle />
             <Button variant="ghost" asChild>
               <Link to="/login">Login</Link>
