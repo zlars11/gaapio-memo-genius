@@ -110,8 +110,11 @@ export const AnimatedMemo = () => {
             left: "22%",
             right: "5%",
             textAlign: "left",
-            lineHeight: "1.4",
-            zIndex: 10
+            lineHeight: "1.2",
+            zIndex: 10,
+            height: "calc(100% - 170px)",  
+            display: "flex",  
+            alignItems: "flex-start" 
           }}
         >
           <div 
@@ -120,10 +123,15 @@ export const AnimatedMemo = () => {
             style={{
               color: isDark ? '#FFFFFF' : '#333',
               backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-              padding: '8px',
+              padding: '4px',
               borderRadius: '4px',
-              maxHeight: '400px',
-              overflowY: 'auto'
+              width: '100%',
+              fontSize: '12px',
+              transform: 'scale(0.25)',  // This will make the text very small
+              transformOrigin: 'top left',
+              whiteSpace: 'pre-wrap',
+              maxHeight: '400%',  // Compensate for scale
+              overflow: 'hidden'
             }}
           ></div>
         </div>
