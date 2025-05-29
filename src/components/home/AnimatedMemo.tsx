@@ -61,15 +61,9 @@ export const AnimatedMemo = () => {
 
   // Get container height based on screen width
   const getContainerHeight = () => {
-    if (width < 480) return "calc(200% - 170px)";  // Taller on mobile
-    return "calc(130% - 170px)";
-  };
-
-  // Get minimum height for the container
-  const getMinHeight = () => {
-    if (width < 480) return "800px";  // Mobile
-    if (width < 768) return "900px";  // Tablet
-    return "1000px";                  // Desktop
+    if (width < 480) return "calc(220% - 170px)";  // Taller on mobile
+    if (width < 768) return "calc(200% - 170px)";
+    return "calc(140% - 170px)";
   };
 
   // Apply theme styles directly using JavaScript
@@ -149,9 +143,7 @@ export const AnimatedMemo = () => {
             ? "0 0 15px rgba(255,255,255,0.05)" 
             : "0 0 15px rgba(0,0,0,0.1)",
           maxWidth: "850px",
-          width: "100%",
-          minHeight: getMinHeight(),
-          position: "relative"
+          width: "100%"
         }}
       >
         <img 
@@ -160,11 +152,8 @@ export const AnimatedMemo = () => {
           className="memo-background-image"
           style={{
             width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            position: "absolute",
-            top: 0,
-            left: 0
+            height: "auto",
+            objectFit: "contain"
           }}
         />
         
