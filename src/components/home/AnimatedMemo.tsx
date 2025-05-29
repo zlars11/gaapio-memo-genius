@@ -61,8 +61,9 @@ export const AnimatedMemo = () => {
 
   // Get container height based on screen width
   const getContainerHeight = () => {
-    if (width < 480) return "calc(200% - 170px)";  // Taller on mobile
-    return "calc(130% - 170px)";
+    if (width < 480) return "calc(220% - 170px)";  // Taller on mobile
+    if (width < 768) return "calc(200% - 170px)";
+    return "calc(140% - 170px)";
   };
 
   // Apply theme styles directly using JavaScript
