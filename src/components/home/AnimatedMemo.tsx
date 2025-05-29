@@ -106,7 +106,7 @@ export const AnimatedMemo = () => {
           className="memo-text-overlay"
           style={{
             position: "absolute",
-            top: "160px",
+            top: "170px",
             left: "22%",
             right: "5%",
             textAlign: "left",
