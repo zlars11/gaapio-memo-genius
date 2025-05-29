@@ -116,7 +116,7 @@ export const AnimatedMemo = () => {
         >
           <div 
             ref={typedElementRef}
-            className="text-[8px] sm:text-[2px] md:text-[3px] lg:text-[4px]" 
+            className="text-[4px] sm:text-[2px] md:text-[4px] lg:text-[6px]" 
             style={{
               color: isDark ? '#FFFFFF' : '#333',
               backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
