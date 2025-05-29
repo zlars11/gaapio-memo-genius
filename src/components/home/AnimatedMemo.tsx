@@ -30,12 +30,33 @@ export const AnimatedMemo = () => {
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(false);
   
-  // Calculate scale based on screen width
+  // Adjust scale and positioning based on screen width
   const getScale = () => {
-    if (width < 480) return 0.35;  // Mobile phones
-    if (width < 768) return 0.45;  // Tablets
+    if (width < 480) return 0.45;  // Mobile phones
+    if (width < 768) return 0.5;   // Tablets
     if (width < 1024) return 0.55; // Small laptops
     return 0.65;                   // Larger screens
+  };
+
+  // Get container position based on screen width
+  const getTopPosition = () => {
+    if (width < 480) return "120px";
+    if (width < 768) return "140px";
+    return "170px";
+  };
+
+  // Get container width based on screen width
+  const getContainerWidth = () => {
+    if (width < 480) return "90%";
+    if (width < 768) return "85%";
+    return "73%";
+  };
+
+  // Get left position based on screen width
+  const getLeftPosition = () => {
+    if (width < 480) return "5%";
+    if (width < 768) return "10%";
+    return "22%";
   };
 
   // Apply theme styles directly using JavaScript
@@ -65,7 +86,7 @@ export const AnimatedMemo = () => {
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n\n<p>&nbsp;</p>\n\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 in the Company\'s financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>'
+            '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 in the Company\'s financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>'
           ],
           typeSpeed: 1,
           backSpeed: 0,
@@ -130,20 +151,20 @@ export const AnimatedMemo = () => {
           }}
         />
         
-        {/* Overlay with typing animation positioned to start at the highlight */}
         <div 
           className="memo-text-overlay"
           style={{
             position: "absolute",
-            top: "170px",
-            left: "22%",
+            top: getTopPosition(),
+            left: getLeftPosition(),
             right: "5%",
             textAlign: "left",
             lineHeight: "1.2",
             zIndex: 10,
             height: "calc(100% - 170px)",
             display: "flex",
-            alignItems: "flex-start"
+            alignItems: "flex-start",
+            width: getContainerWidth()
           }}
         >
           <div 
