@@ -49,7 +49,7 @@ export function ProductHighlightsSection() {
     {
       icon: Bell,
       title: "Stay Ahead of Guidance Updates",
-      description: "Real-time alerts for GAAP and SEC changes.",
+      description: "Real-time alerts for GAAP/SEC changes and training.",
       href: "/guidance-updates",
       delay: 400
     }

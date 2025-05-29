@@ -55,16 +55,16 @@ export function ComplianceSecuritySection() {
     >
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-[#2B70F7] rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-64 h-64 bg-[#2B70F7] rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-10 left-1/2 w-64 h-64 bg-[#2B70F7] rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-10 left-10 w-64 h-64 bg-[#339CFF] rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-10 w-64 h-64 bg-[#339CFF] rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-10 left-1/2 w-64 h-64 bg-[#339CFF] rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
       {/* Shield background illustration */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative opacity-5 dark:opacity-10">
-          <ShieldCheck className="h-96 w-96 text-[#2B70F7] animate-pulse" style={{ animationDuration: '4s' }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#2B70F7]/20 to-transparent rounded-full blur-3xl"></div>
+          <ShieldCheck className="h-96 w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#339CFF]/20 to-transparent rounded-full blur-3xl"></div>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export function ComplianceSecuritySection() {
           {/* Lead-in tagline */}
           <div 
             className={cn(
-              "text-xs font-semibold tracking-[0.2em] uppercase text-[#2B70F7] mb-4 transition-all duration-1000",
+              "text-xs font-semibold tracking-[0.2em] uppercase text-[#339CFF] mb-4 transition-all duration-1000",
               isVisible 
                 ? "opacity-100 translate-y-0" 
                 : "opacity-0 translate-y-[20px]"
@@ -111,7 +111,7 @@ export function ComplianceSecuritySection() {
           {/* Timeline-style features */}
           <div className="relative max-w-2xl mx-auto">
             {/* Central connector line */}
-            <div className="absolute left-1/2 transform -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-[#2B70F7]/30 via-[#2B70F7]/60 to-[#2B70F7]/30"></div>
+            <div className="absolute left-1/2 transform -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-[#339CFF]/30 via-[#339CFF]/60 to-[#339CFF]/30"></div>
 
             <div className="space-y-12 md:space-y-16">
               {features.map((feature, index) => (
@@ -126,11 +126,11 @@ export function ComplianceSecuritySection() {
                   style={{ transitionDelay: `${400 + index * 200}ms` }}
                 >
                   {/* Timeline dot */}
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#2B70F7] rounded-full border-4 border-white dark:border-gray-900 shadow-lg z-10"></div>
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#339CFF] rounded-full border-4 border-white dark:border-gray-900 shadow-lg z-10"></div>
 
                   {/* Feature content */}
                   <div className="flex flex-col md:flex-row items-center gap-6 pl-8 md:pl-12">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#2B70F7] to-[#1a56e8] rounded-2xl flex items-center justify-center shadow-lg">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#339CFF] to-[#2B70F7] rounded-2xl flex items-center justify-center shadow-lg">
                       <feature.icon className="h-6 w-6 text-white" />
                     </div>
                     <div className="text-center md:text-left flex-1">
@@ -154,7 +154,7 @@ export function ComplianceSecuritySection() {
               )}
               style={{ transitionDelay: "800ms" }}
             >
-              <Lock className="h-5 w-5 text-[#2B70F7]" />
+              <Lock className="h-5 w-5 text-[#339CFF]" />
             </div>
             
             <div 
@@ -166,7 +166,7 @@ export function ComplianceSecuritySection() {
               )}
               style={{ transitionDelay: "1000ms" }}
             >
-              <FileCheck className="h-5 w-5 text-[#2B70F7]" />
+              <FileCheck className="h-5 w-5 text-[#339CFF]" />
             </div>
           </div>
         </div>
