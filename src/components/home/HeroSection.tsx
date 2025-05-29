@@ -68,13 +68,13 @@ export const HeroSection = memo(function HeroSection({
               <Link to="/request-demo">Request a Demo</Link>
             </Button>
             <Button size="lg" variant="blueOutline" asChild>
-              <Link to="#product-highlights" onClick={(e) => { e.preventDefault(); scrollToNextSection(); }}>See How It Works</Link>
+              <Link to="/contact">Contact Sales</Link>
             </Button>
           </div>
         </div>
         
-        {/* Constrained animated memo display with added bottom margin */}
-        <div className="hero-memo-container mb-16">
+        {/* Constrained animated memo display with better mobile spacing */}
+        <div className="hero-memo-container mb-20 md:mb-16">
           {isClient && <AnimatedMemo />}
         </div>
       </div>
