@@ -73,13 +73,13 @@ export const HeroSection = memo(function HeroSection({
           </div>
         </div>
         
-        {/* Constrained animated memo display */}
-        <div className="hero-memo-container">
+        {/* Constrained animated memo display with added bottom margin */}
+        <div className="hero-memo-container mb-16">
           {isClient && <AnimatedMemo />}
         </div>
       </div>
       
-      {/* Down arrow for scrolling to next section */}
+      {/* Down arrow for scrolling to next section - now with proper spacing */}
       <div 
         className="animate-fade-up absolute bottom-6" 
         style={{ animationDelay: "400ms" }} 

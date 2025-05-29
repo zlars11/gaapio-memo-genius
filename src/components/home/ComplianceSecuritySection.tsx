@@ -1,5 +1,5 @@
 
-import { Shield, Lock, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Lock, FileCheck } from "lucide-react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,7 @@ export function ComplianceSecuritySection() {
   return (
     <section 
       ref={sectionRef}
-      className="py-20 md:py-32 bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]"
+      className="py-20 md:py-32 bg-[#f9fbfd] dark:from-[#1A1F2B] dark:to-[#1A1F2B]"
     >
       <ResponsiveContainer>
         <div className="text-center max-w-4xl mx-auto">
@@ -45,7 +45,7 @@ export function ComplianceSecuritySection() {
                 : "opacity-0 translate-y-[30px]"
             )}
           >
-            🔒 Enterprise-Grade Security. 📘 Audit-Grade Accuracy.
+            Enterprise Security. Audit-Grade Compliance.
           </h2>
           <p 
             className={cn(
@@ -62,7 +62,7 @@ export function ComplianceSecuritySection() {
           <div className="grid md:grid-cols-3 gap-8 mt-16">
             {[
               {
-                icon: Shield,
+                icon: ShieldCheck,
                 title: "Data Privacy",
                 description: "Your information never trains public AI models. Private by design.",
                 delay: 400
@@ -74,7 +74,7 @@ export function ComplianceSecuritySection() {
                 delay: 600
               },
               {
-                icon: CheckCircle2,
+                icon: FileCheck,
                 title: "Audit-Ready Docs",
                 description: "Structured documentation that meets Big 4-level expectations.",
                 delay: 800
@@ -83,18 +83,18 @@ export function ComplianceSecuritySection() {
               <div 
                 key={feature.title}
                 className={cn(
-                  "text-center p-6 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-1000",
+                  "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-1000 h-full flex flex-col",
                   isVisible 
                     ? "opacity-100 translate-y-0" 
                     : "opacity-0 translate-y-[30px]"
                 )}
                 style={{ transitionDelay: `${feature.delay}ms` }}
               >
-                <div className="w-16 h-16 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="h-8 w-8 text-[#339CFF]" />
+                <div className="flex justify-center mb-6">
+                  <feature.icon className="h-8 w-8 text-[#2B70F7]" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-lg font-bold mb-4">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>

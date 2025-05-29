@@ -1,5 +1,5 @@
 
-import { Clock, CheckCircle2, Bot, BookOpen, Lock } from "lucide-react";
+import { Clock, FileCheck, BadgeCheck, BookCheck, ShieldLock } from "lucide-react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -38,25 +38,25 @@ export function KeyBenefitsSection() {
       delay: 0
     },
     {
-      icon: CheckCircle2,
+      icon: FileCheck,
       title: "Audit-Ready Docs",
       description: "Structured documentation that satisfies auditor requirements",
       delay: 200
     },
     {
-      icon: Bot,
+      icon: BadgeCheck,
       title: "CPA-Level Accuracy",
       description: "AI-generated output that matches experienced CPA quality",
       delay: 400
     },
     {
-      icon: BookOpen,
+      icon: BookCheck,
       title: "GAAP/IFRS Compliance",
       description: "Always up-to-date with the latest accounting standards",
       delay: 600
     },
     {
-      icon: Lock,
+      icon: ShieldLock,
       title: "Enterprise-Grade Security",
       description: "Your data stays private with strict security protocols",
       delay: 800
@@ -66,7 +66,7 @@ export function KeyBenefitsSection() {
   return (
     <section 
       ref={sectionRef}
-      className="py-20 md:py-32 bg-white dark:bg-background"
+      className="py-20 md:py-32 bg-[#f9fbfd] dark:bg-background"
     >
       <ResponsiveContainer>
         <div className="text-center mb-16">
@@ -81,7 +81,7 @@ export function KeyBenefitsSection() {
             <div 
               key={benefit.title}
               className={cn(
-                "flex items-start gap-4 p-6 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-500",
+                "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-500 h-full flex flex-col",
                 isVisible 
                   ? "opacity-100 translate-y-0" 
                   : "opacity-0 translate-y-[30px]"
@@ -90,13 +90,11 @@ export function KeyBenefitsSection() {
                 transitionDelay: `${benefit.delay}ms`,
               }}
             >
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-lg flex items-center justify-center">
-                <benefit.icon className="h-6 w-6 text-[#339CFF]" />
+              <div className="flex justify-center mb-6">
+                <benefit.icon className="h-8 w-8 text-[#2B70F7]" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
-              </div>
+              <h3 className="text-lg font-bold mb-4">{benefit.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
             </div>
           ))}
         </div>

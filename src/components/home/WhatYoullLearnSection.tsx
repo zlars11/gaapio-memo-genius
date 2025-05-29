@@ -1,5 +1,5 @@
 
-import { FileText, BookOpen, Bell, PlayCircle } from "lucide-react";
+import { FileText, BookOpen, Bell } from "lucide-react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -103,7 +103,7 @@ export function WhatYoullLearnSection() {
             </div>
           </div>
           
-          {/* Right Column - Demo Video Placeholder */}
+          {/* Right Column - Professional Image */}
           <div 
             className={cn(
               "relative transition-all duration-1000",
@@ -113,12 +113,13 @@ export function WhatYoullLearnSection() {
             )}
             style={{ transitionDelay: "600ms" }}
           >
-            <div className="aspect-video bg-gradient-to-br from-[#339CFF]/10 to-[#339CFF]/5 rounded-xl border border-[#339CFF]/20 flex items-center justify-center group cursor-pointer hover:scale-105 transition-transform duration-300">
-              <div className="text-center">
-                <PlayCircle className="h-16 w-16 text-[#339CFF] mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <p className="text-lg font-medium text-[#339CFF]">Watch Demo</p>
-                <p className="text-sm text-muted-foreground">See Gaapio in action</p>
-              </div>
+            <div className="aspect-video bg-gradient-to-br from-[#339CFF]/10 to-[#339CFF]/5 rounded-xl border border-[#339CFF]/20 overflow-hidden shadow-lg">
+              <img 
+                src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=3882&q=80"
+                alt="Professional accounting workspace with laptop showing financial documents and audit-ready documentation"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#339CFF]/20 to-transparent"></div>
             </div>
           </div>
         </div>
