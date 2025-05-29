@@ -61,8 +61,8 @@ export const AnimatedMemo = () => {
 
   // Get container height based on screen width
   const getContainerHeight = () => {
-    if (width < 480) return "calc(150% - 170px)";  // Taller on mobile
-    return "calc(100% - 170px)";
+    if (width < 480) return "calc(200% - 170px)";  // Taller on mobile
+    return "calc(130% - 170px)";
   };
 
   // Apply theme styles directly using JavaScript
@@ -93,7 +93,7 @@ export const AnimatedMemo = () => {
           strings: [
             '<p><strong>ASC 606 ACCOUNTING MEMO</strong></p>\n<p><strong>1. Background</strong><br />The Company delivers bundled goods and services across multiple contracts, including software, implementation support, and optional renewal terms. The performance obligations may be distinct or combined depending on integration level.</p>\n\n<p><strong>2. Scope / Purpose</strong><br />This memo evaluates whether the Company\'s revenue recognition practices are in compliance with ASC 606, specifically in relation to bundled offerings that span software licensing, service delivery, and customer training components.</p>\n\n<p><strong>3. Accounting Guidance</strong><br />ASC 606-10-25-1 through 25-5 provides the framework for identifying performance obligations and determining when control transfers. This guidance mandates an evaluation of the contract terms, delivery mechanisms, and whether standalone value exists.</p>\n\n<p><strong>4. Analysis</strong><br />Based on the five-step revenue recognition model, each contract was reviewed to determine whether obligations are distinct. In most cases, software licenses are transferred at a point in time, while services are delivered over time under a separate obligation.</p>\n\n<p><strong>5. Conclusion</strong><br />The Company\'s revenue accounting treatment aligns with ASC 606, as performance obligations are properly identified, transaction prices allocated, and revenue is recognized at the appropriate time based on delivery and control transfer criteria.</p>\n\n<p><strong>6. Financial Statement Impact</strong><br />The Company expects to recognize approximately $2.4M in Q4 FY25 related to bundled contracts, with roughly 80% of this revenue allocated to point-in-time obligations and the remainder deferred and recognized over the service term.</p>\n\n<p><strong>7. Disclosures</strong><br />Footnote 12 in the Company\'s financial statements will be updated to reflect enhanced revenue recognition disclosures, including timing, methods of recognition, and segmentation of contract components under ASC 606.</p>'
           ],
-          typeSpeed: 1,
+          typeSpeed: .5,
           backSpeed: 0,
           showCursor: true,
           cursorChar: '|',
