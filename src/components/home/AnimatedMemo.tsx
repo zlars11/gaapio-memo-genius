@@ -1,14 +1,43 @@
-
 import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowSize;
+};
+
 export const AnimatedMemo = () => {
+  const { width } = useWindowSize();
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const typedElementRef = useRef<HTMLDivElement>(null);
   const typedInstanceRef = useRef<Typed | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(false);
   
+  // Calculate scale based on screen width
+  const getScale = () => {
+    if (width < 480) return 0.35;  // Mobile phones
+    if (width < 768) return 0.45;  // Tablets
+    if (width < 1024) return 0.55; // Small laptops
+    return 0.65;                   // Larger screens
+  };
+
   // Apply theme styles directly using JavaScript
   const applyThemeStyles = () => {
     const isDarkMode = document.documentElement.classList.contains("dark");
@@ -112,14 +141,14 @@ export const AnimatedMemo = () => {
             textAlign: "left",
             lineHeight: "1.2",
             zIndex: 10,
-            height: "calc(100% - 170px)",  
-            display: "flex",  
-            alignItems: "flex-start" 
+            height: "calc(100% - 170px)",
+            display: "flex",
+            alignItems: "flex-start"
           }}
         >
           <div 
             ref={typedElementRef}
-            className="text-[4px] sm:text-[2px] md:text-[4px] lg:text-[6px]" 
+            className="memo-text"
             style={{
               color: isDark ? '#FFFFFF' : '#333',
               backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
@@ -127,10 +156,10 @@ export const AnimatedMemo = () => {
               borderRadius: '4px',
               width: '100%',
               fontSize: '12px',
-              transform: 'scale(0.25)',  // This will make the text very small
+              transform: `scale(${getScale()})`,
               transformOrigin: 'top left',
               whiteSpace: 'pre-wrap',
-              maxHeight: '400%',  // Compensate for scale
+              maxHeight: `${100 / getScale()}%`,
               overflow: 'hidden'
             }}
           ></div>
