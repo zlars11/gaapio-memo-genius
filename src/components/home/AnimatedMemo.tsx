@@ -32,31 +32,31 @@ export const AnimatedMemo = () => {
   
   // Adjust scale and positioning based on screen width
   const getScale = () => {
-    if (width < 480) return 0.45;  // Mobile phones
-    if (width < 768) return 0.5;   // Tablets
-    if (width < 1024) return 0.55; // Small laptops
-    return 0.65;                   // Larger screens
+    if (width < 480) return 0.4;    // Mobile phones
+    if (width < 768) return 0.5;    // Tablets
+    if (width < 1024) return 0.6;   // Small laptops
+    return 0.7;                     // Larger screens
   };
 
   // Get container position based on screen width
   const getTopPosition = () => {
-    if (width < 480) return "120px";
+    if (width < 480) return "90px";  // Higher on mobile
     if (width < 768) return "140px";
     return "170px";
   };
 
   // Get container width based on screen width
   const getContainerWidth = () => {
-    if (width < 480) return "90%";
-    if (width < 768) return "85%";
-    return "73%";
+    if (width < 480) return "95%";   // Almost full width on mobile
+    if (width < 768) return "90%";   // Wide on tablet
+    return "85%";                    // Wide on desktop
   };
 
   // Get left position based on screen width
   const getLeftPosition = () => {
-    if (width < 480) return "5%";
-    if (width < 768) return "10%";
-    return "22%";
+    if (width < 480) return "2.5%";  // Small margin on mobile
+    if (width < 768) return "5%";    // Slightly larger on tablet
+    return "12%";                    // Original desktop position
   };
 
   // Apply theme styles directly using JavaScript
@@ -65,7 +65,6 @@ export const AnimatedMemo = () => {
     setIsDark(isDarkMode);
     
     if (memoContainerRef.current) {
-      // Apply styles to the memo container
       memoContainerRef.current.style.backgroundColor = isDarkMode ? "#1a1a1a" : "#ffffff";
       memoContainerRef.current.style.borderColor = isDarkMode ? "#333333" : "#e5e7eb";
       memoContainerRef.current.style.boxShadow = isDarkMode 
@@ -157,7 +156,7 @@ export const AnimatedMemo = () => {
             position: "absolute",
             top: getTopPosition(),
             left: getLeftPosition(),
-            right: "5%",
+            right: "2.5%",  // Reduced right margin
             textAlign: "left",
             lineHeight: "1.2",
             zIndex: 10,
