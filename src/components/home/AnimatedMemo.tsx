@@ -106,7 +106,7 @@ export const AnimatedMemo = () => {
           className="memo-text-overlay"
           style={{
             position: "absolute",
-            top: "150px",
+            top: "160px",
             left: "22%",
             right: "5%",
             textAlign: "left",
@@ -116,7 +116,7 @@ export const AnimatedMemo = () => {
         >
           <div 
             ref={typedElementRef}
-            className="text-[8px] sm:text-[8px] md:text-[9px] lg:text-[10px]" 
+            className="text-[8px] sm:text-[2px] md:text-[3px] lg:text-[4px]" 
             style={{
               color: isDark ? '#FFFFFF' : '#333',
               backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
