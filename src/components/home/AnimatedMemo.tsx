@@ -41,15 +41,15 @@ export const AnimatedMemo = () => {
   // Get container position based on screen width
   const getTopPosition = () => {
     if (width < 480) return "80px";  // Higher on mobile
-    if (width < 768) return "140px";
+    if (width < 768) return "130px";
     return "170px";
   };
 
   // Get container width based on screen width
   const getContainerWidth = () => {
     if (width < 480) return "175%";  // Extra wide on mobile for proper scaling
-    if (width < 768) return "160%";
-    return "100%";
+    if (width < 768) return "150%";
+    return "110%";
   };
 
   // Get left position based on screen width
