@@ -32,7 +32,7 @@ export const AnimatedMemo = () => {
   
   // Adjust scale and positioning based on screen width
   const getScale = () => {
-    if (width < 480) return 0.4;    // Mobile phones
+    if (width < 480) return 0.35;   // Mobile phones
     if (width < 768) return 0.5;    // Tablets
     if (width < 1024) return 0.6;   // Small laptops
     return 0.7;                     // Larger screens
@@ -40,23 +40,29 @@ export const AnimatedMemo = () => {
 
   // Get container position based on screen width
   const getTopPosition = () => {
-    if (width < 480) return "90px";  // Higher on mobile
+    if (width < 480) return "80px";  // Higher on mobile
     if (width < 768) return "140px";
     return "170px";
   };
 
   // Get container width based on screen width
   const getContainerWidth = () => {
-    if (width < 480) return "95%";   // Almost full width on mobile
-    if (width < 768) return "90%";   // Wide on tablet
-    return "85%";                    // Wide on desktop
+    if (width < 480) return "150%";  // Extra wide on mobile for proper scaling
+    if (width < 768) return "90%";
+    return "85%";
   };
 
   // Get left position based on screen width
   const getLeftPosition = () => {
-    if (width < 480) return "2.5%";  // Small margin on mobile
-    if (width < 768) return "5%";    // Slightly larger on tablet
-    return "12%";                    // Original desktop position
+    if (width < 480) return "15%";   // Much more to the right on mobile
+    if (width < 768) return "5%";
+    return "12%";
+  };
+
+  // Get container height based on screen width
+  const getContainerHeight = () => {
+    if (width < 480) return "calc(150% - 170px)";  // Taller on mobile
+    return "calc(100% - 170px)";
   };
 
   // Apply theme styles directly using JavaScript
@@ -156,11 +162,11 @@ export const AnimatedMemo = () => {
             position: "absolute",
             top: getTopPosition(),
             left: getLeftPosition(),
-            right: "2.5%",  // Reduced right margin
+            right: "2.5%",
             textAlign: "left",
             lineHeight: "1.2",
             zIndex: 10,
-            height: "calc(100% - 170px)",
+            height: getContainerHeight(),
             display: "flex",
             alignItems: "flex-start",
             width: getContainerWidth()
