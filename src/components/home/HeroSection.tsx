@@ -11,7 +11,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = memo(function HeroSection({ 
-  title = "GAAP Compliance, powered by AI — Memos, Disclosures & Updates",
+  title = "GAAP Memos, Disclosures & Updates",
   subtitle = "AI-Powered. CPA-Approved."
 }: HeroSectionProps) {
   const [isClient, setIsClient] = useState(false);

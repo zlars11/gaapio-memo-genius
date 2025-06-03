@@ -1,5 +1,4 @@
 
-import { FileText, BookOpen, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
@@ -33,21 +32,21 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
-      icon: FileText,
+      number: "01",
       title: "Generate Memos Fast",
       description: "AI-powered ASC 606 memos, leases, and more in seconds.",
       href: "/accounting-memos",
       delay: 0
     },
     {
-      icon: BookOpen,
+      number: "02",
       title: "Auto-Draft Footnote Disclosures",
       description: "Create transparent, audit-ready disclosures instantly.",
       href: "/footnote-disclosures",
       delay: 200
     },
     {
-      icon: Bell,
+      number: "03",
       title: "Stay Ahead of Guidance Updates",
       description: "Real-time alerts for GAAP/SEC changes and training.",
       href: "/guidance-updates",
@@ -87,8 +86,8 @@ export function ProductHighlightsSection() {
               }}
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <product.icon className="h-8 w-8 text-[#339CFF]" />
+                <div className="w-16 h-16 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 relative">
+                  <span className="text-2xl font-bold text-[#339CFF]">{product.number}</span>
                 </div>
                 <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{product.title}</h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">

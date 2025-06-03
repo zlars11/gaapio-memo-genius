@@ -91,8 +91,8 @@ export function WhatYoullLearnSection() {
                   )}
                   style={{ transitionDelay: `${400 + index * 200}ms` }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-lg flex items-center justify-center">
-                    <feature.icon className="h-6 w-6 text-[#339CFF]" />
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-xl flex items-center justify-center">
+                    <feature.icon className="h-6 w-6 text-[#339CFF] stroke-[1.5]" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
