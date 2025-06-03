@@ -77,12 +77,11 @@ export function KeyBenefitsSection() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* First row - 3 cards */}
-          {benefits.slice(0, 3).map((benefit, index) => (
+          {benefits.map((benefit, index) => (
             <div 
               key={benefit.title}
               className={cn(
-                "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-500 h-full flex flex-col",
+                "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-500 h-full flex flex-col min-h-[280px]",
                 isVisible 
                   ? "opacity-100 translate-y-0" 
                   : "opacity-0 translate-y-[30px]"
@@ -95,35 +94,9 @@ export function KeyBenefitsSection() {
                 <benefit.icon className="h-8 w-8 text-[#2B70F7]" />
               </div>
               <h3 className="text-lg font-bold mb-4">{benefit.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
+              <p className="text-muted-foreground leading-relaxed flex-grow">{benefit.description}</p>
             </div>
           ))}
-          
-          {/* Second row - 2 cards centered */}
-          <div className="md:col-span-2 lg:col-span-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-              {benefits.slice(3, 5).map((benefit, index) => (
-                <div 
-                  key={benefit.title}
-                  className={cn(
-                    "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-500 h-full flex flex-col",
-                    isVisible 
-                      ? "opacity-100 translate-y-0" 
-                      : "opacity-0 translate-y-[30px]"
-                  )}
-                  style={{ 
-                    transitionDelay: `${benefit.delay}ms`,
-                  }}
-                >
-                  <div className="flex justify-center mb-6">
-                    <benefit.icon className="h-8 w-8 text-[#2B70F7]" />
-                  </div>
-                  <h3 className="text-lg font-bold mb-4">{benefit.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </ResponsiveContainer>
     </section>

@@ -69,6 +69,14 @@ export function ProductHighlightsSection() {
     }
   ];
 
+  const handleCardClick = (href: string) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Small delay to ensure scroll happens before navigation
+    setTimeout(() => {
+      window.location.href = href;
+    }, 100);
+  };
+
   return (
     <section 
       id="product-highlights" 
@@ -91,18 +99,10 @@ export function ProductHighlightsSection() {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto relative">
-          {/* Connecting flow lines - hidden on mobile */}
-          <div className="hidden md:block absolute top-1/2 left-1/3 w-1/3 h-0.5 bg-gradient-to-r from-[#339CFF]/30 via-[#339CFF]/50 to-[#339CFF]/30 transform -translate-y-1/2 z-0">
-            <div className="absolute right-0 top-1/2 w-2 h-2 bg-[#339CFF]/50 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
-          </div>
-          <div className="hidden md:block absolute top-1/2 right-1/3 w-1/3 h-0.5 bg-gradient-to-r from-[#339CFF]/30 via-[#339CFF]/50 to-[#339CFF]/30 transform -translate-y-1/2 z-0">
-            <div className="absolute right-0 top-1/2 w-2 h-2 bg-[#339CFF]/50 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
-          </div>
-
           {products.map((product, index) => (
-            <Link 
+            <div
               key={product.title} 
-              to={product.href}
+              onClick={() => handleCardClick(product.href)}
               className={cn(
                 "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 cursor-pointer group relative overflow-hidden z-10",
                 "hover:shadow-[0_8px_25px_rgba(51,156,255,0.15)] hover:scale-[1.02] hover:border-[#339CFF]/30",
@@ -162,7 +162,7 @@ export function ProductHighlightsSection() {
 
               {/* Hover gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#339CFF]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            </Link>
+            </div>
           ))}
         </div>
       </ResponsiveContainer>

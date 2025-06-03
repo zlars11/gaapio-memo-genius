@@ -23,6 +23,8 @@ import OnePager from "./pages/OnePager";
 import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
 import PolicyDetail from "./pages/PolicyDetail";
+import Status from "./pages/Status";
+import Privacy from "./pages/Privacy";
 
 function App() {
   return (
@@ -60,6 +62,10 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/policy-detail" element={<PolicyDetail />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/dpa" element={<Privacy />} />
+            <Route path="/ssa" element={<PolicyDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ProtectedLayout>

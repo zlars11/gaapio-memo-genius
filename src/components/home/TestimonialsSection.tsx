@@ -50,7 +50,7 @@ export function TestimonialsSection() {
   const testimonials = [
     {
       quote: "Gaapio has transformed our month-end close process. What used to take hours now takes minutes, with even better quality.",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80",
       name: "Jane Doe",
       role: "VP Finance, Enterprise Co.",
       highlightWords: ["transformed", "better quality"]
