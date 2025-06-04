@@ -41,7 +41,7 @@ export const HeroSection = memo(function HeroSection({
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, [enableSelfSignup]);
   
   // Scroll to Product Highlights section when arrow is clicked
   const scrollToNextSection = () => {
@@ -52,7 +52,7 @@ export const HeroSection = memo(function HeroSection({
   };
 
   return (
-    <section className="relative min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-12 bg-white dark:bg-background overflow-hidden">
+    <section className="relative min-h-[100vh] md:min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-20 md:pb-12 bg-white dark:bg-background overflow-hidden">
       {/* Hero content with improved spacing */}
       <div className="container px-4 md:px-6 flex flex-col items-center relative z-10">
         {/* Text content centered */}
@@ -74,14 +74,14 @@ export const HeroSection = memo(function HeroSection({
         </div>
         
         {/* Constrained animated memo display with better mobile spacing */}
-        <div className="hero-memo-container mb-20 md:mb-16">
+        <div className="hero-memo-container mb-24 md:mb-16">
           {isClient && <AnimatedMemo />}
         </div>
       </div>
       
       {/* Down arrow for scrolling to next section - now with proper spacing */}
       <div 
-        className="animate-fade-up absolute bottom-6" 
+        className="animate-fade-up absolute bottom-8 md:bottom-6" 
         style={{ animationDelay: "400ms" }} 
         onClick={scrollToNextSection}
       >

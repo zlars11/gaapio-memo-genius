@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Logo } from "@/components/logo";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronRight } from "lucide-react";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [enableSelfSignup, setEnableSelfSignup] = useState(true);
   const location = useLocation();
 
@@ -35,6 +36,11 @@ export function Header() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+    setIsProductsOpen(false);
+  };
+
+  const toggleProducts = () => {
+    setIsProductsOpen(!isProductsOpen);
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -172,27 +178,50 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-              <Link
-                to="/accounting-memos"
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/accounting-memos') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                onClick={closeMenu}
-              >
-                Accounting Memos
-              </Link>
-              <Link
-                to="/footnote-disclosures"
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/footnote-disclosures') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                onClick={closeMenu}
-              >
-                Footnote Disclosures
-              </Link>
-              <Link
-                to="/guidance-updates"
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/guidance-updates') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-                onClick={closeMenu}
-              >
-                Guidance Updates
-              </Link>
+              
+              {/* Products Section */}
+              <div>
+                <button
+                  onClick={toggleProducts}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <span>Products</span>
+                  {isProductsOpen ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </button>
+                
+                {/* Products Submenu */}
+                {isProductsOpen && (
+                  <div className="pl-4 space-y-1 mt-1">
+                    <Link
+                      to="/accounting-memos"
+                      className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/accounting-memos') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                      onClick={closeMenu}
+                    >
+                      Accounting Memos
+                    </Link>
+                    <Link
+                      to="/footnote-disclosures"
+                      className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/footnote-disclosures') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                      onClick={closeMenu}
+                    >
+                      Footnote Disclosures
+                    </Link>
+                    <Link
+                      to="/guidance-updates"
+                      className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/guidance-updates') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                      onClick={closeMenu}
+                    >
+                      Guidance Updates
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Other Menu Items */}
               <Link
                 to="/about-us"
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive('/about-us') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
