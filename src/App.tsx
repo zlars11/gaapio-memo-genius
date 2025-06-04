@@ -1,8 +1,8 @@
-
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ProtectedLayout } from "./components/layout/ProtectedLayout";
+import { ScrollToTop } from "./components/layout/ScrollToTop";
 
 // Pages
 import Index from "./pages/Index";
@@ -28,22 +28,9 @@ import Privacy from "./pages/Privacy";
 import SSA from "./pages/SSA";
 
 function App() {
-  useEffect(() => {
-    // Ensure all page navigation scrolls to top
-    const handleRouteChange = () => {
-      window.scrollTo(0, 0);
-    };
-    
-    // Listen for route changes and scroll to top
-    window.addEventListener('popstate', handleRouteChange);
-    
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange);
-    };
-  }, []);
-
   return (
     <Router>
+      <ScrollToTop />
       <ErrorBoundary fallback={
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
           <div className="text-center p-8 rounded-lg bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700">
