@@ -1,5 +1,5 @@
 
-import { Clock, FileCheck, BadgeCheck, BookCheck, Shield } from "lucide-react";
+import { Clock, FileCheck, BadgeCheck, BookCheck, Shield, Users } from "lucide-react";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -60,6 +60,12 @@ export function KeyBenefitsSection() {
       title: "Enterprise-Grade Security",
       description: "Your data stays private with strict security protocols",
       delay: 800
+    },
+    {
+      icon: Users,
+      title: "Trusted Team",
+      description: "Team of CPAs that speaks your language",
+      delay: 1000
     }
   ];
 

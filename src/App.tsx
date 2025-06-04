@@ -25,8 +25,23 @@ import AdminUsers from "./pages/AdminUsers";
 import PolicyDetail from "./pages/PolicyDetail";
 import Status from "./pages/Status";
 import Privacy from "./pages/Privacy";
+import SSA from "./pages/SSA";
 
 function App() {
+  useEffect(() => {
+    // Ensure all page navigation scrolls to top
+    const handleRouteChange = () => {
+      window.scrollTo(0, 0);
+    };
+    
+    // Listen for route changes and scroll to top
+    window.addEventListener('popstate', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, []);
+
   return (
     <Router>
       <ErrorBoundary fallback={
@@ -65,7 +80,7 @@ function App() {
             <Route path="/status" element={<Status />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/dpa" element={<Privacy />} />
-            <Route path="/ssa" element={<PolicyDetail />} />
+            <Route path="/ssa" element={<SSA />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ProtectedLayout>

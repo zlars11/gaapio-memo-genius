@@ -69,14 +69,6 @@ export function ProductHighlightsSection() {
     }
   ];
 
-  const handleCardClick = (href: string) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Small delay to ensure scroll happens before navigation
-    setTimeout(() => {
-      window.location.href = href;
-    }, 100);
-  };
-
   return (
     <section 
       id="product-highlights" 
@@ -100,11 +92,11 @@ export function ProductHighlightsSection() {
         
         <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto relative">
           {products.map((product, index) => (
-            <div
+            <Link
               key={product.title} 
-              onClick={() => handleCardClick(product.href)}
+              to={product.href}
               className={cn(
-                "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 cursor-pointer group relative overflow-hidden z-10",
+                "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 group relative overflow-hidden z-10 block",
                 "hover:shadow-[0_8px_25px_rgba(51,156,255,0.15)] hover:scale-[1.02] hover:border-[#339CFF]/30",
                 "hover:-translate-y-1",
                 isVisible 
@@ -162,7 +154,7 @@ export function ProductHighlightsSection() {
 
               {/* Hover gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#339CFF]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-            </div>
+            </Link>
           ))}
         </div>
       </ResponsiveContainer>

@@ -11,10 +11,6 @@ export function Footer() {
   // Logo src always the same regardless of theme
   const logoSrc = "/lovable-uploads/e263b9d6-518b-411f-be9f-c36067fd9ad1.png";
   
-  const handleLinkClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  
   return (
     <footer className="bg-black text-white">
       {/* Main Footer Content - Ultra compact layout */}
@@ -23,7 +19,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {/* Logo Column - Left aligned and vertically aligned with headers */}
           <div className="flex flex-col items-center md:items-start">
-            <Link to="/" onClick={handleLinkClick}>
+            <Link to="/">
               <img src={logoSrc} alt="Gaapio" className="h-12 w-auto" />
             </Link>
           </div>
@@ -37,7 +33,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/about-us" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     About
@@ -46,7 +41,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/blog" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Blog
@@ -55,7 +49,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/request-demo" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Demo
@@ -71,7 +64,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/resources" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Resource Center
@@ -80,7 +72,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/status" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Status
@@ -89,7 +80,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/contact" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Report Issue
@@ -98,7 +88,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/dpa" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Privacy
@@ -107,7 +96,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/ssa" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Terms
@@ -123,7 +111,6 @@ export function Footer() {
                 <li>
                   <Link 
                     to="/contact" 
-                    onClick={handleLinkClick}
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Contact Us
@@ -171,7 +158,6 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-0 md:space-x-6">
             <Link 
               to="/dpa" 
-              onClick={handleLinkClick}
               className="text-xs text-gray-400 hover:underline transition-colors"
             >
               Privacy Policy
@@ -179,7 +165,6 @@ export function Footer() {
             <Separator orientation="vertical" className="h-3 hidden md:inline-block bg-gray-700" />
             <Link 
               to="/ssa" 
-              onClick={handleLinkClick}
               className="text-xs text-gray-400 hover:underline transition-colors"
             >
               Terms of Service
