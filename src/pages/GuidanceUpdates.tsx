@@ -1,11 +1,14 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSection";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
-import { BenefitsSection } from "@/components/home/BenefitsSection";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { GuidanceHeroSection } from "@/components/guidance/GuidanceHeroSection";
+import { GuidanceHowItWorksSection } from "@/components/guidance/GuidanceHowItWorksSection";
+import { NeverMissUpdateSection } from "@/components/guidance/NeverMissUpdateSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
+import { GuidanceMakesSenseSection } from "@/components/guidance/GuidanceMakesSenseSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { ExampleUpdateFeedSection } from "@/components/guidance/ExampleUpdateFeedSection";
+import { FinalCtaBanner } from "@/components/guidance/FinalCtaBanner";
 
 export default function GuidanceUpdates() {
   return (
@@ -16,15 +19,20 @@ export default function GuidanceUpdates() {
         <div className="relative z-10">
           {/* Hero Section - White Background */}
           <div className="bg-white dark:bg-background">
-            <HeroSection 
+            <GuidanceHeroSection 
               title="Stay Current with Guidance Updates" 
               subtitle="AI-Powered. Always Updated."
             />
           </div>
           
-          {/* How It Works Section - HowItWorks-style Background */}
+          {/* How It Works Section - Light Background */}
           <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <HowItWorksSection />
+            <GuidanceHowItWorksSection />
+          </div>
+          
+          {/* Never Miss Update Section - White Background */}
+          <div className="bg-white dark:bg-background">
+            <NeverMissUpdateSection />
           </div>
           
           {/* Social Proof Section - White Background */}
@@ -32,15 +40,23 @@ export default function GuidanceUpdates() {
             <SocialProofSection />
           </div>
           
-          {/* Benefits Section - HowItWorks-style Background */}
+          {/* Guidance Makes Sense Section - Light Background */}
           <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <BenefitsSection />
+            <GuidanceMakesSenseSection />
           </div>
           
           {/* Testimonials Section - White Background */}
           <div className="bg-white dark:bg-background">
             <TestimonialsSection />
           </div>
+          
+          {/* Example Update Feed Section - White Background */}
+          <div className="bg-white dark:bg-background">
+            <ExampleUpdateFeedSection />
+          </div>
+          
+          {/* Final CTA Banner - Gradient Background */}
+          <FinalCtaBanner />
         </div>
       </div>
       
