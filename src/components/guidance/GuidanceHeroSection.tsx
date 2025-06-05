@@ -36,32 +36,32 @@ export const GuidanceHeroSection = memo(function GuidanceHeroSection({
           </div>
         </div>
         
-        {/* Static mockup card centered */}
+        {/* Larger static mockup card centered */}
         <div className="flex justify-center animate-fade-up" style={{ animationDelay: "300ms" }}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-6 max-w-md transform rotate-2 hover:rotate-0 transition-transform duration-300">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <Bell className="w-4 h-4 text-white" />
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-8 max-w-lg w-full transform rotate-2 hover:rotate-0 transition-transform duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <Bell className="w-5 h-5 text-white" />
               </div>
               <span className="text-sm font-medium text-blue-600 dark:text-blue-400">New Guidance Alert</span>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-gray-500" />
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white">ASC 842 Update — Leases</h3>
+                <FileText className="w-5 h-5 text-gray-500" />
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">ASC 842 Update — Leases</h3>
               </div>
               
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                 FASB clarifies embedded lease treatment in service arrangements.
               </p>
               
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                <Calendar className="w-3 h-3" />
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Calendar className="w-4 h-4" />
                 <span>Effective for FYs after Dec 15, 2025</span>
               </div>
               
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-600">
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
                 <Button size="sm" variant="outline" className="w-full">
                   View Full Analysis
                 </Button>
