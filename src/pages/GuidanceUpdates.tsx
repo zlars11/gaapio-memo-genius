@@ -1,11 +1,13 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSection";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
-import { BenefitsSection } from "@/components/home/BenefitsSection";
-import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { GuidanceHeroSection } from "@/components/guidance/GuidanceHeroSection";
+import { GuidanceHowItWorksSection } from "@/components/guidance/GuidanceHowItWorksSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
+import { NeverMissUpdateSection } from "@/components/guidance/NeverMissUpdateSection";
+import { GuidanceMakesSenseSection } from "@/components/guidance/GuidanceMakesSenseSection";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { FinalCtaBanner } from "@/components/guidance/FinalCtaBanner";
 
 export default function GuidanceUpdates() {
   return (
@@ -15,32 +17,30 @@ export default function GuidanceUpdates() {
       <div className="relative overflow-hidden">
         <div className="relative z-10">
           {/* Hero Section - White Background */}
-          <div className="bg-white dark:bg-background">
-            <HeroSection 
-              title="Stay Current with Guidance Updates" 
-              subtitle="AI-Powered. Always Updated."
-            />
-          </div>
+          <GuidanceHeroSection 
+            title="Stay Current with Guidance Updates" 
+            subtitle="AI-Powered. Always Updated."
+          />
           
-          {/* How It Works Section - HowItWorks-style Background */}
-          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <HowItWorksSection />
-          </div>
+          {/* How It Works Section - Light Gradient Background */}
+          <GuidanceHowItWorksSection />
           
           {/* Social Proof Section - White Background */}
-          <div className="bg-white dark:bg-background">
-            <SocialProofSection />
-          </div>
+          <SocialProofSection />
           
-          {/* Benefits Section - HowItWorks-style Background */}
+          {/* Never Miss Update Section - Blue Solid Background */}
+          <NeverMissUpdateSection />
+          
+          {/* Guidance Makes Sense Section - White Background */}
+          <GuidanceMakesSenseSection />
+          
+          {/* Testimonials Section - Light Gradient Background */}
           <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <BenefitsSection />
-          </div>
-          
-          {/* Testimonials Section - White Background */}
-          <div className="bg-white dark:bg-background">
             <TestimonialsSection />
           </div>
+          
+          {/* Final CTA Banner - White Background */}
+          <FinalCtaBanner />
         </div>
       </div>
       
