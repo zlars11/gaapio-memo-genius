@@ -16,17 +16,17 @@ export const GuidanceHeroSection = memo(function GuidanceHeroSection({
   
   return (
     <section className="relative min-h-[100vh] md:min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-20 md:pb-12 bg-white dark:bg-background overflow-hidden">
-      <div className="container px-4 md:px-6 flex flex-col lg:flex-row items-center justify-between relative z-10 gap-12">
+      <div className="container px-4 md:px-6 text-center relative z-10">
         
-        {/* Left side - Text content */}
-        <div className="flex flex-col lg:items-start items-center text-center lg:text-left max-w-2xl">
+        {/* Text content centered */}
+        <div className="max-w-4xl mx-auto mb-12">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up dark:text-white">
             {title}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-10 animate-fade-up dark:text-gray-300" style={{ animationDelay: "100ms" }}>
             {subtitle}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
             <Button size="lg" variant="blue" asChild>
               <Link to="/request-demo">Request a Demo</Link>
             </Button>
@@ -36,8 +36,8 @@ export const GuidanceHeroSection = memo(function GuidanceHeroSection({
           </div>
         </div>
         
-        {/* Right side - Static mockup card */}
-        <div className="flex-shrink-0 animate-fade-up" style={{ animationDelay: "300ms" }}>
+        {/* Static mockup card centered */}
+        <div className="flex justify-center animate-fade-up" style={{ animationDelay: "300ms" }}>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-6 max-w-md transform rotate-2 hover:rotate-0 transition-transform duration-300">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">

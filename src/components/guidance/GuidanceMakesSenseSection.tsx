@@ -3,7 +3,7 @@ import { CheckCircle, FileText, Clock } from "lucide-react";
 
 export function GuidanceMakesSenseSection() {
   return (
-    <section className="py-20 bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
+    <section className="py-20 bg-white dark:bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
@@ -17,7 +17,7 @@ export function GuidanceMakesSenseSection() {
             
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-1" />
+                <CheckCircle className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Plain English Explanations</h3>
                   <p className="text-gray-600 dark:text-gray-300">No more deciphering complex regulatory language</p>
@@ -33,7 +33,7 @@ export function GuidanceMakesSenseSection() {
               </div>
               
               <div className="flex items-start gap-3">
-                <FileText className="w-6 h-6 text-purple-500 flex-shrink-0 mt-1" />
+                <FileText className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">CPA-Reviewed Content</h3>
                   <p className="text-gray-600 dark:text-gray-300">Every summary is written and reviewed by certified professionals</p>

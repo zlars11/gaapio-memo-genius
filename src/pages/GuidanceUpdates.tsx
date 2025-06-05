@@ -3,11 +3,10 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { GuidanceHeroSection } from "@/components/guidance/GuidanceHeroSection";
 import { GuidanceHowItWorksSection } from "@/components/guidance/GuidanceHowItWorksSection";
-import { NeverMissUpdateSection } from "@/components/guidance/NeverMissUpdateSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
+import { NeverMissUpdateSection } from "@/components/guidance/NeverMissUpdateSection";
 import { GuidanceMakesSenseSection } from "@/components/guidance/GuidanceMakesSenseSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { ExampleUpdateFeedSection } from "@/components/guidance/ExampleUpdateFeedSection";
 import { FinalCtaBanner } from "@/components/guidance/FinalCtaBanner";
 
 export default function GuidanceUpdates() {
@@ -30,32 +29,27 @@ export default function GuidanceUpdates() {
             <GuidanceHowItWorksSection />
           </div>
           
-          {/* Never Miss Update Section - White Background */}
-          <div className="bg-white dark:bg-background">
-            <NeverMissUpdateSection />
-          </div>
-          
           {/* Social Proof Section - White Background */}
           <div className="bg-white dark:bg-background">
             <SocialProofSection />
           </div>
           
-          {/* Guidance Makes Sense Section - Light Background */}
+          {/* Never Miss Update Section - Light Background */}
           <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
+            <NeverMissUpdateSection />
+          </div>
+          
+          {/* Guidance Makes Sense Section - White Background */}
+          <div className="bg-white dark:bg-background">
             <GuidanceMakesSenseSection />
           </div>
           
-          {/* Testimonials Section - White Background */}
-          <div className="bg-white dark:bg-background">
+          {/* Testimonials Section - Light Background */}
+          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
             <TestimonialsSection />
           </div>
           
-          {/* Example Update Feed Section - White Background */}
-          <div className="bg-white dark:bg-background">
-            <ExampleUpdateFeedSection />
-          </div>
-          
-          {/* Final CTA Banner - Gradient Background */}
+          {/* Final CTA Banner - Light Background */}
           <FinalCtaBanner />
         </div>
       </div>
