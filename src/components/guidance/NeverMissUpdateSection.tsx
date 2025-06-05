@@ -5,7 +5,7 @@ import { Bell, Mail, Smartphone } from "lucide-react";
 
 export function NeverMissUpdateSection() {
   return (
-    <section className="py-20 bg-white dark:bg-background">
+    <section className="py-20 bg-blue-50 dark:bg-blue-950/30">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
