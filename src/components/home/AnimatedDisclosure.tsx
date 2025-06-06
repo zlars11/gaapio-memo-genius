@@ -42,22 +42,22 @@ export const AnimatedDisclosure = () => {
   // Position for the disclosure content area (right side of the interface)
   const getTopPosition = () => {
     if (width < 480) return "100px";  // Higher on mobile
-    if (width < 768) return "120px";
-    return "140px";
+    if (width < 768) return "140px";
+    return "170px";
   };
 
   // Get container width for disclosure area
   const getContainerWidth = () => {
-    if (width < 480) return "150%";
-    if (width < 768) return "140%";
-    return "160%";
+    if (width < 480) return "120%";
+    if (width < 768) return "120%";
+    return "120%";
   };
 
   // Position for disclosure content (right side)
   const getLeftPosition = () => {
-    if (width < 480) return "35%";   // More to the right for disclosure area
-    if (width < 768) return "35%";
-    return "35%";
+    if (width < 480) return "60%";   // More to the right for disclosure area
+    if (width < 768) return "60%";
+    return "60%";
   };
 
   // Get container height for disclosure content
