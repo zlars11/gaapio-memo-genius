@@ -1,7 +1,7 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSection";
+import { DisclosureHeroSection } from "@/components/disclosures/DisclosureHeroSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -14,9 +14,9 @@ export default function FootnoteDisclosures() {
       
       <div className="relative overflow-hidden">
         <div className="relative z-10">
-          {/* Hero Section - White Background */}
+          {/* Hero Section - White Background with Animated Disclosure */}
           <div className="bg-white dark:bg-background">
-            <HeroSection 
+            <DisclosureHeroSection 
               title="Comprehensive Footnote Disclosures" 
               subtitle="AI-Powered. Compliance-Ready."
             />
