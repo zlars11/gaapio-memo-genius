@@ -178,7 +178,7 @@ export const AnimatedMemo = () => {
             className="memo-text"
             style={{
               color: isDark ? '#FFFFFF' : '#333',
-              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backgroundColor: isDark ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
               padding: '4px',
               borderRadius: '4px',
               width: '100%',
