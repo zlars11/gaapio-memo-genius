@@ -41,23 +41,23 @@ export const AnimatedDisclosure = () => {
 
   // Position for the disclosure content area (right side of the interface)
   const getTopPosition = () => {
-    if (width < 480) return "100px";  // Higher on mobile
-    if (width < 768) return "130px";
-    return "190px";
+    if (width < 480) return "90px";  // Higher on mobile
+    if (width < 768) return "120px";
+    return "200px";
   };
 
   // Get container width for disclosure area
   const getContainerWidth = () => {
-    if (width < 480) return "120%";
-    if (width < 768) return "120%";
-    return "120%";
+    if (width < 480) return "100%";
+    if (width < 768) return "100%";
+    return "100%";
   };
 
   // Position for disclosure content (right side)
   const getLeftPosition = () => {
-    if (width < 480) return "50%";   // More to the right for disclosure area
-    if (width < 768) return "50%";
-    return "50%";
+    if (width < 480) return "48%";   // More to the right for disclosure area
+    if (width < 768) return "48%";
+    return "48%";
   };
 
   // Get container height for disclosure content
@@ -93,7 +93,7 @@ export const AnimatedDisclosure = () => {
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            '<p><strong>NOTE 8 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million...</p>'
+            '<p><strong>NOTE 1 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million...</p>'
           ],
           typeSpeed: 0.5,
           backSpeed: 0,
