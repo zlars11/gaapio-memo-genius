@@ -89,11 +89,11 @@ export const AnimatedDisclosure = () => {
     const timer = setTimeout(() => {
       setLoaded(true);
       
-      // Initialize typed.js with ASC 842 footnote disclosure content
+      // Initialize typed.js with condensed ASC 842 footnote disclosure content
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            '<p><strong>NOTE 8 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases various assets including office facilities, manufacturing equipment, and vehicles under operating and finance lease arrangements. Lease terms range from 1 to 15 years, with some containing renewal options.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024, right-of-use assets consisted of:<br />• Office facilities: $8.2 million<br />• Manufacturing equipment: $3.1 million<br />• Vehicles and other: $1.4 million<br />Total ROU assets: $12.7 million</p>\n\n<p><strong>Lease Liabilities</strong><br />Current lease liabilities: $2.8 million<br />Non-current lease liabilities: $10.1 million<br />Total lease liabilities: $12.9 million</p>\n\n<p><strong>Lease Costs</strong><br />For the year ended December 31, 2024:<br />• Operating lease costs: $3.2 million<br />• Finance lease costs: $0.8 million<br />• Variable lease costs: $0.4 million<br />• Short-term lease costs: $0.2 million</p>\n\n<p><strong>Maturity Analysis</strong><br />Future minimum lease payments:<br />2025: $3.1M | 2026: $2.8M | 2027: $2.4M<br />2028: $2.1M | 2029: $1.8M | Thereafter: $2.2M<br />Total: $14.4M | Less: Imputed interest: $(1.5M)<br />Present value of lease liabilities: $12.9M</p>\n\n<p><strong>Key Assumptions</strong><br />Weighted-average remaining lease term: 4.2 years<br />Weighted-average discount rate: 3.8%</p>'
+            '<p><strong>NOTE 8 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million</p>\n\n<p><strong>Lease Liabilities</strong><br />Current: $2.8 million<br />Non-current: $10.1 million<br />Total: $12.9 million</p>\n\n<p><strong>Lease Costs (2024)</strong><br />• Operating: $3.2 million<br />• Finance: $0.8 million<br />• Variable: $0.4 million</p>\n\n<p><strong>Future Payments</strong><br />2025: $3.1M | 2026: $2.8M<br />2027: $2.4M | 2028: $2.1M<br />Thereafter: $4.0M...</p>'
           ],
           typeSpeed: 0.5,
           backSpeed: 0,

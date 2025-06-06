@@ -1,13 +1,13 @@
 
 import { memo } from "react";
-import { FileText, Zap, CheckCircle, Users } from "lucide-react";
+import { MessageSquare, Zap, CheckCircle, Users } from "lucide-react";
 
 export const DisclosureHowItWorksSection = memo(function DisclosureHowItWorksSection() {
   const steps = [
     {
-      icon: FileText,
-      title: "Upload Your Trial Balance",
-      description: "Simply upload your trial balance or connect your accounting system. Our AI instantly identifies all lease-related accounts and transactions."
+      icon: MessageSquare,
+      title: "Guided Prompts",
+      description: "Answer simple questions about your lease arrangements. Our AI guides you through the disclosure requirements step by step."
     },
     {
       icon: Zap,

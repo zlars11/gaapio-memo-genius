@@ -3,7 +3,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DisclosureHeroSection } from "@/components/disclosures/DisclosureHeroSection";
 import { DisclosureHowItWorksSection } from "@/components/disclosures/DisclosureHowItWorksSection";
-import { BenefitsSection } from "@/components/home/BenefitsSection";
+import { DisclosureBenefitsSection } from "@/components/disclosures/DisclosureBenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
 
@@ -30,9 +30,9 @@ export default function FootnoteDisclosures() {
             <SocialProofSection />
           </div>
           
-          {/* Benefits Section - HowItWorks-style Background */}
+          {/* Benefits Section - Custom Disclosure Version */}
           <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <BenefitsSection />
+            <DisclosureBenefitsSection />
           </div>
           
           {/* Testimonials Section - White Background */}
