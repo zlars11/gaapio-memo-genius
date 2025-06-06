@@ -2,7 +2,7 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { DisclosureHeroSection } from "@/components/disclosures/DisclosureHeroSection";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
+import { DisclosureHowItWorksSection } from "@/components/disclosures/DisclosureHowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
@@ -22,10 +22,8 @@ export default function FootnoteDisclosures() {
             />
           </div>
           
-          {/* How It Works Section - HowItWorks-style Background */}
-          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
-            <HowItWorksSection />
-          </div>
+          {/* How It Works Section - Custom Disclosure Version */}
+          <DisclosureHowItWorksSection />
           
           {/* Social Proof Section - White Background */}
           <div className="bg-white dark:bg-background">
