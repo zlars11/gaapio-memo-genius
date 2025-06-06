@@ -93,7 +93,7 @@ export const AnimatedDisclosure = () => {
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            '<p><strong>NOTE 1 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million...</p>'
+            '<p style="margin: 0; padding: 0"><strong>NOTE 1 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million...</p>'
           ],
           typeSpeed: 0.5,
           backSpeed: 0,
@@ -180,7 +180,7 @@ export const AnimatedDisclosure = () => {
             className="disclosure-text"
             style={{
               color: isDark ? '#FFFFFF' : '#333',
-              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backgroundColor: isDark ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
               padding: '4px',
               borderRadius: '4px',
               width: '100%',
