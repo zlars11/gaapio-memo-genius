@@ -48,9 +48,9 @@ export const AnimatedDisclosure = () => {
 
   // Get container width for disclosure area
   const getContainerWidth = () => {
-    if (width < 480) return "100%";
-    if (width < 768) return "100%";
-    return "100%";
+    if (width < 480) return "80%";
+    if (width < 768) return "80%";
+    return "80%";
   };
 
   // Position for disclosure content (right side)
