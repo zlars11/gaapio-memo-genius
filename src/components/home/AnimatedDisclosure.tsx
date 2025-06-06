@@ -42,8 +42,8 @@ export const AnimatedDisclosure = () => {
   // Position for the disclosure content area (right side of the interface)
   const getTopPosition = () => {
     if (width < 480) return "100px";  // Higher on mobile
-    if (width < 768) return "140px";
-    return "170px";
+    if (width < 768) return "130px";
+    return "190px";
   };
 
   // Get container width for disclosure area
@@ -55,9 +55,9 @@ export const AnimatedDisclosure = () => {
 
   // Position for disclosure content (right side)
   const getLeftPosition = () => {
-    if (width < 480) return "60%";   // More to the right for disclosure area
-    if (width < 768) return "60%";
-    return "60%";
+    if (width < 480) return "50%";   // More to the right for disclosure area
+    if (width < 768) return "50%";
+    return "50%";
   };
 
   // Get container height for disclosure content
@@ -93,7 +93,7 @@ export const AnimatedDisclosure = () => {
       if (typedElementRef.current) {
         typedInstanceRef.current = new Typed(typedElementRef.current, {
           strings: [
-            '<p><strong>NOTE 8 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million</p>\n\n<p><strong>Lease Liabilities</strong><br />Current: $2.8 million<br />Non-current: $10.1 million<br />Total: $12.9 million</p>\n\n<p><strong>Lease Costs (2024)</strong><br />• Operating: $3.2 million<br />• Finance: $0.8 million<br />• Variable: $0.4 million</p>\n\n<p><strong>Future Payments</strong><br />2025: $3.1M | 2026: $2.8M<br />2027: $2.4M | 2028: $2.1M<br />Thereafter: $4.0M...</p>'
+            '<p><strong>NOTE 8 - LEASES</strong></p>\n\n<p><strong>Lease Portfolio Overview</strong><br />The Company leases office facilities, equipment, and vehicles under operating and finance lease arrangements.</p>\n\n<p><strong>Right-of-Use Assets</strong><br />As of December 31, 2024:<br />• Office facilities: $8.2 million<br />• Equipment: $3.1 million<br />• Vehicles: $1.4 million<br />Total ROU assets: $12.7 million...</p>'
           ],
           typeSpeed: 0.5,
           backSpeed: 0,
