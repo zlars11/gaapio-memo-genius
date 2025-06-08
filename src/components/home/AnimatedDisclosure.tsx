@@ -96,8 +96,7 @@ export const AnimatedDisclosure = () => {
           ],
           typeSpeed: 0.5,
           backSpeed: 0,
-          showCursor: true,
-          cursorChar: '|',
+          showCursor: false, // Hide cursor completely throughout animation
           loop: false,
           contentType: 'html',
           onComplete: (self) => {
@@ -159,6 +158,8 @@ export const AnimatedDisclosure = () => {
           src={isDark ? "/assets/images/app-disclosure-night.png" : "/assets/images/app-disclosure-day.png"}
           alt="Gaapio Footnote Disclosure UI" 
           className="disclosure-background-image"
+          loading="eager"
+          fetchPriority="high"
           style={{
             width: "100%",
             height: "auto",
