@@ -1,4 +1,3 @@
-
 import { memo } from "react";
 import { Clock, Shield, Target, Zap, Users, CheckCircle } from "lucide-react";
 
@@ -37,7 +36,7 @@ export const DisclosureBenefitsSection = memo(function DisclosureBenefitsSection
   ];
 
   return (
-    <section className="py-20 md:py-32 bg-white dark:bg-background">
+    <section className="py-20 md:py-32" style={{ backgroundColor: 'var(--benefits-bg)' }}>
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Key Benefits</h2>
