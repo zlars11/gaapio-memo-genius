@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 
@@ -100,7 +99,15 @@ export const AnimatedDisclosure = () => {
           showCursor: true,
           cursorChar: '|',
           loop: false,
-          contentType: 'html'
+          contentType: 'html',
+          onComplete: (self) => {
+            // Hide cursor after typing is complete
+            setTimeout(() => {
+              if (self.cursor) {
+                self.cursor.style.display = 'none';
+              }
+            }, 1000);
+          }
         });
       }
     }, 100);
