@@ -150,6 +150,8 @@ export const AnimatedMemo = () => {
           src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI" 
           className="memo-background-image"
+          loading="eager"
+          fetchPriority="high"
           style={{
             width: "100%",
             height: "auto",

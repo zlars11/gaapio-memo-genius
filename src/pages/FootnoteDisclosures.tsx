@@ -22,7 +22,7 @@ export default function FootnoteDisclosures() {
             />
           </div>
           
-          {/* How It Works Section - Custom Disclosure Version */}
+          {/* How It Works Section - Custom Disclosure Version - Gradient Background */}
           <DisclosureHowItWorksSection />
           
           {/* Social Proof Section - White Background */}
@@ -30,8 +30,8 @@ export default function FootnoteDisclosures() {
             <SocialProofSection />
           </div>
           
-          {/* Benefits Section - Custom Disclosure Version */}
-          <div className="bg-gradient-to-b from-[#f4faff] to-white dark:from-[#1A1F2B] dark:to-[#1A1F2B]">
+          {/* Benefits Section - Blue Background */}
+          <div className="bg-[#339CFF] dark:bg-[#2563eb]">
             <DisclosureBenefitsSection />
           </div>
           
