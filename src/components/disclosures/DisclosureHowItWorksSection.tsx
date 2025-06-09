@@ -7,17 +7,17 @@ export const DisclosureHowItWorksSection = memo(function DisclosureHowItWorksSec
     {
       icon: MessageSquare,
       title: "Guided Prompts",
-      description: "Answer simple questions about your lease arrangements. Our AI guides you through the disclosure requirements step by step."
+      description: "Answer simple questions about your accounting arrangements. Our AI guides you through the disclosure requirements step by step."
     },
     {
       icon: Zap,
       title: "AI Analysis & Processing", 
-      description: "Our advanced AI analyzes your lease data, calculates required disclosures, and generates comprehensive footnote content following ASC 842 requirements."
+      description: "Our advanced AI analyzes your situation and generates comprehensive footnote content following ASC requirements."
     },
     {
       icon: CheckCircle,
       title: "Review & Customize",
-      description: "Review the generated footnote disclosures, make any necessary adjustments, and ensure all lease information is accurately presented."
+      description: "Review the generated footnote disclosures, make any necessary adjustments, and ensure all information is accurately presented."
     },
     {
       icon: Users,
