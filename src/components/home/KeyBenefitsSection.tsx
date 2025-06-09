@@ -3,6 +3,8 @@ import { Clock, FileCheck, BadgeCheck, BookCheck, Shield, Users } from "lucide-r
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function KeyBenefitsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -82,7 +84,7 @@ export function KeyBenefitsSection() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
           {benefits.map((benefit, index) => (
             <div 
               key={benefit.title}
@@ -103,6 +105,23 @@ export function KeyBenefitsSection() {
               <p className="text-muted-foreground leading-relaxed flex-grow">{benefit.description}</p>
             </div>
           ))}
+        </div>
+        
+        {/* CTA Button */}
+        <div className="text-center">
+          <div 
+            className={cn(
+              "transition-all duration-1000",
+              isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-[30px]"
+            )}
+            style={{ transitionDelay: "1200ms" }}
+          >
+            <Button size="lg" variant="blueOutline" asChild>
+              <Link to="/faq?open=chatgpt">How is this different than ChatGPT?</Link>
+            </Button>
+          </div>
         </div>
       </ResponsiveContainer>
     </section>

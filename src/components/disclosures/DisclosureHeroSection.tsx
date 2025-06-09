@@ -15,7 +15,7 @@ export const DisclosureHeroSection = memo(function DisclosureHeroSection({
 }: DisclosureHeroSectionProps) {
   
   return (
-    <section className="relative min-h-[100vh] md:min-h-[85vh] flex flex-col justify-center items-center pt-24 pb-20 md:pb-12 bg-white dark:bg-background overflow-hidden">
+    <section className="relative min-h-[100vh] md:min-h-[85vh] flex flex-col justify-center items-center pt-32 pb-20 md:pb-12 bg-white dark:bg-background overflow-hidden">
       <div className="container px-4 md:px-6 text-center relative z-10">
         
         {/* Text content centered */}
@@ -31,7 +31,7 @@ export const DisclosureHeroSection = memo(function DisclosureHeroSection({
               <Link to="/request-demo">Request a Demo</Link>
             </Button>
             <Button size="lg" variant="blueOutline" asChild>
-              <Link to="/contact">Contact Sales</Link>
+              <Link to="/contact">Ask a Question</Link>
             </Button>
           </div>
         </div>
