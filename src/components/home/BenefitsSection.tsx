@@ -52,7 +52,7 @@ export function BenefitsSection() {
     },
     {
       icon: Shield,
-      title: "GAAP/IFRS Compliance",
+      title: "GAAP Compliance",
       description: "Always up-to-date with the latest accounting standards and guidelines.",
       delay: 1800
     },
