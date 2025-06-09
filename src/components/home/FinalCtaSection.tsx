@@ -57,10 +57,10 @@ export function FinalCtaSection() {
             }`}
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Ready to Transform Your Accounting Workflow?
+              Ready to Transform Your Close?
             </h2>
             <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-              Join thousands of accounting professionals who trust Gaapio to streamline their technical accounting processes.
+              Join the CPAs who are already saving hours every month with AI-powered accounting documentation.
             </p>
           </div>
 

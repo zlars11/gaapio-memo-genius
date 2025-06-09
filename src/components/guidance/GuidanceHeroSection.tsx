@@ -31,7 +31,7 @@ export const GuidanceHeroSection = memo(function GuidanceHeroSection({
               <Link to="/request-demo">Request a Demo</Link>
             </Button>
             <Button size="lg" variant="blueOutline" asChild>
-              <Link to="/contact">Contact Sales</Link>
+              <Link to="/contact">Ask a Question</Link>
             </Button>
           </div>
         </div>
