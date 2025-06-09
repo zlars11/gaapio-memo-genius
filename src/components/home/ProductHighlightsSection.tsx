@@ -35,7 +35,6 @@ export function ProductHighlightsSection() {
     {
       label: "01 · MEMOS",
       title: "Generate Technical Memos Fast",
-      description: "AI-powered technical accounting memos in seconds.",
       bulletPoints: [
         "Guardrails ensure technical accuracy",
         "Always aligned with latest standards - ASC 606, 842, and many more",
@@ -48,7 +47,6 @@ export function ProductHighlightsSection() {
     {
       label: "02 · FOOTNOTE DISCLOSURES",
       title: "Auto-Draft Footnote Disclosures",
-      description: "Create transparent, audit-ready disclosures instantly.",
       bulletPoints: [
         "Covers all standard footnote types",
         "CPA-formatting baked in",
@@ -61,7 +59,6 @@ export function ProductHighlightsSection() {
     {
       label: "03 · GAAP/SEC UPDATES",
       title: "Stay Ahead of Guidance Updates",
-      description: "Real-time alerts for GAAP/SEC changes and training.",
       bulletPoints: [
         "Instant alerts for new standards",
         "Actionable implementation guidance",
