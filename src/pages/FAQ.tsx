@@ -3,9 +3,20 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function FAQ() {
+  const [searchParams] = useSearchParams();
+  const [openItem, setOpenItem] = useState<string>("");
+
+  useEffect(() => {
+    const openParam = searchParams.get("open");
+    if (openParam === "chatgpt") {
+      setOpenItem("item-5");
+    }
+  }, [searchParams]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -27,7 +38,7 @@ export default function FAQ() {
             </div>
 
             <div className="max-w-3xl mx-auto glass-card p-8 rounded-2xl shadow-md hover:bg-secondary/30 transition-all duration-300">
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible className="w-full" value={openItem} onValueChange={setOpenItem}>
                 <AccordionItem value="item-5">
                   <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
                     How is this different from ChatGPT?
