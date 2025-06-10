@@ -16,7 +16,7 @@ import {
   PenLine
 } from "lucide-react";
 import { useState } from "react";
-import { AnimatedMemo } from "@/components/home/AnimatedMemo";
+import { AnimatedMemoRight } from "@/components/home/AnimatedMemoRight";
 import { Link } from "react-router-dom";
 
 export default function PolicyDetail() {
@@ -103,7 +103,7 @@ export default function PolicyDetail() {
                 {/* Centered Animated Memo with proper styling */}
                 <div className="flex items-center justify-center py-8">
                   <div className="w-full max-w-4xl transform">
-                    <AnimatedMemo />
+                    <AnimatedMemoRight />
                   </div>
                 </div>
               </TabsContent>
