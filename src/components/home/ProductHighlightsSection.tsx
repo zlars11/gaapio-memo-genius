@@ -139,10 +139,6 @@ export function ProductHighlightsSection() {
                   <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white group-hover:text-[#339CFF] transition-colors duration-300">
                     {product.title}
                   </h3>
-                  
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                    {product.description}
-                  </p>
 
                   {/* Bullet points */}
                   <ul className="text-left text-sm space-y-2 w-full">
