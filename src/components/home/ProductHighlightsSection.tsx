@@ -48,9 +48,9 @@ export function ProductHighlightsSection() {
       label: "02 · FOOTNOTE DISCLOSURES",
       title: "Auto-Draft Footnote Disclosures",
       bulletPoints: [
-        "Covers all standard footnote types",
-        "CPA-formatting baked in",
-        "Clear audit trail included"
+        "Guided prompts to ensure compliance",
+        "CPA approved, industry leading formatting",
+        "Clear review and audit trail"
       ],
       href: "/footnote-disclosures",
       delay: 200,

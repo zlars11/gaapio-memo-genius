@@ -40,9 +40,9 @@ export const AnimatedMemo = () => {
 
   // Get container position based on screen width
   const getTopPosition = () => {
-    if (width < 480) return "80px";  // Higher on mobile
+    if (width < 480) return "85px";  // Higher on mobile
     if (width < 768) return "110px";
-    return "170px";
+    return "205px";
   };
 
   // Get container width based on screen width
@@ -180,7 +180,7 @@ export const AnimatedMemo = () => {
             className="memo-text"
             style={{
               color: isDark ? '#FFFFFF' : '#333',
-              backgroundColor: isDark ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backgroundColor: isDark ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
               padding: '4px',
               borderRadius: '4px',
               width: '100%',

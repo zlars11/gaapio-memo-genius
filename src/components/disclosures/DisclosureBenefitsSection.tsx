@@ -11,7 +11,7 @@ export const DisclosureBenefitsSection = memo(function DisclosureBenefitsSection
     {
       icon: Shield,
       title: "Ensure Compliance",
-      description: "Stay current with ASC 842 requirements and audit standards"
+      description: "Stay current with ASC requirements and audit standards"
     },
     {
       icon: Target,
