@@ -26,6 +26,7 @@ const useWindowSize = () => {
 export const AnimatedMemoRight = () => {
   const { width } = useWindowSize();
   const memoContainerRef = useRef<HTMLDivElement>(null);
+  const rotationWrapperRef = useRef<HTMLDivElement>(null);
   const typedElementRef = useRef<HTMLDivElement>(null);
   const typedInstanceRef = useRef<Typed | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -78,8 +79,17 @@ export const AnimatedMemoRight = () => {
       memoContainerRef.current.style.boxShadow = isDarkMode 
         ? "0 0 15px rgba(255,255,255,0.05)" 
         : "0 0 15px rgba(0,0,0,0.1)";
-      // Apply right lean transform - THIS IS THE KEY CHANGE
-      memoContainerRef.current.style.transform = "rotate(2deg)";
+    }
+
+    // Apply rotation to the wrapper instead of the memo container
+    if (rotationWrapperRef.current) {
+      rotationWrapperRef.current.style.transform = "rotate(8deg)"; // Increased rotation for visibility
+      rotationWrapperRef.current.style.transformOrigin = "center";
+      rotationWrapperRef.current.style.display = "inline-block";
+      // Add subtle shadow to make rotation more visible
+      rotationWrapperRef.current.style.filter = isDarkMode 
+        ? "drop-shadow(0 10px 20px rgba(255,255,255,0.1))" 
+        : "drop-shadow(0 10px 20px rgba(0,0,0,0.15))";
     }
   };
 
@@ -135,67 +145,92 @@ export const AnimatedMemoRight = () => {
   }, []);
 
   return (
-    <div className="memo-animation-container">
+    <div 
+      className="memo-animation-container"
+      style={{
+        position: 'relative',
+        overflow: 'visible',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px' // Add padding to prevent clipping
+      }}
+    >
       <div 
-        ref={memoContainerRef}
-        className={`memo-card ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        ref={rotationWrapperRef}
         style={{
-          backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
-          borderColor: isDark ? "#333333" : "#e5e7eb",
-          boxShadow: isDark 
-            ? "0 0 15px rgba(255,255,255,0.05)" 
-            : "0 0 15px rgba(0,0,0,0.1)",
-          maxWidth: "850px",
-          width: "100%",
-          transform: "rotate(2deg)" // Right lean instead of left
+          transform: "rotate(8deg)", // Clockwise rotation for right lean
+          transformOrigin: "center",
+          display: "inline-block",
+          filter: isDark 
+            ? "drop-shadow(0 10px 20px rgba(255,255,255,0.1))" 
+            : "drop-shadow(0 10px 20px rgba(0,0,0,0.15))"
         }}
       >
-        <img 
-          src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
-          alt="Gaapio Revenue Recognition UI" 
-          className="memo-background-image"
-          loading="eager"
-          fetchPriority="high"
-          style={{
-            width: "100%",
-            height: "auto",
-            objectFit: "contain"
-          }}
-        />
-        
         <div 
-          className="memo-text-overlay"
+          ref={memoContainerRef}
+          className={`memo-card ${loaded ? 'opacity-100' : 'opacity-0'}`}
           style={{
-            position: "absolute",
-            top: getTopPosition(),
-            left: getLeftPosition(),
-            right: "2.5%",
-            textAlign: "left",
-            lineHeight: "1.2",
-            zIndex: 10,
-            height: getContainerHeight(),
-            display: "flex",
-            alignItems: "flex-start",
-            width: getContainerWidth()
+            backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
+            borderColor: isDark ? "#333333" : "#e5e7eb",
+            boxShadow: isDark 
+              ? "0 0 15px rgba(255,255,255,0.05)" 
+              : "0 0 15px rgba(0,0,0,0.1)",
+            maxWidth: "850px",
+            width: "100%",
+            border: "1px solid",
+            borderRadius: "8px",
+            position: "relative"
           }}
         >
-          <div 
-            ref={typedElementRef}
-            className="memo-text"
+          <img 
+            src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
+            alt="Gaapio Revenue Recognition UI" 
+            className="memo-background-image"
+            loading="eager"
+            fetchPriority="high"
             style={{
-              color: isDark ? '#FFFFFF' : '#333',
-              backgroundColor: isDark ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
-              padding: '4px',
-              borderRadius: '4px',
-              width: '100%',
-              fontSize: '12px',
-              transform: `scale(${getScale()})`,
-              transformOrigin: 'top left',
-              whiteSpace: 'pre-wrap',
-              maxHeight: `${100 / getScale()}%`,
-              overflow: 'hidden'
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+              borderRadius: "8px"
             }}
-          ></div>
+          />
+          
+          <div 
+            className="memo-text-overlay"
+            style={{
+              position: "absolute",
+              top: getTopPosition(),
+              left: getLeftPosition(),
+              right: "2.5%",
+              textAlign: "left",
+              lineHeight: "1.2",
+              zIndex: 10,
+              height: getContainerHeight(),
+              display: "flex",
+              alignItems: "flex-start",
+              width: getContainerWidth()
+            }}
+          >
+            <div 
+              ref={typedElementRef}
+              className="memo-text"
+              style={{
+                color: isDark ? '#FFFFFF' : '#333',
+                backgroundColor: isDark ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
+                padding: '4px',
+                borderRadius: '4px',
+                width: '100%',
+                fontSize: '12px',
+                transform: `scale(${getScale()})`,
+                transformOrigin: 'top left',
+                whiteSpace: 'pre-wrap',
+                maxHeight: `${100 / getScale()}%`,
+                overflow: 'hidden'
+              }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>
