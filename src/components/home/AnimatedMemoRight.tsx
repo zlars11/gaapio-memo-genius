@@ -78,7 +78,7 @@ export const AnimatedMemoRight = () => {
       memoContainerRef.current.style.boxShadow = isDarkMode 
         ? "0 0 15px rgba(255,255,255,0.05)" 
         : "0 0 15px rgba(0,0,0,0.1)";
-      // Apply right lean transform
+      // Apply right lean transform - THIS IS THE KEY CHANGE
       memoContainerRef.current.style.transform = "rotate(2deg)";
     }
   };
