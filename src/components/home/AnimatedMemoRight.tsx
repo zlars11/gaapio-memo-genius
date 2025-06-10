@@ -147,7 +147,7 @@ export const AnimatedMemoRight = () => {
           border: "1px solid",
           borderRadius: "8px",
           position: "relative",
-          transform: "rotate(8deg)", // ✅ Right-leaning
+          transform: "rotate(10deg)", // ✅ Right-leaning
           transformOrigin: "center",
           filter: isDark
             ? "drop-shadow(0 10px 20px rgba(255,255,255,0.1))"
@@ -164,7 +164,9 @@ export const AnimatedMemoRight = () => {
             width: "100%",
             height: "auto",
             objectFit: "contain",
-            borderRadius: "8px"
+            borderRadius: "8px",
+            transform: "rotate(4deg)", // ✅ Counter skew for visual right lean
+            transformOrigin: "center"
           }}
         />
 
@@ -206,3 +208,4 @@ export const AnimatedMemoRight = () => {
     </div>
   );
 };
+
