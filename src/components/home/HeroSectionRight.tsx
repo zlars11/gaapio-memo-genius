@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AnimatedMemo } from "./AnimatedMemoRight";
+import { AnimatedMemoRight as AnimatedMemo } from "./AnimatedMemoRight";
 
 interface HeroSectionProps {
   title?: string;
