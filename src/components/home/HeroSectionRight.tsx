@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDownCircle } from "lucide-react";
 import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AnimatedMemoRight as AnimatedMemo } from "./AnimatedMemoRight";
+import { AnimatedMemoRight } from "./AnimatedMemoRight";
 
 interface HeroSectionProps {
   title?: string;
@@ -74,7 +74,7 @@ export const HeroSection = memo(function HeroSection({
         
         {/* Constrained animated memo display with better mobile spacing */}
         <div className="hero-memo-container mb-24 md:mb-16">
-          {isClient && <AnimatedMemo />}
+          {isClient && <AnimatedMemoRight />}
         </div>
       </div>
       
