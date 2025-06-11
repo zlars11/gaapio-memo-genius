@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSection";
+import { HeroSectionRight } from "@/components/home/HeroSectionRight";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
