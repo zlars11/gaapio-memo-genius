@@ -134,7 +134,7 @@ export const AnimatedMemoRight = () => {
     >
       <div
         ref={memoContainerRef}
-        className={`memo-card ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`memo-card-right ${loaded ? 'opacity-100' : 'opacity-0'}`}
         style={{
           backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
           borderColor: isDark ? "#333333" : "#e5e7eb",
@@ -189,7 +189,7 @@ export const AnimatedMemoRight = () => {
               borderRadius: '4px',
               width: '100%',
               fontSize: '12px',
-              transform: `scale(${getScale()})`,
+              transform: `scale(${getScale()}) rotate(0.5deg)`,
               transformOrigin: 'top left',
               whiteSpace: 'pre-wrap',
               maxHeight: `${100 / getScale()}%`,
