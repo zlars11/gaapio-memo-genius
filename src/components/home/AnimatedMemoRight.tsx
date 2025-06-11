@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import Typed from "typed.js";
 
@@ -51,9 +50,9 @@ export const AnimatedMemoRight = () => {
   };
 
   const getLeftPosition = () => {
-    if (width < 480) return "20%";
-    if (width < 768) return "20%";
-    return "20%";
+    if (width < 480) return "23%";
+    if (width < 768) return "23%";
+    return "23%";
   };
 
   const getContainerHeight = () => {
@@ -147,12 +146,11 @@ export const AnimatedMemoRight = () => {
           border: "1px solid",
           borderRadius: "8px",
           position: "relative",
-          transform: "rotate(8deg)", // ✅ Right-leaning
           transformOrigin: "center",
         }}
       >
         <img
-          src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
+          src={isDark ? "/assets/images/gaapio-app-dark-right.png" : "/assets/images/gaapio-app_right.png"}
           alt="Gaapio Revenue Recognition UI"
           className="memo-background-image"
           loading="eager"
