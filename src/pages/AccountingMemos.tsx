@@ -67,7 +67,7 @@ export default function AccountingMemos() {
       
       <div className="relative overflow-hidden">
         <div className="relative z-10">
-          <HeroSection title="Audit Ready Memos and Policies" />
+          <HeroSection />
           <HowItWorksSection />
           <SocialProofSection />
           <BenefitsSection />
