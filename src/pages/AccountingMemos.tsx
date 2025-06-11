@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSection";
+import { HeroSection } from "@/components/home/HeroSectionRight";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
@@ -67,7 +67,7 @@ export default function AccountingMemos() {
       
       <div className="relative overflow-hidden">
         <div className="relative z-10">
-          <HeroSection title="Audit Ready Memos and Policies" />
+          <HeroSection />
           <HowItWorksSection />
           <SocialProofSection />
           <BenefitsSection />

@@ -54,6 +54,16 @@ export function Footer() {
                     Demo
                   </Link>
                 </li>
+                <li>
+                  <a 
+                    href="https://app.gaapio.com/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
+                  >
+                    App
+                  </a>
+                </li>
               </ul>
             </div>
             
