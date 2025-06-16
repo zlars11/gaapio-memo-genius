@@ -33,7 +33,7 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
-      label: "01 · MEMOS",
+      label: "MEMOS",
       title: "Generate Technical Memos Fast",
       bulletPoints: [
         "Guardrails ensure technical accuracy",
@@ -42,10 +42,11 @@ export function ProductHighlightsSection() {
       ],
       href: "/accounting-memos",
       delay: 0,
-      icon: FileText
+      icon: FileText,
+      number: "1"
     },
     {
-      label: "02 · FOOTNOTE DISCLOSURES",
+      label: "FOOTNOTE DISCLOSURES",
       title: "Auto-Draft Footnote Disclosures",
       bulletPoints: [
         "Guided prompts to ensure compliance",
@@ -54,10 +55,11 @@ export function ProductHighlightsSection() {
       ],
       href: "/footnote-disclosures",
       delay: 200,
-      icon: Book
+      icon: Book,
+      number: "2"
     },
     {
-      label: "03 · GAAP/SEC UPDATES",
+      label: "GAAP/SEC UPDATES",
       title: "Stay Ahead of Guidance Updates",
       bulletPoints: [
         "Instant alerts for new standards",
@@ -66,7 +68,8 @@ export function ProductHighlightsSection() {
       ],
       href: "/guidance-updates",
       delay: 400,
-      icon: Bell
+      icon: Bell,
+      number: "3"
     }
   ];
 
@@ -112,9 +115,9 @@ export function ProductHighlightsSection() {
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >
-                {/* Large background number */}
-                <div className="absolute top-4 right-6 text-[120px] font-bold opacity-[0.03] text-[#339CFF] dark:text-white/10 leading-none">
-                  {product.label.split(' ')[0]}
+                {/* Large background number - repositioned to avoid overlap with titles */}
+                <div className="absolute top-8 right-4 text-[120px] font-bold opacity-[0.08] text-[#339CFF] dark:text-white/20 leading-none">
+                  {product.number}
                 </div>
 
                 <div className="flex flex-col items-center text-center relative z-10">

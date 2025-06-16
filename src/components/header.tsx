@@ -150,10 +150,18 @@ export function Header() {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-4 ml-6">
-              <ModeToggle />
               <Button variant="blue" asChild>
-                <Link to="/request-demo">Request a Demo</Link>
+              <Link to="/request-demo">Request a Demo</Link>
               </Button>
+              <ModeToggle />
+              <a 
+                href="https://app.gaapio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
+              >
+                Login
+              </a>
             </div>
           </div>
 
@@ -251,6 +259,18 @@ export function Header() {
               >
                 Contact
               </Link>
+              
+              {/* Login and Demo button for mobile */}
+              <a
+                href="https://app.gaapio.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-3 py-2 rounded-md text-base font-medium text-center text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                onClick={closeMenu}
+              >
+                Login
+              </a>
+              
               <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
                 <div className="mt-3 px-3">
                   <Button variant="blue" asChild className="w-full">

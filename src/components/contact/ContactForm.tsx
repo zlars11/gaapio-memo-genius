@@ -116,7 +116,8 @@ export function ContactForm({ onSubmitSuccess }: ContactFormProps) {
       
       <Button 
         type="submit" 
-        className="w-full rounded-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-sm" 
+        variant="blueOutline"
+        className="w-full rounded-lg transition-all duration-300" 
         size="lg"
         disabled={isLoading}
       >
