@@ -150,10 +150,10 @@ export function Header() {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-4 ml-6">
-              <ModeToggle />
               <Button variant="blue" asChild>
               <Link to="/request-demo">Request a Demo</Link>
               </Button>
+              <ModeToggle />
               <a 
                 href="https://app.gaapio.com/"
                 target="_blank"
