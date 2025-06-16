@@ -115,13 +115,13 @@ export function ProductHighlightsSection() {
                   transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
                 }}
               >
-                {/* Large background number - more visible and without leading zero */}
-                <div className="absolute top-4 right-6 text-[120px] font-bold opacity-[0.08] text-[#339CFF] dark:text-white/20 leading-none">
+                {/* Large background number - repositioned to avoid overlap with titles */}
+                <div className="absolute top-8 right-4 text-[120px] font-bold opacity-[0.08] text-[#339CFF] dark:text-white/20 leading-none">
                   {product.number}
                 </div>
 
                 <div className="flex flex-col items-center text-center relative z-10">
-                  {/* Pillar Label - removed numbers */}
+                  {/* Pillar Label */}
                   <div className="mb-4">
                     <span className="text-sm font-bold text-[#339CFF] tracking-wider">
                       {product.label}

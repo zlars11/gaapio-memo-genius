@@ -75,7 +75,7 @@ export default function Contact() {
                 <ContactForm onSubmitSuccess={handleFormSuccess} />
               </div>
               
-              {/* Contact cards with updated email tile colors */}
+              {/* Contact cards with updated email tile colors to match Request a Demo button */}
               <div 
                 ref={cardsRef}
                 className="grid md:grid-cols-3 gap-6 mb-8 opacity-0"
@@ -83,13 +83,13 @@ export default function Contact() {
                 <Card className="transition-all duration-300 hover:shadow-lg hover:scale-105 rounded-2xl overflow-hidden border-gray-200 dark:border-border">
                   <CardContent className="pt-8 pb-6 text-center">
                     <div className="flex justify-center mb-6">
-                      <div className="p-4 rounded-full" style={{ backgroundColor: '#9FC7FB' }}>
+                      <div className="p-4 rounded-full bg-[#4A90F2]">
                         <Mail className="h-8 w-8 text-white" />
                       </div>
                     </div>
                     <h3 className="font-bold text-xl mb-3">General Inquiries</h3>
                     <p className="text-muted-foreground mb-4 leading-relaxed">For general questions and information</p>
-                    <a href="mailto:info@gaapio.com" className="hover:underline font-semibold text-lg" style={{ color: '#9FC7FB' }}>
+                    <a href="mailto:info@gaapio.com" className="hover:underline font-semibold text-lg text-[#4A90F2]">
                       info@gaapio.com
                     </a>
                   </CardContent>
@@ -98,13 +98,13 @@ export default function Contact() {
                 <Card className="transition-all duration-300 hover:shadow-lg hover:scale-105 rounded-2xl overflow-hidden border-gray-200 dark:border-border">
                   <CardContent className="pt-8 pb-6 text-center">
                     <div className="flex justify-center mb-6">
-                      <div className="p-4 rounded-full" style={{ backgroundColor: '#9FC7FB' }}>
+                      <div className="p-4 rounded-full bg-[#4A90F2]">
                         <LifeBuoy className="h-8 w-8 text-white" />
                       </div>
                     </div>
                     <h3 className="font-bold text-xl mb-3">Support</h3>
                     <p className="text-muted-foreground mb-4 leading-relaxed">For technical support and assistance</p>
-                    <a href="mailto:support@gaapio.com" className="hover:underline font-semibold text-lg" style={{ color: '#9FC7FB' }}>
+                    <a href="mailto:support@gaapio.com" className="hover:underline font-semibold text-lg text-[#4A90F2]">
                       support@gaapio.com
                     </a>
                   </CardContent>
@@ -113,13 +113,13 @@ export default function Contact() {
                 <Card className="transition-all duration-300 hover:shadow-lg hover:scale-105 rounded-2xl overflow-hidden border-gray-200 dark:border-border">
                   <CardContent className="pt-8 pb-6 text-center">
                     <div className="flex justify-center mb-6">
-                      <div className="p-4 rounded-full" style={{ backgroundColor: '#9FC7FB' }}>
+                      <div className="p-4 rounded-full bg-[#4A90F2]">
                         <DollarSign className="h-8 w-8 text-white" />
                       </div>
                     </div>
                     <h3 className="font-bold text-xl mb-3">Sales</h3>
                     <p className="text-muted-foreground mb-4 leading-relaxed">For pricing and purchasing information</p>
-                    <a href="mailto:sales@gaapio.com" className="hover:underline font-semibold text-lg" style={{ color: '#9FC7FB' }}>
+                    <a href="mailto:sales@gaapio.com" className="hover:underline font-semibold text-lg text-[#4A90F2]">
                       sales@gaapio.com
                     </a>
                   </CardContent>
