@@ -119,8 +119,8 @@ export function ComplianceSecuritySection() {
             Protecting sensitive financial data with private-by-design AI, bank-level encryption, and granular access controls.
           </p>
 
-          {/* Features without timeline - simple grid layout */}
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-4xl mx-auto">
+          {/* Features stacked vertically */}
+          <div className="space-y-12 max-w-2xl mx-auto">
             {features.map((feature, index) => (
               <div 
                 key={feature.title}
