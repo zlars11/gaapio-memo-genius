@@ -119,13 +119,13 @@ export function ComplianceSecuritySection() {
             Protecting sensitive financial data with private-by-design AI, bank-level encryption, and granular access controls.
           </p>
 
-          {/* Features stacked vertically */}
+          {/* Features stacked vertically with left alignment */}
           <div className="space-y-12 max-w-2xl mx-auto">
             {features.map((feature, index) => (
               <div 
                 key={feature.title}
                 className={cn(
-                  "text-center transition-all duration-1000",
+                  "flex items-start space-x-6 text-left transition-all duration-1000",
                   isVisible 
                     ? "opacity-100 translate-y-0" 
                     : "opacity-0 translate-y-[40px]"
@@ -133,14 +133,14 @@ export function ComplianceSecuritySection() {
                 style={{ transitionDelay: `${400 + index * 200}ms` }}
               >
                 {/* Feature icon */}
-                <div className="flex justify-center mb-6">
+                <div className="flex-shrink-0">
                   <div className="w-16 h-16 bg-gradient-to-br from-[#339CFF] to-[#2B70F7] rounded-2xl flex items-center justify-center shadow-lg">
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
                 </div>
                 
                 {/* Feature content */}
-                <div className="text-center">
+                <div className="flex-1">
                   <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
