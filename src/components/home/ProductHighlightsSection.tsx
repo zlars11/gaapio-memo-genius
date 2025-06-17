@@ -33,8 +33,8 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
-      label: "MEMOS",
-      title: "Generate Technical Memos Fast",
+      label: "ACCOUNTING MEMOS/POLICIES",
+      title: "Fast, Audit-ready Technical Memos",
       bulletPoints: [
         "Guardrails ensure technical accuracy",
         "Always aligned with latest standards - ASC 606, 842, and many more",
