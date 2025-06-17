@@ -63,28 +63,28 @@ export function ComplianceSecuritySection() {
       {/* Main shield background illustration */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative opacity-5 dark:opacity-10">
-          <ShieldCheck className="h-96 w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '4s' }} />
+          <ShieldCheck className="h-64 w-64 md:h-96 md:w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '4s' }} />
           <div className="absolute inset-0 bg-gradient-to-br from-[#339CFF]/20 to-transparent rounded-full blur-3xl"></div>
         </div>
       </div>
 
-      {/* Additional background security icons - same size and transparency as shield */}
-      <div className="absolute top-20 left-20 opacity-5 dark:opacity-10 pointer-events-none">
-        <Lock className="h-96 w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '6s' }} />
+      {/* Additional background security icons - smaller on mobile */}
+      <div className="absolute top-20 left-10 md:left-20 opacity-5 dark:opacity-10 pointer-events-none">
+        <Lock className="h-48 w-48 md:h-96 md:w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '6s' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-[#339CFF]/20 to-transparent rounded-full blur-3xl"></div>
       </div>
       
-      <div className="absolute bottom-20 right-20 opacity-5 dark:opacity-10 pointer-events-none">
-        <FileCheck className="h-96 w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '8s' }} />
+      <div className="absolute bottom-20 right-10 md:right-20 opacity-5 dark:opacity-10 pointer-events-none">
+        <FileCheck className="h-48 w-48 md:h-96 md:w-96 text-[#339CFF] animate-pulse" style={{ animationDuration: '8s' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-[#339CFF]/20 to-transparent rounded-full blur-3xl"></div>
       </div>
 
       <ResponsiveContainer>
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <div className="relative z-10 max-w-4xl mx-auto">
           {/* Lead-in tagline */}
           <div 
             className={cn(
-              "text-xs font-semibold tracking-[0.2em] uppercase text-[#339CFF] mb-4 transition-all duration-1000",
+              "text-xs font-semibold tracking-[0.2em] uppercase text-[#339CFF] mb-4 transition-all duration-1000 text-center",
               isVisible 
                 ? "opacity-100 translate-y-0" 
                 : "opacity-0 translate-y-[20px]"
@@ -96,7 +96,7 @@ export function ComplianceSecuritySection() {
           {/* Headline */}
           <h2 
             className={cn(
-              "text-3xl md:text-4xl lg:text-5xl font-bold mb-6 transition-all duration-1000 text-gray-900 dark:text-white",
+              "text-3xl md:text-4xl lg:text-5xl font-bold mb-6 transition-all duration-1000 text-gray-900 dark:text-white text-center",
               isVisible 
                 ? "opacity-100 translate-y-0" 
                 : "opacity-0 translate-y-[30px]"
@@ -109,7 +109,7 @@ export function ComplianceSecuritySection() {
           {/* Subheadline */}
           <p 
             className={cn(
-              "text-lg md:text-xl text-muted-foreground mb-16 max-w-3xl mx-auto leading-relaxed transition-all duration-1000",
+              "text-lg md:text-xl text-muted-foreground mb-16 max-w-3xl mx-auto leading-relaxed transition-all duration-1000 text-center",
               isVisible 
                 ? "opacity-100 translate-y-0" 
                 : "opacity-0 translate-y-[30px]"
@@ -120,7 +120,7 @@ export function ComplianceSecuritySection() {
           </p>
 
           {/* Features stacked vertically with left alignment */}
-          <div className="space-y-12 max-w-2xl mx-auto">
+          <div className="space-y-12 max-w-2xl">
             {features.map((feature, index) => (
               <div 
                 key={feature.title}

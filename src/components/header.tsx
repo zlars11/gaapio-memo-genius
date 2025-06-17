@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -153,7 +152,6 @@ export function Header() {
               <Button variant="blue" asChild>
               <Link to="/request-demo">Request a Demo</Link>
               </Button>
-              <ModeToggle />
               <a 
                 href="https://app.gaapio.com/"
                 target="_blank"
@@ -162,6 +160,7 @@ export function Header() {
               >
                 Login
               </a>
+              <ModeToggle />
             </div>
           </div>
 
@@ -260,22 +259,21 @@ export function Header() {
                 Contact
               </Link>
               
-              {/* Login and Demo button for mobile */}
-              <a
-                href="https://app.gaapio.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-3 py-2 rounded-md text-base font-medium text-center text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                onClick={closeMenu}
-              >
-                Login
-              </a>
-              
+              {/* Demo button and Login for mobile */}
               <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-                <div className="mt-3 px-3">
+                <div className="mt-3 px-3 space-y-3">
                   <Button variant="blue" asChild className="w-full">
                     <Link to="/request-demo" onClick={closeMenu}>Request a Demo</Link>
                   </Button>
+                  <a
+                    href="https://app.gaapio.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-center text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    onClick={closeMenu}
+                  >
+                    Login
+                  </a>
                 </div>
               </div>
             </div>
