@@ -1,9 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { PenTool, FileCheck, Bell } from "lucide-react";
+import { PencilLine, FileText, Bell } from "lucide-react";
 
 export function ProductHighlightsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -42,7 +41,7 @@ export function ProductHighlightsSection() {
       ],
       href: "/accounting-memos",
       delay: 0,
-      icon: PenTool,
+      icon: PencilLine,
       number: "1",
       iconColor: "#339CFF"
     },
@@ -56,7 +55,7 @@ export function ProductHighlightsSection() {
       ],
       href: "/footnote-disclosures",
       delay: 200,
-      icon: FileCheck,
+      icon: FileText,
       number: "2",
       iconColor: "#10B981"
     },
