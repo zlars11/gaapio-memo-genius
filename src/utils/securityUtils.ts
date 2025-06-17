@@ -42,59 +42,25 @@ function eraseCookie(name: string) {
   document.cookie = `${name}=;Max-Age=-99999999;path=/;${domainAttr}SameSite=Strict;`;
 }
 
-// Password protection functions with improved fallbacks and defaults
+// Password protection functions - DISABLED
 export function getProtectionStatus(): boolean {
-  // Check cookie first
-  const cookieValue = getCookie('password_protection_enabled');
-  if (cookieValue !== null) {
-    return cookieValue === 'true';
-  }
-  
-  // Then check localStorage as fallback
-  const localValue = localStorage.getItem('password_protection_enabled');
-  if (localValue !== null) {
-    // Migrate from localStorage to cookie
-    setCookie('password_protection_enabled', localValue);
-    return localValue === 'true';
-  }
-  
-  // Default to false only if we have evidence protection was explicitly disabled
-  // Otherwise, we'll check if a password exists which indicates protection was intended
-  const hasPassword = getSitePassword() !== null;
-  
-  // If there's a password set but no explicit protection status,
-  // assume protection was intended to be enabled
-  return hasPassword;
+  // Always return false - password protection is disabled
+  return false;
 }
 
 export function setProtectionStatus(enabled: boolean): void {
-  // Set in both cookie and localStorage for backward compatibility
-  setCookie('password_protection_enabled', enabled.toString());
-  localStorage.setItem('password_protection_enabled', enabled.toString());
+  // Always set to false regardless of input - password protection is disabled
+  setCookie('password_protection_enabled', 'false');
+  localStorage.setItem('password_protection_enabled', 'false');
 }
 
 export function getSitePassword(): string | null {
-  // First check cookie, then localStorage for backward compatibility
-  const cookieValue = getCookie('site_password');
-  if (cookieValue !== null) {
-    return cookieValue;
-  }
-  
-  // Fallback to localStorage
-  const localValue = localStorage.getItem('site_password');
-  if (localValue) {
-    // Migrate from localStorage to cookie
-    setCookie('site_password', localValue);
-    return localValue;
-  }
-  
+  // Always return null - no password functionality
   return null;
 }
 
 export function setSitePassword(password: string): void {
-  // Set in both cookie and localStorage for backward compatibility
-  setCookie('site_password', password);
-  localStorage.setItem('site_password', password);
+  // Do nothing - password functionality is disabled
 }
 
 // Session version management for expiring sessions
@@ -123,106 +89,22 @@ export function incrementSessionVersion(): string {
 }
 
 export function hasValidAccess(): boolean {
-  // Check if access is granted via cookie
-  const accessCookie = getCookie('site_access');
-  if (accessCookie) {
-    try {
-      const accessData = JSON.parse(accessCookie);
-      const { granted, expires, version } = accessData;
-      
-      // Check if access is granted, not expired, and version matches
-      const currentTime = Date.now();
-      const isExpired = expires <= currentTime;
-      const currentVersion = getSessionVersion();
-      const isVersionMatch = version === currentVersion;
-      
-      return granted && !isExpired && isVersionMatch;
-    } catch (e) {
-      console.error("Error parsing access cookie:", e);
-      return false;
-    }
-  }
-  
-  // Fallback to sessionStorage for backward compatibility
-  const accessSession = sessionStorage.getItem('site_access');
-  if (accessSession) {
-    try {
-      const accessData = JSON.parse(accessSession);
-      const { granted, expires, version } = accessData;
-      
-      // Check if access is granted, not expired, and version matches
-      const currentTime = Date.now();
-      const isExpired = expires <= currentTime;
-      const currentVersion = getSessionVersion();
-      const isVersionMatch = version === currentVersion;
-      
-      // Migrate to cookie if valid
-      const isValid = granted && !isExpired && isVersionMatch;
-      if (isValid) {
-        setCookie('site_access', accessSession, 1); // 1 day expiry for cookie
-      }
-      
-      return isValid;
-    } catch (e) {
-      console.error("Error parsing access data from session storage:", e);
-      return false;
-    }
-  }
-  
-  return false;
+  // Always return true - no password protection
+  return true;
 }
 
 export async function validateSitePassword(password: string): Promise<boolean> {
-  // Always check if protection is enabled first
-  const protectionEnabled = getProtectionStatus();
-  
-  if (!protectionEnabled) {
-    // If protection is explicitly disabled, grant access
-    grantAccess();
-    return true;
-  }
-
-  // Check password
-  const sitePassword = getSitePassword();
-  
-  // If there's no password set but protection is enabled,
-  // default to the standard password
-  const defaultPassword = "Gaapio2025!";
-  const effectivePassword = sitePassword || defaultPassword;
-  
-  const isValid = password === effectivePassword;
-  
-  if (isValid) {
-    grantAccess();
-  }
-  
-  return isValid;
+  // Always return true - no password protection
+  return true;
 }
 
 export function grantAccess(): void {
-  // Set access with 24-hour expiry
-  const expiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-  const currentVersion = getSessionVersion();
-  
-  const accessData = {
-    granted: true,
-    expires: expiry,
-    version: currentVersion
-  };
-  
-  const accessString = JSON.stringify(accessData);
-  
-  // Set in both cookie (primary) and sessionStorage (legacy support)
-  setCookie('site_access', accessString, 1); // 1 day expiry
-  sessionStorage.setItem('site_access', accessString);
+  // Do nothing - access is always granted
 }
 
 export function expireAllSessions(): void {
-  // Increment the version to invalidate all existing sessions
+  // Only increment version for admin session management
   incrementSessionVersion();
-  
-  // Also clear the access cookie directly
-  eraseCookie('site_access');
 }
 
 /**

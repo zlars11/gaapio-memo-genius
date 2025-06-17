@@ -1,9 +1,8 @@
-
 import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { FileText, Book, Bell } from "lucide-react";
+import { FileText, FileCheck, Bell } from "lucide-react";
 
 export function ProductHighlightsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -33,8 +32,8 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
-      label: "MEMOS",
-      title: "Generate Technical Memos Fast",
+      label: "ACCOUNTING MEMOS/POLICIES",
+      title: "Fast, Audit-ready Technical Memos",
       bulletPoints: [
         "Guardrails ensure technical accuracy",
         "Always aligned with latest standards - ASC 606, 842, and many more",
@@ -43,7 +42,8 @@ export function ProductHighlightsSection() {
       href: "/accounting-memos",
       delay: 0,
       icon: FileText,
-      number: "1"
+      number: "1",
+      iconColor: "#339CFF"
     },
     {
       label: "FOOTNOTE DISCLOSURES",
@@ -55,8 +55,9 @@ export function ProductHighlightsSection() {
       ],
       href: "/footnote-disclosures",
       delay: 200,
-      icon: Book,
-      number: "2"
+      icon: FileCheck,
+      number: "2",
+      iconColor: "#339CFF"
     },
     {
       label: "GAAP/SEC UPDATES",
@@ -69,7 +70,8 @@ export function ProductHighlightsSection() {
       href: "/guidance-updates",
       delay: 400,
       icon: Bell,
-      number: "3"
+      number: "3",
+      iconColor: "#339CFF"
     }
   ];
 
@@ -88,9 +90,9 @@ export function ProductHighlightsSection() {
 
       <ResponsiveContainer>
         <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Three Ways to Transform Your Close</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Three Core Solutions</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From technical accounting to regulatory updates — we've got you covered.
+            Built to streamline your close — from memos to disclosures to guidance compliance.
           </p>
         </div>
         
@@ -130,13 +132,29 @@ export function ProductHighlightsSection() {
 
                   {/* Enhanced icon with background */}
                   <div className="relative mb-6">
-                    <div className="w-20 h-20 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative overflow-hidden">
+                    <div 
+                      className="w-20 h-20 bg-gradient-to-br rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative overflow-hidden"
+                      style={{
+                        background: `linear-gradient(135deg, ${product.iconColor}20, ${product.iconColor}10)`
+                      }}
+                    >
                       {/* Subtle inner glow */}
-                      <div className="absolute inset-1 bg-gradient-to-br from-[#339CFF]/10 to-transparent rounded-xl"></div>
-                      <IconComponent className="w-8 h-8 text-[#339CFF] relative z-10" />
+                      <div 
+                        className="absolute inset-1 rounded-xl"
+                        style={{
+                          background: `linear-gradient(135deg, ${product.iconColor}10, transparent)`
+                        }}
+                      ></div>
+                      <IconComponent 
+                        className="w-8 h-8 relative z-10" 
+                        style={{ color: product.iconColor }}
+                      />
                     </div>
                     {/* Floating accent */}
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#339CFF]/20 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
+                    <div 
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full group-hover:scale-125 transition-transform duration-300"
+                      style={{ backgroundColor: `${product.iconColor}20` }}
+                    ></div>
                   </div>
 
                   <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white group-hover:text-[#339CFF] transition-colors duration-300">
