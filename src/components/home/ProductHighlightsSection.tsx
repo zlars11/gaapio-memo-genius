@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { PencilLine, FileText, Bell } from "lucide-react";
+import { FileText, FileCheck, Bell } from "lucide-react";
 
 export function ProductHighlightsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -41,7 +41,7 @@ export function ProductHighlightsSection() {
       ],
       href: "/accounting-memos",
       delay: 0,
-      icon: PencilLine,
+      icon: FileText,
       number: "1",
       iconColor: "#339CFF"
     },
@@ -55,9 +55,9 @@ export function ProductHighlightsSection() {
       ],
       href: "/footnote-disclosures",
       delay: 200,
-      icon: FileText,
+      icon: FileCheck,
       number: "2",
-      iconColor: "#10B981"
+      iconColor: "#339CFF"
     },
     {
       label: "GAAP/SEC UPDATES",
