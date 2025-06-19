@@ -5,6 +5,7 @@ import { HomepageCtaToggle } from "@/components/admin/HomepageCtaToggle";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { FeatureToggles } from "@/components/admin/FeatureToggles";
+import { UnderConstructionToggle } from "@/components/admin/UnderConstructionToggle";
 
 export function AdminDashboard() {
   const [waitlistCount, setWaitlistCount] = useState(0);
@@ -34,6 +35,8 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      <UnderConstructionToggle />
+      
       <Card>
         <CardHeader>
           <CardTitle>Homepage CTA Settings</CardTitle>
