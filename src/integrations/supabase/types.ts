@@ -267,6 +267,27 @@ export type Database = {
         }
         Relationships: []
       }
+      site_config: {
+        Row: {
+          created_at: string
+          id: string
+          under_construction: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          under_construction?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          under_construction?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           company_id: string | null
