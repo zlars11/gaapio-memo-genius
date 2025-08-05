@@ -35,9 +35,9 @@ export function ProductHighlightsSection() {
       label: "ACCOUNTING MEMOS/POLICIES",
       title: "Fast, Audit-ready Technical Memos",
       bulletPoints: [
-        "Guardrails ensure technical accuracy",
-        "Always aligned with latest standards - ASC 606, 842, and many more",
-        "Drafted in seconds with trained AI"
+        "Version history, internal reviews, and audit package",
+        "Drafted in seconds with trained AI",
+        "Contract Analysis"
       ],
       href: "/accounting-memos",
       delay: 0,
@@ -47,11 +47,11 @@ export function ProductHighlightsSection() {
     },
     {
       label: "FOOTNOTE DISCLOSURES",
-      title: "Auto-Draft Footnote Disclosures",
+      title: "Benchmark & Auto-Draft Footnote Disclosures",
       bulletPoints: [
-        "Guided prompts to ensure compliance",
-        "CPA approved, industry leading formatting",
-        "Clear review and audit trail"
+        "AI trained benchmarking",
+        "Footnote requirement checklists",
+        "CPA approved, industry leading formatting"
       ],
       href: "/footnote-disclosures",
       delay: 200,
@@ -90,7 +90,7 @@ export function ProductHighlightsSection() {
 
       <ResponsiveContainer>
         <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Three Core Solutions</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Built to streamline your close — from memos to disclosures to guidance compliance.
           </p>
