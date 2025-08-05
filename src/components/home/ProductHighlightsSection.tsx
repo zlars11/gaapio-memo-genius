@@ -32,7 +32,7 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
-      label: "ACCOUNTING MEMOS/POLICIES",
+      label: "ACCOUNTING MEMOS",
       title: "Fast, Audit-ready Technical Memos",
       bulletPoints: [
         "Version history, internal reviews, and audit package",
