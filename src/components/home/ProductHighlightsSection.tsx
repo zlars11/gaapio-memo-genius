@@ -55,7 +55,7 @@ export function ProductHighlightsSection() {
       href: "/footnote-disclosures",
       delay: 200,
       icon: FileCheck,
-      iconColor: "#339CFF"
+      iconColor: "#E0E0E0"
     },
     {
       label: "GAAP/SEC UPDATES",
