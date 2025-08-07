@@ -42,7 +42,7 @@ export function ProductHighlightsSection() {
       href: "/accounting-memos",
       delay: 0,
       icon: FileText,
-      iconColor: "#339CFF"
+      iconColor: "#F0F2F5"
     },
     {
       label: "FOOTNOTE DISCLOSURES",
