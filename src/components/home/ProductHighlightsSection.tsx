@@ -42,7 +42,6 @@ export function ProductHighlightsSection() {
       href: "/accounting-memos",
       delay: 0,
       icon: FileText,
-      number: "1",
       iconColor: "#339CFF"
     },
     {
@@ -56,7 +55,6 @@ export function ProductHighlightsSection() {
       href: "/footnote-disclosures",
       delay: 200,
       icon: FileCheck,
-      number: "2",
       iconColor: "#339CFF"
     },
     {
@@ -70,7 +68,6 @@ export function ProductHighlightsSection() {
       href: "/guidance-updates",
       delay: 400,
       icon: Bell,
-      number: "3",
       iconColor: "#339CFF"
     }
   ];
