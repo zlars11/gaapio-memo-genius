@@ -33,7 +33,7 @@ export function ProductHighlightsSection() {
   const products = [
     {
       label: "ACCOUNTING MEMOS",
-      title: "Fast, Audit-ready Technical Memos",
+      title: "Better Memos, Faster.",
       bulletPoints: [
         "Version history, internal reviews, and audit package",
         "Drafted in seconds with trained AI",
@@ -46,7 +46,7 @@ export function ProductHighlightsSection() {
     },
     {
       label: "FOOTNOTE DISCLOSURES",
-      title: "Benchmark & Auto-Draft Footnote Disclosures",
+      title: "Benchmark & AI completed Checklists",
       bulletPoints: [
         "AI trained benchmarking",
         "Footnote requirement checklists",
@@ -59,11 +59,11 @@ export function ProductHighlightsSection() {
     },
     {
       label: "GAAP/SEC UPDATES",
-      title: "Stay Ahead of Guidance Updates",
+      title: "Apply new guidance to your situation",
       bulletPoints: [
         "Instant alerts for new standards",
         "Actionable implementation guidance",
-        "Ongoing training to stay current"
+        "Turn new guidance into a memo"
       ],
       href: "/guidance-updates",
       delay: 400,
