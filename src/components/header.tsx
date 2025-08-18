@@ -75,10 +75,7 @@ export function Header() {
                             to="/accounting-memos"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">Accounting Memos</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              AI-powered technical accounting memos
-                            </p>
+                            <div className="text-sm font-medium leading-none">Accounting Memos</div>                           
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -86,10 +83,7 @@ export function Header() {
                             to="/footnote-disclosures"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">Footnote Disclosures</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Comprehensive audit-ready disclosures
-                            </p>
+                            <div className="text-sm font-medium leading-none">Footnote Disclosures</div>                           
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -97,10 +91,7 @@ export function Header() {
                             to="/contract-analysis"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">Contract Analysis</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              AI-powered contract intelligence
-                            </p>
+                            <div className="text-sm font-medium leading-none">Contract Analysis</div>                           
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -108,10 +99,7 @@ export function Header() {
                             to="/guidance-updates"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">Guidance Updates</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Real-time accounting standard alerts
-                            </p>
+                            <div className="text-sm font-medium leading-none">Guidance Updates</div>                           
                           </Link>
                         </NavigationMenuLink>
                       </div>
