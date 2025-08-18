@@ -68,7 +68,7 @@ export function ProductHighlightsSection() {
       label: "CONTRACT ANALYSIS",
       title: "AI-Powered Contract Analysis",
       bulletPoints: [
-        "Lease abstractionn",
+        "Lease abstraction",
         "Revenue contract analysis and ASC 606 compliance",
         "Embedded lease identification and evaluation"
       ],
@@ -110,7 +110,7 @@ export function ProductHighlightsSection() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-           We have built a platform, need something that isnt on here? Let us know! </p>
+           We built a platform for a reason, need something that isn't on here? Let us know! </p>
         </div>        
         <div 
           className={cn(
