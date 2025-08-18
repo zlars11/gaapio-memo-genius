@@ -10,7 +10,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = memo(function HeroSection({ 
-  title = "Audit Ready Memos and Policies",
+  title = "Better Memos, Faster",
   subtitle = "AI-Powered. CPA-Approved."
 }: HeroSectionProps) {
   const [isClient, setIsClient] = useState(false);

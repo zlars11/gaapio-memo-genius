@@ -34,32 +34,34 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
+
       id: "memos",
-      label: "ACCOUNTING MEMOS/POLICIES",
-      title: "Fast, Audit-ready Technical Memos",
-      description: "As a busy accountant, you need technical memos that are accurate, compliant, and ready for review. Gaapio delivers professional-grade accounting memos in seconds, with built-in guardrails to ensure technical accuracy and alignment with the latest standards.",
+      label: "ACCOUNTING MEMOS",
+      title: "Better Memos, Faster.",
       bulletPoints: [
-        "Guardrails ensure technical accuracy",
-        "Always aligned with latest standards - ASC 606, 842, and many more",
-        "Drafted in seconds with trained AI"
+        "Version history, internal reviews, and audit package",
+        "Drafted in seconds with trained AI",
+        "Contract Analysis"
       ],
       href: "/accounting-memos",
       icon: FileText,
+
       iconColor: "#339CFF"
     },
     {
       id: "disclosures",
-      label: "FOOTNOTE DISCLOSURES",
-      title: "Auto-Draft Footnote Disclosures",
-      description: "Financial statement disclosures require precision and compliance expertise. Gaapio guides you through the disclosure process with CPA-approved templates and industry-leading formatting, ensuring your disclosures meet all regulatory requirements.",
+      label: "FOOTNOTE DISCLOSURES", 
+      title: "Benchmark & AI completed Checklists",
       bulletPoints: [
-        "Guided prompts to ensure compliance",
-        "CPA approved, industry leading formatting",
-        "Clear review and audit trail"
+        "AI trained benchmarking",
+        "Footnote requirement checklists",
+        "CPA approved, industry leading formatting"
       ],
       href: "/footnote-disclosures",
       icon: FileCheck,
+
       iconColor: "#339CFF"
+
     },
     {
       id: "contracts",
@@ -77,13 +79,12 @@ export function ProductHighlightsSection() {
     },
     {
       id: "updates",
-      label: "GAAP/SEC UPDATES",
-      title: "Stay Ahead of Guidance Updates",
-      description: "The accounting landscape evolves constantly, and staying current is essential for compliance. Gaapio delivers real-time alerts for new standards and provides actionable implementation guidance to keep your practice ahead of regulatory changes.",
+      label: "GAAP/SEC UPDATES",      
+      title: "Apply new guidance to your situation",
       bulletPoints: [
         "Instant alerts for new standards",
         "Actionable implementation guidance",
-        "Ongoing training to stay current"
+        "Turn new guidance into a memo"
       ],
       href: "/guidance-updates",
       icon: Bell,
@@ -106,12 +107,13 @@ export function ProductHighlightsSection() {
 
       <ResponsiveContainer>
         <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio has solutions for accounting firms of all sizes</h2>
+
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
+
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Firms of all sizes trust Gaapio to answer their toughest accounting questions. From sole practitioners to the world's largest advisory practices, Gaapio is built to bring absolute clarity to accounting, everywhere and on demand.
           </p>
-        </div>
-        
+        </div>        
         <div 
           className={cn(
             "max-w-7xl mx-auto transition-all duration-1000",
