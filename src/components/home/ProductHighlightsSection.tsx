@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { FileText, FileCheck, Bell } from "lucide-react";
+import { FileText, FileCheck, Bell, FileSearch } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 export function ProductHighlightsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -32,6 +34,8 @@ export function ProductHighlightsSection() {
 
   const products = [
     {
+
+      id: "memos",
       label: "ACCOUNTING MEMOS",
       title: "Better Memos, Faster.",
       bulletPoints: [
@@ -40,12 +44,13 @@ export function ProductHighlightsSection() {
         "Contract Analysis"
       ],
       href: "/accounting-memos",
-      delay: 0,
       icon: FileText,
-      iconColor: "#BDBDBD"
+
+      iconColor: "#339CFF"
     },
     {
-      label: "FOOTNOTE DISCLOSURES",
+      id: "disclosures",
+      label: "FOOTNOTE DISCLOSURES", 
       title: "Benchmark & AI completed Checklists",
       bulletPoints: [
         "AI trained benchmarking",
@@ -53,12 +58,28 @@ export function ProductHighlightsSection() {
         "CPA approved, industry leading formatting"
       ],
       href: "/footnote-disclosures",
-      delay: 200,
       icon: FileCheck,
-      iconColor: "#BDBDBD"
+
+      iconColor: "#339CFF"
+
     },
     {
-      label: "GAAP/SEC UPDATES",
+      id: "contracts",
+      label: "CONTRACT ANALYSIS",
+      title: "AI-Powered Contract Intelligence",
+      description: "Complex contracts contain critical accounting implications that can't be missed. Gaapio's AI analyzes your contracts to identify key accounting considerations, extract essential data points, and ensure proper accounting treatment across all contract types.",
+      bulletPoints: [
+        "Lease abstraction and classification",
+        "Revenue contract analysis and ASC 606 compliance",
+        "Embedded lease identification and evaluation"
+      ],
+      href: "/contract-analysis",
+      icon: FileSearch,
+      iconColor: "#339CFF"
+    },
+    {
+      id: "updates",
+      label: "GAAP/SEC UPDATES",      
       title: "Apply new guidance to your situation",
       bulletPoints: [
         "Instant alerts for new standards",
@@ -66,9 +87,8 @@ export function ProductHighlightsSection() {
         "Turn new guidance into a memo"
       ],
       href: "/guidance-updates",
-      delay: 400,
       icon: Bell,
-      iconColor: "#BDBDBD"
+      iconColor: "#339CFF"
     }
   ];
 
@@ -87,100 +107,91 @@ export function ProductHighlightsSection() {
 
       <ResponsiveContainer>
         <div className="text-center mb-16 relative z-10">
+
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
+
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Built to streamline your close — from memos to disclosures to guidance compliance.
+            Firms of all sizes trust Gaapio to answer their toughest accounting questions. From sole practitioners to the world's largest advisory practices, Gaapio is built to bring absolute clarity to accounting, everywhere and on demand.
           </p>
-        </div>
-        
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-6xl mx-auto relative">
-          {products.map((product, index) => {
-            const IconComponent = product.icon;
-            return (
-              <Link
-                key={product.title} 
-                to={product.href}
-                className={cn(
-                  "bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 group relative overflow-hidden z-10 block",
-                  "hover:shadow-[0_8px_25px_rgba(51,156,255,0.15)] hover:scale-[1.02] hover:border-[#339CFF]/30",
-                  "hover:-translate-y-1",
-                  isVisible 
-                    ? "opacity-100 translate-y-0" 
-                    : "opacity-0 translate-y-[30px]"
-                )}
-                style={{ 
-                  transitionDelay: `${product.delay}ms`,
-                  transitionDuration: "1000ms",
-                  transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)"
-                }}
-              >
-                {/* Large background number - repositioned to avoid overlap with titles */}
-                <div className="absolute top-8 right-4 text-[120px] font-bold opacity-[0.08] text-[#339CFF] dark:text-white/20 leading-none">
-                  {product.number}
-                </div>
+        </div>        
+        <div 
+          className={cn(
+            "max-w-7xl mx-auto transition-all duration-1000",
+            isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-[30px]"
+          )}
+        >
+          <Tabs defaultValue="memos" className="w-full">
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Left side - Tab buttons */}
+              <div className="lg:w-1/3">
+                <TabsList className="flex flex-col h-auto w-full bg-transparent space-y-2 p-0">
+                  {products.map((product) => {
+                    return (
+                      <TabsTrigger
+                        key={product.id}
+                        value={product.id}
+                        className="w-full h-auto p-6 justify-start text-left bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] transition-all duration-300"
+                      >
+                        <div className="font-semibold text-base leading-tight">
+                          {product.title}
+                        </div>
+                      </TabsTrigger>
+                    );
+                  })}
+                </TabsList>
+              </div>
 
-                <div className="flex flex-col items-center text-center relative z-10">
-                  {/* Pillar Label */}
-                  <div className="mb-4">
-                    <span className="text-sm font-bold text-[#339CFF] tracking-wider">
-                      {product.label}
-                    </span>
-                  </div>
-
-                  {/* Enhanced icon with background */}
-                  <div className="relative mb-6">
-                    <div 
-                      className="w-20 h-20 bg-gradient-to-br rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 relative overflow-hidden"
-                      style={{
-                        background: `linear-gradient(135deg, ${product.iconColor}20, ${product.iconColor}10)`
-                      }}
+              {/* Right side - Tab content */}
+              <div className="lg:w-2/3">
+                {products.map((product) => {
+                  const IconComponent = product.icon;
+                  return (
+                    <TabsContent
+                      key={product.id}
+                      value={product.id}
+                      className="mt-0 data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-right-2"
                     >
-                      {/* Subtle inner glow */}
-                      <div 
-                        className="absolute inset-1 rounded-xl"
-                        style={{
-                          background: `linear-gradient(135deg, ${product.iconColor}10, transparent)`
-                        }}
-                      ></div>
-                      <IconComponent 
-                        className="w-8 h-8 relative z-10" 
-                        style={{ color: product.iconColor }}
-                      />
-                    </div>
-                    {/* Floating accent */}
-                    <div 
-                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full group-hover:scale-125 transition-transform duration-300"
-                      style={{ backgroundColor: `${product.iconColor}20` }}
-                    ></div>
-                  </div>
+                      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 h-full">
+                        <div className="mb-6">
+                          <span className="text-sm font-bold text-[#339CFF] tracking-wider">
+                            {product.label}
+                          </span>
+                        </div>
 
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white group-hover:text-[#339CFF] transition-colors duration-300">
-                    {product.title}
-                  </h3>
+                        <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                          {product.title}
+                        </h3>
 
-                  {/* Bullet points */}
-                  <ul className="text-left text-sm space-y-2 w-full">
-                    {product.bulletPoints.map((point, pointIndex) => (
-                      <li key={pointIndex} className="flex items-start">
-                        <div className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#339CFF] mt-2 mr-3 group-hover:scale-125 transition-transform duration-300"></div>
-                        <span className="text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
-                          {point}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                        <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                          {product.description}
+                        </p>
 
-                  {/* Subtle call-to-action indicator */}
-                  <div className="mt-6 text-[#339CFF] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    Learn More →
-                  </div>
-                </div>
+                        {/* Bullet points */}
+                        <ul className="space-y-3 mb-8">
+                          {product.bulletPoints.map((point, pointIndex) => (
+                            <li key={pointIndex} className="flex items-start">
+                              <div className="flex-shrink-0 w-2 h-2 rounded-full bg-[#339CFF] mt-2 mr-3"></div>
+                              <span className="text-gray-600 dark:text-gray-400">
+                                {point}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
 
-                {/* Hover gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#339CFF]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-              </Link>
-            );
-          })}
+                        <Button asChild variant="blue" className="w-auto">
+                          <Link to={product.href}>
+                            Learn more →
+                          </Link>
+                        </Button>
+                      </div>
+                    </TabsContent>
+                  );
+                })}
+              </div>
+            </div>
+          </Tabs>
         </div>
       </ResponsiveContainer>
     </section>

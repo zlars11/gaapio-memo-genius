@@ -46,7 +46,7 @@ export function FinalCtaSection() {
                 : "opacity-0 translate-y-[30px]"
             )}
           >
-            Ready to Transform Your Close?
+            Ready to Transform your Technical Accounting?
           </h2>
           <p 
             className={cn(

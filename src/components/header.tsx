@@ -94,6 +94,17 @@ export function Header() {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link
+                            to="/contract-analysis"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">Contract Analysis</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              AI-powered contract intelligence
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link
                             to="/guidance-updates"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
@@ -217,6 +228,13 @@ export function Header() {
                       onClick={closeMenu}
                     >
                       Footnote Disclosures
+                    </Link>
+                    <Link
+                      to="/contract-analysis"
+                      className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/contract-analysis') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+                      onClick={closeMenu}
+                    >
+                      Contract Analysis
                     </Link>
                     <Link
                       to="/guidance-updates"

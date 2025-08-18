@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import AccountingMemos from "./pages/AccountingMemos";
 import FootnoteDisclosures from "./pages/FootnoteDisclosures";
+import ContractAnalysis from "./pages/ContractAnalysis";
 import GuidanceUpdates from "./pages/GuidanceUpdates";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -113,6 +114,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/accounting-memos" element={<AccountingMemos />} />
             <Route path="/footnote-disclosures" element={<FootnoteDisclosures />} />
+            <Route path="/contract-analysis" element={<ContractAnalysis />} />
             <Route path="/guidance-updates" element={<GuidanceUpdates />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/post" element={<BlogPost />} />

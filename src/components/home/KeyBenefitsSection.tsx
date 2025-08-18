@@ -34,40 +34,28 @@ export function KeyBenefitsSection() {
 
   const benefits = [
     {
-      icon: Clock,
-      title: "Save 90% Time",
-      description: "Cut memo and disclosure creation time from hours to minutes",
+      icon: BookCheck,
+      title: "Organized and Trusted",
+      description: "Gaapio is built on a highly curated database containing only the most trusted accounting resources, updated daily to keep up with changes in GAAP. By investing in data quality at every stage of our processes, we ensure answers you can verify using sources you can trust.",
       delay: 0
     },
     {
       icon: FileCheck,
-      title: "Audit-Ready Docs",
-      description: "Structured documentation that satisfies auditor requirements",
+      title: "Audit Ready",
+      description: "Our experienced accounting research team leverages their expertise to provide human oversight of our algorithms. Combined with built-in user feedback channels, Gaapio's in-house accounting professionals ensure the highest possible answer quality.",
       delay: 200
     },
     {
-      icon: BadgeCheck,
-      title: "CPA-Level Accuracy",
-      description: "AI-generated output that matches experienced CPA quality",
+      icon: Shield,
+      title: "Data Security",
+      description: "Unlike traditional accounting research platforms, Gaapio's generative AI solution is designed to be conversational. Getting comprehensive, human-like answers to your accounting questions is as fast and easy as asking a colleague, making it a resource your team will actually want to use.",
       delay: 400
     },
     {
-      icon: BookCheck,
-      title: "GAAP Compliance",
-      description: "Always up-to-date with the latest accounting standards",
+      icon: BadgeCheck,
+      title: "Highly Trained Models",
+      description: "With years of experience, Gaapio is the pioneer in AI for accounting research, consistently finding new ways to generate better accounting answers. We're dedicated to transforming how accounting experts work, so you can provide service that surpasses client expectations.",
       delay: 600
-    },
-    {
-      icon: Shield,
-      title: "Enterprise-Grade Security",
-      description: "Your data stays private with strict security protocols",
-      delay: 800
-    },
-    {
-      icon: Users,
-      title: "Trusted Team",
-      description: "Team of CPAs that speaks your language",
-      delay: 1000
     }
   ];
 
@@ -84,12 +72,12 @@ export function KeyBenefitsSection() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
           {benefits.map((benefit, index) => (
             <div 
               key={benefit.title}
               className={cn(
-                "text-center p-8 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md hover:shadow-lg transition-all duration-500 h-full flex flex-col min-h-[280px]",
+                "p-8 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-lg hover:shadow-xl transition-all duration-500 h-full flex flex-col min-h-[320px]",
                 isVisible 
                   ? "opacity-100 translate-y-0" 
                   : "opacity-0 translate-y-[30px]"
@@ -98,11 +86,13 @@ export function KeyBenefitsSection() {
                 transitionDelay: `${benefit.delay}ms`,
               }}
             >
-              <div className="flex justify-center mb-6">
-                <benefit.icon className="h-8 w-8 text-[#2B70F7]" />
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#339CFF]/20 to-[#339CFF]/10 rounded-xl flex items-center justify-center mr-4">
+                  <benefit.icon className="h-6 w-6 text-[#339CFF]" />
+                </div>
               </div>
-              <h3 className="text-lg font-bold mb-4">{benefit.title}</h3>
-              <p className="text-muted-foreground leading-relaxed flex-grow">{benefit.description}</p>
+              <h3 className="text-xl font-bold mb-4 text-left">{benefit.title}</h3>
+              <p className="text-muted-foreground leading-relaxed flex-grow text-left text-base">{benefit.description}</p>
             </div>
           ))}
         </div>

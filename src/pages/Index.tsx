@@ -111,14 +111,11 @@ export default function Index() {
       {/* Key Benefits Section */}
       <KeyBenefitsSection />
 
-      {/* What You'll Learn Section */}
-      <WhatYoullLearnSection />
+      {/* Final CTA Section */}
+      <FinalCtaSection />
 
       {/* Testimonials Section */}
       <TestimonialsSection />
-
-      {/* Final CTA Section */}
-      <FinalCtaSection />
       
       <Footer />
     </div>
