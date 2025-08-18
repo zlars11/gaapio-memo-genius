@@ -40,7 +40,7 @@ export function ProductHighlightsSection() {
       title: "Better Memos, Faster.",
       bulletPoints: [
         "Version history, reviewer comments, and internal sign offs",
-        "Guided prompts and AI follow up questions provide accurate AI generated memos",
+        "Guided prompts + AI follow up questions = accurate AI generated memos",
         "Exportable Audit package"
       ],
       href: "/accounting-memos",
@@ -79,7 +79,7 @@ export function ProductHighlightsSection() {
     {
       id: "updates",
       label: "GUIDANCE UPDATES",      
-      title: "Apply new guidance to your situation",
+      title: "Apply New Guidance to Your Situation",
       bulletPoints: [
         "Instant alerts for new standards",
         "Actionable implementation guidance",
