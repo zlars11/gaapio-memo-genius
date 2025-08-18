@@ -126,25 +126,14 @@ export function ProductHighlightsSection() {
               <div className="lg:w-1/3">
                 <TabsList className="flex flex-col h-auto w-full bg-transparent space-y-2 p-0">
                   {products.map((product) => {
-                    const IconComponent = product.icon;
                     return (
                       <TabsTrigger
                         key={product.id}
                         value={product.id}
                         className="w-full h-auto p-6 justify-start text-left bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] transition-all duration-300"
                       >
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                            <IconComponent className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold tracking-wider opacity-80 mb-1">
-                              {product.label}
-                            </div>
-                            <div className="font-semibold">
-                              {product.title.split(' ').slice(0, 3).join(' ')}
-                            </div>
-                          </div>
+                        <div className="font-semibold text-base leading-tight">
+                          {product.title}
                         </div>
                       </TabsTrigger>
                     );
