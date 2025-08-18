@@ -66,10 +66,9 @@ export function ProductHighlightsSection() {
     {
       id: "contracts",
       label: "CONTRACT ANALYSIS",
-      title: "AI-Powered Contract Intelligence",
-      description: "Complex contracts contain critical accounting implications that can't be missed. Gaapio's AI analyzes your contracts to identify key accounting considerations, extract essential data points, and ensure proper accounting treatment across all contract types.",
+      title: "AI-Powered Contract Analysis",
       bulletPoints: [
-        "Lease abstraction and classification",
+        "Lease abstractionn",
         "Revenue contract analysis and ASC 606 compliance",
         "Embedded lease identification and evaluation"
       ],
@@ -79,7 +78,7 @@ export function ProductHighlightsSection() {
     },
     {
       id: "updates",
-      label: "GAAP/SEC UPDATES",      
+      label: "GUIDANCE UPDATES",      
       title: "Apply new guidance to your situation",
       bulletPoints: [
         "Instant alerts for new standards",
@@ -111,8 +110,7 @@ export function ProductHighlightsSection() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Firms of all sizes trust Gaapio to answer their toughest accounting questions. From sole practitioners to the world's largest advisory practices, Gaapio is built to bring absolute clarity to accounting, everywhere and on demand.
-          </p>
+           We have built a platform, need something that isnt on here? Let us know! </p>
         </div>        
         <div 
           className={cn(
@@ -135,7 +133,7 @@ export function ProductHighlightsSection() {
                         className="w-full h-auto p-6 justify-start text-left bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] transition-all duration-300"
                       >
                         <div className="font-semibold text-base leading-tight">
-                          {product.title}
+                          {product.label}
                         </div>
                       </TabsTrigger>
                     );
