@@ -39,9 +39,9 @@ export function ProductHighlightsSection() {
       label: "ACCOUNTING MEMOS",
       title: "Better Memos, Faster.",
       bulletPoints: [
-        "Version history, internal reviews, and audit package",
-        "Drafted in seconds with trained AI",
-        "Contract Analysis"
+        "Version history, reviewer comments, and internal sign offs",
+        "Guided prompts and AI follow up questions provide accurate AI generated memos",
+        "Exportable Audit package"
       ],
       href: "/accounting-memos",
       icon: FileText,
