@@ -36,7 +36,7 @@ export function KeyBenefitsSection() {
     {
       icon: BookCheck,
       title: "Organized and Trusted",
-      description: "Gaapio is built on a highly curated database containing only the most trusted accounting resources, updated daily to keep up with changes in GAAP. By investing in data quality at every stage of our processes, we ensure answers you can verify using sources you can trust.",
+      description: "At Gaapio, we’ve organized the process from start to finish in a logical, easy-to-follow format. Everything you need is in one place — no more digging through scattered files or outdated resources. Built by a team of CPAs who have been in your shoes, Gaapio is designed to make your work more efficient, accurate, and professional. Our goal is simple: to give you a tool that not only saves time but also helps you deliver polished results that make you look great.",
       delay: 0
     },
     {
