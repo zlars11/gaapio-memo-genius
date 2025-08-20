@@ -42,7 +42,7 @@ export function KeyBenefitsSection() {
     {
       icon: FileCheck,
       title: "Audit Ready",
-      description: "Our experienced accounting research team leverages their expertise to provide human oversight of our algorithms. Combined with built-in user feedback channels, Gaapio's in-house accounting professionals ensure the highest possible answer quality.",
+      description: "With Gaapio, audit preparation is seamless. Every input, version history, analysis, and comment is automatically captured, giving you a complete record of the decision-making process. With audit view and a robust audit export, you can provide auditors with clear documentation in minutes. Internal reviews and sign-offs are tracked within the platform, ensuring a verifiable trail of oversight and approvals. The result is documentation that stands up to scrutiny and gives your team confidence going into the audit.",
       delay: 200
     },
     {
