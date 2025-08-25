@@ -39,9 +39,9 @@ export function ProductHighlightsSection() {
       label: "ACCOUNTING MEMOS",
       title: "Better Memos, Faster.",
       bulletPoints: [
-        "Version history, internal reviews, and audit package",
-        "Drafted in seconds with trained AI",
-        "Contract Analysis"
+        "Version history, reviewer comments, and internal sign offs",
+        "Guided prompts + AI follow up questions = accurate AI generated memos",
+        "Exportable Audit package"
       ],
       href: "/accounting-memos",
       icon: FileText,
@@ -66,10 +66,9 @@ export function ProductHighlightsSection() {
     {
       id: "contracts",
       label: "CONTRACT ANALYSIS",
-      title: "AI-Powered Contract Intelligence",
-      description: "Complex contracts contain critical accounting implications that can't be missed. Gaapio's AI analyzes your contracts to identify key accounting considerations, extract essential data points, and ensure proper accounting treatment across all contract types.",
+      title: "AI-Powered Contract Analysis",
       bulletPoints: [
-        "Lease abstraction and classification",
+        "Lease abstraction",
         "Revenue contract analysis and ASC 606 compliance",
         "Embedded lease identification and evaluation"
       ],
@@ -79,8 +78,8 @@ export function ProductHighlightsSection() {
     },
     {
       id: "updates",
-      label: "GAAP/SEC UPDATES",      
-      title: "Apply new guidance to your situation",
+      label: "GUIDANCE UPDATES",      
+      title: "Apply New Guidance to Your Situation",
       bulletPoints: [
         "Instant alerts for new standards",
         "Actionable implementation guidance",
@@ -111,8 +110,7 @@ export function ProductHighlightsSection() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Gaapio's Core Solutions</h2>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Firms of all sizes trust Gaapio to answer their toughest accounting questions. From sole practitioners to the world's largest advisory practices, Gaapio is built to bring absolute clarity to accounting, everywhere and on demand.
-          </p>
+           We built a platform for a reason, need something that isn't on here? Let us know! </p>
         </div>        
         <div 
           className={cn(
@@ -135,7 +133,7 @@ export function ProductHighlightsSection() {
                         className="w-full h-auto p-6 justify-start text-left bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-white/20 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] text-gray-900 dark:text-white data-[state=active]:text-white transition-all duration-300 shadow-sm dark:shadow-none"
                       >
                         <div className="font-semibold text-base leading-tight">
-                          {product.title}
+                          {product.label}
                         </div>
                       </TabsTrigger>
                     );

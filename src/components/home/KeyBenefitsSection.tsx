@@ -36,25 +36,25 @@ export function KeyBenefitsSection() {
     {
       icon: BookCheck,
       title: "Organized and Trusted",
-      description: "Gaapio is built on a highly curated database containing only the most trusted accounting resources, updated daily to keep up with changes in GAAP. By investing in data quality at every stage of our processes, we ensure answers you can verify using sources you can trust.",
+      description: "At Gaapio, we’ve organized the process from start to finish in a logical, easy-to-follow format. Everything you need is in one place — no more digging through scattered files or outdated resources. Built by a team of CPAs who have been in your shoes, Gaapio is designed to make your work more efficient, accurate, and professional. Our goal is simple: to give you a tool that not only saves time but also helps you deliver polished results that make you look great.",
       delay: 0
     },
     {
       icon: FileCheck,
       title: "Audit Ready",
-      description: "Our experienced accounting research team leverages their expertise to provide human oversight of our algorithms. Combined with built-in user feedback channels, Gaapio's in-house accounting professionals ensure the highest possible answer quality.",
+      description: "With Gaapio, audit preparation is seamless. Every input, version history, analysis, and comment is automatically captured, giving you a complete record of the decision-making process. With audit view and a robust audit export, you can provide auditors with clear documentation in minutes. Internal reviews and sign-offs are tracked within the platform, ensuring a verifiable trail of oversight and approvals. The result is documentation that stands up to scrutiny and gives your team confidence going into the audit.",
       delay: 200
     },
     {
       icon: Shield,
       title: "Data Security",
-      description: "Unlike traditional accounting research platforms, Gaapio's generative AI solution is designed to be conversational. Getting comprehensive, human-like answers to your accounting questions is as fast and easy as asking a colleague, making it a resource your team will actually want to use.",
+      description: "Your data is always secure, period. Nothing you upload is ever used to train models or made public — it stays private to your organization. We’ve built our platform with strict access controls, encryption, and a security-first mindset so you can trust that sensitive financial information is fully protected. In addition, we are pursuing SOC 2 certification to provide independent assurance that our security practices meet the highest industry standards. With Gaapio, you can confidently adopt AI without ever compromising on data privacy or compliance.",
       delay: 400
     },
     {
       icon: BadgeCheck,
       title: "Highly Trained Models",
-      description: "With years of experience, Gaapio is the pioneer in AI for accounting research, consistently finding new ways to generate better accounting answers. We're dedicated to transforming how accounting experts work, so you can provide service that surpasses client expectations.",
+      description: "Our models aren’t just “off-the-shelf” AI — they’re tailored for technical accounting. By feeding in far more structured information than typical tools like ChatGPT or Gemini, and by meticulously iterating on prompts, inputs, and workflows, we’ve dialed in our models to deliver precise, reliable, and highly relevant outputs. Every refinement we’ve made is focused on one thing: giving you answers that feel like they were written by an experienced CPA. The result is a solution that consistently produces polished, professional documentation you can trust.",
       delay: 600
     }
   ];

@@ -76,6 +76,7 @@ export function Header() {
                             className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
                             Accounting Memos
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -84,6 +85,7 @@ export function Header() {
                             className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
                             Footnote Disclosures
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -92,6 +94,7 @@ export function Header() {
                             className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
                             Contract Analysis
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -100,6 +103,7 @@ export function Header() {
                             className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
                             Guidance Updates
+
                           </Link>
                         </NavigationMenuLink>
                       </div>
