@@ -70,7 +70,7 @@ export const ContractHowItWorksSection = memo(function ContractHowItWorksSection
               Ready to streamline your contract analysis?
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Join thousands of accounting professionals who trust Gaapio to handle their most complex contract analysis needs.
+              Join accounting professionals who trust Gaapio to handle their most complex contract analysis needs.
             </p>
           </div>
         </div>
