@@ -130,7 +130,7 @@ export function ProductHighlightsSection() {
                       <TabsTrigger
                         key={product.id}
                         value={product.id}
-                        className="w-full h-auto p-6 justify-start text-left bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] transition-all duration-300"
+                        className="w-full h-auto p-6 justify-start text-left bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-white/20 rounded-xl data-[state=active]:bg-[#339CFF] data-[state=active]:text-white data-[state=active]:border-[#339CFF] text-gray-900 dark:text-white data-[state=active]:text-white transition-all duration-300 shadow-sm dark:shadow-none"
                       >
                         <div className="font-semibold text-base leading-tight">
                           {product.label}

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { HeroSection } from "@/components/home/HeroSectionRight";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
+import { ContractHeroSection } from "@/components/contract/ContractHeroSection";
+import { ContractHowItWorksSection } from "@/components/contract/ContractHowItWorksSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { SocialProofSection } from "@/components/home/SocialProofSection";
@@ -66,8 +66,8 @@ export default function ContractAnalysis() {
       
       <div className="relative overflow-hidden">
         <div className="relative z-10">
-          <HeroSection />
-          <HowItWorksSection />
+          <ContractHeroSection />
+          <ContractHowItWorksSection />
           <SocialProofSection />
           <BenefitsSection />
           <TestimonialsSection />

@@ -63,43 +63,47 @@ export function Header() {
                 {/* Products Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger
-                  className="font-medium text-base text-gray-700 dark:text-gray-200 px-3 py-2 hover:text-gray-900 dark:hover:text-white hover:underline transition-colors focus:outline-none focus:ring-0 focus:border-none"
+                  className="text-gray-700 dark:text-gray-200 text-base font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2 data-[state=open]:text-gray-900 dark:data-[state=open]:text-white"
                 >
                   Products
                 </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid gap-3 p-4 w-[400px]">
-                      <div className="grid gap-3">
+                    <div className="w-auto min-w-[12rem] max-w-[18.5rem] p-1 mt-2 rounded-xl border border-neutral-200 shadow-lg bg-white dark:bg-neutral-900 dark:border-white/10 animate-in fade-in-0 zoom-in-95 duration-150">
+                      <div className="space-y-1">
                         <NavigationMenuLink asChild>
                           <Link
                             to="/accounting-memos"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
-                            <div className="text-sm font-medium leading-none">Accounting Memos</div>                           
+                            Accounting Memos
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link
                             to="/footnote-disclosures"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
-                            <div className="text-sm font-medium leading-none">Footnote Disclosures</div>                           
+                            Footnote Disclosures
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link
                             to="/contract-analysis"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
-                            <div className="text-sm font-medium leading-none">Contract Analysis</div>                           
+                            Contract Analysis
+
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link
                             to="/guidance-updates"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="flex items-center h-10 px-4 rounded-lg text-sm font-semibold tracking-normal leading-tight text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors focus-visible:ring-2 focus-visible:ring-black/5 dark:focus-visible:ring-white/20 focus-visible:outline-none"
                           >
-                            <div className="text-sm font-medium leading-none">Guidance Updates</div>                           
+                            Guidance Updates
+
                           </Link>
                         </NavigationMenuLink>
                       </div>
