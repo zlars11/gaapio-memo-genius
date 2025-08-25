@@ -63,7 +63,7 @@ export function Header() {
                 {/* Products Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger
-                  className="inline-flex items-center gap-1 text-sm font-medium text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 transition-colors data-[state=open]:text-neutral-900 dark:data-[state=open]:text-neutral-100"
+                  className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2 data-[state=open]:text-gray-900 dark:data-[state=open]:text-white"
                 >
                   Products
                 </NavigationMenuTrigger>
