@@ -40,7 +40,12 @@ export const ContractHeroSection = memo(function ContractHeroSection({
             <img 
               src="/lovable-uploads/3a657ff4-6c15-4cac-9ca2-12382772e241.png" 
               alt="Contract Analysis Interface showing lease agreement analysis with key insights and AI-powered recommendations"
-              className="w-full rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800"
+              className="w-full rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 dark:hidden"
+            />
+            <img 
+              src="/lovable-uploads/3f032ae1-2451-4150-bd12-137d7424d9b1.png" 
+              alt="Contract Analysis Interface showing lease agreement analysis with key insights and AI-powered recommendations in dark mode"
+              className="w-full rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 hidden dark:block"
             />
           </div>
         </div>
