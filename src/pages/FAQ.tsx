@@ -137,7 +137,7 @@ export default function FAQ() {
 
 <AccordionItem value="item-8">
   <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-    How is this different from ChatGPT, Gemini or other models?
+    How is this different from ChatGPT, Gemini, or other models?
   </AccordionTrigger>
   <AccordionContent className="text-muted-foreground">
     <p>
