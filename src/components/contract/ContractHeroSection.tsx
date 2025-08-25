@@ -8,8 +8,8 @@ interface ContractHeroSectionProps {
 }
 
 export const ContractHeroSection = memo(function ContractHeroSection({ 
-  title = "AI-Powered Contract Intelligence",
-  subtitle = "Extract Key Terms. Identify Accounting Implications. Ensure Compliance."
+  title = "AI-Powered Contract Analysis",
+  subtitle = "AI-Powered. Contract-Analyzed"
 }: ContractHeroSectionProps) {
   
   return (
