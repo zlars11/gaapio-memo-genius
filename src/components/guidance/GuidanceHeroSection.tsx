@@ -38,7 +38,7 @@ export const GuidanceHeroSection = memo(function GuidanceHeroSection({
         
         {/* Larger static mockup card centered */}
         <div className="flex justify-center animate-fade-up" style={{ animationDelay: "300ms" }}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-8 max-w-lg w-full transform rotate-2 hover:rotate-0 transition-transform duration-300">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-8 max-w-lg w-full hover:scale-105 transition-transform duration-300">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                 <Bell className="w-5 h-5 text-white" />

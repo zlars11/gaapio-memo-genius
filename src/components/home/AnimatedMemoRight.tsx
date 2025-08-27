@@ -150,7 +150,7 @@ export const AnimatedMemoRight = () => {
         }}
       >
         <img
-          src={isDark ? "/assets/images/gaapio-app-dark-right.png" : "/assets/images/gaapio-app_right.png"}
+          src={isDark ? "/assets/images/gaapio-app-dark.png" : "/assets/images/gaapio-app.png"}
           alt="Gaapio Revenue Recognition UI"
           className="memo-background-image"
           loading="eager"
@@ -189,7 +189,7 @@ export const AnimatedMemoRight = () => {
               borderRadius: '4px',
               width: '100%',
               fontSize: '12px',
-              transform: `scale(${getScale()}) rotate(0.5deg)`,
+              transform: `scale(${getScale()})`,
               transformOrigin: 'top left',
               whiteSpace: 'pre-wrap',
               maxHeight: `${100 / getScale()}%`,
