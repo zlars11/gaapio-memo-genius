@@ -6,23 +6,23 @@ export const DisclosureHowItWorksSection = memo(function DisclosureHowItWorksSec
   const steps = [
     {
       icon: MessageSquare,
-      title: "Guided Prompts",
-      description: "Answer simple questions about your accounting arrangements. Our AI guides you through the disclosure requirements step by step."
-    },
-    {
-      icon: Zap,
-      title: "AI Analysis & Processing", 
-      description: "Our advanced AI analyzes your situation and generates comprehensive footnote content following ASC requirements."
-    },
-    {
-      icon: CheckCircle,
-      title: "Review & Customize",
-      description: "Review the generated footnote disclosures, make any necessary adjustments, and ensure all information is accurately presented."
+      title: "Draft Disclosures",
+      description: "Generate new disclosures, roll forward previous, or upload from another software then let our AI go to work."
     },
     {
       icon: Users,
-      title: "Export & Share",
-      description: "Export your completed footnote disclosures in multiple formats and share them with your team, auditors, or stakeholders."
+      title: "Benchmark", 
+      description: "Analyze your peer group or any other public company with the click of a button. Want to see if you are over or under disclosing? Let our AI analyze you and your peer group."
+    },
+    {
+      icon: CheckCircle,
+      title: "AI completed Checklist",
+      description: "Let our AI take the first pass at either our proprietary footnote checklist or upload your auditors checklist."
+    },
+    {
+      icon: Zap,
+      title: "Format",
+      description: " CPA approved, industry leading formatting."
     }
   ];
 
