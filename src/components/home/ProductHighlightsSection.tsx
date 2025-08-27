@@ -162,9 +162,7 @@ export function ProductHighlightsSection() {
                           {product.title}
                         </h3>
 
-                        <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                          {product.description}
-                        </p>
+                        {/* Bullet points */}
 
                         {/* Bullet points */}
                         <ul className="space-y-3 mb-8">

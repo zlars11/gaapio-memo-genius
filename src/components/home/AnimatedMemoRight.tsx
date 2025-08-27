@@ -189,7 +189,7 @@ export const AnimatedMemoRight = () => {
               borderRadius: '4px',
               width: '100%',
               fontSize: '12px',
-              transform: `scale(${getScale()}) rotate(0.5deg)`,
+              transform: `scale(${getScale()})`,
               transformOrigin: 'top left',
               whiteSpace: 'pre-wrap',
               maxHeight: `${100 / getScale()}%`,
