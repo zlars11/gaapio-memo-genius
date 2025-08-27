@@ -161,7 +161,7 @@ export function HowItWorksSection() {
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Organized File Cabinet for final versions and AI training</span>
+                <span>Organized file cabinet for final versions and AI training</span>
               </li>
             </ul>
           </div>
