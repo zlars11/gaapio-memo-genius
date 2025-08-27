@@ -65,11 +65,11 @@ export function HowItWorksSection() {
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105 dark:bg-[#339CFF10]">
               <FileSearch className="h-8 w-8 text-[#339CFF]" />
             </div>
-            <h3 className="text-xl font-semibold mb-4 relative z-10 dark:text-[#e5e5e5]">Guided Prompts</h3>
+            <h3 className="text-xl font-semibold mb-4 relative z-10 dark:text-[#e5e5e5]">Draft</h3>
             <ul className="text-muted-foreground text-left text-sm space-y-2 dark:text-gray-400">
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Built-in guardrails for accuracy</span>
+                <span>Guided prompts create built-in guardrails for accuracy</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
@@ -78,6 +78,10 @@ export function HowItWorksSection() {
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
                 <span>Drafted instantly by trained AI</span>
+              </li>
+              <li className="flex items-start">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
+                <span>Contract analysis and document upload</span>
               </li>
             </ul>
           </div>
@@ -119,7 +123,7 @@ export function HowItWorksSection() {
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Optional CPA review</span>
+                <span>Full version history and reviewer comments</span>
               </li>
             </ul>
           </div>
@@ -145,19 +149,19 @@ export function HowItWorksSection() {
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#339CFF20] mb-6 transition-transform duration-300 hover:scale-105 dark:bg-[#339CFF10]">
               <Download className="h-8 w-8 text-[#339CFF]" />
             </div>
-            <h3 className="text-xl font-semibold mb-4 relative z-10 dark:text-[#e5e5e5]">Manage & Deliver</h3>
+            <h3 className="text-xl font-semibold mb-4 relative z-10 dark:text-[#e5e5e5]">Deliver</h3>
             <ul className="text-muted-foreground text-left text-sm space-y-2 dark:text-gray-400">
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Presentation-ready memos and disclosures</span>
+                <span>Presentation-ready memos</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Full version history and reviewer comments</span>
+                <span>Exportable audit package</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#339CFF] mt-1.5 mr-2 flex-shrink-0"></span>
-                <span>Exportable audit reports</span>
+                <span>Organized File Cabinet for final versions and AI training</span>
               </li>
             </ul>
           </div>
