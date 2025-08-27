@@ -16,7 +16,7 @@ export const DisclosureHowItWorksSection = memo(function DisclosureHowItWorksSec
     },
     {
       icon: CheckCircle,
-      title: "AI completed Checklist",
+      title: "AI Completed Checklist",
       description: "Let our AI take the first pass at either our proprietary footnote checklist or upload your auditors checklist."
     },
     {
@@ -34,7 +34,7 @@ export const DisclosureHowItWorksSection = memo(function DisclosureHowItWorksSec
             How It Works
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto dark:text-gray-300">
-            Create comprehensive footnote disclosures in minutes with our AI-powered platform
+            Create & compare footnote disclosures in minutes with our AI-powered platform
           </p>
         </div>
 
