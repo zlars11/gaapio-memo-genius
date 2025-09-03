@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
@@ -16,23 +15,23 @@ export default function SSA() {
               
               <p className="mb-8">
                 This Subscription Services Agreement ("Agreement") is entered into by and between Gaapio, Inc., 
-                a Delaware corporation ("Gaapio"), and the subscribing entity identified in an executed ordering 
+                a Utah corporation ("Gaapio"), and the subscribing entity identified in an executed ordering 
                 document that references this Agreement ("Customer"). This Agreement governs Customer's access to 
-                and use of Gaapio's artificial intelligence-based software-as-a-service platform and related offerings.
+                and use of Gaapio's software-as-a-service platform and related offerings.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">1. DEFINITIONS</h2>
               <p>
-                "AI Services" means Gaapio's proprietary AI-powered platform for automating accounting memo 
-                generation and related analysis, including all features, tools, modules, and enhancements 
-                ordered by Customer.
+                "Software Services" means Gaapio's proprietary AI-powered platform for automating accounting memo 
+                generation, disclosure applications, contract analysis and other related analysis, including all 
+                features, tools, modules, and enhancements ordered by Customer.
               </p>
               <p>
                 "Customer Content" means all data, documentation, text, or inputs uploaded by Customer or its 
-                Users to the AI Services or otherwise transmitted for processing.
+                Users to the Software Services or otherwise transmitted for processing.
               </p>
               <p>
-                "Deliverables" means output, reports, and other materials generated through Customer's use of the AI Services.
+                "Deliverables" means output, reports, and other materials generated through Customer's use of the Software Services.
               </p>
               <p>
                 "Order Form" means any order form, quote, or online purchasing flow executed by the parties that 
@@ -40,24 +39,24 @@ export default function SSA() {
               </p>
               <p>
                 "Documentation" means user instructions, product information, and explanatory materials provided 
-                by Gaapio related to the use of the AI Services.
+                by Gaapio related to the use of the Software Services.
               </p>
               <p>
                 "Professional Services" means implementation, configuration, and consulting services performed by 
                 Gaapio, as specified in an Order Form or statement of work ("SOW").
               </p>
               <p>
-                "Subscription Term" means the duration of Customer's subscription to the AI Services, as set forth 
+                "Subscription Term" means the duration of Customer's subscription to the Software Services, as set forth 
                 in the applicable Order Form.
               </p>
               <p>
-                "Users" means individuals authorized by Customer to access and use the AI Services.
+                "Users" means individuals authorized by Customer to access and use the Software Services.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">2. ACCESS & USE RIGHTS</h2>
               <p>
                 Subject to the terms of this Agreement, Gaapio grants Customer a limited, non-exclusive, 
-                non-transferable right to access and use the AI Services and Deliverables during the Subscription 
+                non-transferable right to access and use the Software Services and Deliverables during the Subscription 
                 Term solely for Customer's internal business operations. All rights not expressly granted are 
                 reserved by Gaapio.
               </p>
@@ -66,14 +65,14 @@ export default function SSA() {
               <p className="mb-4">Customer is responsible for:</p>
               <ul className="list-disc pl-6 mb-4">
                 <li>Maintaining the confidentiality of login credentials and restricting access to authorized Users.</li>
-                <li>Ensuring its use of the AI Services complies with applicable laws and this Agreement.</li>
+                <li>Ensuring its use of the Software Services complies with applicable laws and this Agreement.</li>
                 <li>The accuracy, quality, and legality of Customer Content.</li>
               </ul>
               <p className="mb-4">Customer shall not:</p>
               <ul className="list-disc pl-6">
-                <li>Use the Services to infringe intellectual property rights or engage in illegal activities.</li>
-                <li>Decompile, reverse engineer, or create derivative works from the AI Services.</li>
-                <li>Use the AI Services to develop competing offerings.</li>
+                <li>Use the Software Services to infringe intellectual property rights or engage in illegal activities.</li>
+                <li>Decompile, reverse engineer, or create derivative works from the Software Services.</li>
+                <li>Use the Software Services to develop competing offerings.</li>
               </ul>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">4. FEES, BILLING & TAXES</h2>
@@ -110,24 +109,24 @@ export default function SSA() {
               <p className="mb-4">Upon termination:</p>
               <ul className="list-disc pl-6">
                 <li>All access rights are revoked;</li>
-                <li>Customer must cease all use of the AI Services;</li>
-                <li>Gaapio may delete Customer Content and Deliverables after a reasonable period.</li>
+                <li>Customer must cease all use of the Software Services;</li>
+                <li>Gaapio may delete Customer Content and Deliverables thirty (30) days after termination, unless legally prohibited. During such period, Customer may request export of its data in a commonly available format.</li>
               </ul>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">6. INTELLECTUAL PROPERTY</h2>
               <h3 className="text-xl font-semibold mt-6 mb-3">6.1 Ownership.</h3>
               <p>
-                Customer retains ownership of Customer Content. Gaapio retains ownership of the AI Services, 
+                Customer retains ownership of Customer Content. Gaapio retains ownership of the Software Services, 
                 platform, and any improvements or feedback provided.
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">6.2 License to Data.</h3>
               <p>
                 Customer grants Gaapio a limited license to use Customer Content for the purpose of providing 
-                the AI Services.
+                the Software Services.
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">6.3 Usage Data and Improvements.</h3>
               <p>
-                Gaapio may use aggregated, de-identified usage data to improve the AI Services.
+                Gaapio may use aggregated, de-identified usage data to improve the Software Services.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">7. CONFIDENTIALITY</h2>
@@ -140,18 +139,18 @@ export default function SSA() {
               <h2 className="text-2xl font-bold mt-8 mb-4">8. WARRANTIES & DISCLAIMERS</h2>
               <h3 className="text-xl font-semibold mt-6 mb-3">8.1 Limited Warranty.</h3>
               <p>
-                Gaapio warrants that the AI Services will materially conform to the applicable Documentation 
+                Gaapio warrants that the Software Services will materially conform to the applicable Documentation 
                 during the Subscription Term.
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">8.2 Disclaimers.</h3>
               <p className="uppercase">
                 EXCEPT AS EXPRESSLY PROVIDED, GAAPIO DISCLAIMS ALL OTHER WARRANTIES, INCLUDING IMPLIED 
                 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. 
-                THE AI SERVICES ARE PROVIDED "AS IS."
+                THE SOFTWARE SERVICES ARE PROVIDED "AS IS."
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">8.3 Outputs and Reliance.</h3>
               <p>
-                Deliverables generated by the AI Services are for informational purposes only. They are not 
+                Deliverables generated by the Software Services are for informational purposes only. They are not 
                 intended to constitute accounting or legal advice, and Customer is solely responsible for 
                 verifying accuracy and compliance.
               </p>
@@ -160,36 +159,49 @@ export default function SSA() {
               <p className="uppercase">
                 IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES. 
                 GAAPIO'S AGGREGATE LIABILITY SHALL NOT EXCEED THE AMOUNTS PAID BY CUSTOMER IN THE TWELVE (12) 
-                MONTHS PRECEDING THE CLAIM.
+                MONTHS PRECEDING THE CLAIM. THE FOREGOING LIMITATION SHALL NOT APPLY TO (I) CUSTOMER'S INDEMNITY 
+                OBLIGATIONS, (II) BREACHES OF CONFIDENTIALITY, OR (III) FRAUD, GROSS NEGLIGENCE, OR WILLFUL MISCONDUCT.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">10. INDEMNIFICATION</h2>
+              <h3 className="text-xl font-semibold mt-6 mb-3">Customer Indemnity:</h3>
               <p>
-                Each party agrees to indemnify, defend, and hold the other party harmless from third-party claims 
-                arising from breach of this Agreement, violation of applicable law, or infringement caused by 
-                materials provided by the indemnifying party, subject to prompt notice and control over defense.
+                Customer shall indemnify, defend, and hold harmless Gaapio from and against any third-party claims, 
+                damages, liabilities, and expenses arising out of (a) Customer Content, (b) Customer's use of the 
+                Services in violation of this Agreement, applicable law, or third-party rights, or (c) Customer's 
+                breach of this Agreement.
+              </p>
+              <h3 className="text-xl font-semibold mt-6 mb-3">Gaapio Indemnity:</h3>
+              <p>
+                Gaapio shall indemnify Customer only against third-party claims alleging that the Software Services 
+                (excluding Customer Content, Deliverables, or third-party components) directly infringe a U.S. patent, 
+                copyright, or trademark, provided Customer promptly notifies Gaapio and permits Gaapio sole control 
+                of the defense and settlement.
+              </p>
+              <h3 className="text-xl font-semibold mt-6 mb-3">Exclusions:</h3>
+              <p>
+                Gaapio shall have no indemnity obligation for claims arising from reliance on Deliverables, 
+                modifications not made by Gaapio, combination with non-Gaapio products, or Customer's misuse.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">11. COMPLIANCE, SECURITY, & DATA PROCESSING</h2>
-              <h3 className="text-xl font-semibold mt-6 mb-3">11.1 Data Security.</h3>
               <p>
-                Gaapio implements industry-standard technical and organizational safeguards to protect Customer Content.
-              </p>
-              <h3 className="text-xl font-semibold mt-6 mb-3">11.2 Data Processing.</h3>
-              <p>
-                If required by applicable law (e.g., GDPR or CCPA), the parties will execute a separate Data 
-                Processing Addendum.
-              </p>
-              <h3 className="text-xl font-semibold mt-6 mb-3">11.3 Export Compliance.</h3>
-              <p>
-                Customer shall not use the AI Services in violation of U.S. export laws or regulations.
+                Gaapio implements industry-standard technical and organizational safeguards to protect Customer Content. 
+                Customer acknowledges that Gaapio is not responsible for ensuring Customer's compliance with 
+                industry-specific regulations (e.g., SOX, SEC, GAAP, HIPAA, GDPR) unless expressly agreed in writing. 
+                Customer remains solely responsible for use of Deliverables in compliance with applicable laws and 
+                regulations. If required by law, the parties will execute a separate Data Processing Addendum. Customer 
+                may request export of its data prior to deletion at termination.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">12. DISPUTE RESOLUTION & GOVERNING LAW</h2>
               <p>
-                This Agreement is governed by the laws of Delaware without regard to conflict of laws. Any dispute 
+                This Agreement is governed by the laws of Utah without regard to conflict of laws. Any dispute 
                 shall be resolved by binding arbitration under the Commercial Rules of the American Arbitration 
-                Association in Delaware. The prevailing party shall be entitled to reasonable legal fees.
+                Association in Utah. Arbitration proceedings and awards shall remain confidential. Notwithstanding 
+                the foregoing, Gaapio may seek injunctive relief in court to prevent unauthorized use or disclosure 
+                of its intellectual property. All claims must be brought in a party's individual capacity, and not 
+                as a plaintiff or class member in any class action or representative proceeding.
               </p>
 
               <h2 className="text-2xl font-bold mt-8 mb-4">13. GENERAL PROVISIONS</h2>
@@ -199,7 +211,8 @@ export default function SSA() {
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">13.2 Assignment.</h3>
               <p>
-                Neither party may assign this Agreement without written consent, except to a successor entity.
+                Neither party may assign this Agreement without written consent, except that Gaapio may assign 
+                freely in connection with merger, acquisition, corporate reorganization, or financing.
               </p>
               <h3 className="text-xl font-semibold mt-6 mb-3">13.3 Force Majeure.</h3>
               <p>
@@ -212,6 +225,38 @@ export default function SSA() {
               <h3 className="text-xl font-semibold mt-6 mb-3">13.5 No Legal Advice.</h3>
               <p>
                 Gaapio is not a licensed CPA firm and does not offer legal, tax, or accounting advice.
+              </p>
+              <h3 className="text-xl font-semibold mt-6 mb-3">13.6 Name and Logo.</h3>
+              <p>
+                Unless otherwise agreed in writing, Gaapio may use Customer's name and logo in marketing materials, 
+                customer lists, and case studies.
+              </p>
+
+              <h2 className="text-2xl font-bold mt-8 mb-4">14. SERVICE LEVEL AGREEMENT (SLA)</h2>
+              <p>
+                Gaapio will use commercially reasonable efforts to ensure that the Software Services are available 
+                99.5% of the time, excluding scheduled maintenance and force majeure. Customer's sole and exclusive 
+                remedy for any failure to meet the SLA shall be service credits equal to a prorated portion of fees 
+                for the affected period. Service credits may be applied to future invoices and shall not exceed one 
+                month's subscription fees.
+              </p>
+
+              <h2 className="text-2xl font-bold mt-8 mb-4">15. SUPPORT COMMITMENT</h2>
+              <p>
+                Gaapio will provide email-based support during normal business hours, Monday through Friday, 
+                excluding U.S. federal holidays.
+              </p>
+
+              <h2 className="text-2xl font-bold mt-8 mb-4">16. SURVIVAL</h2>
+              <p>
+                Sections 6 (Intellectual Property), 7 (Confidentiality), 8.2–8.3 (Disclaimers), 9 (Limitation of Liability), 
+                10 (Indemnification), and 12 (Dispute Resolution) shall survive any termination or expiration of this Agreement.
+              </p>
+
+              <h2 className="text-2xl font-bold mt-8 mb-4">17. AI TRAINING LIMITATIONS</h2>
+              <p>
+                Gaapio will not use Customer Content to train general-purpose AI models. Any use of Customer Content 
+                is limited to fulfilling Customer's requests or improving performance for that specific Customer account.
               </p>
             </div>
           </div>
