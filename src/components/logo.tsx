@@ -60,7 +60,7 @@ export const Logo = memo(({ className = "" }: { className?: string }) => {
         alt="Gaapio Logo - AI-Powered Accounting Memo Platform"
         className="logo-image"
         style={{
-          height: '36px',
+          height: window.innerWidth <= 640 ? '40px' : '48px',
           width: 'auto',
           maxHeight: 'none',
           maxWidth: 'none'
