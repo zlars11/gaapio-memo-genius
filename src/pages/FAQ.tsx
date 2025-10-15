@@ -39,124 +39,143 @@ export default function FAQ() {
 
             <div className="max-w-3xl mx-auto glass-card p-8 rounded-2xl shadow-md hover:bg-secondary/30 transition-all duration-300">
               <Accordion type="single" collapsible className="w-full" value={openItem} onValueChange={setOpenItem}>
-                <AccordionItem value="item-5">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    How is this different from ChatGPT?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground space-y-4">
-                    <p>
-                      While ChatGPT can help generate ideas or draft initial language, Gaapio is purpose-built to produce accounting memos and disclosures that meet real-world audit, SEC, and internal control standards.
-                    </p>
-                    <p>
-                      Here's what sets us apart:
-                    </p>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="font-bold">Built-In Guardrails, Not Just Prompts</p>
-                        <p>
-                          With Gaapio, you're not guessing what to ask or how to format it. Our platform enforces accounting-specific structure, completeness, and compliance — ensuring your memo includes every key component from background to conclusion.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">Trained Specifically for Accounting</p>
-                        <p>
-                          Our models are fine-tuned using thousands of technical memos, accounting standards (e.g. ASC 606, 842, 805), and CPA-reviewed examples — not internet text. This creates high-confidence, domain-specific outputs ChatGPT can't reliably generate on its own.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">AI Review = Built-In Second Opinion</p>
-                        <p>
-                          Each memo is automatically reviewed by a separately trained AI review layer fine-tuned for QA — catching gaps, inconsistencies, or missing disclosures before you do. Think of it as a built-in senior manager reviewing every draft.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">Deep Enterprise-Grade Security</p>
-                        <p>
-                          Unlike ChatGPT, Gaapio is designed to secure confidential financial data. From SOC 2 controls to private data handling, we're committed to protecting sensitive company information — essential for public companies or those preparing for audit.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">Contract + Workflow Integration</p>
-                        <p>
-                          We don't just generate text — we digest uploaded contracts (e.g. lease agreements, purchase agreements) and identify nuanced triggers like embedded leases or performance obligations. Our AI understands and reflects accounting treatment accurately — ChatGPT alone can't track or validate across documents.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">Designed for Accountants — Not Prompt Engineers</p>
-                        <p>
-                          ChatGPT helps. Gaapio delivers. We give accountants an end-to-end solution that turns complex facts into submission-ready memos with embedded accounting logic — no prompt engineering, no formatting guesswork, no second guessing.
-                        </p>
-                      </div>
-                      
-                      <div>
-                        <p className="font-bold">TL;DR:</p>
-                        <p>
-                          ChatGPT is a helpful assistant. Gaapio is your accounting braintrust in a box.
-                        </p>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-                
                 <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    What types of memos can Gaapio create?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Gaapio can generate a wide range of technical accounting memos including Revenue Recognition (ASC 606), Leases (ASC 842), Business Combinations (ASC 805), Fair Value Measurements (ASC 820), Impairment (ASC 350 / ASC 360), Debt and Equity (ASC 470 / ASC 480), Stock-Based Compensation (ASC 718), Income Taxes (ASC 740), Financial Instruments (ASC 815), Segment Reporting (ASC 280), Commitments and Contingencies (ASC 450), and more. Our AI system is trained on the latest accounting standards and best practices.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-2">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    Can I customize the memo format?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Yes, Gaapio offers extensive customization options. You can adjust the structure, formatting, and level of detail in your memos to match your organization's requirements. You can also save templates for future use, ensuring consistency across your documentation.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-3">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    Is it safe to upload confidential financial data?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Security is our top priority. We employ bank-level encryption for all data transfers and storage. Our systems are SOC 2 compliant, and we never share your data with third parties. Additionally, you can opt for data retention policies that align with your organization's compliance requirements.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-4">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    Do you offer enterprise pricing?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Yes, we offer flexible enterprise pricing plans designed for larger accounting teams and organizations. Our enterprise plans include advanced features like team collaboration, enhanced security controls, priority support, and dedicated account management. Contact our sales team for a customized quote.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="item-6">
-                  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
-                    What support resources are available?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    <p>
-                      Gaapio provides comprehensive support resources including detailed documentation, video tutorials, and a knowledge base covering common accounting scenarios. Our customer success team includes accounting professionals who understand your technical needs and can provide expert guidance. Enterprise customers also receive dedicated onboarding and training sessions.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    What is Gaapio and how does it work?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Gaapio leverages the latest large language models and the vast database of public filings 
+      to deliver industry leading results to technical accounting questions in seconds. 
+      Answers are backed by relevant source documents empowering accountants to perform 
+      exceptional analysis and deliver results faster than ever.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-2">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    Can I customize the memo and disclosure formats?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Yes, Gaapio offers extensive customization options. You can adjust the structure, 
+      formatting, and level of detail to match your organization's requirements. 
+      You can also save templates for future use, ensuring consistency across your documentation.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-3">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    What data is Gaapio trained on?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Gaapio is predominantly trained on the Accounting Standards Codification, Big 4 guidance, 
+      SEC comment letters, and other relevant commentary to ensure the coverage and quality.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-4">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    How recent is your data?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Our database of primary sources is current and updated daily.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-5">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    How does Gaapio guard against hallucinations?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      We use specific prompts and process design along with the latest models to reduce 
+      hallucinations as much as possible. If you ever second guess a Gaapio output, 
+      you can ask the Gaapio AI assistant which uses a different model to research 
+      and confirm or deny.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-6">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    Does Gaapio use information submitted by users to improve its system?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Gaapio does not read, share, or learn from any information input by our users without 
+      explicit permission. Customer questions are stored in a secure, encrypted database, 
+      only accessible to select individuals who need access to maintain the database. 
+      We work with an independent auditor to maintain a SOC 2 Type 2 report on an annual basis, 
+      which objectively certifies our controls to ensure the continuous security of our 
+      customers' data.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-7">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    Is it safe to upload confidential financial data?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      Security and trust are fundamental to our services, and Gaapio is committed to ensuring 
+      that our product and processes employ enterprise-grade best practices to keep your data safe. 
+      Customer questions are stored in a secure, encrypted database, only accessible to select 
+      individuals who need access to maintain the database. We work with an independent auditor 
+      to maintain SOC 2 compliance, which objectively certifies our controls to ensure the 
+      continuous security of our customers' data.
+    </p>
+  </AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="item-8">
+  <AccordionTrigger className="text-lg font-medium hover:text-primary transition-colors">
+    How is this different from ChatGPT, Gemini, or other models?
+  </AccordionTrigger>
+  <AccordionContent className="text-muted-foreground">
+    <p>
+      While ChatGPT can help generate ideas or draft initial language, Gaapio is purpose-built 
+      to produce accounting memos and disclosures that meet real-world audit, SEC, and internal 
+      control standards.
+    </p>
+    <ul className="list-disc pl-6 mt-3 space-y-2">
+      <li>
+        <strong>Built-In Guardrails, Not Just Prompts:</strong> Gaapio enforces accounting-specific 
+        structure, completeness, and compliance — ensuring memos include every key component.
+      </li>
+      <li>
+        <strong>Trained Specifically for Accounting:</strong> Our models are fine-tuned using thousands 
+        of technical memos, ASC standards, and CPA-reviewed examples — not generic internet text.
+      </li>
+      <li>
+        <strong>AI Review = Built-In Second Opinion:</strong> Every memo is automatically reviewed by a 
+        QA-tuned AI layer, catching gaps and inconsistencies before you do.
+      </li>
+      <li>
+        <strong>Deep Enterprise-Grade Security:</strong> Designed for SOC 2 compliance and confidential 
+        financial data protection.
+      </li>
+      <li>
+        <strong>Contract + Workflow Integration:</strong> Gaapio digests uploaded contracts and identifies 
+        nuanced accounting triggers like embedded leases or performance obligations.
+      </li>
+      <li>
+        <strong>Designed for Accountants — Not Prompt Engineers:</strong> Gaapio delivers end-to-end 
+        submission-ready memos with embedded accounting logic — no formatting guesswork.
+      </li>
+    </ul>
+    <p className="mt-3 font-semibold">
+      TL;DR: ChatGPT is a helpful assistant. Gaapio is your accounting braintrust in a box.
+    </p>
+  </AccordionContent>
+</AccordionItem>
               </Accordion>
             </div>
             

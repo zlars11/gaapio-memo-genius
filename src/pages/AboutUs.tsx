@@ -102,12 +102,12 @@ export default function AboutUs() {
     {
       icon: ShieldCheck,
       title: "Compliance Specialists",
-      description: "We've spent 6+ years deeply focused on ASC 842 (Leases) and ASC 606 (Revenue), building expertise in these complex and evolving standards."
+      description: "We've spent 15+ years deeply focused on technical accounting guidance, building expertise in the complex and evolving standards."
     },
     {
       icon: Briefcase,
       title: "Industry Leadership",
-      description: "Our team includes veterans from Connor Group, Revenue Hub, and other specialized accounting and finance institutions that shape industry best practices."
+      description: "Our team includes veterans from Deloitte, PwC, EY, Connor Group, Chatham Financial, Revenue Hub, and other specialized accounting and finance institutions that shape industry best practices."
     }
   ];
   
@@ -134,7 +134,7 @@ export default function AboutUs() {
   // Data for values section
   const valuesItems = [
     {
-      title: "Practitioner-First Design",
+      title: "Accountant-First Design",
       description: "Everything we build is designed from the perspective of working accountants, ensuring our solutions solve real problems in practical ways."
     },
     {
