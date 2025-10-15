@@ -122,12 +122,14 @@ export function Header() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link 
-                    to="/resources" 
+                  <a 
+                    href="https://security.gaapio.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-700 dark:text-gray-200 font-medium hover:text-gray-900 dark:hover:text-white hover:underline transition-colors px-3 py-2"
                   >
-                    Resources
-                  </Link>
+                    Security
+                  </a>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
@@ -247,13 +249,15 @@ export function Header() {
               >
                 About
               </Link>
-              <Link
-                to="/resources"
-                className={`block px-3 py-2 rounded-md text-base font-medium text-center transition-colors ${isActive('/resources') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+              <a
+                href="https://security.gaapio.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-3 py-2 rounded-md text-base font-medium text-center text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 onClick={closeMenu}
               >
-                Resources
-              </Link>
+                Security
+              </a>
               <Link
                 to="/faq"
                 className={`block px-3 py-2 rounded-md text-base font-medium text-center transition-colors ${isActive('/faq') ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'}`}
