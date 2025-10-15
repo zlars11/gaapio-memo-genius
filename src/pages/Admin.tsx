@@ -22,8 +22,9 @@ import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { Header } from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ExternalLink, FileEdit, Home, FileText, Shield, CreditCard, Users, Mail, Book, ChevronDown } from "lucide-react";
+import { ExternalLink, FileEdit, Home, FileText, Shield, CreditCard, Users, Mail, Book, ChevronDown, Image } from "lucide-react";
 import { PageEditor } from "@/components/admin/PageEditor";
+import { CustomerLogosManager } from "@/components/admin/CustomerLogosManager";
 import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilitySettings";
 import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectionSettings";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -60,6 +61,7 @@ export default function Admin() {
     contacts: true,
     demos: true,
     firms: true,
+    logos: true,
     webpages: true,
     settings: true
   });
@@ -265,6 +267,7 @@ export default function Admin() {
                 {tabVisibility.contacts && <TabsTrigger value="contacts">Contacts</TabsTrigger>}
                 {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
                 {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
+                {tabVisibility.logos && <TabsTrigger value="logos">Customer Logos</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
@@ -302,6 +305,12 @@ export default function Admin() {
               {tabVisibility.firms && (
                 <TabsContent value="firms" className="space-y-4">
                   <FirmSignupsTable />
+                </TabsContent>
+              )}
+              
+              {tabVisibility.logos && (
+                <TabsContent value="logos" className="space-y-4">
+                  <CustomerLogosManager />
                 </TabsContent>
               )}
               
