@@ -173,6 +173,36 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_logos: {
+        Row: {
+          company_name: string
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          logo_url: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          logo_url: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       demo_requests: {
         Row: {
           created_at: string

@@ -2,10 +2,12 @@
 import { ResponsiveContainer } from "@/components/layout/ResponsiveContainer";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useActiveCustomerLogos } from "@/hooks/useCustomerLogos";
 
 export function TrustBarSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { data: logos, isLoading } = useActiveCustomerLogos();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,10 +31,10 @@ export function TrustBarSection() {
     };
   }, []);
 
-  const companies = [
-    "DataStream", "CloudCore", "NexusBooks", "TechFinance", 
-    "AccountPro", "FiscalEdge", "FinSync", "AccuLedger"
-  ];
+  // Don't render if no logos or still loading
+  if (isLoading || !logos || logos.length === 0) {
+    return null;
+  }
 
   return (
     <section 
@@ -45,9 +47,9 @@ export function TrustBarSection() {
             Trusted by Leading Organizations
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {companies.map((company, index) => (
+            {logos.map((logo, index) => (
               <div 
-                key={company}
+                key={logo.id}
                 className={cn(
                   "flex items-center justify-center p-4 transition-all duration-1000",
                   isVisible 
@@ -59,10 +61,13 @@ export function TrustBarSection() {
                 }}
               >
                 <div className="text-center">
-                  <div className="w-32 h-16 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:scale-105 transition-transform duration-300">
-                    <span className="font-semibold text-gray-600 dark:text-gray-300 text-sm">
-                      {company}
-                    </span>
+                  <div className="w-32 h-16 bg-muted/50 rounded-lg border border-border flex items-center justify-center hover:scale-105 transition-transform duration-300 p-2">
+                    <img
+                      src={logo.logo_url}
+                      alt={logo.company_name}
+                      className="max-w-full max-h-full object-contain"
+                      title={logo.company_name}
+                    />
                   </div>
                 </div>
               </div>

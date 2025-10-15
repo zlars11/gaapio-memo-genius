@@ -80,12 +80,14 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/status" 
+                  <a 
+                    href="https://security.gaapio.com" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
-                    Status
-                  </Link>
+                    Security
+                  </a>
                 </li>
                 <li>
                   <Link 
@@ -101,14 +103,6 @@ export function Footer() {
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/ssa" 
-                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
-                  >
-                    Terms
                   </Link>
                 </li>
               </ul>
@@ -128,30 +122,14 @@ export function Footer() {
                 </li>
                 <li className="flex items-center justify-center md:justify-start space-x-2">
                   <Linkedin className="h-3 w-3 text-gray-300" />
-                  <Link 
-                    to="#" 
+                  <a 
+                    href="https://www.linkedin.com/company/gaapio" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
                   >
                     LinkedIn
-                  </Link>
-                </li>
-                <li className="flex items-center justify-center md:justify-start space-x-2">
-                  <Twitter className="h-3 w-3 text-gray-300" />
-                  <Link 
-                    to="#" 
-                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
-                  >
-                    Twitter
-                  </Link>
-                </li>
-                <li className="flex items-center justify-center md:justify-start space-x-2">
-                  <Youtube className="h-3 w-3 text-gray-300" />
-                  <Link 
-                    to="#" 
-                    className="text-gray-300 hover:text-white hover:underline transition-colors text-sm"
-                  >
-                    YouTube
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
