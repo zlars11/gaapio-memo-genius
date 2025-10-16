@@ -256,10 +256,7 @@ export default function Admin() {
             loading={adminsLoading}
           />
           
-          <ErrorBoundary
-            fallback={renderFallback("There was an error loading the tabs. Please refresh the page.")}
-          >
-            <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
+          <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList>
                 {tabVisibility.dashboard && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
                 {tabVisibility.companies && <TabsTrigger value="companies">Companies</TabsTrigger>}
@@ -444,7 +441,6 @@ export default function Admin() {
                 </TabsContent>
               )}
             </Tabs>
-          </ErrorBoundary>
         </ResponsiveContainer>
         
         {showAddAdminDialog && (
