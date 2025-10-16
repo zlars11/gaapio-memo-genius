@@ -66,6 +66,9 @@ export default function Admin() {
     settings: true
   });
   
+  // Ensure at least one tab is always visible
+  const hasVisibleTabs = Object.values(tabVisibility).some(visible => visible);
+  
   const { 
     admins, 
     loading: adminsLoading, 
@@ -256,9 +259,18 @@ export default function Admin() {
             loading={adminsLoading}
           />
           
-          <ErrorBoundary
-            fallback={renderFallback("There was an error loading the tabs. Please refresh the page.")}
-          >
+          {!hasVisibleTabs ? (
+            <div className="p-8 text-center border rounded-md bg-card">
+              <h2 className="text-lg font-medium mb-2">No Tabs Available</h2>
+              <p className="text-muted-foreground mb-4">All admin tabs are currently hidden. Please enable at least one tab in Settings.</p>
+              <Button onClick={() => {
+                setTabVisibility(prev => ({ ...prev, settings: true }));
+                setActiveTab('settings');
+              }}>
+                Go to Settings
+              </Button>
+            </div>
+          ) : (
             <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList>
                 {tabVisibility.dashboard && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
@@ -269,7 +281,7 @@ export default function Admin() {
                 {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
                 {tabVisibility.logos && <TabsTrigger value="logos">Customer Logos</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
-                {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
+                 {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
 
               {tabVisibility.dashboard && (
@@ -444,7 +456,7 @@ export default function Admin() {
                 </TabsContent>
               )}
             </Tabs>
-          </ErrorBoundary>
+          )}
         </ResponsiveContainer>
         
         {showAddAdminDialog && (
