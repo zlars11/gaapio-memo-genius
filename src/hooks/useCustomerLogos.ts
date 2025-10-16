@@ -36,9 +36,14 @@ export function useCustomerLogos() {
         .select("*")
         .order("display_order", { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching customer logos:", error);
+        throw error;
+      }
       return data as CustomerLogo[];
     },
+    retry: 1,
+    retryDelay: 1000,
   });
 }
 
