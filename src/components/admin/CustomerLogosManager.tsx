@@ -9,7 +9,7 @@ import { CustomerLogoDialog } from "./CustomerLogoDialog";
 import { Plus, Pencil, Trash2, Image as ImageIcon } from "lucide-react";
 
 export function CustomerLogosManager() {
-  const { data: logos, isLoading, error, refetch } = useCustomerLogos();
+  const { data: logos, isLoading, error } = useCustomerLogos();
   const updateMutation = useUpdateCustomerLogo();
   const deleteMutation = useDeleteCustomerLogo();
 
@@ -73,7 +73,7 @@ export function CustomerLogosManager() {
             <p className="text-muted-foreground mb-4">
               {error instanceof Error ? error.message : "Failed to load customer logos. Please check that the database table and storage bucket are properly configured."}
             </p>
-            <Button onClick={() => refetch()} variant="outline">
+            <Button onClick={() => window.location.reload()} variant="outline">
               Retry
             </Button>
           </div>
