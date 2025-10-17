@@ -22,9 +22,10 @@ import { AdminNameDialog } from "@/components/admin/AdminNameDialog";
 import { Header } from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ExternalLink, FileEdit, Home, FileText, Shield, CreditCard, Users, Mail, Book, ChevronDown, Image } from "lucide-react";
+import { ExternalLink, FileEdit, Home, FileText, Shield, CreditCard, Users, Mail, Book, ChevronDown, Image, Quote } from "lucide-react";
 import { PageEditor } from "@/components/admin/PageEditor";
 import { CustomerLogosManager } from "@/components/admin/CustomerLogosManager";
+import { TestimonialsManager } from "@/components/admin/TestimonialsManager";
 import { TabVisibilitySettings, AdminTab } from "@/components/admin/TabVisibilitySettings";
 import { PasswordProtectionSettings } from "@/components/admin/PasswordProtectionSettings";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -62,6 +63,7 @@ export default function Admin() {
     demos: true,
     firms: true,
     logos: true,
+    testimonials: true,
     webpages: true,
     settings: true
   });
@@ -280,6 +282,7 @@ export default function Admin() {
                 {tabVisibility.demos && <TabsTrigger value="demos">Demo Requests</TabsTrigger>}
                 {tabVisibility.firms && <TabsTrigger value="firms">Firm Signups</TabsTrigger>}
                 {tabVisibility.logos && <TabsTrigger value="logos">Customer Logos</TabsTrigger>}
+                {tabVisibility.testimonials && <TabsTrigger value="testimonials">Customer Quotes</TabsTrigger>}
                 {tabVisibility.webpages && <TabsTrigger value="webpages">Webpages</TabsTrigger>}
                  {tabVisibility.settings && <TabsTrigger value="settings">Settings</TabsTrigger>}
               </TabsList>
@@ -323,6 +326,12 @@ export default function Admin() {
               {tabVisibility.logos && (
                 <TabsContent value="logos" className="space-y-4">
                   <CustomerLogosManager />
+                </TabsContent>
+              )}
+
+              {tabVisibility.testimonials && (
+                <TabsContent value="testimonials" className="space-y-4">
+                  <TestimonialsManager />
                 </TabsContent>
               )}
               

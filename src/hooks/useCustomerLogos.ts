@@ -44,6 +44,7 @@ export function useCustomerLogos() {
     },
     retry: 1,
     retryDelay: 1000,
+    throwOnError: false,
   });
 }
 
