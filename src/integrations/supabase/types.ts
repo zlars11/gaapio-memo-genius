@@ -203,45 +203,6 @@ export type Database = {
         }
         Relationships: []
       }
-      customer_testimonials: {
-        Row: {
-          avatar_url: string | null
-          created_at: string
-          customer_name: string
-          customer_title: string
-          display_order: number
-          highlight_words: string[] | null
-          id: string
-          is_active: boolean
-          quote: string
-          updated_at: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          customer_name: string
-          customer_title: string
-          display_order?: number
-          highlight_words?: string[] | null
-          id?: string
-          is_active?: boolean
-          quote: string
-          updated_at?: string
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string
-          customer_name?: string
-          customer_title?: string
-          display_order?: number
-          highlight_words?: string[] | null
-          id?: string
-          is_active?: boolean
-          quote?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       demo_requests: {
         Row: {
           created_at: string
